@@ -186,6 +186,8 @@ def make_synthetic(
     # 1. Spatial layout -------------------------------------------------------
     if layout == "grid":
         side = int(np.ceil(np.sqrt(n_cells)))
+        xs: np.ndarray
+        ys: np.ndarray
         xs, ys = np.meshgrid(np.linspace(0, grid[0], side), np.linspace(0, grid[1], side))
         coords = np.column_stack([xs.ravel()[:n_cells], ys.ravel()[:n_cells]])
         coords += rng.normal(scale=2.0, size=coords.shape)  # jitter
@@ -193,6 +195,8 @@ def make_synthetic(
         dom_side = int(np.ceil(np.sqrt(n_domains)))
         cx = np.linspace(grid[0] * 0.2, grid[0] * 0.8, dom_side)
         cy = np.linspace(grid[1] * 0.2, grid[1] * 0.8, dom_side)
+        cxs: np.ndarray
+        cys: np.ndarray
         cxs, cys = np.meshgrid(cx, cy)
         centroids = np.column_stack([cxs.ravel()[:n_domains], cys.ravel()[:n_domains]])
     else:  # blob — random centroids
@@ -327,6 +331,8 @@ def make_mixture_synthetic(
 
     # -- spatial coordinates (grid-like for visual interest) ------------------
     side = int(np.ceil(np.sqrt(n_spots)))
+    xs: np.ndarray
+    ys: np.ndarray
     xs, ys = np.meshgrid(np.linspace(0, 100, side), np.linspace(0, 100, side))
     coords = np.column_stack([xs.ravel()[:n_spots], ys.ravel()[:n_spots]])
     coords += rng.normal(scale=1.0, size=coords.shape)  # jitter
@@ -497,6 +503,8 @@ def make_developmental_gradient(
     rng = np.random.default_rng(seed)
 
     side = int(np.ceil(np.sqrt(n_cells)))
+    xs: np.ndarray
+    ys: np.ndarray
     xs, ys = np.meshgrid(np.linspace(0, 100, side), np.linspace(0, 100, side))
     coords = np.column_stack([xs.ravel()[:n_cells], ys.ravel()[:n_cells]])
     coords += rng.normal(scale=1.5, size=coords.shape)

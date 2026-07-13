@@ -54,8 +54,10 @@ def spatial_scatter_svg(
 
     pad = 34
     xs, ys = coords[:, 0], coords[:, 1]
-    xmin, xmax = xs.min(), xs.max()
-    ymin, ymax = ys.min(), ys.max()
+    xmin: float = float(xs.min())
+    xmax: float = float(xs.max())
+    ymin: float = float(ys.min())
+    ymax: float = float(ys.max())
     xr = (xmax - xmin) or 1.0
     yr = (ymax - ymin) or 1.0
 

@@ -264,8 +264,8 @@ class MethodRecommender:
             if not values:
                 continue
 
-            value_array = np.asarray(values, dtype=float)
-            weight_array = np.asarray(weights, dtype=float)
+            value_array: np.ndarray = np.asarray(values, dtype=float)
+            weight_array: np.ndarray = np.asarray(weights, dtype=float)
             valid_weight = float(weight_array.sum())
             score = float(np.average(value_array, weights=weight_array))
             variance = float(
@@ -358,7 +358,7 @@ def _load_knowledge_base(path: Path) -> LandscapeResult:
     ):
         raise ValueError("knowledge base feature_order must be a list of names")
 
-    features = {
+    features: dict[str, np.ndarray] = {
         str(name): np.asarray(
             [
                 float("nan") if value is None else float(value)
