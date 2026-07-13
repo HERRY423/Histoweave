@@ -1,0 +1,45 @@
+{
+  "assay": "synthetic",
+  "marker_genes": {
+    "domain_0": [
+      "gene_000",
+      "gene_001",
+      "gene_002",
+      "gene_003",
+      "gene_004"
+    ],
+    "domain_1": [
+      "gene_005",
+      "gene_006",
+      "gene_007",
+      "gene_008",
+      "gene_009"
+    ],
+    "domain_2": [
+      "gene_010",
+      "gene_011",
+      "gene_012",
+      "gene_013",
+      "gene_014"
+    ]
+  },
+  "n_domains": 3,
+  "provenance": [
+    {
+      "code_revision": null,
+      "container_digest": null,
+      "executor": null,
+      "method": "make_synthetic",
+      "method_version": "0.0.1",
+      "params": {
+        "n_cells": 55,
+        "n_domains": 3,
+        "n_genes": 16,
+        "seed": 31
+      },
+      "step": "ingestion",
+      "histoweave_version": "",
+      "timestamp": "2026-07-13T02:33:15.313504+00:00"
+    }
+  ]
+}

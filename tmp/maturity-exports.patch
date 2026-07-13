@@ -1,0 +1,26 @@
+diff --git a/src/histoweave/plugins/__init__.py b/src/histoweave/plugins/__init__.py
+--- a/src/histoweave/plugins/__init__.py
++++ b/src/histoweave/plugins/__init__.py
+@@ -11,1 +11,9 @@
+-from .interfaces import Method, MethodCategory, MethodSpec, ParamSpec
++from .interfaces import (
++    METHOD_MATURITY_POLICIES,
++    MaturityPolicy,
++    Method,
++    MethodCategory,
++    MethodMaturity,
++    MethodSpec,
++    ParamSpec,
++)
+@@ -25,0 +34,3 @@
++    "MethodMaturity",
++    "MaturityPolicy",
++    "METHOD_MATURITY_POLICIES",
+diff --git a/src/histoweave/__init__.py b/src/histoweave/__init__.py
+--- a/src/histoweave/__init__.py
++++ b/src/histoweave/__init__.py
+@@ -26,1 +26,1 @@
+-from .plugins import MethodCategory, get_method, list_methods, register
++from .plugins import MethodCategory, MethodMaturity, get_method, list_methods, register
+@@ -41,0 +42,1 @@
++    "MethodMaturity",

@@ -1,0 +1,59 @@
+diff --git a/src/histoweave/plugins/interfaces.py b/src/histoweave/plugins/interfaces.py
+--- a/src/histoweave/plugins/interfaces.py
++++ b/src/histoweave/plugins/interfaces.py
+@@ -32,1 +32,54 @@
+-class MethodCategory(str, Enum):
++class MethodMaturity(str, Enum):
++    """Evidence-backed quality level for an analysis-method wrapper."""
++
++    EXPERIMENTAL = "experimental"
++    BETA = "beta"
++    PRODUCTION = "production"
++    VALIDATED = "validated"
++
++
++@dataclass(frozen=True)
++class MaturityPolicy:
++    """Required evidence for a method to claim a maturity level."""
++
++    rank: int
++    requirements: tuple[str, ...]
++
++
++METHOD_MATURITY_POLICIES: dict[MethodMaturity, MaturityPolicy] = {
++    MethodMaturity.EXPERIMENTAL: MaturityPolicy(
++        rank=10,
++        requirements=(
++            "Stable MethodSpec and declared input/output contract.",
++            "Explicit optional-dependency and failure diagnostics.",
++            "Deterministic unit or API-contract tests.",
++        ),
++    ),
++    MethodMaturity.BETA: MaturityPolicy(
++        rank=20,
++        requirements=(
++            "Wraps the real upstream implementation; no algorithmic substitute.",
++            "Structural validation, provenance, and versioned parameters.",
++            "Mock-contract tests plus at least one backend integration path.",
++        ),
++    ),
++    MethodMaturity.PRODUCTION: MaturityPolicy(
++        rank=30,
++        requirements=(
++            "Pinned reproducible runtime or container and operational diagnostics.",
++            "Real-data integration tests covering supported assays and failure modes.",
++            "Resource bounds, persistence contract, and release ownership.",
++        ),
++    ),
++    MethodMaturity.VALIDATED: MaturityPolicy(
++        rank=40,
++        requirements=(
++            "Meets all production requirements.",
++            "Reference-concordance and multi-dataset benchmark thresholds pass.",
++            "Scientific outputs have independent review and documented limitations.",
++        ),
++    ),
++}
++
++
++class MethodCategory(str, Enum):

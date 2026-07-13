@@ -1,0 +1,112 @@
+{
+  "schema_version": 2,
+  "task": "domain_detection",
+  "metric": "ARI",
+  "higher_is_better": true,
+  "feature_schema": "histoweave.target_free.v1",
+  "performance": {
+    "clean": {
+      "kmeans": 0.94,
+      "spectral": 0.82
+    },
+    "noisy": {
+      "kmeans": 0.48,
+      "spectral": 0.77
+    },
+    "regular": {
+      "kmeans": 0.7,
+      "spectral": 0.88
+    }
+  },
+  "features": {
+    "clean": [
+      55.0,
+      16.0,
+      0.2909090909090909,
+      0.22499999999999998,
+      4.4530791788856305,
+      55.21818181818182,
+      0.17019142483014724,
+      3.7422620522100196,
+      0.2948397913983156,
+      0.4879898985283999,
+      0.158657649750305,
+      0.45089442791375367,
+      5.194729486133925,
+      7.0,
+      9.0,
+      0.5630745432651674
+    ],
+    "noisy": [
+      75.0,
+      20.0,
+      0.26666666666666666,
+      0.31066666666666665,
+      4.868471953578337,
+      67.12,
+      0.2304111342373537,
+      4.11892808506865,
+      0.3480606129348169,
+      0.5267970465278939,
+      0.12254615242711328,
+      0.5206833117267631,
+      5.471565523569598,
+      9.0,
+      12.0,
+      0.6847446698529457
+    ],
+    "regular": [
+      95.0,
+      24.0,
+      0.25263157894736843,
+      0.3258771929824561,
+      4.132726089785296,
+      66.86315789473684,
+      0.17466554653891347,
+      4.469961453530848,
+      0.5113688533394053,
+      0.34749866065889845,
+      0.12553182964087178,
+      0.1720014172458144,
+      6.5066977135941055,
+      10.0,
+      14.0,
+      0.6536123612702025
+    ]
+  },
+  "best_method": {
+    "clean": "kmeans",
+    "noisy": "spectral",
+    "regular": "spectral"
+  },
+  "niches": {
+    "kmeans": [
+      "clean"
+    ],
+    "spectral": [
+      "noisy",
+      "regular"
+    ]
+  },
+  "feature_order": [
+    "n_obs",
+    "n_vars",
+    "aspect_ratio",
+    "sparsity",
+    "mean_nonzero",
+    "library_mean",
+    "library_cv",
+    "expression_entropy",
+    "spatial_autocorrelation",
+    "cluster_tendency",
+    "mean_nn_distance",
+    "spatial_density_cv",
+    "spatial_entropy",
+    "effective_rank_90",
+    "effective_rank_95",
+    "sv_entropy"
+  ],
+  "method_count": 2,
+  "dataset_count": 3,
+  "timings": {}
+}

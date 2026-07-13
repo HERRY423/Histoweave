@@ -164,7 +164,10 @@ def _write_bundle_contents(
         ("layer", "layers", table.layers),
         ("image", "images", table.images),
     ):
-        for key, value in sorted(mapping.items()):
+        # AnnData's .layers stores X under a None key — skip it.
+        for key, value in sorted(
+            (k, v) for k, v in mapping.items() if k is not None
+        ):
             relative = f"{directory}/{_encode_key(key)}.npy"
             artifacts.append(_save_array(root, relative, value, role=role, key=key))
 

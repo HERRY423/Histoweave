@@ -1,0 +1,80 @@
+diff --git a/src/histoweave/plugins/interfaces.py b/src/histoweave/plugins/interfaces.py
+--- a/src/histoweave/plugins/interfaces.py
++++ b/src/histoweave/plugins/interfaces.py
+@@ -29,6 +29,59 @@ if TYPE_CHECKING:
+     from anndata import AnnData
+ 
+ 
++class MethodMaturity(str, Enum):
++    """Evidence-backed quality level for an analysis-method wrapper."""
++
++    EXPERIMENTAL = "experimental"
++    BETA = "beta"
++    PRODUCTION = "production"
++    VALIDATED = "validated"
++
++
++@dataclass(frozen=True)
++class MaturityPolicy:
++    """Required evidence for a method to claim a maturity level."""
++
++    rank: int
++    requirements: tuple[str, ...]
++
++
++METHOD_MATURITY_POLICIES: dict[MethodMaturity, MaturityPolicy] = {
++    MethodMaturity.EXPERIMENTAL: MaturityPolicy(
++        rank=10,
++        requirements=(
++            "Stable MethodSpec and declared input/output contract.",
++            "Explicit optional-dependency and failure diagnostics.",
++            "Deterministic unit or API-contract tests.",
++        ),
++    ),
++    MethodMaturity.BETA: MaturityPolicy(
++        rank=20,
++        requirements=(
++            "Wraps the real upstream implementation; no algorithmic substitute.",
++            "Structural validation, provenance, and versioned parameters.",
++            "Mock-contract tests plus at least one backend integration path.",
++        ),
++    ),
++    MethodMaturity.PRODUCTION: MaturityPolicy(
++        rank=30,
++        requirements=(
++            "Pinned reproducible runtime or container and operational diagnostics.",
++            "Real-data integration tests covering supported assays and failure modes.",
++            "Resource bounds, persistence contract, and release ownership.",
++        ),
++    ),
++    MethodMaturity.VALIDATED: MaturityPolicy(
++        rank=40,
++        requirements=(
++            "Meets all production requirements.",
++            "Reference-concordance and multi-dataset benchmark thresholds pass.",
++            "Scientific outputs have independent review and documented limitations.",
++        ),
++    ),
++}
++
++
+ class MethodCategory(str, Enum):
+     """The analysis stages that make up the platform's functional scope (plan 搂6)."""
+ 
+@@ -95,6 +148,7 @@ class MethodSpec:
+     # Which assay families the method is appropriate for ("*" = assay-agnostic).
+     assays: tuple[str, ...] = ("*",)
++    maturity: MethodMaturity = MethodMaturity.EXPERIMENTAL
+     # Populated by the benchmarking harness; drives in-workflow recommendations.
+     benchmark: dict[str, Any] = field(default_factory=dict)
+     wraps: str | None = None  # e.g. "squidpy", "Bioconductor::BANKSY"
+@@ -102,6 +156,11 @@ class MethodSpec:
+     language: str = "python"  # "python" | "r" | "container"
+ 
++    def __post_init__(self) -> None:
++        """Coerce string values so external plugin manifests remain ergonomic."""
++        if not isinstance(self.maturity, MethodMaturity):
++            object.__setattr__(self, "maturity", MethodMaturity(self.maturity))
++
+ 
+ class Method(abc.ABC):

@@ -207,9 +207,13 @@ def _read_json(path: Path) -> dict | None:
 
 
 def _from_spatialdata(sdata, *, assay: str, source: str) -> SpatialTable:
-    """Convert a ``spatialdata.SpatialData`` object's table to a SpatialTable."""
-    table = next(iter(sdata.tables.values())) if hasattr(sdata, "tables") else sdata.table
-    out = SpatialTable.from_anndata(table)
+    """Convert a ``spatialdata.SpatialData`` object to a SpatialTable.
+
+    Uses :meth:`SpatialTable.from_spatialdata` which preserves the full
+    SpatialData — including images and shapes — rather than extracting
+    only the AnnData table.
+    """
+    out = SpatialTable.from_spatialdata(sdata)
     out.uns.setdefault("assay", assay)
     out.record(
         Provenance(

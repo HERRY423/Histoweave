@@ -9,8 +9,10 @@ import pandas as pd
 
 from ...data import SpatialTable
 from ..interfaces import (
+    BackendRequirement,
     Method,
     MethodCategory,
+    MethodImplementation,
     MethodMaturity,
     MethodSpec,
     ParamSpec,
@@ -74,6 +76,8 @@ class CellTypistAnnotation(Method):
         maturity=MethodMaturity.BETA,
         wraps="celltypist.annotate",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("celltypist", ">=1.7", "celltypist"),),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:

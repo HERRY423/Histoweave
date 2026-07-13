@@ -94,9 +94,7 @@ class RContainerMethod(Method, abc.ABC):
                     f"STDERR:\n{exc.stderr}\nSTDOUT:\n{exc.stdout}"
                 ) from exc
 
-            result = SpatialTable.from_anndata(
-                _import_anndata().read_h5ad(output_h5ad)
-            )
+            result = SpatialTable.from_anndata(_import_anndata().read_h5ad(output_h5ad))
 
             self._validate_r_output(result)
 

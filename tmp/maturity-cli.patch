@@ -1,0 +1,24 @@
+diff --git a/src/histoweave/cli.py b/src/histoweave/cli.py
+--- a/src/histoweave/cli.py
++++ b/src/histoweave/cli.py
+@@ -76,0 +77,6 @@
++    p_list.add_argument(
++        "--minimum-maturity",
++        choices=("experimental", "beta", "production", "validated"),
++        help="Only show methods at or above this evidence level.",
++    )
+@@ -182,1 +188,5 @@
+-    methods = list_methods(category=args.category, assay=args.assay)
++    methods = list_methods(
++        category=args.category,
++        assay=args.assay,
++        minimum_maturity=args.minimum_maturity,
++    )
+@@ -192,2 +202,2 @@
+-    header = f"{'CATEGORY':<20} {'METHOD':<{width}} {'VER':<8}"
+-    sep = "-" * (40 + width)
++    header = f"{'CATEGORY':<20} {'METHOD':<{width}} {'VER':<8} {'MATURITY':<12}"
++    sep = "-" * (53 + width)
+@@ -201,1 +211,1 @@
+-        line = f"{m['category']:<20} {m['name']:<{width}} {m['version']:<8}"
++        line = f"{m['category']:<20} {m['name']:<{width}} {m['version']:<8} {m['maturity']:<12}"

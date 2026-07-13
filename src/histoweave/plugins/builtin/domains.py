@@ -32,9 +32,7 @@ class KMeansDomains(Method):
                 minimum=2,
             ),
             ParamSpec("n_pcs", "int", 15, "PCs used for clustering.", minimum=1),
-            ParamSpec(
-                "n_neighbors", "int", 12, "Spatial neighbours for smoothing.", minimum=1
-            ),
+            ParamSpec("n_neighbors", "int", 12, "Spatial neighbours for smoothing.", minimum=1),
             ParamSpec(
                 "spatial_weight",
                 "float",

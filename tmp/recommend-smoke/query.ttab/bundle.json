@@ -1,0 +1,49 @@
+{
+  "artifacts": [
+    {
+      "bytes": 7168,
+      "path": "X.npy",
+      "role": "X",
+      "sha256": "1b92594b204022100b453c65a56112f047b890f7c617bfca43f434281982e055"
+    },
+    {
+      "bytes": 2591,
+      "path": "obs.parquet",
+      "role": "obs",
+      "sha256": "98d0eb32c402320e5b7d6569fd80e86240e418777b6b48b5d2513b6ace8dec59"
+    },
+    {
+      "bytes": 1994,
+      "path": "var.parquet",
+      "role": "var",
+      "sha256": "0105bead557ece75aced9536a01e3698ad56a98ca052288ab71b03c8bef8f86b"
+    },
+    {
+      "bytes": 1008,
+      "key": "spatial",
+      "path": "obsm/k-c3BhdGlhbA.npy",
+      "role": "obsm",
+      "sha256": "1aadcf12a3cca457cf50875be4de0f62283e6a4623647c00194cdd0dc9c4e920"
+    },
+    {
+      "bytes": 867,
+      "path": "uns.json",
+      "role": "uns",
+      "sha256": "7842befa8ae1898886db8f0c1a47dd35bd55d0931c8f431cf5cf12d7fc62c46a"
+    }
+  ],
+  "created": "2026-07-13T02:33:15.524810+00:00",
+  "format": "histoweave.spatial-table",
+  "producer": {
+    "name": "histoweave",
+    "version": "0.0.1.dev0"
+  },
+  "schema_version": 1,
+  "table": {
+    "shape": [
+      55,
+      16
+    ],
+    "x_dtype": "float64"
+  }
+}

@@ -5,7 +5,14 @@ from __future__ import annotations
 import numpy as np
 
 from ...data import SpatialTable
-from ..interfaces import MethodCategory, MethodMaturity, MethodSpec, ParamSpec
+from ..interfaces import (
+    BackendRequirement,
+    MethodCategory,
+    MethodImplementation,
+    MethodMaturity,
+    MethodSpec,
+    ParamSpec,
+)
 from ..registry import register
 from ._r_base import RContainerMethod
 
@@ -46,6 +53,8 @@ class SCTransformNormalization(RContainerMethod):
         maturity=MethodMaturity.BETA,
         wraps="sctransform::vst",
         language="container",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("sctransform", "R package", "sctransform", runtime="r"),),
     )
     r_script = "/usr/local/bin/histoweave-sctransform.R"
 

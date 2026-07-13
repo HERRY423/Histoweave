@@ -6,8 +6,10 @@ import numpy as np
 
 from ...data import SpatialTable
 from ..interfaces import (
+    BackendRequirement,
     Method,
     MethodCategory,
+    MethodImplementation,
     MethodMaturity,
     MethodSpec,
     ParamSpec,
@@ -55,6 +57,8 @@ class Cellpose2Segmentation(Method):
         maturity=MethodMaturity.BETA,
         wraps="cellpose 2.x CellposeModel",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("cellpose", ">=2,<3", "cellpose2"),),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:

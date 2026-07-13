@@ -9,8 +9,10 @@ import pandas as pd
 
 from ...data import SpatialTable
 from ..interfaces import (
+    BackendRequirement,
     Method,
     MethodCategory,
+    MethodImplementation,
     MethodMaturity,
     MethodSpec,
     ParamSpec,
@@ -56,6 +58,8 @@ class SCANVIAnnotation(Method):
         maturity=MethodMaturity.BETA,
         wraps="scvi.model.SCANVI",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("scvi-tools", ">=1.3", "scanvi"),),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:

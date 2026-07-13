@@ -3,7 +3,13 @@
 from __future__ import annotations
 
 from ...data import SpatialTable
-from ..interfaces import MethodCategory, MethodSpec, ParamSpec
+from ..interfaces import (
+    BackendRequirement,
+    MethodCategory,
+    MethodImplementation,
+    MethodSpec,
+    ParamSpec,
+)
 from ..registry import register
 from ._r_base import RContainerMethod
 
@@ -19,14 +25,20 @@ class BANKSYDomains(RContainerMethod):
         summary="BANKSY neighbourhood-augmented spatial-domain detection.",
         params=(
             ParamSpec(
-                "lambda_param", "float", 0.8,
+                "lambda_param",
+                "float",
+                0.8,
                 "Weight assigned to spatial-neighbourhood features.",
-                minimum=0.0, maximum=1.0,
+                minimum=0.0,
+                maximum=1.0,
             ),
             ParamSpec("k_geom", "int", 15, "Spatial neighbours used by BANKSY.", minimum=1),
             ParamSpec("npcs", "int", 20, "BANKSY principal components.", minimum=2),
             ParamSpec(
-                "algorithm", "str", "leiden", "Clustering algorithm.",
+                "algorithm",
+                "str",
+                "leiden",
+                "Clustering algorithm.",
                 choices=("leiden", "louvain", "kmeans", "mclust"),
             ),
             ParamSpec("resolution", "float", 0.8, "Graph-clustering resolution.", minimum=0.0),
@@ -41,6 +53,8 @@ class BANKSYDomains(RContainerMethod):
         assays=("visium", "xenium", "cosmx"),
         wraps="Bioconductor::Banksy",
         language="container",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("Bioconductor::Banksy", "Bioconductor 3.19", runtime="r"),),
     )
     r_script = "/usr/local/bin/histoweave-banksy.R"
 

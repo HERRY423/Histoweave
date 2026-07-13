@@ -23,6 +23,7 @@ nav:
   - API Reference: api.md
   - Quickstart: quickstart.md
   - Architecture: architecture.md
+  - Method lifecycle: method-lifecycle.md
   - Concepts: concepts.md
   - Roadmap: roadmap.md
 

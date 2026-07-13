@@ -8,8 +8,10 @@ import pandas as pd
 
 from ...data import SpatialTable
 from ..interfaces import (
+    BackendRequirement,
     Method,
     MethodCategory,
+    MethodImplementation,
     MethodMaturity,
     MethodSpec,
     ParamSpec,
@@ -64,6 +66,8 @@ class LianaPlusCCC(Method):
         maturity=MethodMaturity.BETA,
         wraps="LIANA+ rank_aggregate",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("liana", ">=1.2", "liana"),),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:

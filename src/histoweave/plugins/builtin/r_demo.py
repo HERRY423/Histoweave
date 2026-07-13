@@ -37,9 +37,7 @@ class RLogNormalize(RContainerMethod):
         category=MethodCategory.NORMALIZATION,
         version="0.1.0",
         summary="R-side library-size log1p normalisation (container spike).",
-        params=(
-            ParamSpec("target_sum", "float", 1e4, "Counts per cell after scaling."),
-        ),
+        params=(ParamSpec("target_sum", "float", 1e4, "Counts per cell after scaling."),),
         assumptions=("anndata installed (extra: spatial); R + anndata R package.",),
         wraps="R::base",
         language="container",
@@ -72,6 +70,5 @@ class RLogNormalize(RContainerMethod):
         if source_path.exists():
             return source_path
         raise FileNotFoundError(
-            f"Cannot find {_R_SCRIPT_NAME} — "
-            f"expected at {container_path} or {source_path}"
+            f"Cannot find {_R_SCRIPT_NAME} — expected at {container_path} or {source_path}"
         )

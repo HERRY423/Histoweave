@@ -167,10 +167,9 @@ def _combat_parametric(
     X_adj = np.zeros_like(X)
     for b in unique_batches:
         mask = batches == b
-        X_adj[mask] = (
-            (Z[mask] - gamma_star[b]) / np.sqrt(delta_star[b]) * np.sqrt(grand_var)
-            + grand_mean
-        )
+        X_adj[mask] = (Z[mask] - gamma_star[b]) / np.sqrt(delta_star[b]) * np.sqrt(
+            grand_var
+        ) + grand_mean
 
     return X_adj
 

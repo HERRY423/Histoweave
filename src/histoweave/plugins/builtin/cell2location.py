@@ -14,8 +14,10 @@ import pandas as pd
 
 from ...data import SpatialTable
 from ..interfaces import (
+    BackendRequirement,
     Method,
     MethodCategory,
+    MethodImplementation,
     MethodMaturity,
     MethodSpec,
     ParamSpec,
@@ -81,6 +83,8 @@ class Cell2LocationDeconvolution(Method):
         maturity=MethodMaturity.BETA,
         wraps="cell2location.models.Cell2location",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("cell2location", ">=0.1.4", "cell2location"),),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:

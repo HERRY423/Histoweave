@@ -1,0 +1,168 @@
+diff --git a/src/histoweave/plugins/interfaces.py b/src/histoweave/plugins/interfaces.py
+--- a/src/histoweave/plugins/interfaces.py
++++ b/src/histoweave/plugins/interfaces.py
+@@ -29,6 +29,52 @@ if TYPE_CHECKING:
+     from anndata import AnnData
+ 
+ 
++class MethodMaturity(str, Enum):
++    """Evidence-backed quality level for an analysis-method wrapper."""
++
++    EXPERIMENTAL = "experimental"
++    BETA = "beta"
++    PRODUCTION = "production"
++    VALIDATED = "validated"
++
++
++@dataclass(frozen=True)
++class MaturityPolicy:
++    """Required evidence for a method to claim a maturity level."""
++
++    rank: int
++    requirements: tuple[str, ...]
++
++
++METHOD_MATURITY_POLICIES: dict[MethodMaturity, MaturityPolicy] = {
++    MethodMaturity.EXPERIMENTAL: MaturityPolicy(
++        rank=10,
++        requirements=(
++            "Stable MethodSpec and declared input/output contract.",
++            "Explicit optional-dependency and failure diagnostics.",
++            "Deterministic unit or API-contract tests.",
++        ),
++    ),
++    MethodMaturity.BETA: MaturityPolicy(
++        rank=20,
++        requirements=(
++            "Wraps the real upstream implementation; no algorithmic substitute.",
++            "Structural validation, provenance, and versioned parameters.",
++            "Mock-contract tests plus at least one backend integration path.",
++        ),
++    ),
++    MethodMaturity.PRODUCTION: MaturityPolicy(
++        rank=30,
++        requirements=(
++            "Pinned reproducible runtime or container and operational diagnostics.",
++            "Real-data integration tests covering supported assays and failure modes.",
++            "Resource bounds, persistence contract, and release ownership.",
++        ),
++    ),
++    MethodMaturity.VALIDATED: MaturityPolicy(
++        rank=40,
++        requirements=(
++            "Meets all production requirements.",
++            "Reference-concordance and multi-dataset benchmark thresholds pass.",
++            "Scientific outputs have independent review and documented limitations.",
++        ),
++    ),
++}
++
++
+ class MethodCategory(str, Enum):
+     """The analysis stages that make up the platform's functional scope (plan 搂6)."""
+ 
+@@ -95,6 +141,7 @@ class MethodSpec:
+     # Which assay families the method is appropriate for ("*" = assay-agnostic).
+     assays: tuple[str, ...] = ("*",)
++    maturity: MethodMaturity = MethodMaturity.EXPERIMENTAL
+     # Populated by the benchmarking harness; drives in-workflow recommendations.
+     benchmark: dict[str, Any] = field(default_factory=dict)
+     wraps: str | None = None  # e.g. "squidpy", "Bioconductor::BANKSY"
+@@ -102,6 +149,12 @@ class MethodSpec:
+     language: str = "python"  # "python" | "r" | "container"
+ 
++    def __post_init__(self) -> None:
++        """Coerce string values so external plugin manifests remain ergonomic."""
++        if not isinstance(self.maturity, MethodMaturity):
++            object.__setattr__(self, "maturity", MethodMaturity(self.maturity))
++
+ 
+ class Method(abc.ABC):
+diff --git a/src/histoweave/plugins/registry.py b/src/histoweave/plugins/registry.py
+--- a/src/histoweave/plugins/registry.py
++++ b/src/histoweave/plugins/registry.py
+@@ -8,7 +8,14 @@ from collections.abc import Callable
+ from importlib import metadata
+ 
+-from .interfaces import Method, MethodCategory, MethodSpec
++from .interfaces import (
++    METHOD_MATURITY_POLICIES,
++    Method,
++    MethodCategory,
++    MethodMaturity,
++    MethodSpec,
++)
+@@ -46,6 +53,12 @@ def _coerce_category(category: str | MethodCategory) -> MethodCategory:
+     return category if isinstance(category, MethodCategory) else MethodCategory(category)
+ 
+ 
++def _coerce_maturity(maturity: str | MethodMaturity) -> MethodMaturity:
++    return maturity if isinstance(maturity, MethodMaturity) else MethodMaturity(maturity)
++
++
+ def get_method(category: str | MethodCategory, name: str) -> type[Method]:
+@@ -66,6 +79,7 @@ def list_methods(
+     category: str | MethodCategory | None = None,
+     assay: str | None = None,
++    minimum_maturity: str | MethodMaturity | None = None,
+ ) -> list[dict]:
+@@ -77,6 +91,10 @@ def list_methods(
+     _load_entry_points()
+     cat = _coerce_category(category) if category is not None else None
++    minimum_rank = (
++        METHOD_MATURITY_POLICIES[_coerce_maturity(minimum_maturity)].rank
++        if minimum_maturity is not None else None
++    )
+     out = []
+@@ -87,6 +105,9 @@ def list_methods(
+         spec = cls.spec
+         if assay is not None and "*" not in spec.assays and assay not in spec.assays:
+             continue
++        policy = METHOD_MATURITY_POLICIES[spec.maturity]
++        if minimum_rank is not None and policy.rank < minimum_rank:
++            continue
+         out.append(
+@@ -98,6 +119,9 @@ def list_methods(
+                 "wraps": spec.wraps,
+                 "language": spec.language,
++                "maturity": spec.maturity.value,
++                "maturity_rank": policy.rank,
++                "quality_requirements": list(policy.requirements),
+                 "assumptions": list(spec.assumptions),
+diff --git a/src/histoweave/plugins/__init__.py b/src/histoweave/plugins/__init__.py
+--- a/src/histoweave/plugins/__init__.py
++++ b/src/histoweave/plugins/__init__.py
+@@ -9,7 +9,15 @@ from __future__ import annotations
+ 
+ from . import builtin as _builtin  # noqa: E402
+-from .interfaces import Method, MethodCategory, MethodSpec, ParamSpec
++from .interfaces import (
++    METHOD_MATURITY_POLICIES,
++    MaturityPolicy,
++    Method,
++    MethodCategory,
++    MethodMaturity,
++    MethodSpec,
++    ParamSpec,
++)
+@@ -28,6 +36,9 @@ __all__ = [
+     "Method",
+     "MethodCategory",
++    "MethodMaturity",
++    "MaturityPolicy",
++    "METHOD_MATURITY_POLICIES",
+     "MethodSpec",
+diff --git a/src/histoweave/__init__.py b/src/histoweave/__init__.py
+--- a/src/histoweave/__init__.py
++++ b/src/histoweave/__init__.py
+@@ -24,7 +24,7 @@ __version__ = "0.0.1.dev0"
+ 
+ from . import datasets
+ from .data import Provenance, SpatialTable
+-from .plugins import MethodCategory, get_method, list_methods, register
++from .plugins import MethodCategory, MethodMaturity, get_method, list_methods, register
+@@ -45,6 +45,7 @@ __all__ = [
+     "Provenance",
+     "MethodCategory",
++    "MethodMaturity",
+     "register",

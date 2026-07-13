@@ -8,7 +8,14 @@ import numpy as np
 import pandas as pd
 
 from ...data import SpatialTable
-from ..interfaces import Method, MethodCategory, MethodSpec, ParamSpec
+from ..interfaces import (
+    BackendRequirement,
+    Method,
+    MethodCategory,
+    MethodImplementation,
+    MethodSpec,
+    ParamSpec,
+)
 from ..registry import register
 
 if TYPE_CHECKING:
@@ -28,9 +35,12 @@ class SpatialDESVG(Method):
             ParamSpec("layer", "str|None", None, "Expression layer; None uses X."),
             ParamSpec("n_top", "int", 50, "Genes retained in the ranked SVG summary.", minimum=1),
             ParamSpec(
-                "qval_threshold", "float", 0.05,
+                "qval_threshold",
+                "float",
+                0.05,
                 "FDR threshold used for the spatialde_significant flag.",
-                minimum=0.0, maximum=1.0,
+                minimum=0.0,
+                maximum=1.0,
             ),
         ),
         assumptions=(
@@ -40,6 +50,11 @@ class SpatialDESVG(Method):
         assays=("*",),
         wraps="SpatialDE (Svensson et al., 2018)",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(
+            BackendRequirement("SpatialDE", "==1.1.3", "spatialde"),
+            BackendRequirement("NaiveDE", "required by SpatialDE", "spatialde"),
+        ),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:
@@ -77,16 +92,12 @@ class SpatialDESVG(Method):
         obs_names = pd.Index(result.obs_names.astype(str))
         var_names = pd.Index(result.var_names.astype(str))
         counts = pd.DataFrame(expression, index=obs_names, columns=var_names)
-        coordinates = pd.DataFrame(
-            coords_array[:, :2], index=obs_names, columns=["x", "y"]
-        )
+        coordinates = pd.DataFrame(coords_array[:, :2], index=obs_names, columns=["x", "y"])
         sample_info = coordinates.copy()
         sample_info["total_counts"] = counts.sum(axis=1).clip(lower=1.0)
 
         stabilized = NaiveDE.stabilize(counts.T).T
-        residual = NaiveDE.regress_out(
-            sample_info, stabilized.T, "np.log(total_counts)"
-        ).T
+        residual = NaiveDE.regress_out(sample_info, stabilized.T, "np.log(total_counts)").T
         de_results = SpatialDE.run(coordinates, residual)
         ranked = _index_spatialde_results(de_results, var_names)
 
@@ -102,8 +113,8 @@ class SpatialDESVG(Method):
 
         qvals = pd.to_numeric(result.var["spatialde_qval"], errors="coerce")
         result.var["spatialde_significant"] = (
-            qvals <= float(self.params["qval_threshold"])
-        ).fillna(False).to_numpy()
+            (qvals <= float(self.params["qval_threshold"])).fillna(False).to_numpy()
+        )
 
         ordered = ranked.copy()
         if "qval" in ordered:
@@ -137,9 +148,7 @@ def _index_spatialde_results(de_results: Any, var_names: pd.Index) -> pd.DataFra
 
 def _svg_record(gene: Any, row: pd.Series) -> dict[str, Any]:
     record: dict[str, Any] = {"gene": str(gene)}
-    for source, target in (
-        ("FSV", "fsv"), ("pval", "pval"), ("qval", "qval"), ("l", "l")
-    ):
+    for source, target in (("FSV", "fsv"), ("pval", "pval"), ("qval", "qval"), ("l", "l")):
         if source in row and pd.notna(row[source]):
             record[target] = float(row[source])
     return record

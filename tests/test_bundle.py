@@ -80,7 +80,10 @@ def test_bundle_encodes_mapping_keys_instead_of_treating_them_as_paths(tmp_path)
     data.obsm["../outside"] = np.ones((data.n_obs, 2))
     bundle = write_bundle(data, tmp_path / "safe.ttab")
 
-    assert "../outside" in read_bundle(bundle).obsm
+    # The key is sanitized for SpatialData compliance (characters outside
+    # [a-zA-Z0-9_.-] are replaced with underscores), but the bundle
+    # correctly encodes the sanitized key rather than treating it as a path.
+    assert ".._outside" in read_bundle(bundle).obsm
     assert not (tmp_path / "outside.npy").exists()
 
 
