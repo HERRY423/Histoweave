@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "version": "histoweave.figure3.synthetic.v1",
+    "seed": 42,
+    "task": "domain_detection",
+    "metric": "ARI",
+    "higher_is_better": true,
+    "datasets": [
+      "clean_easy",
+      "noisy_hard",
+      "sparse_scattered"
+    ],
+    "methods": [
+      "agglomerative",
+      "birch",
+      "bisecting_kmeans",
+      "dbscan",
+      "gaussian_mixture",
+      "kmeans",
+      "mean_shift",
+      "minibatch_kmeans",
+      "optics",
+      "spectral"
+    ],
+    "method_versions": {
+      "agglomerative": "0.1.0",
+      "birch": "0.1.0",
+      "bisecting_kmeans": "0.1.0",
+      "dbscan": "0.1.0",
+      "gaussian_mixture": "0.1.0",
+      "kmeans": "0.1.0",
+      "mean_shift": "0.1.0",
+      "minibatch_kmeans": "0.1.0",
+      "optics": "0.1.0",
+      "spectral": "0.1.0"
+    },
+    "fixed_n_domains": 3,
+    "recommendation_validation": "dataset-level leave-one-out",
+    "k_neighbours": 2
+  },
+  "performance_matrix": {
+    "clean_easy": {
+      "agglomerative": 0.8511725584403583,
+      "birch": 0.8511725584403583,
+      "bisecting_kmeans": 0.9910102963008218,
+      "dbscan": 0.0,
+      "gaussian_mixture": 1.0,
+      "kmeans": 0.9957052228910341,
+      "mean_shift": 0.0,
+      "minibatch_kmeans": 0.9914326197318956,
+      "optics": 0.0,
+      "spectral": 0.9844689630069039
+    },
+    "noisy_hard": {
+      "agglomerative": 0.8450345535571109,
+      "birch": 0.8450345535571109,
+      "bisecting_kmeans": 0.9514810166648653,
+      "dbscan": 0.0,
+      "gaussian_mixture": 0.9840614147028733,
+      "kmeans": 0.9895765215022179,
+      "mean_shift": 0.0,
+      "minibatch_kmeans": 0.4442503597376289,
+      "optics": 0.0,
+      "spectral": 0.9627878745678534
+    },
+    "sparse_scattered": {
+      "agglomerative": 0.9344316255961732,
+      "birch": 0.9344316255961732,
+      "bisecting_kmeans": 1.0,
+      "dbscan": 0.0,
+      "gaussian_mixture": 1.0,
+      "kmeans": 1.0,
+      "mean_shift": 0.0,
+      "minibatch_kmeans": 0.2768683360647453,
+      "optics": -0.030393886492105962,
+      "spectral": 0.9831190771404347
+    }
+  },
+  "best_method": {
+    "clean_easy": "gaussian_mixture",
+    "noisy_hard": "kmeans",
+    "sparse_scattered": "bisecting_kmeans"
+  },
+  "embedding": {
+    "clean_easy": [
+      0.6020738356408156,
+      -2.428612684981291
+    ],
+    "noisy_hard": [
+      -4.5125336867584664,
+      0.9539112440097784
+    ],
+    "sparse_scattered": [
+      3.9104598511176447,
+      1.4747014409715098
+    ]
+  },
+  "recommendation": {
+    "rows": [
+      {
+        "held_out_dataset": "clean_easy",
+        "training_datasets": [
+          "noisy_hard",
+          "sparse_scattered"
+        ],
+        "oracle_methods": [
+          "gaussian_mixture"
+        ],
+        "oracle_score": 1.0,
+        "recommended_methods": [
+          "kmeans",
+          "gaussian_mixture",
+          "bisecting_kmeans"
+        ],
+        "recommended_method": "kmeans",
+        "recommended_score": 0.9957052228910341,
+        "top1_hit": false,
+        "top3_hit": true,
+        "selection_regret": 0.004294777108965864,
+        "global_best_baseline": "kmeans",
+        "global_best_score": 0.9957052228910341,
+        "global_best_regret": 0.004294777108965864,
+        "random_expected_score": 0.6664962218811372,
+        "random_expected_regret": 0.3335037781188628,
+        "neighbours": [
+          {
+            "name": "sparse_scattered",
+            "similarity": 0.6197,
+            "distance": 0.3803,
+            "best_method": "bisecting_kmeans"
+          },
+          {
+            "name": "noisy_hard",
+            "similarity": 0.3803,
+            "distance": 0.6197,
+            "best_method": "kmeans"
+          }
+        ],
+        "feature_order": [
+          "n_obs",
+          "n_vars",
+          "aspect_ratio",
+          "sparsity",
+          "mean_nonzero",
+          "library_mean",
+          "library_cv",
+          "expression_entropy",
+          "spatial_autocorrelation",
+          "cluster_tendency",
+          "mean_nn_distance",
+          "spatial_density_cv",
+          "spatial_entropy",
+          "effective_rank_90",
+          "effective_rank_95",
+          "sv_entropy"
+        ]
+      },
+      {
+        "held_out_dataset": "noisy_hard",
+        "training_datasets": [
+          "clean_easy",
+          "sparse_scattered"
+        ],
+        "oracle_methods": [
+          "kmeans"
+        ],
+        "oracle_score": 0.9895765215022179,
+        "recommended_methods": [
+          "gaussian_mixture",
+          "kmeans",
+          "bisecting_kmeans"
+        ],
+        "recommended_method": "gaussian_mixture",
+        "recommended_score": 0.9840614147028733,
+        "top1_hit": false,
+        "top3_hit": true,
+        "selection_regret": 0.005515106799344527,
+        "global_best_baseline": "gaussian_mixture",
+        "global_best_score": 0.9840614147028733,
+        "global_best_regret": 0.005515106799344527,
+        "random_expected_score": 0.6022226294289661,
+        "random_expected_regret": 0.38735389207325177,
+        "neighbours": [
+          {
+            "name": "sparse_scattered",
+            "similarity": 0.5791,
+            "distance": 0.4209,
+            "best_method": "bisecting_kmeans"
+          },
+          {
+            "name": "clean_easy",
+            "similarity": 0.4209,
+            "distance": 0.5791,
+            "best_method": "gaussian_mixture"
+          }
+        ],
+        "feature_order": [
+          "n_obs",
+          "n_vars",
+          "aspect_ratio",
+          "sparsity",
+          "mean_nonzero",
+          "library_mean",
+          "library_cv",
+          "expression_entropy",
+          "spatial_autocorrelation",
+          "cluster_tendency",
+          "mean_nn_distance",
+          "spatial_density_cv",
+          "spatial_entropy",
+          "effective_rank_90",
+          "effective_rank_95",
+          "sv_entropy"
+        ]
+      },
+      {
+        "held_out_dataset": "sparse_scattered",
+        "training_datasets": [
+          "clean_easy",
+          "noisy_hard"
+        ],
+        "oracle_methods": [
+          "bisecting_kmeans",
+          "gaussian_mixture",
+          "kmeans"
+        ],
+        "oracle_score": 1.0,
+        "recommended_methods": [
+          "gaussian_mixture",
+          "kmeans",
+          "bisecting_kmeans"
+        ],
+        "recommended_method": "gaussian_mixture",
+        "recommended_score": 1.0,
+        "top1_hit": true,
+        "top3_hit": true,
+        "selection_regret": 0.0,
+        "global_best_baseline": "kmeans",
+        "global_best_score": 1.0,
+        "global_best_regret": 0.0,
+        "random_expected_score": 0.6098456777905421,
+        "random_expected_regret": 0.3901543222094579,
+        "neighbours": [
+          {
+            "name": "clean_easy",
+            "similarity": 0.6397,
+            "distance": 0.3603,
+            "best_method": "gaussian_mixture"
+          },
+          {
+            "name": "noisy_hard",
+            "similarity": 0.3603,
+            "distance": 0.6397,
+            "best_method": "kmeans"
+          }
+        ],
+        "feature_order": [
+          "n_obs",
+          "n_vars",
+          "aspect_ratio",
+          "sparsity",
+          "mean_nonzero",
+          "library_mean",
+          "library_cv",
+          "expression_entropy",
+          "spatial_autocorrelation",
+          "cluster_tendency",
+          "mean_nn_distance",
+          "spatial_density_cv",
+          "spatial_entropy",
+          "effective_rank_90",
+          "effective_rank_95",
+          "sv_entropy"
+        ]
+      }
+    ],
+    "summary": {
+      "n_queries": 3,
+      "top1_accuracy": 0.3333333333333333,
+      "top3_accuracy": 1.0,
+      "mean_selection_regret": 0.00326996130277013,
+      "median_selection_regret": 0.004294777108965864,
+      "max_selection_regret": 0.005515106799344527,
+      "global_best_mean_regret": 0.00326996130277013,
+      "random_expected_mean_regret": 0.37033733080052417,
+      "regret_reduction_vs_global_best": 0.0,
+      "regret_reduction_vs_random": 0.9911703168143979
+    }
+  },
+  "validation": {
+    "status": "share_with_caveats",
+    "checks": {
+      "dataset_count_is_3": true,
+      "method_count_is_10": true,
+      "matrix_has_30_cells": true,
+      "all_methods_succeeded": true,
+      "loocv_has_3_queries": true,
+      "all_recommendations_nonempty": true,
+      "regret_is_nonnegative": true
+    },
+    "successful_benchmark_cells": 30,
+    "total_benchmark_cells": 30,
+    "scope": "synthetic software and algorithm validation",
+    "required_caveats": [
+      "Three queries are insufficient for a precise accuracy estimate.",
+      "All datasets share one synthetic generator family.",
+      "Equal regret versus global-best does not show incremental k-NN value.",
+      "Real-data study-grouped validation is required for a paper claim."
+    ]
+  },
+  "limitations": [
+    "All three datasets are synthetic and generated by one family.",
+    "There are only three held-out recommendation queries.",
+    "This validates software behavior, not real-data generalization."
+  ]
+}

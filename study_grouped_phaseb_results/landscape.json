@@ -1,0 +1,447 @@
+{
+  "schema_version": 2,
+  "task": "domain_detection",
+  "metric": "score",
+  "higher_is_better": true,
+  "feature_schema": "histoweave.target_free.v1",
+  "performance": {
+    "clean_easy": {
+      "agglomerative": 0.8511725584403583,
+      "birch": 0.8511725584403583,
+      "bisecting_kmeans": 0.9910102963008218,
+      "gaussian_mixture": 1.0,
+      "kmeans": 0.9957052228910341,
+      "minibatch_kmeans": 0.9957052228910341,
+      "spectral": 0.9844689630069039
+    },
+    "noisy_hard": {
+      "agglomerative": 0.8450345535571109,
+      "birch": 0.8450345535571109,
+      "bisecting_kmeans": 0.9514810166648653,
+      "gaussian_mixture": 0.9840614147028733,
+      "kmeans": 0.9895765215022179,
+      "minibatch_kmeans": 0.4005815250822005,
+      "spectral": 0.9627878745678534
+    },
+    "sparse_scattered": {
+      "agglomerative": 0.9344316255961732,
+      "birch": 0.9344316255961732,
+      "bisecting_kmeans": 1.0,
+      "gaussian_mixture": 1.0,
+      "kmeans": 1.0,
+      "minibatch_kmeans": 0.737410828461779,
+      "spectral": 0.9831190771404347
+    },
+    "dlpfc_151507": {
+      "agglomerative": 0.29013911043791807,
+      "birch": 0.3229583501297368,
+      "bisecting_kmeans": 0.3654345288277208,
+      "gaussian_mixture": 0.3706609201362354,
+      "kmeans": 0.435123247255225,
+      "minibatch_kmeans": 0.39066116031954257,
+      "spectral": 0.4018978297525325
+    },
+    "dlpfc_151508": {
+      "agglomerative": 0.41166490873425615,
+      "birch": 0.41166490873425615,
+      "bisecting_kmeans": 0.48288440304494873,
+      "gaussian_mixture": 0.4521050962840531,
+      "kmeans": 0.5441854408210677,
+      "minibatch_kmeans": 0.44521538051837745,
+      "spectral": 0.37636461657949016
+    },
+    "dlpfc_151509": {
+      "agglomerative": 0.2749835822188959,
+      "birch": 0.2781245525325748,
+      "bisecting_kmeans": 0.30712772953433853,
+      "gaussian_mixture": 0.3854708735057944,
+      "kmeans": 0.32154887135809446,
+      "minibatch_kmeans": 0.3050386581879647,
+      "spectral": 0.21943244465745618
+    },
+    "dlpfc_151510": {
+      "agglomerative": 0.21014109059435984,
+      "birch": 0.22792223926547928,
+      "bisecting_kmeans": 0.41653281214739724,
+      "gaussian_mixture": 0.30727128103428564,
+      "kmeans": 0.38923044947973534,
+      "minibatch_kmeans": 0.2904971835782703,
+      "spectral": 0.2400112587620447
+    },
+    "dlpfc_151673": {
+      "agglomerative": 0.3167511670596028,
+      "birch": 0.29152701744723636,
+      "bisecting_kmeans": 0.30155167387742593,
+      "gaussian_mixture": 0.4499844928811162,
+      "kmeans": 0.31573582606165607,
+      "minibatch_kmeans": 0.31239010974794457,
+      "spectral": 0.4220707087582823
+    },
+    "tumor_mimic": {
+      "agglomerative": 0.0310113270106329,
+      "birch": 0.0310113270106329,
+      "bisecting_kmeans": 0.026230351515919913,
+      "gaussian_mixture": 0.029791723738350092,
+      "kmeans": 0.04192234469662614,
+      "minibatch_kmeans": 0.029568279276715178,
+      "spectral": 0.04929767938941653
+    },
+    "devel_mimic": {
+      "agglomerative": 0.964321931920484,
+      "birch": 0.964321931920484,
+      "bisecting_kmeans": 0.9863411449877839,
+      "gaussian_mixture": 1.0,
+      "kmeans": 0.9954170850890023,
+      "minibatch_kmeans": 1.0,
+      "spectral": 0.9955507023233064
+    }
+  },
+  "features": {
+    "clean_easy": [
+      600.0,
+      50.0,
+      0.08333333333333333,
+      0.35250000000000004,
+      2.7846589446589447,
+      90.15333333333334,
+      0.11620550939972761,
+      5.277158798641218,
+      0.689770017084409,
+      0.5105793338932356,
+      0.04130019761079391,
+      0.39993749511635845,
+      6.5131273216083985,
+      17.0,
+      28.0,
+      0.5451664403343989
+    ],
+    "devel_mimic": [
+      600.0,
+      80.0,
+      0.13333333333333333,
+      0.34629166666666666,
+      2.1388552489005037,
+      111.855,
+      0.11018186170284221,
+      6.20359847776621,
+      0.5528459901098791,
+      0.4772658118548383,
+      0.043957795180389406,
+      0.2345207879911324,
+      6.603819350604701,
+      50.0,
+      62.0,
+      0.7904299286497777
+    ],
+    "dlpfc_151507": [
+      4226.0,
+      2000.0,
+      0.47326076668244205,
+      0.6159417889256981,
+      2.2238023167488623,
+      1708.1390791069123,
+      0.20115605091584046,
+      10.626544386476965,
+      0.2724100116292253,
+      0.9130904624864093,
+      0.009074587421554346,
+      1.397599903093167,
+      4.877975569047446,
+      1281.0,
+      1520.0,
+      0.9395628235706106
+    ],
+    "dlpfc_151508": [
+      4384.0,
+      2000.0,
+      0.4562043795620438,
+      0.6644076186131387,
+      2.3443271770421688,
+      1573.476680187039,
+      0.2177255875068727,
+      10.587642655128754,
+      0.23151443636058794,
+      0.8479300908848283,
+      0.010274924380810173,
+      1.2167357381666715,
+      5.358467744620444,
+      1285.0,
+      1525.0,
+      0.9415106696905441
+    ],
+    "dlpfc_151509": [
+      4789.0,
+      2000.0,
+      0.41762372102735434,
+      0.6149352683232407,
+      2.2492108291333786,
+      1732.1835288094112,
+      0.20657213914603745,
+      10.639432679218807,
+      0.2182907913895144,
+      0.9390105830436861,
+      0.007278193345654062,
+      1.801900121507121,
+      4.336411987126469,
+      1320.0,
+      1556.0,
+      0.9419344723221901
+    ],
+    "dlpfc_151510": [
+      4634.0,
+      2000.0,
+      0.43159257660768235,
+      0.6257154725938714,
+      2.267299960985644,
+      1697.2305887708912,
+      0.19895781537195936,
+      10.625324654682041,
+      0.22368225288162624,
+      0.9372895623147027,
+      0.0076614768584102,
+      1.9058941266135767,
+      4.383560801427577,
+      1312.0,
+      1548.0,
+      0.9446692929831574
+    ],
+    "dlpfc_151673": [
+      3639.0,
+      2000.0,
+      0.5496015388843088,
+      0.4749361088211047,
+      1.9176539574227098,
+      2013.781697637951,
+      0.15798781410010054,
+      10.718324605660627,
+      0.554823592645374,
+      0.9331184369720291,
+      0.009484647080737655,
+      1.860065613424501,
+      4.697115132209756,
+      1211.0,
+      1453.0,
+      0.9188458788958399
+    ],
+    "noisy_hard": [
+      600.0,
+      50.0,
+      0.08333333333333333,
+      0.40159999999999996,
+      2.446579768270945,
+      73.20166666666667,
+      0.19013078114002832,
+      5.504387415883721,
+      0.26506511537581073,
+      0.5815004194168805,
+      0.04129119150679542,
+      0.3915780041489591,
+      6.537816882654657,
+      34.0,
+      41.0,
+      0.8904505269727758
+    ],
+    "sparse_scattered": [
+      200.0,
+      50.0,
+      0.25,
+      0.3546,
+      3.0712736287573597,
+      99.11,
+      0.13334878814510315,
+      5.186515628678089,
+      0.5550921336435277,
+      0.4657313766955423,
+      0.0755523290814629,
+      0.5399073994674805,
+      6.2904483949310075,
+      15.0,
+      25.0,
+      0.568137587953331
+    ],
+    "tumor_mimic": [
+      800.0,
+      100.0,
+      0.125,
+      0.397475,
+      2.2780175096469026,
+      137.25625,
+      0.14000298269322672,
+      6.584461821006382,
+      0.004265556596626441,
+      0.49466841475235657,
+      0.0354148183364894,
+      0.3691205765057889,
+      6.54040941011378,
+      75.0,
+      85.0,
+      0.9635152975024074
+    ]
+  },
+  "best_method": {
+    "clean_easy": "gaussian_mixture",
+    "noisy_hard": "kmeans",
+    "sparse_scattered": "bisecting_kmeans",
+    "dlpfc_151507": "kmeans",
+    "dlpfc_151508": "kmeans",
+    "dlpfc_151509": "gaussian_mixture",
+    "dlpfc_151510": "bisecting_kmeans",
+    "dlpfc_151673": "gaussian_mixture",
+    "tumor_mimic": "spectral",
+    "devel_mimic": "gaussian_mixture"
+  },
+  "niches": {
+    "bisecting_kmeans": [
+      "clean_easy",
+      "noisy_hard",
+      "sparse_scattered",
+      "dlpfc_151510",
+      "devel_mimic"
+    ],
+    "gaussian_mixture": [
+      "clean_easy",
+      "noisy_hard",
+      "sparse_scattered",
+      "dlpfc_151509",
+      "dlpfc_151673",
+      "devel_mimic"
+    ],
+    "kmeans": [
+      "clean_easy",
+      "noisy_hard",
+      "sparse_scattered",
+      "dlpfc_151507",
+      "dlpfc_151508",
+      "devel_mimic"
+    ],
+    "minibatch_kmeans": [
+      "clean_easy",
+      "devel_mimic"
+    ],
+    "spectral": [
+      "clean_easy",
+      "noisy_hard",
+      "sparse_scattered",
+      "tumor_mimic",
+      "devel_mimic"
+    ],
+    "agglomerative": [
+      "devel_mimic"
+    ],
+    "birch": [
+      "devel_mimic"
+    ]
+  },
+  "feature_order": [
+    "n_obs",
+    "n_vars",
+    "aspect_ratio",
+    "sparsity",
+    "mean_nonzero",
+    "library_mean",
+    "library_cv",
+    "expression_entropy",
+    "spatial_autocorrelation",
+    "cluster_tendency",
+    "mean_nn_distance",
+    "spatial_density_cv",
+    "spatial_entropy",
+    "effective_rank_90",
+    "effective_rank_95",
+    "sv_entropy"
+  ],
+  "method_count": 7,
+  "dataset_count": 10,
+  "timings": {
+    "clean_easy": {
+      "agglomerative": 0.0679,
+      "birch": 0.0822,
+      "bisecting_kmeans": 0.0962,
+      "gaussian_mixture": 0.0601,
+      "kmeans": 0.038,
+      "minibatch_kmeans": 0.1196,
+      "spectral": 0.133
+    },
+    "noisy_hard": {
+      "agglomerative": 0.0328,
+      "birch": 0.0546,
+      "bisecting_kmeans": 0.1259,
+      "gaussian_mixture": 0.0599,
+      "kmeans": 0.0296,
+      "minibatch_kmeans": 0.1129,
+      "spectral": 0.0821
+    },
+    "sparse_scattered": {
+      "agglomerative": 0.0052,
+      "birch": 0.0123,
+      "bisecting_kmeans": 0.0845,
+      "gaussian_mixture": 0.0537,
+      "kmeans": 0.0076,
+      "minibatch_kmeans": 0.1326,
+      "spectral": 0.0287
+    },
+    "dlpfc_151507": {
+      "agglomerative": 4.6923,
+      "birch": 4.7719,
+      "bisecting_kmeans": 4.3054,
+      "gaussian_mixture": 6.9699,
+      "kmeans": 4.4162,
+      "minibatch_kmeans": 4.2015,
+      "spectral": 12.7385
+    },
+    "dlpfc_151508": {
+      "agglomerative": 4.3692,
+      "birch": 4.6316,
+      "bisecting_kmeans": 4.2342,
+      "gaussian_mixture": 6.5137,
+      "kmeans": 4.9601,
+      "minibatch_kmeans": 4.2428,
+      "spectral": 14.5584
+    },
+    "dlpfc_151509": {
+      "agglomerative": 5.4257,
+      "birch": 5.5574,
+      "bisecting_kmeans": 4.8149,
+      "gaussian_mixture": 7.4838,
+      "kmeans": 5.1377,
+      "minibatch_kmeans": 4.6485,
+      "spectral": 20.0163
+    },
+    "dlpfc_151510": {
+      "agglomerative": 5.12,
+      "birch": 4.4728,
+      "bisecting_kmeans": 4.4094,
+      "gaussian_mixture": 7.3533,
+      "kmeans": 4.8869,
+      "minibatch_kmeans": 4.5446,
+      "spectral": 18.193
+    },
+    "dlpfc_151673": {
+      "agglomerative": 3.7269,
+      "birch": 3.6487,
+      "bisecting_kmeans": 3.2706,
+      "gaussian_mixture": 6.4012,
+      "kmeans": 3.8526,
+      "minibatch_kmeans": 3.4878,
+      "spectral": 8.8806
+    },
+    "tumor_mimic": {
+      "agglomerative": 0.1013,
+      "birch": 0.1634,
+      "bisecting_kmeans": 0.2702,
+      "gaussian_mixture": 0.9686,
+      "kmeans": 0.1631,
+      "minibatch_kmeans": 0.1262,
+      "spectral": 0.3457
+    },
+    "devel_mimic": {
+      "agglomerative": 0.0314,
+      "birch": 0.0848,
+      "bisecting_kmeans": 0.0906,
+      "gaussian_mixture": 0.0776,
+      "kmeans": 0.0425,
+      "minibatch_kmeans": 0.0743,
+      "spectral": 0.1114
+    }
+  }
+}

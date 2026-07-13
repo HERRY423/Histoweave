@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HistoWeave report · {{ assay }}</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         max-width: 1200px; margin: 2rem auto; padding: 0 1.25rem; line-height: 1.5;
+         color: #1a1a2e; background: #fff; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6e6f0; background: #14141b; }
+    .card { background: #1e1e28 !important; border-color: #2c2c3a !important; }
+    th { background: #232330 !important; }
+    code { background: #232330 !important; }
+    .vitessce-container { border-color: #2c2c3a !important; }
+  }
+  header { border-bottom: 3px solid #4C78A8; padding-bottom: .75rem; margin-bottom: 1.5rem; }
+  h1 { margin: 0; font-size: 1.6rem; }
+  .sub { color: #7a7a8c; font-size: .9rem; }
+  h2 { font-size: 1.15rem; margin-top: 2rem; border-left: 4px solid #4C78A8;
+       padding-left: .6rem; }
+  .grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .card { flex: 1 1 150px; background: #f7f8fa; border: 1px solid #e3e6ea;
+          border-radius: 10px; padding: .9rem 1rem; }
+  .card .k { font-size: 1.5rem; font-weight: 700; }
+  .card .l { font-size: .78rem; color: #7a7a8c; text-transform: uppercase;
+             letter-spacing: .04em; }
+  .plots { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
+  table { border-collapse: collapse; width: 100%; font-size: .88rem; margin-top: .5rem; }
+  th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid #e3e6ea; }
+  th { background: #f2f4f7; font-weight: 600; }
+  code { background: #f2f4f7; padding: .1rem .35rem; border-radius: 4px; font-size: .85em; }
+  .overflow { overflow-x: auto; }
+  footer { margin-top: 3rem; font-size: .8rem; color: #9a9aa8;
+           border-top: 1px solid #e3e6ea; padding-top: 1rem; }
+
+  /* Vitessce container */
+  .vitessce-container { border: 2px solid #e3e6ea; border-radius: 10px;
+                        min-height: 520px; margin: 1rem 0; overflow: hidden; }
+  .vitessce-error { padding: 2rem; color: #E45756; text-align: center;
+                    font-style: italic; }
+  .vitessce-loading { padding: 2rem; text-align: center; color: #7a7a8c;
+                      font-style: italic; }
+</style>
+<!-- Vitessce v3 CDN -->
+<link rel="stylesheet" href="https://unpkg.com/vitessce@3.5.7/dist/umd/production/index.min.css"
+      onerror="document.getElementById('vitessce-container').innerHTML='<div class=\'vitessce-error\'>Vitessce CDN unavailable — showing static plots below.</div>'; document.getElementById('vitessce-container').style.minHeight='auto';">
+</head>
+<body>
+<header>
+  <h1>HistoWeave Analysis Report</h1>
+  <div class="sub">assay: <b>{{ assay }}</b> · generated {{ generated }} ·
+    histoweave v{{ histoweave_version }}</div>
+</header>
+
+<h2>Overview</h2>
+<div class="grid">
+  <div class="card"><div class="k">{{ n_obs }}</div><div class="l">Observations</div></div>
+  <div class="card"><div class="k">{{ n_vars }}</div><div class="l">Genes</div></div>
+  <div class="card"><div class="k">{{ n_domains }}</div><div class="l">Domains found</div></div>
+  {% if qc %}
+  <div class="card"><div class="k">{{ qc.n_removed }}</div><div class="l">Cells removed (QC)</div></div>
+  {% endif %}
+</div>
+
+{% if qc %}
+<h2>Quality control</h2>
+<div class="grid">
+  <div class="card"><div class="k">{{ qc.median_counts }}</div><div class="l">Median counts</div></div>
+  <div class="card"><div class="k">{{ qc.median_genes }}</div><div class="l">Median genes</div></div>
+  <div class="card"><div class="k">{{ "%.1f"|format(qc.median_pct_mito) }}%</div><div class="l">Median % mito</div></div>
+  <div class="card"><div class="k">{{ qc.n_obs_before }} → {{ qc.n_obs_after }}</div><div class="l">Cells kept</div></div>
+</div>
+{% endif %}
+
+<h2>Interactive spatial viewer</h2>
+<noscript>
+  <p style="color:#E45756">JavaScript is disabled — showing static plots.</p>
+</noscript>
+<div id="vitessce-container" class="vitessce-container">
+  <div class="vitessce-loading">Loading Vitessce interactive viewer…</div>
+</div>
+
+<h2>Static spatial maps (SVG fallback)</h2>
+<div class="plots">
+  {% for plot in plots %}<div>{{ plot|safe }}</div>{% endfor %}
+</div>
+
+{% if annotation_counts %}
+<h2>Annotation summary</h2>
+<div class="overflow">
+<table>
+  <thead><tr><th>Label</th><th>Cells</th><th>Fraction</th></tr></thead>
+  <tbody>
+  {% for row in annotation_counts %}
+    <tr><td>{{ row.label }}</td><td>{{ row.count }}</td><td>{{ "%.1f"|format(row.pct) }}%</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+
+<h2>Pipeline &amp; provenance</h2>
+<p>Every step below is recorded with its method version and parameters, so this run is
+fully reproducible.</p>
+<div class="overflow">
+<table>
+  <thead><tr><th>#</th><th>Step</th><th>Method</th><th>Version</th><th>Params</th><th>Obs after</th><th>Time (s)</th></tr></thead>
+  <tbody>
+  {% for step in steps %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ step.category }}</td>
+      <td><code>{{ step.method }}</code></td>
+      <td>{{ step.version }}</td>
+      <td><code>{{ step.params }}</code></td>
+      <td>{{ step.n_obs_after }}</td>
+      <td>{{ step.seconds }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<footer>
+  Generated by HistoWeave — open-source spatial transcriptomics orchestration &amp;
+  evaluation. Interactive exploration powered by
+  <a href="https://vitessce.io" rel="noopener">Vitessce</a>.
+</footer>
+
+<!-- Vitessce initialisation with inline data -->
+<script src="https://unpkg.com/vitessce@3.5.7/dist/umd/production/index.min.js"
+        onerror="document.getElementById('vitessce-container').innerHTML='<div class=\'vitessce-error\'>Vitessce CDN unavailable — see static plots below.</div>'; document.getElementById('vitessce-container').style.minHeight='auto';">
+</script>
+<script>
+(function() {
+  var container = document.getElementById('vitessce-container');
+  try {
+    var raw = {{ vitessce_json|safe }};
+    if (!raw || !raw.config) {
+      container.innerHTML = '<div class="vitessce-error">No spatial data available for interactive viewer — see static plots below.</div>';
+      container.style.minHeight = 'auto';
+      return;
+    }
+
+    // Build blob URLs from inline data files so Vitessce can load them
+    var config = raw.config;
+    var dataFiles = raw.data || {};
+    var geneNames = raw.gene_names || [];
+
+    // Replace file references with blob URLs pointing at the inline data
+    config.datasets.forEach(function(ds) {
+      ds.files.forEach(function(file) {
+        var key = file.fileType || 'cells.json';
+        if (key === 'cells.json' && ds.uid === 'histoweave_scatterplot') {
+          key = 'cells.json';
+        } else if (key === 'cells.json' && ds.uid === 'histoweave_heatmap') {
+          key = 'heatmap_cells.json';
+        }
+        if (dataFiles[key]) {
+          var blob = new Blob([dataFiles[key]], {type: 'application/json'});
+          file.url = URL.createObjectURL(blob);
+        }
+      });
+    });
+
+    // Create Vitessce instance
+    if (typeof Vitessce !== 'undefined') {
+      var vc = Vitessce.render({config: config}, container);
+      container.querySelector('.vitessce-loading').style.display = 'none';
+    } else {
+      container.innerHTML = '<div class="vitessce-error">Vitessce failed to load — see static plots below.</div>';
+      container.style.minHeight = 'auto';
+    }
+  } catch (e) {
+    container.innerHTML = '<div class="vitessce-error">Vitessce initialisation error: ' + e.message + ' — see static plots below.</div>';
+    container.style.minHeight = 'auto';
+  }
+})();
+</script>
+</body>
+</html>

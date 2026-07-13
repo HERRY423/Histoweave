@@ -1,0 +1,67 @@
+{% set name = "histoweave-spatial" %}
+{% set version = "0.1.0b1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/histoweave_spatial-{{ version }}.tar.gz
+  sha256: PLACEHOLDER  # replaced by conda-forge bot on publish
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - histoweave = histoweave.cli:main
+
+requirements:
+  host:
+    - python >=3.11
+    - hatchling
+    - pip
+  run:
+    - python >=3.11
+    - numpy >=1.24
+    - pandas >=2.0
+    - jinja2 >=3.1
+
+test:
+  imports:
+    - histoweave
+    - histoweave.benchmark
+    - histoweave.data
+    - histoweave.datasets
+    - histoweave.io
+    - histoweave.plugins
+    - histoweave.report
+    - histoweave.workflow
+  commands:
+    - histoweave --version
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/histoweave-spatial/histoweave
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: >-
+    Open-source orchestration & evaluation platform for reproducible
+    spatial transcriptomics analysis.
+  description: |
+    HistoWeave is the connective tissue the spatial transcriptomics field
+    lacks — a unified distribution, orchestration, and evaluation layer
+    that sits on top of scverse and Bioconductor. It wraps 28+ existing
+    methods across every analysis category behind a single plugin
+    interface, benchmarks them on structured reference datasets, and
+    provides a data-driven recommendation engine that suggests the
+    best method for new data without requiring ground truth.
+  doc_url: https://histoweave-spatial.github.io/histoweave
+  dev_url: https://github.com/histoweave-spatial/histoweave
+  doc_source_url: https://github.com/histoweave-spatial/histoweave/tree/main/docs
+
+extra:
+  recipe-maintainers:
+    - histoweave-spatial

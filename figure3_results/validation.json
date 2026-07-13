@@ -1,0 +1,21 @@
+{
+  "status": "share_with_caveats",
+  "checks": {
+    "dataset_count_is_3": true,
+    "method_count_is_10": true,
+    "matrix_has_30_cells": true,
+    "all_methods_succeeded": true,
+    "loocv_has_3_queries": true,
+    "all_recommendations_nonempty": true,
+    "regret_is_nonnegative": true
+  },
+  "successful_benchmark_cells": 30,
+  "total_benchmark_cells": 30,
+  "scope": "synthetic software and algorithm validation",
+  "required_caveats": [
+    "Three queries are insufficient for a precise accuracy estimate.",
+    "All datasets share one synthetic generator family.",
+    "Equal regret versus global-best does not show incremental k-NN value.",
+    "Real-data study-grouped validation is required for a paper claim."
+  ]
+}

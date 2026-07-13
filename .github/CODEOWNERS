@@ -1,0 +1,4 @@
+# HistoWeave code owners — automatically assign reviewers via GitHub.
+# Last match wins; global catch-all at the bottom.
+
+* @histoweave-spatial/core

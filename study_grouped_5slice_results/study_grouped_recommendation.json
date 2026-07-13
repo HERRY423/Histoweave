@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "protocol": "study_grouped_holdout",
+  "queries": [
+    {
+      "held_out": "dlpfc_151507",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151508",
+        "dlpfc_151509",
+        "dlpfc_151510",
+        "dlpfc_151673"
+      ],
+      "oracle_methods": [
+        "kmeans"
+      ],
+      "oracle_score": 0.435123247255225,
+      "recommended_methods": [
+        "kmeans",
+        "bisecting_kmeans",
+        "gaussian_mixture"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.435123247255225,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_method": "gaussian_mixture",
+      "global_best_score": 0.3706609201362354,
+      "global_best_regret": 0.06446232711898958,
+      "knn_beats_global": true,
+      "random_score": 0.36812502097984445,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151509",
+          "similarity": 0.9813,
+          "distance": 0.0187,
+          "best_method": "gaussian_mixture"
+        },
+        {
+          "name": "dlpfc_151510",
+          "similarity": 0.9791,
+          "distance": 0.0209,
+          "best_method": "bisecting_kmeans"
+        },
+        {
+          "name": "dlpfc_151508",
+          "similarity": 0.9739,
+          "distance": 0.0261,
+          "best_method": "kmeans"
+        }
+      ]
+    },
+    {
+      "held_out": "dlpfc_151508",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151507",
+        "dlpfc_151509",
+        "dlpfc_151510",
+        "dlpfc_151673"
+      ],
+      "oracle_methods": [
+        "kmeans"
+      ],
+      "oracle_score": 0.5441854408210677,
+      "recommended_methods": [
+        "kmeans",
+        "bisecting_kmeans",
+        "gaussian_mixture"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.5441854408210677,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_method": "gaussian_mixture",
+      "global_best_score": 0.4521050962840531,
+      "global_best_regret": 0.09208034453701458,
+      "knn_beats_global": true,
+      "random_score": 0.44629782210235,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151507",
+          "similarity": 0.9749,
+          "distance": 0.0251,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "dlpfc_151509",
+          "similarity": 0.945,
+          "distance": 0.055,
+          "best_method": "gaussian_mixture"
+        },
+        {
+          "name": "dlpfc_151510",
+          "similarity": 0.9391,
+          "distance": 0.0609,
+          "best_method": "bisecting_kmeans"
+        }
+      ]
+    },
+    {
+      "held_out": "dlpfc_151509",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151507",
+        "dlpfc_151508",
+        "dlpfc_151510",
+        "dlpfc_151673"
+      ],
+      "oracle_methods": [
+        "gaussian_mixture"
+      ],
+      "oracle_score": 0.3854708735057944,
+      "recommended_methods": [
+        "kmeans",
+        "bisecting_kmeans",
+        "gaussian_mixture"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.32154887135809446,
+      "top1_hit": false,
+      "top3_hit": true,
+      "selection_regret": 0.06392200214769994,
+      "global_best_method": "gaussian_mixture",
+      "global_best_score": 0.3854708735057944,
+      "global_best_regret": 0.0,
+      "knn_beats_global": false,
+      "random_score": 0.2988181017135884,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151510",
+          "similarity": 0.9981,
+          "distance": 0.0019,
+          "best_method": "bisecting_kmeans"
+        },
+        {
+          "name": "dlpfc_151507",
+          "similarity": 0.9822,
+          "distance": 0.0178,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "dlpfc_151508",
+          "similarity": 0.9423,
+          "distance": 0.0577,
+          "best_method": "kmeans"
+        }
+      ]
+    },
+    {
+      "held_out": "dlpfc_151510",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151507",
+        "dlpfc_151508",
+        "dlpfc_151509",
+        "dlpfc_151673"
+      ],
+      "oracle_methods": [
+        "bisecting_kmeans"
+      ],
+      "oracle_score": 0.41653281214739724,
+      "recommended_methods": [
+        "kmeans",
+        "gaussian_mixture",
+        "bisecting_kmeans"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.38923044947973534,
+      "top1_hit": false,
+      "top3_hit": true,
+      "selection_regret": 0.027302362667661895,
+      "global_best_method": "gaussian_mixture",
+      "global_best_score": 0.30727128103428564,
+      "global_best_regret": 0.1092615311131116,
+      "knn_beats_global": true,
+      "random_score": 0.29737233069451036,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151509",
+          "similarity": 0.9981,
+          "distance": 0.0019,
+          "best_method": "gaussian_mixture"
+        },
+        {
+          "name": "dlpfc_151507",
+          "similarity": 0.9791,
+          "distance": 0.0209,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "dlpfc_151508",
+          "similarity": 0.9354,
+          "distance": 0.0646,
+          "best_method": "kmeans"
+        }
+      ]
+    },
+    {
+      "held_out": "dlpfc_151673",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151507",
+        "dlpfc_151508",
+        "dlpfc_151509",
+        "dlpfc_151510"
+      ],
+      "oracle_methods": [
+        "gaussian_mixture"
+      ],
+      "oracle_score": 0.4499844928811162,
+      "recommended_methods": [
+        "kmeans",
+        "bisecting_kmeans",
+        "gaussian_mixture"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.31573582606165607,
+      "top1_hit": false,
+      "top3_hit": true,
+      "selection_regret": 0.13424866681946013,
+      "global_best_method": "kmeans",
+      "global_best_score": 0.31573582606165607,
+      "global_best_regret": 0.13424866681946013,
+      "knn_beats_global": true,
+      "random_score": 0.3442872851190378,
+      "knn_beats_random": false,
+      "neighbours": [
+        {
+          "name": "dlpfc_151507",
+          "similarity": 0.8708,
+          "distance": 0.1292,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "dlpfc_151510",
+          "similarity": 0.8532,
+          "distance": 0.1468,
+          "best_method": "bisecting_kmeans"
+        },
+        {
+          "name": "dlpfc_151509",
+          "similarity": 0.8443,
+          "distance": 0.1557,
+          "best_method": "gaussian_mixture"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "n_queries": 5,
+    "n_training_datasets": 8,
+    "dlpfc_slices": [
+      "151507",
+      "151508",
+      "151509",
+      "151510",
+      "151673"
+    ],
+    "top1_accuracy": 0.4,
+    "top3_accuracy": 1.0,
+    "mean_selection_regret": 0.045094606326964395,
+    "max_selection_regret": 0.13424866681946013,
+    "mean_global_best_regret": 0.08001057391771518,
+    "knn_beats_global_rate": 0.8,
+    "knn_beats_random_rate": 0.8,
+    "caveats": [
+      "Multi-study validation supports generalisation claims."
+    ]
+  },
+  "method_versions": {
+    "agglomerative": "0.1.0",
+    "birch": "0.1.0",
+    "bisecting_kmeans": "0.1.0",
+    "gaussian_mixture": "0.1.0",
+    "kmeans": "0.1.0",
+    "minibatch_kmeans": "0.1.0",
+    "spectral": "0.1.0"
+  }
+}

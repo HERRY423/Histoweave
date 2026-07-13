@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "protocol": "study_grouped_holdout",
+  "queries": [
+    {
+      "held_out": "dlpfc_151507",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151508",
+        "dlpfc_151509"
+      ],
+      "oracle_methods": [
+        "kmeans"
+      ],
+      "oracle_score": 0.435123247255225,
+      "recommended_methods": [
+        "kmeans",
+        "gaussian_mixture",
+        "bisecting_kmeans"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.435123247255225,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_method": "gaussian_mixture",
+      "global_best_score": 0.3706609201362354,
+      "global_best_regret": 0.06446232711898958,
+      "knn_beats_global": true,
+      "random_score": 0.36812502097984445,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151509",
+          "similarity": 0.9885,
+          "distance": 0.0115,
+          "best_method": "gaussian_mixture"
+        },
+        {
+          "name": "dlpfc_151508",
+          "similarity": 0.9858,
+          "distance": 0.0142,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "noisy_hard",
+          "similarity": 0.1597,
+          "distance": 0.8403,
+          "best_method": "agglomerative"
+        }
+      ]
+    },
+    {
+      "held_out": "dlpfc_151508",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151507",
+        "dlpfc_151509"
+      ],
+      "oracle_methods": [
+        "kmeans"
+      ],
+      "oracle_score": 0.5441854408210677,
+      "recommended_methods": [
+        "gaussian_mixture",
+        "kmeans",
+        "minibatch_kmeans"
+      ],
+      "selected_method": "gaussian_mixture",
+      "selected_score": 0.4521050962840531,
+      "top1_hit": false,
+      "top3_hit": true,
+      "selection_regret": 0.09208034453701458,
+      "global_best_method": "gaussian_mixture",
+      "global_best_score": 0.4521050962840531,
+      "global_best_regret": 0.09208034453701458,
+      "knn_beats_global": true,
+      "random_score": 0.44629782210235,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151507",
+          "similarity": 0.9856,
+          "distance": 0.0144,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "dlpfc_151509",
+          "similarity": 0.9674,
+          "distance": 0.0326,
+          "best_method": "gaussian_mixture"
+        },
+        {
+          "name": "noisy_hard",
+          "similarity": 0.2148,
+          "distance": 0.7852,
+          "best_method": "agglomerative"
+        }
+      ]
+    },
+    {
+      "held_out": "dlpfc_151509",
+      "training_sets": [
+        "clean_easy",
+        "noisy_hard",
+        "sparse_scattered",
+        "dlpfc_151507",
+        "dlpfc_151508"
+      ],
+      "oracle_methods": [
+        "gaussian_mixture"
+      ],
+      "oracle_score": 0.3854708735057944,
+      "recommended_methods": [
+        "kmeans",
+        "bisecting_kmeans",
+        "minibatch_kmeans"
+      ],
+      "selected_method": "kmeans",
+      "selected_score": 0.32154887135809446,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.06392200214769994,
+      "global_best_method": "kmeans",
+      "global_best_score": 0.32154887135809446,
+      "global_best_regret": 0.06392200214769994,
+      "knn_beats_global": true,
+      "random_score": 0.2988181017135884,
+      "knn_beats_random": true,
+      "neighbours": [
+        {
+          "name": "dlpfc_151507",
+          "similarity": 0.9883,
+          "distance": 0.0117,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "dlpfc_151508",
+          "similarity": 0.9626,
+          "distance": 0.0374,
+          "best_method": "kmeans"
+        },
+        {
+          "name": "noisy_hard",
+          "similarity": 0.1636,
+          "distance": 0.8364,
+          "best_method": "agglomerative"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "n_queries": 3,
+    "n_training_datasets": 6,
+    "dlpfc_slices": [
+      "151507",
+      "151508",
+      "151509"
+    ],
+    "top1_accuracy": 0.3333333333333333,
+    "top3_accuracy": 0.6666666666666666,
+    "mean_selection_regret": 0.052000782228238174,
+    "max_selection_regret": 0.09208034453701458,
+    "mean_global_best_regret": 0.0734882246012347,
+    "knn_beats_global_rate": 1.0,
+    "knn_beats_random_rate": 1.0,
+    "caveats": [
+      "Only 3 real-data queries \u2014 insufficient for precision.",
+      "DLPFC slices share donor, platform, and tissue \u2014 not cross-study.",
+      "Ground truth is GMM-derived, not manual layer annotation.",
+      "Requires {>=5} heterogeneous training datasets for k-NN discrimination."
+    ]
+  },
+  "method_versions": {
+    "agglomerative": "0.1.0",
+    "birch": "0.1.0",
+    "bisecting_kmeans": "0.1.0",
+    "gaussian_mixture": "0.1.0",
+    "kmeans": "0.1.0",
+    "minibatch_kmeans": "0.1.0",
+    "spectral": "0.1.0"
+  }
+}

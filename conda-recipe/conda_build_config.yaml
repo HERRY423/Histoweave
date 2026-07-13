@@ -1,0 +1,10 @@
+# Conda-forge build configuration for histoweave-spatial.
+#
+# This file defines build variants.  For a pure-Python noarch package
+# there are no matrix dimensions, but we keep the file so the feedstock
+# tooling (conda-smithy) picks up the configuration correctly.
+
+python:
+  - 3.11
+  - 3.12
+  - 3.13
