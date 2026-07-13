@@ -7,7 +7,7 @@ model. It never substitutes marker scoring when the optional backend is absent.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
@@ -84,7 +84,20 @@ class Cell2LocationDeconvolution(Method):
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:
+        self._reference_from_uns(data.uns, self.params["reference_key"])
         return self._run_via_anndata(data)
+
+    @staticmethod
+    def _reference_from_uns(uns: dict[str, Any], reference_key: str) -> pd.DataFrame:
+        if reference_key not in uns:
+            raise KeyError(
+                f"cell2location reference {reference_key!r} is missing from uns; "
+                "provide a genes x cell-types signature DataFrame"
+            )
+        reference = pd.DataFrame(uns[reference_key]).copy()
+        if reference.empty or reference.columns.empty:
+            raise ValueError("cell2location reference signature matrix is empty")
+        return reference
 
     def run_on_anndata(self, adata: AnnData) -> AnnData:  # type: ignore[valid-type]
         try:
@@ -104,14 +117,7 @@ class Cell2LocationDeconvolution(Method):
             raise KeyError(f"cell2location batch column {batch_key!r} does not exist")
 
         reference_key = self.params["reference_key"]
-        if reference_key not in result.uns:
-            raise KeyError(
-                f"cell2location reference {reference_key!r} is missing from uns; "
-                "provide a genes x cell-types signature DataFrame"
-            )
-        reference = pd.DataFrame(result.uns[reference_key]).copy()
-        if reference.empty or reference.columns.empty:
-            raise ValueError("cell2location reference signature matrix is empty")
+        reference = self._reference_from_uns(result.uns, reference_key)
         reference.index = reference.index.astype(str)
         if reference.index.has_duplicates or reference.columns.has_duplicates:
             raise ValueError("cell2location reference genes and cell types must be unique")
