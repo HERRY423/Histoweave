@@ -1,0 +1,53 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.installed.cfg
+*.egg
+
+# Environments
+.venv/
+venv/
+env/
+.python-version
+
+# Test / coverage / cache
+.pytest_cache/
+.pytest_tmp/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+pytest-tmp/
+
+# Tooling
+.tox/
+.nox/
+
+# Docs
+site/
+
+# Workflow engines
+.nextflow/
+.nextflow.log*
+work/
+.snakemake/
+
+# Generated outputs
+*.html
+!docs/**/*.html
+histoweave_report.html
+*.zarr/
+*.h5ad
+results/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

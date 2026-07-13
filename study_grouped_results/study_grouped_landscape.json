@@ -1,0 +1,280 @@
+{
+  "schema_version": 2,
+  "task": "domain_detection",
+  "metric": "ARI",
+  "higher_is_better": true,
+  "feature_schema": "histoweave.target_free.v1",
+  "performance": {
+    "clean_easy": {
+      "agglomerative": 0.4882007093839577,
+      "birch": 0.4882007093839577,
+      "bisecting_kmeans": 0.49946031030642346,
+      "gaussian_mixture": 0.5179154302830751,
+      "kmeans": 0.5002075979307566,
+      "minibatch_kmeans": 0.48724235082709944,
+      "spectral": 0.4633141158297418
+    },
+    "noisy_hard": {
+      "agglomerative": 0.4851885661574607,
+      "birch": 0.4851885661574607,
+      "bisecting_kmeans": 0.4671311154583814,
+      "gaussian_mixture": 0.47785457085028876,
+      "kmeans": 0.4518628100853467,
+      "minibatch_kmeans": 0.42112545491009395,
+      "spectral": 0.4514974487818404
+    },
+    "sparse_scattered": {
+      "agglomerative": 0.38461019688724785,
+      "birch": 0.38461019688724785,
+      "bisecting_kmeans": 0.3743050959292985,
+      "gaussian_mixture": 0.4089312019347506,
+      "kmeans": 0.3433319989354636,
+      "minibatch_kmeans": 0.30734952468855575,
+      "spectral": 0.33953594452836
+    },
+    "dlpfc_151507": {
+      "agglomerative": 0.29013911043791807,
+      "birch": 0.3229583501297368,
+      "bisecting_kmeans": 0.3654345288277208,
+      "gaussian_mixture": 0.3706609201362354,
+      "kmeans": 0.435123247255225,
+      "minibatch_kmeans": 0.39066116031954257,
+      "spectral": 0.4018978297525325
+    },
+    "dlpfc_151508": {
+      "agglomerative": 0.41166490873425615,
+      "birch": 0.41166490873425615,
+      "bisecting_kmeans": 0.48288440304494873,
+      "gaussian_mixture": 0.4521050962840531,
+      "kmeans": 0.5441854408210677,
+      "minibatch_kmeans": 0.44521538051837745,
+      "spectral": 0.37636461657949016
+    },
+    "dlpfc_151509": {
+      "agglomerative": 0.2749835822188959,
+      "birch": 0.2781245525325748,
+      "bisecting_kmeans": 0.30712772953433853,
+      "gaussian_mixture": 0.3854708735057944,
+      "kmeans": 0.32154887135809446,
+      "minibatch_kmeans": 0.3050386581879647,
+      "spectral": 0.21943244465745618
+    }
+  },
+  "features": {
+    "clean_easy": [
+      600.0,
+      50.0,
+      0.08333333333333333,
+      0.35250000000000004,
+      2.7846589446589447,
+      90.15333333333334,
+      0.11620550939972761,
+      5.277158798641218,
+      0.689770017084409,
+      0.5105793338932356,
+      0.04130019761079391,
+      0.39993749511635845,
+      6.5131273216083985,
+      17.0,
+      28.0,
+      0.5451664403343989
+    ],
+    "dlpfc_151507": [
+      4226.0,
+      2000.0,
+      0.47326076668244205,
+      0.6159417889256981,
+      2.2238023167488623,
+      1708.1390791069123,
+      0.20115605091584046,
+      10.626544386476965,
+      0.2724100116292253,
+      0.9130904624864093,
+      0.009074587421554346,
+      1.397599903093167,
+      4.877975569047446,
+      1281.0,
+      1520.0,
+      0.9395628235706106
+    ],
+    "dlpfc_151508": [
+      4384.0,
+      2000.0,
+      0.4562043795620438,
+      0.6644076186131387,
+      2.3443271770421688,
+      1573.476680187039,
+      0.2177255875068727,
+      10.587642655128754,
+      0.23151443636058794,
+      0.8479300908848283,
+      0.010274924380810173,
+      1.2167357381666715,
+      5.358467744620444,
+      1285.0,
+      1525.0,
+      0.9415106696905441
+    ],
+    "dlpfc_151509": [
+      4789.0,
+      2000.0,
+      0.41762372102735434,
+      0.6149352683232407,
+      2.2492108291333786,
+      1732.1835288094112,
+      0.20657213914603745,
+      10.639432679218807,
+      0.2182907913895144,
+      0.9390105830436861,
+      0.007278193345654062,
+      1.801900121507121,
+      4.336411987126469,
+      1320.0,
+      1556.0,
+      0.9419344723221901
+    ],
+    "noisy_hard": [
+      600.0,
+      50.0,
+      0.08333333333333333,
+      0.40159999999999996,
+      2.446579768270945,
+      73.20166666666667,
+      0.19013078114002832,
+      5.504387415883721,
+      0.26506511537581073,
+      0.5815004194168805,
+      0.04129119150679542,
+      0.3915780041489591,
+      6.537816882654657,
+      34.0,
+      41.0,
+      0.8904505269727758
+    ],
+    "sparse_scattered": [
+      200.0,
+      50.0,
+      0.25,
+      0.3546,
+      3.0712736287573597,
+      99.11,
+      0.13334878814510315,
+      5.186515628678089,
+      0.5550921336435277,
+      0.4657313766955423,
+      0.0755523290814629,
+      0.5399073994674805,
+      6.2904483949310075,
+      15.0,
+      25.0,
+      0.568137587953331
+    ]
+  },
+  "best_method": {
+    "clean_easy": "gaussian_mixture",
+    "noisy_hard": "agglomerative",
+    "sparse_scattered": "gaussian_mixture",
+    "dlpfc_151507": "kmeans",
+    "dlpfc_151508": "kmeans",
+    "dlpfc_151509": "gaussian_mixture"
+  },
+  "niches": {
+    "bisecting_kmeans": [
+      "clean_easy",
+      "noisy_hard"
+    ],
+    "gaussian_mixture": [
+      "clean_easy",
+      "noisy_hard",
+      "sparse_scattered",
+      "dlpfc_151509"
+    ],
+    "kmeans": [
+      "clean_easy",
+      "dlpfc_151507",
+      "dlpfc_151508"
+    ],
+    "agglomerative": [
+      "noisy_hard"
+    ],
+    "birch": [
+      "noisy_hard"
+    ]
+  },
+  "feature_order": [
+    "n_obs",
+    "n_vars",
+    "aspect_ratio",
+    "sparsity",
+    "mean_nonzero",
+    "library_mean",
+    "library_cv",
+    "expression_entropy",
+    "spatial_autocorrelation",
+    "cluster_tendency",
+    "mean_nn_distance",
+    "spatial_density_cv",
+    "spatial_entropy",
+    "effective_rank_90",
+    "effective_rank_95",
+    "sv_entropy"
+  ],
+  "method_count": 7,
+  "dataset_count": 6,
+  "timings": {
+    "clean_easy": {
+      "agglomerative": 0.0451,
+      "birch": 0.0467,
+      "bisecting_kmeans": 0.1297,
+      "gaussian_mixture": 0.2043,
+      "kmeans": 0.0412,
+      "minibatch_kmeans": 0.0897,
+      "spectral": 0.0902
+    },
+    "noisy_hard": {
+      "agglomerative": 0.0279,
+      "birch": 0.0452,
+      "bisecting_kmeans": 0.1276,
+      "gaussian_mixture": 0.2554,
+      "kmeans": 0.0388,
+      "minibatch_kmeans": 0.1071,
+      "spectral": 0.102
+    },
+    "sparse_scattered": {
+      "agglomerative": 0.0077,
+      "birch": 0.0163,
+      "bisecting_kmeans": 0.1143,
+      "gaussian_mixture": 0.0452,
+      "kmeans": 0.011,
+      "minibatch_kmeans": 0.0878,
+      "spectral": 0.0338
+    },
+    "dlpfc_151507": {
+      "agglomerative": 3.4493,
+      "birch": 3.5139,
+      "bisecting_kmeans": 3.4304,
+      "gaussian_mixture": 6.5004,
+      "kmeans": 3.6095,
+      "minibatch_kmeans": 3.3093,
+      "spectral": 9.4831
+    },
+    "dlpfc_151508": {
+      "agglomerative": 3.6084,
+      "birch": 3.6691,
+      "bisecting_kmeans": 3.5199,
+      "gaussian_mixture": 6.1041,
+      "kmeans": 3.9496,
+      "minibatch_kmeans": 3.5942,
+      "spectral": 10.5798
+    },
+    "dlpfc_151509": {
+      "agglomerative": 4.0838,
+      "birch": 4.236,
+      "bisecting_kmeans": 3.7765,
+      "gaussian_mixture": 6.4361,
+      "kmeans": 4.1792,
+      "minibatch_kmeans": 3.7312,
+      "spectral": 14.8278
+    }
+  }
+}

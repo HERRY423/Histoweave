@@ -1,0 +1,58 @@
+name: Nextflow smoke test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "workflows/nextflow/**"
+      - "pyproject.toml"
+      - ".github/workflows/nextflow-smoke.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "workflows/nextflow/**"
+      - "pyproject.toml"
+      - ".github/workflows/nextflow-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install HistoWeave
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v3
+        with:
+          version: "26.04.4"
+
+      - name: Run demo pipeline
+        run: |
+          nextflow run workflows/nextflow/main.nf -profile local,test --outdir nf-smoke
+          test -s nf-smoke/pipeline_trace.tsv
+          grep -q "COMPLETED" nf-smoke/pipeline_trace.tsv
+          find nf-smoke -maxdepth 1 -name "*_report.html" -size +0 | grep -q .
+
+      - name: Upload smoke-test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextflow-smoke-diagnostics
+          path: |
+            .nextflow.log*
+            nf-smoke/
+          if-no-files-found: warn

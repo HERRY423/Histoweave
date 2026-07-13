@@ -1,0 +1,36 @@
+# Git
+.git
+.gitattributes
+.gitignore
+
+# Python cache & build
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+dist/
+build/
+
+# Tests & benchmarks
+.pytest_cache/
+.pytest_tmp/
+.tox/
+htmlcov/
+.coverage
+
+# Documentation
+docs/_build/
+docs/site/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.venv/
+venv/
+.env

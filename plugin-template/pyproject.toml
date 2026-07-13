@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "histoweave-myplugin"
+version = "0.1.0"
+description = "An example external HistoWeave method plugin."
+requires-python = ">=3.11"
+dependencies = [
+    "histoweave-spatial",
+    # add the library your method wraps, e.g. "squidpy", "scikit-learn"
+]
+
+# This is the line that makes the plugin discoverable by the HistoWeave registry.
+[project.entry-points."histoweave.plugins"]
+myplugin = "histoweave_myplugin:register_all"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/histoweave_myplugin"]

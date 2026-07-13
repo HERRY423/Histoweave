@@ -1,0 +1,100 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "histoweave-spatial"
+description = "Open-source orchestration & evaluation platform for reproducible spatial transcriptomics analysis."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "HistoWeave contributors" }]
+keywords = [
+    "spatial-transcriptomics",
+    "bioinformatics",
+    "scverse",
+    "reproducibility",
+    "benchmarking",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "jinja2>=3.1",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+spatial = [
+    "anndata>=0.10",
+    "spatialdata>=0.1",
+    "spatialdata-io>=0.1",
+    "zarr>=2.16",
+    "dask>=2024.1.0",
+]
+io = ["h5py>=3.7", "pyarrow>=14.0", "scipy>=1.10"]
+scanpy = ["scanpy>=1.10", "scikit-learn>=1.3"]
+spatialde = ["anndata>=0.10", "SpatialDE==1.1.3"]
+cell2location = ["anndata>=0.10", "cell2location>=0.1.4"]
+liana = ["anndata>=0.10", "liana>=1.2"]
+scanvi = ["anndata>=0.10", "scvi-tools>=1.3"]
+celltypist = ["anndata>=0.10", "celltypist>=1.7"]
+cellpose2 = ["cellpose>=2,<3"]
+deep-learning = ["torch>=2.2"]
+docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
+dev = [
+    "build>=1.2",
+    "h5py>=3.7",
+    "mypy>=1.8",
+    "networkx>=3.0",
+    "pyarrow>=14.0",
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+    "scikit-learn>=1.3",
+    "scipy>=1.10",
+]
+all = [
+    "histoweave-spatial[io,spatial,scanpy,spatialde,cell2location,liana,scanvi,celltypist,cellpose2,deep-learning,docs,dev]"
+]
+
+[project.scripts]
+histoweave = "histoweave.cli:main"
+
+[project.entry-points."histoweave.plugins"]
+builtin = "histoweave.plugins.builtin:register_all"
+
+[project.urls]
+Homepage = "https://github.com/histoweave-spatial/histoweave"
+Documentation = "https://histoweave-spatial.github.io/histoweave"
+Repository = "https://github.com/histoweave-spatial/histoweave"
+Issues = "https://github.com/histoweave-spatial/histoweave/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/histoweave"]
+
+[tool.hatch.version]
+path = "src/histoweave/__init__.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --basetemp=.pytest_tmp"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

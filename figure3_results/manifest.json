@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "protocol_version": "histoweave.figure3.synthetic.v1",
+  "artifacts": [
+    {
+      "path": "landscape.json",
+      "sha256": "3d5f21ac6b1d709b9303e30486e2a461d42273105ca9a1914fcc6bb95eae9352",
+      "bytes": 4558
+    },
+    {
+      "path": "performance_matrix.csv",
+      "sha256": "2af71afc80142641a4f517101785512cd95ec23b3f1f37a9eb3463b2c04d2ef3",
+      "bytes": 556
+    },
+    {
+      "path": "benchmark_long.csv",
+      "sha256": "530d833b8384d4f02dfe53de98eaf3e43dd8a9d463faf2e8ab1b0f510e3d1872",
+      "bytes": 1886
+    },
+    {
+      "path": "dataset_features.csv",
+      "sha256": "e83704d168fb37ec63838a3feee2d216b1915e7534f6ca45cd2d85b8f44deae1",
+      "bytes": 993
+    },
+    {
+      "path": "recommendation_loocv.json",
+      "sha256": "8247308c06ca947714e696a3b8ad06b0993e19a1f01608c9ea6e38f86abd2dad",
+      "bytes": 5415
+    },
+    {
+      "path": "recommendation_loocv.csv",
+      "sha256": "99540b502ed9c968a334e3403521b1a57bec081e8f97cfdbc4a5daddefc3b9f4",
+      "bytes": 989
+    },
+    {
+      "path": "figure3_data.json",
+      "sha256": "14a6f24832d299b51dcc16862978c4a5e73475b193f2ad94547f5faeacd88b6e",
+      "bytes": 9355
+    },
+    {
+      "path": "validation.json",
+      "sha256": "87ff41ca8ffb0d034c36266009b5b07284c9a6af3b788c38b627cb01a359b089",
+      "bytes": 748
+    }
+  ]
+}
