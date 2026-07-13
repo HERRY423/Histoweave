@@ -276,7 +276,8 @@ class Method(abc.ABC):
         # Restore spatial layers dropped by the AnnData bridge.
         result.images = data.images
         result.shapes = data.shapes
-        result.obsm.setdefault("spatial", data.spatial)
+        if data.spatial is not None:
+            result.obsm.setdefault("spatial", data.spatial)
         return self.finalize(result, step=step or self.spec.category.value)
 
     def finalize(self, data: SpatialTable, step: str | None = None) -> SpatialTable:

@@ -36,6 +36,7 @@ Adding a new dataset
 from __future__ import annotations
 
 import hashlib
+import os
 import shutil
 import zipfile
 from dataclasses import dataclass, field
@@ -127,9 +128,7 @@ class DatasetEntry:
         digest = _sha256_file(artefact)
         if digest != self.sha256:
             artefact.unlink(missing_ok=True)
-            raise ChecksumError(
-                f"{self.name}: expected sha256={self.sha256}, got {digest}"
-            )
+            raise ChecksumError(f"{self.name}: expected sha256={self.sha256}, got {digest}")
 
         checksum_file.write_text(self.sha256, encoding="utf-8")
         return dest
@@ -171,8 +170,7 @@ _DLPFC_151507 = DatasetEntry(
     name="dlpfc_151507",
     description="DLPFC slice 151507 — human dorsolateral prefrontal cortex (Maynard et al. 2021)",
     url=(
-        "https://spatial-dlpfc.s3.us-east-2.amazonaws.com/h5/"
-        "151507_filtered_feature_bc_matrix.h5"
+        "https://spatial-dlpfc.s3.us-east-2.amazonaws.com/h5/151507_filtered_feature_bc_matrix.h5"
     ),
     sha256="c4f3d2a8e1b5f7a9d0c3e6f8a1b5d7c2e9f0a3b6d8e1f4a7c0d3e6f9",
     assay="visium",
@@ -235,10 +233,7 @@ _XENIUM_BREAST = DatasetEntry(
 # annotations.  This is the largest and most comprehensive spatial brain atlas.
 _MERFISH_MOUSE_BRAIN = DatasetEntry(
     name="merfish_mouse_brain",
-    description=(
-        "MERFISH whole mouse brain (C57BL6J-638850) "
-        "— Allen Institute / Yao et al. 2023"
-    ),
+    description=("MERFISH whole mouse brain (C57BL6J-638850) — Allen Institute / Yao et al. 2023"),
     url=(
         "https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/"
         "expression_matrices/MERFISH-C57BL6J-638850/20230830/"
@@ -261,27 +256,37 @@ _MERFISH_MOUSE_BRAIN = DatasetEntry(
 # All 12 DLPFC slices — one entry per slice for fine-grained benchmarking.
 _DLPFC_SLICE_ENTRIES = []
 for _sl in [
-    "151507", "151508", "151509", "151510",
-    "151669", "151670", "151671", "151672",
-    "151673", "151674", "151675", "151676",
+    "151507",
+    "151508",
+    "151509",
+    "151510",
+    "151669",
+    "151670",
+    "151671",
+    "151672",
+    "151673",
+    "151674",
+    "151675",
+    "151676",
 ]:
-    _DLPFC_SLICE_ENTRIES.append(DatasetEntry(
-        name=f"dlpfc_{_sl}",
-        description=(
-            f"DLPFC slice {_sl} — human dorsolateral prefrontal cortex"
-            f" (Maynard et al. 2021)"
-        ),
-        url=f"https://spatial-dlpfc.s3.us-east-2.amazonaws.com/h5/{_sl}_filtered_feature_bc_matrix.h5",
-        sha256="",
-        assay="visium",
-        tissue="brain",
-        species="human",
-        n_obs=0,  # varies per slice, loaded lazily
-        n_vars=33538,
-        ground_truth={"domain_truth": "spatialLIBD_layer"},
-        license="CC-BY 4.0",
-        paper_doi="10.1038/s41593-020-00787-0",
-    ))
+    _DLPFC_SLICE_ENTRIES.append(
+        DatasetEntry(
+            name=f"dlpfc_{_sl}",
+            description=(
+                f"DLPFC slice {_sl} — human dorsolateral prefrontal cortex (Maynard et al. 2021)"
+            ),
+            url=f"https://spatial-dlpfc.s3.us-east-2.amazonaws.com/h5/{_sl}_filtered_feature_bc_matrix.h5",
+            sha256="",
+            assay="visium",
+            tissue="brain",
+            species="human",
+            n_obs=0,  # varies per slice, loaded lazily
+            n_vars=33538,
+            ground_truth={"domain_truth": "spatialLIBD_layer"},
+            license="CC-BY 4.0",
+            paper_doi="10.1038/s41593-020-00787-0",
+        )
+    )
 
 _REGISTRY: list[DatasetEntry] = [
     *_DLPFC_SLICE_ENTRIES,
@@ -322,6 +327,7 @@ def get_dataset(name: str) -> DatasetEntry:
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 class ChecksumError(IOError):
     """Downloaded file did not match the expected SHA-256."""
 
@@ -358,6 +364,7 @@ def _extract(artefact: Path, dest: Path) -> None:
             zf.extractall(dest)
     elif artefact.suffix in (".tar", ".gz", ".bz2"):
         import tarfile
+
         with tarfile.open(artefact) as tf:
             tf.extractall(dest)
     else:
@@ -375,9 +382,9 @@ def _find_data_dir(extract_dir: Path) -> Path:
         "cell_feature_matrix.h5",
         "raw_feature_bc_matrix.h5",
     }
-    for root, _dirs, files in extract_dir.walk():
+    for root, _dirs, files in os.walk(extract_dir):
         if markers & set(files):
-            return root
+            return Path(root)
     # Fallback: return the extraction root and let the reader try.
     return extract_dir
 

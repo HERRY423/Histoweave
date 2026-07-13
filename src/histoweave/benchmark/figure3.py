@@ -179,8 +179,7 @@ def run_figure3_experiment(
             "performance_matrix": _json_safe(landscape.performance),
             "best_method": landscape.best_method,
             "embedding": {
-                name: list(coordinates)
-                for name, coordinates in landscape.embedding.items()
+                name: list(coordinates) for name, coordinates in landscape.embedding.items()
             },
             "recommendation": {
                 "rows": recommendation_rows,
@@ -265,11 +264,7 @@ def _benchmark_rows(landscape: LandscapeResult) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for dataset in FIGURE3_DATASETS:
         scores = landscape.performance[dataset]
-        finite = {
-            method: score
-            for method, score in scores.items()
-            if np.isfinite(score)
-        }
+        finite = {method: score for method, score in scores.items() if np.isfinite(score)}
         ordered = sorted(finite, key=lambda method: (-finite[method], method))
         ranks = {method: rank for rank, method in enumerate(ordered, 1)}
         for method in FIGURE3_METHODS:
@@ -317,7 +312,9 @@ def _leave_one_dataset_out(
             if np.isclose(score, oracle_score, atol=1e-12, rtol=0.0)
         )
         selected = recommended[0] if recommended else None
-        selected_score = held_out_scores.get(selected, float("nan"))
+        selected_score = (
+            held_out_scores.get(selected, float("nan")) if selected is not None else float("nan")
+        )
 
         training_means = {
             method: float(
@@ -450,16 +447,13 @@ def _validate_outputs(
             bool(row["recommended_method"]) for row in recommendation_rows
         ),
         "regret_is_nonnegative": all(
-            float(row["selection_regret"]) >= -1e-12
-            for row in recommendation_rows
+            float(row["selection_regret"]) >= -1e-12 for row in recommendation_rows
         ),
     }
     return {
         "status": "share_with_caveats" if all(checks.values()) else "needs_revision",
         "checks": checks,
-        "successful_benchmark_cells": sum(
-            row["status"] == "success" for row in benchmark_rows
-        ),
+        "successful_benchmark_cells": sum(row["status"] == "success" for row in benchmark_rows),
         "total_benchmark_cells": len(benchmark_rows),
         "scope": "synthetic software and algorithm validation",
         "required_caveats": [

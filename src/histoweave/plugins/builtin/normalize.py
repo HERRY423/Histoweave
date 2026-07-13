@@ -29,9 +29,7 @@ class LogNormalize(Method):
         version="0.1.0",
         summary="Library-size normalization (CP10k) + log1p.",
         params=(
-            ParamSpec(
-                "target_sum", "float", 1e4, "Counts per cell after scaling.", minimum=1e-12
-            ),
+            ParamSpec("target_sum", "float", 1e4, "Counts per cell after scaling.", minimum=1e-12),
         ),
         assumptions=("Counts-like X (non-negative).",),
     )
@@ -42,7 +40,7 @@ class LogNormalize(Method):
         # but the *already-normalized* values if this method is applied twice. The name
         # reflects the intended/first-run case; the setdefault below is what keeps that
         # distinction from mattering.
-        counts = data.X.astype(float)
+        counts: np.ndarray = data.X.astype(float)
         # Stash the pre-normalization matrix under layers['counts'] — but only if it is
         # not already there. setdefault makes the *first* run authoritative: a re-run
         # will not clobber the true raw counts with the normalized `counts` it sees.

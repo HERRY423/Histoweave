@@ -26,8 +26,10 @@ import numpy as np
 from ..data import SpatialTable
 from .figure3 import FIGURE3_DATASETS, _select_datasets, _validate_methods
 from .landscape import LandscapeResult, run_task_landscape
-from .real_data import _BENCHMARK_SLICES, dlpfc_benchmark_suite
+from .real_data import _DLPFC_SLICES, dlpfc_benchmark_suite
 from .recommend import MethodRecommender
+
+_BENCHMARK_SLICES: tuple[str, ...] = tuple(_DLPFC_SLICES)
 
 STUDY_GROUPED_METHODS = (
     "agglomerative",
@@ -110,6 +112,7 @@ def run_study_grouped_validation(
 
     # ---- 2. Build full landscape ------------------------------------------
     from ..plugins import MethodCategory
+
     landscape = run_task_landscape(
         datasets,
         category=MethodCategory.DOMAIN_DETECTION,
@@ -137,27 +140,26 @@ def run_study_grouped_validation(
             training,
             k_neighbours=min(k_neighbours, len(training_keys)),
         )
-        recommendation = recommender.recommend(
-            datasets[held_out_key], dataset_name=held_out_key
-        )
+        recommendation = recommender.recommend(datasets[held_out_key], dataset_name=held_out_key)
 
         held_out_scores = {
-            m: s for m, s in landscape.performance[held_out_key].items()
-            if np.isfinite(s)
+            m: s for m, s in landscape.performance[held_out_key].items() if np.isfinite(s)
         }
         oracle_score = max(held_out_scores.values())
         oracle_methods = sorted(
-            m for m, s in held_out_scores.items()
+            m
+            for m, s in held_out_scores.items()
             if np.isclose(s, oracle_score, atol=1e-12, rtol=0.0)
         )
         recommended = [item.method for item in recommendation.ranked_methods]
         selected = recommended[0] if recommended else None
-        selected_score = held_out_scores.get(selected, float("nan"))
+        selected_score = (
+            held_out_scores.get(selected, float("nan")) if selected is not None else float("nan")
+        )
 
         # Global-best baseline: method with highest mean score on training sets
         training_means = _training_means(landscape, training_keys)
-        global_best = max(training_means, key=lambda m: (
-            training_means[m], m))
+        global_best = max(training_means, key=lambda m: (training_means[m], m))
         global_score = held_out_scores.get(global_best, float("nan"))
 
         # Random baseline: mean of all held-out scores
@@ -177,9 +179,9 @@ def run_study_grouped_validation(
             "global_best_method": global_best,
             "global_best_score": _f(global_score),
             "global_best_regret": _f(oracle_score - global_score),
-            "knn_beats_global": (
-                selected_score >= global_score - 1e-9
-            ) if selected is not None else False,
+            "knn_beats_global": (selected_score >= global_score - 1e-9)
+            if selected is not None
+            else False,
             "random_score": _f(random_score),
             "knn_beats_random": selected_score > random_score if selected else False,
             "neighbours": recommendation.neighbours,
@@ -201,20 +203,16 @@ def run_study_grouped_validation(
         "mean_selection_regret": float(np.mean(regrets)),
         "max_selection_regret": float(np.max(regrets)),
         "mean_global_best_regret": float(np.mean(global_regrets)),
-        "knn_beats_global_rate": float(np.mean([
-            q["knn_beats_global"] for q in per_query
-        ])),
-        "knn_beats_random_rate": float(np.mean([
-            q["knn_beats_random"] for q in per_query
-        ])),
+        "knn_beats_global_rate": float(np.mean([q["knn_beats_global"] for q in per_query])),
+        "knn_beats_random_rate": float(np.mean([q["knn_beats_random"] for q in per_query])),
         "caveats": [
             f"Only {len(dlpfc_keys)} real-data queries — insufficient for precision.",
             "DLPFC slices share donor, platform, and tissue — not cross-study.",
             "Ground truth is GMM-derived, not manual layer annotation.",
             "Requires {>=5} heterogeneous training datasets for k-NN discrimination.",
-        ] if len(per_query) < 5 else [
-            "Multi-study validation supports generalisation claims."
-        ],
+        ]
+        if len(per_query) < 5
+        else ["Multi-study validation supports generalisation claims."],
     }
 
     # ---- 5. Write outputs -------------------------------------------------
@@ -251,16 +249,13 @@ def _validate_methods_study() -> dict[str, str]:
     return {name: str(registered.get(name, "0.1.0")) for name in STUDY_GROUPED_METHODS}
 
 
-def _subset_landscape(
-    landscape: LandscapeResult, names: list[str]
-) -> LandscapeResult:
+def _subset_landscape(landscape: LandscapeResult, names: list[str]) -> LandscapeResult:
     return LandscapeResult(
         performance={n: dict(landscape.performance[n]) for n in names},
         features={n: landscape.features[n].copy() for n in names},
-        embedding={n: landscape.embedding.get(n, []) for n in names},
+        embedding={n: landscape.embedding.get(n, (0.0, 0.0)) for n in names},
         best_method={n: landscape.best_method.get(n, "?") for n in names},
-        niches={m: [n for n in members if n in names]
-                for m, members in landscape.niches.items()},
+        niches={m: [n for n in members if n in names] for m, members in landscape.niches.items()},
         timings={n: dict(landscape.timings.get(n, {})) for n in names},
         feature_order=list(landscape.feature_order),
         method_count=landscape.method_count,
@@ -271,13 +266,10 @@ def _subset_landscape(
     )
 
 
-def _training_means(landscape, training_keys):
+def _training_means(landscape: LandscapeResult, training_keys: list[str]) -> dict[str, float]:
     means: dict[str, float] = {}
     for method in STUDY_GROUPED_METHODS:
-        values = [
-            landscape.performance[k].get(method, float("nan"))
-            for k in training_keys
-        ]
+        values = [landscape.performance[k].get(method, float("nan")) for k in training_keys]
         finite = [v for v in values if np.isfinite(v)]
         means[method] = float(np.mean(finite)) if finite else float("nan")
     return means
@@ -291,6 +283,7 @@ def _f(value):
 
 def _atomic_write(path, value):
     import json as _json
+
     tmp = path.with_name(f".{path.name}.tmp-{uuid4().hex}")
     try:
         tmp.write_text(_json.dumps(value, indent=2, allow_nan=False), encoding="utf-8")

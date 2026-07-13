@@ -67,18 +67,39 @@ def make_benchmark_suite(seed: int = 42) -> BenchmarkSuite:
     All are deterministic for a fixed *seed*.
     """
     presets: dict[str, dict[str, Any]] = {
-        "clean_easy":        dict(n_cells=600, n_domains=3, noise=0.15, lift=8.0,
-                                  layout="blob", label="Clean & easy"),
-        "noisy_hard":        dict(n_cells=600, n_domains=3, noise=0.55, lift=3.0,
-                                  layout="blob", label="Noisy & hard"),
-        "many_small_domains": dict(n_cells=600, n_domains=6, noise=0.25, lift=6.0,
-                                   layout="blob", label="Many small domains"),
-        "few_large_domains": dict(n_cells=300, n_domains=2, noise=0.20, lift=10.0,
-                                  layout="blob", label="Few large domains"),
-        "dense_regular":     dict(n_cells=900, n_domains=4, noise=0.20, lift=7.0,
-                                  layout="grid", label="Dense & regular"),
-        "sparse_scattered":  dict(n_cells=200, n_domains=3, noise=0.30, lift=9.0,
-                                  layout="blob", label="Sparse & scattered"),
+        "clean_easy": dict(
+            n_cells=600, n_domains=3, noise=0.15, lift=8.0, layout="blob", label="Clean & easy"
+        ),
+        "noisy_hard": dict(
+            n_cells=600, n_domains=3, noise=0.55, lift=3.0, layout="blob", label="Noisy & hard"
+        ),
+        "many_small_domains": dict(
+            n_cells=600,
+            n_domains=6,
+            noise=0.25,
+            lift=6.0,
+            layout="blob",
+            label="Many small domains",
+        ),
+        "few_large_domains": dict(
+            n_cells=300,
+            n_domains=2,
+            noise=0.20,
+            lift=10.0,
+            layout="blob",
+            label="Few large domains",
+        ),
+        "dense_regular": dict(
+            n_cells=900, n_domains=4, noise=0.20, lift=7.0, layout="grid", label="Dense & regular"
+        ),
+        "sparse_scattered": dict(
+            n_cells=200,
+            n_domains=3,
+            noise=0.30,
+            lift=9.0,
+            layout="blob",
+            label="Sparse & scattered",
+        ),
     }
 
     datasets: dict[str, SpatialTable] = {}
@@ -95,19 +116,29 @@ def make_benchmark_suite(seed: int = 42) -> BenchmarkSuite:
     # Tissue-specific architectures — fundamentally different spatial layouts
     # that cannot be represented by the blob/grid parameterisation.
     datasets["tumor_mimic"] = make_tumor_microenvironment(
-        n_cells=800, n_genes=200, noise=0.25,
+        n_cells=800,
+        n_genes=200,
+        noise=0.25,
         seed=seed + zlib.crc32(b"tumor_mimic") % 10000,
     )
     datasets["devel_gradient"] = make_developmental_gradient(
-        n_cells=600, n_genes=150, n_states=5, expression_noise=0.20,
+        n_cells=600,
+        n_genes=150,
+        n_states=5,
+        expression_noise=0.20,
         seed=seed + zlib.crc32(b"devel_gradient") % 10000,
     )
     datasets["tumor_noisy"] = make_tumor_microenvironment(
-        n_cells=800, n_genes=200, noise=0.50,
+        n_cells=800,
+        n_genes=200,
+        noise=0.50,
         seed=seed + zlib.crc32(b"tumor_noisy") % 10000,
     )
     datasets["devel_branching"] = make_developmental_gradient(
-        n_cells=700, n_genes=150, n_states=6, expression_noise=0.22,
+        n_cells=700,
+        n_genes=150,
+        n_states=6,
+        expression_noise=0.22,
         seed=seed + zlib.crc32(b"devel_branching") % 10000,
     )
 
@@ -155,8 +186,7 @@ def make_synthetic(
     # 1. Spatial layout -------------------------------------------------------
     if layout == "grid":
         side = int(np.ceil(np.sqrt(n_cells)))
-        xs, ys = np.meshgrid(np.linspace(0, grid[0], side),
-                             np.linspace(0, grid[1], side))
+        xs, ys = np.meshgrid(np.linspace(0, grid[0], side), np.linspace(0, grid[1], side))
         coords = np.column_stack([xs.ravel()[:n_cells], ys.ravel()[:n_cells]])
         coords += rng.normal(scale=2.0, size=coords.shape)  # jitter
         # Place domain centroids on a regular sub-grid
@@ -180,7 +210,7 @@ def make_synthetic(
 
     # 3. Base expression = low background; markers get a domain-specific lift.
     base_rate = rng.uniform(0.5, 1.5, size=n_genes)
-    X = rng.poisson(lam=np.broadcast_to(base_rate, (n_cells, n_genes))).astype(float)
+    X = np.asarray(rng.poisson(lam=np.broadcast_to(base_rate, (n_cells, n_genes))), dtype=float)
 
     for d in range(n_domains):
         start = d * marker_genes_per_domain
@@ -324,8 +354,8 @@ def make_mixture_synthetic(
                 "n_spots": n_spots,
                 "n_genes": n_genes,
                 "seed": seed,
-        },
-    )
+            },
+        )
     )
     return table
 
@@ -352,7 +382,7 @@ def make_tumor_microenvironment(
     coords = rng.uniform(0, 100, size=(n_cells, 2))
     dists = np.linalg.norm(coords - center, axis=1)
     angles = np.arctan2(coords[:, 1] - center[1], coords[:, 0] - center[0])
-    max_dist = np.max(dists)
+    max_dist: float = float(np.max(dists))
     necrotic_r = necrotic_fraction * max_dist
     margin_inner = necrotic_r + 0.03 * max_dist
     margin_outer = margin_inner + margin_width * max_dist
@@ -362,7 +392,7 @@ def make_tumor_microenvironment(
     hotspot_radii = rng.uniform(0.35 * max_dist, 0.85 * max_dist, size=n_hotspots)
     hotspot_widths = rng.uniform(0.06, 0.14, size=n_hotspots)
 
-    domain = np.full(n_cells, -1, dtype=int)
+    domain: np.ndarray = np.full(n_cells, -1, dtype=int)
     for i in range(n_cells):
         d, a = dists[i], angles[i]
         in_hotspot = False
@@ -382,21 +412,25 @@ def make_tumor_microenvironment(
         else:
             domain[i] = 4
 
-    zone_names = np.array([
-        "necrotic", "peri_necrotic", "invasive_margin", "immune_hotspot", "stroma",
-    ])
+    zone_names = np.array(
+        [
+            "necrotic",
+            "peri_necrotic",
+            "invasive_margin",
+            "immune_hotspot",
+            "stroma",
+        ]
+    )
 
     gene_names = [f"gene_{i:04d}" for i in range(n_genes)]
     n_per_zone = n_genes // 5
     marker_genes: dict[str, list[str]] = {}
     for zidx, zname in enumerate(zone_names):
         start = zidx * n_per_zone
-        marker_genes[str(zname)] = [
-            gene_names[i] for i in range(start, min(start + 5, n_genes))
-        ]
+        marker_genes[str(zname)] = [gene_names[i] for i in range(start, min(start + 5, n_genes))]
 
     base_rate = rng.uniform(0.3, 1.0, size=n_genes)
-    X = rng.poisson(lam=np.broadcast_to(base_rate, (n_cells, n_genes))).astype(float)
+    X = np.asarray(rng.poisson(lam=np.broadcast_to(base_rate, (n_cells, n_genes))), dtype=float)
     lifts = {0: 1.5, 1: 4.0, 2: 8.0, 3: 6.0, 4: 3.0}
 
     for d_idx in range(5):
@@ -424,17 +458,25 @@ def make_tumor_microenvironment(
     var = pd.DataFrame(index=gene_names)
 
     table = SpatialTable(
-        X=X, obs=obs, var=var, obsm={"spatial": coords},
+        X=X,
+        obs=obs,
+        var=var,
+        obsm={"spatial": coords},
         uns={
-            "marker_genes": marker_genes, "n_domains": 5,
-            "assay": "synthetic_tumor", "architecture": "concentric_zones",
+            "marker_genes": marker_genes,
+            "n_domains": 5,
+            "assay": "synthetic_tumor",
+            "architecture": "concentric_zones",
         },
     )
-    table.record(Provenance(
-        step="ingestion", method="make_tumor_microenvironment",
-        method_version="0.1.0",
-        params={"n_cells": n_cells, "n_genes": n_genes, "seed": seed},
-    ))
+    table.record(
+        Provenance(
+            step="ingestion",
+            method="make_tumor_microenvironment",
+            method_version="0.1.0",
+            params={"n_cells": n_cells, "n_genes": n_genes, "seed": seed},
+        )
+    )
     return table
 
 
@@ -477,16 +519,20 @@ def make_developmental_gradient(
         if s > 0:
             prev = marker_sets[f"state_{s - 1}"]
             n_bridge = max(1, len(prev) // 3)
-            bridge = set(rng.choice(
-                sorted(prev), size=min(n_bridge, len(prev)), replace=False,
-            ))
+            bridge = set(
+                rng.choice(
+                    sorted(prev),
+                    size=min(n_bridge, len(prev)),
+                    replace=False,
+                )
+            )
             core |= bridge
         marker_sets[f"state_{s}"] = core
 
     marker_genes = {s: sorted(ms) for s, ms in marker_sets.items()}
 
     base_rate = rng.uniform(0.3, 0.9, size=n_genes)
-    X = rng.poisson(lam=np.broadcast_to(base_rate, (n_cells, n_genes))).astype(float)
+    X = np.asarray(rng.poisson(lam=np.broadcast_to(base_rate, (n_cells, n_genes))), dtype=float)
 
     for s in range(n_states):
         in_state = domain == s
@@ -500,7 +546,8 @@ def make_developmental_gradient(
                 continue
             activation = np.interp(
                 pseudotime[in_state],
-                [s / n_states, (s + 1) / n_states], [0.5, 1.0],
+                [s / n_states, (s + 1) / n_states],
+                [0.5, 1.0],
             )
             X[in_state, g_idx] += rng.poisson(lam=activation * 6.0)
 
@@ -512,14 +559,16 @@ def make_developmental_gradient(
     X = np.rint(np.clip(X, 0, None)).astype(float)
 
     obs = pd.DataFrame(
-        {"domain_truth": pd.Categorical(state_names[domain]),
-         "pseudotime": pseudotime},
+        {"domain_truth": pd.Categorical(state_names[domain]), "pseudotime": pseudotime},
         index=[f"cell_{i:05d}" for i in range(n_cells)],
     )
     var = pd.DataFrame(index=gene_names)
 
     table = SpatialTable(
-        X=X, obs=obs, var=var, obsm={"spatial": coords},
+        X=X,
+        obs=obs,
+        var=var,
+        obsm={"spatial": coords},
         uns={
             "marker_genes": {str(k): v for k, v in marker_genes.items()},
             "n_domains": n_states,
@@ -527,12 +576,17 @@ def make_developmental_gradient(
             "architecture": "pseudotime_gradient",
         },
     )
-    table.record(Provenance(
-        step="ingestion", method="make_developmental_gradient",
-        method_version="0.1.0",
-        params={
-            "n_cells": n_cells, "n_genes": n_genes,
-            "n_states": n_states, "seed": seed,
-        },
-    ))
+    table.record(
+        Provenance(
+            step="ingestion",
+            method="make_developmental_gradient",
+            method_version="0.1.0",
+            params={
+                "n_cells": n_cells,
+                "n_genes": n_genes,
+                "n_states": n_states,
+                "seed": seed,
+            },
+        )
+    )
     return table

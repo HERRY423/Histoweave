@@ -32,10 +32,12 @@ class MarkerDeconvolution(Method):
         version="0.1.0",
         summary="Marker-gene mean-ratio baseline deconvolution.",
         params=(
-            ParamSpec("marker_genes", "dict|None", None,
-                      "label -> [genes]; else uns['marker_genes']."),
-            ParamSpec("proportion_key", "str", "proportions",
-                      "obsm key for the estimated proportions."),
+            ParamSpec(
+                "marker_genes", "dict|None", None, "label -> [genes]; else uns['marker_genes']."
+            ),
+            ParamSpec(
+                "proportion_key", "str", "proportions", "obsm key for the estimated proportions."
+            ),
         ),
         assumptions=("Normalized X (log1p-transformed).",),
     )
@@ -44,9 +46,7 @@ class MarkerDeconvolution(Method):
         data = data.copy()
         markers = self.params["marker_genes"] or data.uns.get("marker_genes")
         if not markers:
-            raise ValueError(
-                "No marker_genes parameter and uns['marker_genes'] is absent"
-            )
+            raise ValueError("No marker_genes parameter and uns['marker_genes'] is absent")
 
         resolved = resolve_markers(data, markers)
         cell_types = resolved.labels
@@ -54,12 +54,12 @@ class MarkerDeconvolution(Method):
         Z = zscore(data.X)
 
         # Per-spot × per-cell-type score matrix.
-        scores = np.zeros((data.n_obs, n_ct), dtype=float)
+        scores: np.ndarray = np.zeros((data.n_obs, n_ct), dtype=float)
         for j, idx in enumerate(resolved.indices):
             scores[:, j] = Z[:, idx].mean(axis=1)
 
         # Softmax normalisation to proportions.
-        scores -= scores.max(axis=1, keepdims=True)          # numerical stability
+        scores -= scores.max(axis=1, keepdims=True)  # numerical stability
         exp_scores = np.exp(scores)
         proportions = exp_scores / exp_scores.sum(axis=1, keepdims=True)
 

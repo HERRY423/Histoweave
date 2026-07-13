@@ -47,9 +47,7 @@ class SpatialGraphMetrics(Method):
                 "'knn' or 'radius' (radius in coordinate units).",
                 choices=("knn", "radius"),
             ),
-            ParamSpec(
-                "radius", "float", 15.0, "Radius for 'radius' mode.", minimum=1e-12
-            ),
+            ParamSpec("radius", "float", 15.0, "Radius for 'radius' mode.", minimum=1e-12),
         ),
         assumptions=("obsm['spatial'] present.", "networkx installed."),
         wraps="networkx + scipy.spatial",
@@ -84,7 +82,7 @@ class SpatialGraphMetrics(Method):
         ]
 
         # Eigenvector centrality (for the largest connected component)
-        centrality = np.zeros(n, dtype=float)
+        centrality: np.ndarray = np.zeros(n, dtype=float)
         if G.number_of_edges() > 0:
             largest_cc = max(nx.connected_components(G), key=len)
             sub = G.subgraph(largest_cc)

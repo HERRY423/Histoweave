@@ -72,16 +72,13 @@ class MoransISVG(Method):
         data.uns["svg"] = {
             "method": "morans_i",
             "top_genes": [
-                {"gene": str(data.var_names[i]), "morans_i": float(morans_i[i])}
-                for i in top_idx
+                {"gene": str(data.var_names[i]), "morans_i": float(morans_i[i])} for i in top_idx
             ],
         }
         return self.finalize(data, step="svg")
 
 
-def _build_spatial_weight_matrix(
-    coords: np.ndarray, k: int
-) -> tuple[np.ndarray, float]:
+def _build_spatial_weight_matrix(coords: np.ndarray, k: int) -> tuple[np.ndarray, float]:
     """Build a symmetric, unweighted k-NN adjacency matrix from spatial coordinates.
 
     Returns ``(W, W_sum)`` where ``W`` is a sparse CSR matrix.  The graph is made
@@ -97,10 +94,10 @@ def _build_spatial_weight_matrix(
     _, idx = tree.query(coords, k=k + 1)  # k+1 because self is included
 
     # Build sparse symmetric adjacency: rows = source, cols = target
-    rows = np.repeat(np.arange(n), k)
+    rows: np.ndarray = np.repeat(np.arange(n), k)
     cols = idx[:, 1:].ravel()  # skip self (col 0)
 
-    data_arr = np.ones(len(rows), dtype=np.float64)
+    data_arr: np.ndarray = np.ones(len(rows), dtype=np.float64)
     W_directed = csr_matrix((data_arr, (rows, cols)), shape=(n, n))
 
     # Make symmetric: W = max(W, W^T) element-wise, which is W + W^T - W * W^T
