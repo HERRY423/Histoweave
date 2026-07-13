@@ -426,21 +426,7 @@ def _ensemble_strategy(
     if not ranked:
         return "No ensemble can be suggested without benchmark evidence."
     if len(ranked) == 1:
-        return (
-            f"Run {ranked[0].method}; only one method has usable "
-            "neighbour evidence."
-        )
-    first, second = ranked[:2]
-    return (
-        f"Run {first.method} and {second.method}; align their labels, retain "
-        "consensus regions, and flag disagreements for review. This is a "
-        "suggestion, not an executed ensemble."
-    )
-
-    if len(ranked) < 2:
-        if ranked:
-            return f"Use {ranked[0].method} (only available method)."
-        return "No method available."
+        return f"Use {ranked[0].method} (only available method with evidence)."
 
     m1, m2 = ranked[0], ranked[1]
     gap = m1.score - m2.score
