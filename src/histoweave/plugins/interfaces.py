@@ -16,7 +16,7 @@ import abc
 import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from numbers import Integral, Real
 from typing import TYPE_CHECKING, Any
 
@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from anndata import AnnData
 
 
-class MethodMaturity(str, Enum):
+class MethodMaturity(StrEnum):
     """Evidence-backed quality level for an analysis-method wrapper."""
 
     EXPERIMENTAL = "experimental"
@@ -79,7 +79,7 @@ METHOD_MATURITY_POLICIES: dict[MethodMaturity, MaturityPolicy] = {
 }
 
 
-class MethodCategory(str, Enum):
+class MethodCategory(StrEnum):
     """The analysis stages that make up the platform's functional scope (plan §6)."""
 
     INGESTION = "ingestion"
@@ -180,9 +180,7 @@ class MethodSpec:
         object.__setattr__(self, "modalities", modalities)
         allowed_families = {"statistical", "machine_learning", "deep_learning"}
         if self.model_family not in allowed_families:
-            raise ValueError(
-                f"{self.name}: model_family must be one of {sorted(allowed_families)}"
-            )
+            raise ValueError(f"{self.name}: model_family must be one of {sorted(allowed_families)}")
 
 
 class Method(abc.ABC):

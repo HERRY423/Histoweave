@@ -31,6 +31,7 @@ params.python_image = "ghcr.io/histoweave-spatial/histoweave-python:${params.con
 params.r_image      = "ghcr.io/histoweave-spatial/histoweave-r:${params.container_version}"
 
 workflow {
+    main:
     if (params.demo && params.input) {
         error("--demo and --input are mutually exclusive.")
     }
@@ -94,6 +95,15 @@ workflow {
         REPORT(ch_bundle, params.seed)
         ch_report = REPORT.out.report
     }
+
+    onComplete:
+    log.info """
+    ========================================================
+      HistoWeave pipeline complete.
+      Results  : ${params.outdir}
+      Steps    : ${params.steps}
+    ========================================================
+    """.stripIndent()
 }
 
 process INGEST_DEMO {
@@ -335,14 +345,4 @@ def _validate_n_domains(Object raw_n_domains) {
         error("--n_domains must be a positive integer; received '${raw_n_domains}'.")
     }
     return value.toInteger()
-}
-
-workflow.onComplete {
-    log.info """
-    ========================================================
-      HistoWeave pipeline complete.
-      Results  : ${params.outdir}
-      Steps    : ${params.steps}
-    ========================================================
-    """.stripIndent()
 }
