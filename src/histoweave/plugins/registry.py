@@ -138,7 +138,7 @@ def _deprecation_message(spec: MethodSpec) -> str:
     message = (
         f"{spec.category.value}:{spec.name}@{spec.version} is deprecated since "
         f"HistoWeave {lifecycle.since}; use "
-        f"{target.category.value}:{target.name}@{target.version}."
+        f"{_coerce_category(target.category).value}:{target.name}@{target.version}."
     )
     if lifecycle.remove_in:
         message += f" It is scheduled for removal in HistoWeave {lifecycle.remove_in}."
@@ -175,6 +175,7 @@ def migrate_method_params(
             )
         visited.add(key)
         lifecycle = spec.deprecation
+        assert lifecycle is not None
         for old_name, new_name in lifecycle.parameter_renames:
             if old_name not in migrated:
                 continue
@@ -199,7 +200,7 @@ def migrate_method_params(
                     "version": spec.version,
                 },
                 "to": {
-                    "category": target.category.value,
+                    "category": _coerce_category(target.category).value,
                     "name": target.name,
                     "version": target.version,
                 },
@@ -262,6 +263,8 @@ def list_methods(
         if minimum_rank is not None and policy.rank < minimum_rank:
             continue
 
+        deprecation = spec.deprecation
+
         out.append(
             {
                 "name": name,
@@ -283,24 +286,24 @@ def list_methods(
                     }
                     for backend in spec.backends
                 ],
-                "deprecated": spec.deprecation is not None,
+                "deprecated": deprecation is not None,
                 "deprecation": (
                     {
-                        "since": spec.deprecation.since,
-                        "remove_in": spec.deprecation.remove_in,
-                        "reason": spec.deprecation.reason,
+                        "since": deprecation.since,
+                        "remove_in": deprecation.remove_in,
+                        "reason": deprecation.reason,
                         "replacement": {
-                            "category": spec.deprecation.replacement.category.value,
-                            "name": spec.deprecation.replacement.name,
-                            "version": spec.deprecation.replacement.version,
+                            "category": _coerce_category(deprecation.replacement.category).value,
+                            "name": deprecation.replacement.name,
+                            "version": deprecation.replacement.version,
                         },
                         "parameter_renames": [
-                            list(pair) for pair in spec.deprecation.parameter_renames
+                            list(pair) for pair in deprecation.parameter_renames
                         ],
-                        "removed_parameters": list(spec.deprecation.removed_parameters),
-                        "notes": spec.deprecation.notes,
+                        "removed_parameters": list(deprecation.removed_parameters),
+                        "notes": deprecation.notes,
                     }
-                    if spec.deprecation is not None
+                    if deprecation is not None
                     else None
                 ),
                 "is_multimodal": len(spec.modalities) > 1,

@@ -59,6 +59,8 @@ def test_mkdocstrings_api_reference_is_enabled_and_built_in_ci() -> None:
     assert "- mkdocstrings:" in config
     assert "default_handler: python" in config
     assert "paths: [src]" in config
+    assert "          import:" not in config
+    assert "          inventories:" not in config
     assert 'python -m pip install -e ".[dev,docs]"' in ci
     assert "mkdocs build --strict" in ci
     for module in (
@@ -71,3 +73,11 @@ def test_mkdocstrings_api_reference_is_enabled_and_built_in_ci() -> None:
         "histoweave.report",
     ):
         assert f"::: {module}" in api
+
+
+def test_spatialtable_runtime_dependencies_are_core_dependencies() -> None:
+    pyproject = _read(ROOT / "pyproject.toml")
+    core_dependencies = pyproject.split("[project.optional-dependencies]", maxsplit=1)[0]
+
+    for dependency in ("anndata>=0.10", "scipy>=1.10", "spatialdata>=0.1"):
+        assert f'"{dependency}"' in core_dependencies

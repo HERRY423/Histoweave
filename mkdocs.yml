@@ -45,10 +45,6 @@ plugins:
       handlers:
         python:
           paths: [src]
-          import:
-            - https://docs.python.org/3/objects.inv
-            - https://numpy.org/doc/stable/objects.inv
-            - https://pandas.pydata.org/docs/objects.inv
           options:
             docstring_style: numpy
             show_root_heading: true
