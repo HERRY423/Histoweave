@@ -34,6 +34,7 @@ class PipelineStep:
     method: str
     params: dict[str, Any] = field(default_factory=dict)
     name: str | None = None
+    method_version: str | None = None
 
 
 @dataclass
@@ -124,6 +125,7 @@ def execute_step(
         "category": category,
         "method": step.method,
         "params": dict(step.params),
+        "requested_version": step.method_version,
         "status": "running",
         "started": started,
         "n_obs_before": data.n_obs,
@@ -131,11 +133,23 @@ def execute_step(
     }
     provenance_before = len(data.provenance)
 
-    log_event(_logger, 20, "step_start", "pipeline step starting",
-              category=category, method=step.method, params=dict(step.params))
+    log_event(
+        _logger,
+        20,
+        "step_start",
+        "pipeline step starting",
+        category=category,
+        method=step.method,
+        params=dict(step.params),
+    )
 
     try:
-        method = create_method(step.category, step.method, **step.params)
+        method = create_method(
+            step.category,
+            step.method,
+            version=step.method_version,
+            **step.params,
+        )
         record["version"] = method.spec.version
         record["params"] = dict(method.params)
         result = method.run(data)
@@ -161,9 +175,16 @@ def execute_step(
                 },
             }
         )
-        log_event(_logger, 40, "step_failed", "pipeline step failed",
-                  category=category, method=step.method,
-                  error_type=type(exc).__name__, seconds=record["seconds"])
+        log_event(
+            _logger,
+            40,
+            "step_failed",
+            "pipeline step failed",
+            category=category,
+            method=step.method,
+            error_type=type(exc).__name__,
+            seconds=record["seconds"],
+        )
         raise PipelineStepError(record) from exc
 
     record.update(
@@ -176,9 +197,16 @@ def execute_step(
             "provenance_index": len(result.provenance) - 1,
         }
     )
-    log_event(_logger, 20, "step_ok", "pipeline step completed",
-              category=category, method=step.method,
-              seconds=record["seconds"], n_obs=result.n_obs)
+    log_event(
+        _logger,
+        20,
+        "step_ok",
+        "pipeline step completed",
+        category=category,
+        method=step.method,
+        seconds=record["seconds"],
+        n_obs=result.n_obs,
+    )
     return result, record
 
 
@@ -210,9 +238,14 @@ def run_pipeline(
     failures = 0
 
     with log_context(run_id=manifest.run_id):
-        log_event(_logger, 20, "pipeline_start", "pipeline run starting",
-                  steps=[f"{_category_value(s.category)}:{s.method}" for s in selected_steps],
-                  on_error=on_error)
+        log_event(
+            _logger,
+            20,
+            "pipeline_start",
+            "pipeline run starting",
+            steps=[f"{_category_value(s.category)}:{s.method}" for s in selected_steps],
+            on_error=on_error,
+        )
         for step in selected_steps:
             with log_context(step_id=f"{_category_value(step.category)}:{step.method}"):
                 try:
@@ -230,9 +263,13 @@ def run_pipeline(
                         manifest.status = "failed"
                         manifest.finished = _now()
                         current.uns["run_manifest"] = manifest.to_dict()
-                        log_event(_logger, 40, "pipeline_aborted",
-                                  "pipeline stopped after step failure",
-                                  failed_step=exc.record["name"])
+                        log_event(
+                            _logger,
+                            40,
+                            "pipeline_aborted",
+                            "pipeline stopped after step failure",
+                            failed_step=exc.record["name"],
+                        )
                         raise PipelineExecutionError(exc, manifest, current) from exc.__cause__
                     continue
 
@@ -248,8 +285,14 @@ def run_pipeline(
     manifest.status = "partial" if failures else "success"
     manifest.finished = _now()
     current.uns["run_manifest"] = manifest.to_dict()
-    log_event(_logger, 20, "pipeline_done", "pipeline run finished",
-              status=manifest.status, steps_completed=len(manifest.steps))
+    log_event(
+        _logger,
+        20,
+        "pipeline_done",
+        "pipeline run finished",
+        status=manifest.status,
+        steps_completed=len(manifest.steps),
+    )
     return current
 
 

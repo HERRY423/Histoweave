@@ -35,6 +35,74 @@ class MethodMaturity(StrEnum):
     VALIDATED = "validated"
 
 
+class MethodImplementation(StrEnum):
+    """Where the scientific algorithm executed by a method comes from."""
+
+    NATIVE = "native"
+    EXTERNAL = "external"
+
+
+@dataclass(frozen=True)
+class BackendRequirement:
+    """Machine-readable requirement for a real external method backend."""
+
+    name: str
+    requirement: str
+    install_extra: str | None = None
+    runtime: str = "python"
+
+    def __post_init__(self) -> None:
+        if not self.name or not self.requirement:
+            raise ValueError("backend requirements need a non-empty name and requirement")
+        if self.runtime not in {"python", "r", "container"}:
+            raise ValueError("backend requirement runtime must be 'python', 'r', or 'container'")
+
+
+@dataclass(frozen=True)
+class MethodReference:
+    """An exact, stable reference to one registered method release."""
+
+    category: MethodCategory | str
+    name: str
+    version: str
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.category, MethodCategory):
+            object.__setattr__(self, "category", MethodCategory(self.category))
+        if not self.name or not self.version:
+            raise ValueError("method references require a non-empty name and version")
+
+
+@dataclass(frozen=True)
+class MethodDeprecation:
+    """Lifecycle and declarative parameter migration for an incompatible release.
+
+    Parameter renames are applied automatically. Removed parameters are never
+    silently discarded: migration stops with a diagnostic containing notes.
+    """
+
+    since: str
+    replacement: MethodReference
+    remove_in: str | None = None
+    reason: str = ""
+    parameter_renames: tuple[tuple[str, str], ...] = ()
+    removed_parameters: tuple[str, ...] = ()
+    notes: str = ""
+
+    def __post_init__(self) -> None:
+        old_names = [old for old, _ in self.parameter_renames]
+        new_names = [new for _, new in self.parameter_renames]
+        if not self.since:
+            raise ValueError("method deprecation requires a non-empty 'since' version")
+        if len(old_names) != len(set(old_names)):
+            raise ValueError("deprecated parameter rename sources must be unique")
+        if len(new_names) != len(set(new_names)):
+            raise ValueError("deprecated parameter rename targets must be unique")
+        overlap = set(old_names) & set(self.removed_parameters)
+        if overlap:
+            raise ValueError(f"parameters cannot be both renamed and removed: {sorted(overlap)}")
+
+
 @dataclass(frozen=True)
 class MaturityPolicy:
     """Required evidence for a method to claim a maturity level."""
@@ -164,11 +232,18 @@ class MethodSpec:
     language: str = "python"  # "python" | "r" | "container"
     modalities: tuple[str, ...] = ("expression",)
     model_family: str = "statistical"
+    implementation: MethodImplementation = MethodImplementation.NATIVE
+    backends: tuple[BackendRequirement, ...] = ()
+    deprecation: MethodDeprecation | None = None
 
     def __post_init__(self) -> None:
         """Coerce string values so external plugin manifests remain ergonomic."""
         if not isinstance(self.maturity, MethodMaturity):
             object.__setattr__(self, "maturity", MethodMaturity(self.maturity))
+        if not isinstance(self.category, MethodCategory):
+            object.__setattr__(self, "category", MethodCategory(self.category))
+        if not isinstance(self.implementation, MethodImplementation):
+            object.__setattr__(self, "implementation", MethodImplementation(self.implementation))
         modalities = tuple(dict.fromkeys(str(item).lower() for item in self.modalities))
         allowed_modalities = {"expression", "image", "spatial", "labels", "shapes"}
         unknown = set(modalities) - allowed_modalities
@@ -181,6 +256,11 @@ class MethodSpec:
         allowed_families = {"statistical", "machine_learning", "deep_learning"}
         if self.model_family not in allowed_families:
             raise ValueError(f"{self.name}: model_family must be one of {sorted(allowed_families)}")
+        if self.implementation is MethodImplementation.EXTERNAL:
+            if not self.wraps:
+                raise ValueError(f"{self.name}: external methods must declare wraps")
+            if not self.backends:
+                raise ValueError(f"{self.name}: external methods must declare backend requirements")
 
 
 class Method(abc.ABC):

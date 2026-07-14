@@ -23,6 +23,7 @@ def register_all() -> None:
         ingestion,
         integration,
         liana_plus,
+        nnsvg,
         normalize,
         qc,
         r_demo,

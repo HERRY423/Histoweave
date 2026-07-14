@@ -11,20 +11,31 @@ __pycache__
 dist/
 build/
 
-# Tests & benchmarks
+# Tests, benchmarks, and generated results
 .pytest_cache/
 .pytest_tmp/
 .tox/
 htmlcov/
 .coverage
+5x10_dlpfc_benchmark/
+figure3_results/
+study_grouped_5slice_results/
+study_grouped_phaseb_results/
+study_grouped_results/
+work/
+tmp/
 
-# Documentation
+# Documentation output
 docs/_build/
 docs/site/
+site/
 
-# IDE
+# IDE and local tools
 .vscode/
 .idea/
+.claude/
+.playwright-cli/
+output/
 
 # OS
 .DS_Store

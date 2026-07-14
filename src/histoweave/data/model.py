@@ -1,39 +1,51 @@
 """Canonical in-platform data model.
 
-The plan standardizes on **SpatialData / OME-Zarr** (with AnnData/MuData for the
-tabular molecular layer) as the canonical representation. Pulling that full stack in
-is a Phase-1 task and a heavy dependency, so this scaffold ships a light,
-AnnData-shaped container — :class:`SpatialTable` — that mirrors the same mental model
-(``X`` / ``obs`` / ``var`` / ``obsm`` / ``uns``) and provides bridges to and from
-AnnData when it is installed.
-
-Deliberately, everything downstream (plugins, pipeline, benchmarking, reporting) is
-written against :class:`SpatialTable`, so swapping in a real SpatialData-backed
-implementation later is an internal change, not an API break.
+The platform standardizes on **SpatialData / OME-Zarr** (with AnnData/MuData for the
+tabular molecular layer) as the canonical representation.  :class:`SpatialTable` is now
+a thin wrapper around :class:`spatialdata.SpatialData`, delegating the molecular layer
+(``X`` / ``obs`` / ``var`` / ``obsm`` / ``layers`` / ``uns``) to the internal AnnData
+table while preserving the same public API that downstream code was written against.
 """
 
 from __future__ import annotations
 
 import copy
-from dataclasses import dataclass, field
+import re
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 import numpy as np
 import pandas as pd
+from scipy.sparse import spmatrix
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from anndata import AnnData
-    from scipy.sparse import spmatrix
+    from spatialdata import SpatialData as SpatialDataClass
 
-    Matrix: TypeAlias = np.ndarray | spmatrix
-else:
-    Matrix: TypeAlias = Any
+Matrix: TypeAlias = np.ndarray | spmatrix
 
 SPATIAL_KEY = "spatial"
 
+# OME-Zarr / SpatialData enforces alphanumeric + underscore/dot/hyphen key names.
+_SANITIZE_KEY_RE = re.compile(r"[^a-zA-Z0-9_.\-]")
 
-@dataclass
+
+def _sanitize_mapping_keys(
+    mapping: dict[str, Any],
+) -> dict[str, Any]:
+    """Replace characters that are illegal in OME-Zarr key names with underscores."""
+    sanitized: dict[str, Any] = {}
+    for key, value in mapping.items():
+        clean = _SANITIZE_KEY_RE.sub("_", key)
+        sanitized[clean] = value
+    return sanitized
+
+
+# ---------------------------------------------------------------------------
+# Provenance
+# ---------------------------------------------------------------------------
+
+
 class Provenance:
     """Structured provenance for a single processing step.
 
@@ -45,12 +57,34 @@ class Provenance:
     step: str
     method: str
     method_version: str
-    params: dict[str, Any] = field(default_factory=dict)
-    histoweave_version: str = ""
-    container_digest: str | None = None
-    code_revision: str | None = None
-    executor: str | None = None
-    timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
+    params: dict[str, Any]
+    histoweave_version: str
+    container_digest: str | None
+    code_revision: str | None
+    executor: str | None
+    timestamp: str
+
+    def __init__(
+        self,
+        step: str,
+        method: str,
+        method_version: str,
+        params: dict[str, Any] | None = None,
+        histoweave_version: str = "",
+        container_digest: str | None = None,
+        code_revision: str | None = None,
+        executor: str | None = None,
+        timestamp: str | None = None,
+    ) -> None:
+        self.step = step
+        self.method = method
+        self.method_version = method_version
+        self.params = dict(params) if params is not None else {}
+        self.histoweave_version = histoweave_version
+        self.container_digest = container_digest
+        self.code_revision = code_revision
+        self.executor = executor
+        self.timestamp = timestamp if timestamp is not None else datetime.now(UTC).isoformat()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -66,15 +100,18 @@ class Provenance:
         }
 
 
-@dataclass
+# ---------------------------------------------------------------------------
+# SpatialTable — SpatialData-backed spatial container
+# ---------------------------------------------------------------------------
+
+
 class SpatialTable:
-    """A minimal, AnnData-shaped spatial container.
+    """A SpatialData-backed spatial container.
 
     Parameters
     ----------
     X
-        Cell/spot x gene matrix (dense ``np.ndarray`` in this scaffold; a real
-        deployment keeps this lazy/chunked via Dask-backed Zarr).
+        Cell/spot x gene matrix (dense ``np.ndarray`` or sparse ``scipy.sparse.spmatrix``).
     obs
         Per-observation (cell/spot) metadata, indexed by observation id.
     var
@@ -86,58 +123,67 @@ class SpatialTable:
         Alternative cell x gene matrices sharing ``X``'s shape, keyed by name
         (AnnData's ``.layers`` concept). This is where transformations stash the
         matrix they replaced — e.g. normalization moves the raw counts to
-        ``layers["counts"]`` so count-based methods can recover them. Because
-        layers are shape-aligned to ``X``, they are subset alongside it and never
-        drift out of alignment (unlike an array parked in ``uns``).
+        ``layers["counts"]`` so count-based methods can recover them.
     images
         Raster **spatial layers** keyed by name (SpatialData's ``images`` element),
-        e.g. an H&E or DAPI image of the tissue. These live in a physical coordinate
-        system, *not* on the observation axis, so — unlike ``obsm``/``layers`` — they
-        are carried through :meth:`subset_obs` unchanged (dropping cells does not crop
-        the tissue image).
+        e.g. an H&E or DAPI image of the tissue.
     shapes
         Vector **spatial layers** keyed by name (SpatialData's ``shapes`` element),
-        e.g. cell/nucleus boundary polygons or Visium spot circles. Held as opaque
-        geometry objects (a ``geopandas.GeoDataFrame`` in a full deployment); like
-        ``images`` they are coordinate-system aligned rather than obs-aligned.
+        e.g. cell/nucleus boundary polygons or Visium spot circles.
     uns
         Unstructured annotations, including the ``"provenance"`` chain.
 
     Notes
     -----
-    ``layers`` are *molecular* layers (obs x var); ``images``/``shapes`` are *spatial*
-    layers (coordinate-system aligned). Carrying both is the prerequisite for a
-    lossless bridge to **SpatialData**; the :meth:`to_anndata` bridge only round-trips
-    the molecular/tabular part and therefore drops ``images``/``shapes``.
+    The molecular/tabular layer (``X``, ``obs``, ``var``, ``obsm``, ``layers``,
+    ``uns``) is stored in an :class:`anndata.AnnData` table inside a
+    :class:`spatialdata.SpatialData`.  Spatial layers (``images``, ``shapes``)
+    are kept as plain dicts for API compatibility and merged into the SpatialData
+    on :meth:`to_spatialdata`.
     """
 
-    X: Matrix
-    obs: pd.DataFrame
-    var: pd.DataFrame
-    obsm: dict[str, np.ndarray] = field(default_factory=dict)
-    layers: dict[str, Matrix] = field(default_factory=dict)
-    images: dict[str, np.ndarray] = field(default_factory=dict)
-    shapes: dict[str, Any] = field(default_factory=dict)
-    uns: dict[str, Any] = field(default_factory=dict)
+    def __init__(
+        self,
+        X: Matrix,
+        obs: pd.DataFrame,
+        var: pd.DataFrame,
+        obsm: dict[str, np.ndarray] | None = None,
+        layers: dict[str, Matrix] | None = None,
+        images: dict[str, np.ndarray] | None = None,
+        shapes: dict[str, Any] | None = None,
+        uns: dict[str, Any] | None = None,
+    ) -> None:
+        # -- coerce & validate X -------------------------------------------------
+        X = _coerce_matrix(X)
+        if X.ndim != 2:
+            raise ValueError(f"X must be 2D (cells x genes), got shape {X.shape}")
+        n_obs, n_var = X.shape
 
-    def __post_init__(self) -> None:
-        self.X = _coerce_matrix(self.X)
-        if self.X.ndim != 2:
-            raise ValueError(f"X must be 2D (cells x genes), got shape {self.X.shape}")
-        n_obs, n_var = self.X.shape
-        if len(self.obs) != n_obs:
-            raise ValueError(f"obs has {len(self.obs)} rows but X has {n_obs} observations")
-        if len(self.var) != n_var:
-            raise ValueError(f"var has {len(self.var)} rows but X has {n_var} variables")
-        if not self.obs.index.is_unique:
+        # -- defaults ------------------------------------------------------------
+        obsm = dict(obsm) if obsm is not None else {}
+        layers = dict(layers) if layers is not None else {}
+        images = dict(images) if images is not None else {}
+        shapes = dict(shapes) if shapes is not None else {}
+        uns = dict(uns) if uns is not None else {}
+
+        # -- validate obs --------------------------------------------------------
+        if len(obs) != n_obs:
+            raise ValueError(f"obs has {len(obs)} rows but X has {n_obs} observations")
+        if not obs.index.is_unique:
             raise ValueError("obs index must contain unique observation identifiers")
-        if not self.var.index.is_unique:
-            raise ValueError("var index must contain unique feature identifiers")
-        if self.obs.index.hasnans:
+        if obs.index.hasnans:
             raise ValueError("obs index must not contain missing identifiers")
-        if self.var.index.hasnans:
+
+        # -- validate var --------------------------------------------------------
+        if len(var) != n_var:
+            raise ValueError(f"var has {len(var)} rows but X has {n_var} variables")
+        if not var.index.is_unique:
+            raise ValueError("var index must contain unique feature identifiers")
+        if var.index.hasnans:
             raise ValueError("var index must not contain missing identifiers")
-        for name, value in self.obsm.items():
+
+        # -- validate obsm -------------------------------------------------------
+        for name, value in obsm.items():
             array = np.asarray(value)
             if array.ndim == 0 or array.shape[0] != n_obs:
                 raise ValueError(
@@ -147,24 +193,133 @@ class SpatialTable:
                 raise ValueError(
                     f"obsm[{SPATIAL_KEY!r}] must have shape (n_obs, 2 or 3), got {array.shape}"
                 )
-            self.obsm[name] = array
-        for name, layer in self.layers.items():
+            obsm[name] = array
+
+        # -- validate layers -----------------------------------------------------
+        for name, layer in layers.items():
             layer = _coerce_matrix(layer)
-            if layer.shape != self.X.shape:
+            if layer.shape != X.shape:
                 raise ValueError(
-                    f"layer {name!r} has shape {layer.shape}, expected {self.X.shape} to match X"
+                    f"layer {name!r} has shape {layer.shape}, expected {X.shape} to match X"
                 )
-            self.layers[name] = layer
-        self.uns.setdefault("provenance", [])
+            layers[name] = layer
+
+        uns.setdefault("provenance", [])
+
+        # -- sanitize keys for SpatialData compliance ----------------------------
+        obsm = _sanitize_mapping_keys(obsm)
+        layers = _sanitize_mapping_keys(layers)
+
+        # -- build backing SpatialData -------------------------------------------
+        from anndata import AnnData
+        from spatialdata import SpatialData as SD
+
+        adata = AnnData(X=X, obs=obs, var=var, obsm=obsm, layers=layers, uns=uns)
+        self._sdata: SpatialDataClass = SD(tables={"table": adata})
+        self._images = images
+        self._shapes = shapes
+
+    # -- internal helper --------------------------------------------------------
+    @property
+    def _table(self) -> AnnData:
+        """The first (and typically only) AnnData table in the backing SpatialData."""
+        return cast(Any, list(self._sdata.tables.values())[0])
+
+    # -- tabular properties -----------------------------------------------------
+    @property
+    def X(self) -> Matrix:
+        return self._table.X
+
+    @X.setter
+    def X(self, value: Matrix) -> None:
+        self._table.X = _coerce_matrix(value)
+
+    @property
+    def obs(self) -> pd.DataFrame:
+        return self._table.obs
+
+    @obs.setter
+    def obs(self, value: pd.DataFrame) -> None:
+        if len(value) != self.n_obs:
+            raise ValueError(f"obs has {len(value)} rows but X has {self.n_obs} observations")
+        self._table.obs = value
+
+    @property
+    def var(self) -> pd.DataFrame:
+        return self._table.var
+
+    @var.setter
+    def var(self, value: pd.DataFrame) -> None:
+        if len(value) != self.n_vars:
+            raise ValueError(f"var has {len(value)} rows but X has {self.n_vars} variables")
+        self._table.var = value
+
+    @property
+    def obsm(self) -> Any:  # AxisArrays (MutableMapping), not plain dict
+        return self._table.obsm
+
+    @obsm.setter
+    def obsm(self, value: dict[str, np.ndarray]) -> None:
+        for name, arr in value.items():
+            array = np.asarray(arr)
+            if array.ndim == 0 or array.shape[0] != self.n_obs:
+                raise ValueError(
+                    f"obsm {name!r} has shape {array.shape}; "
+                    f"first dimension must be n_obs={self.n_obs}"
+                )
+            if name == SPATIAL_KEY and (array.ndim != 2 or array.shape[1] not in (2, 3)):
+                raise ValueError(
+                    f"obsm[{SPATIAL_KEY!r}] must have shape (n_obs, 2 or 3), got {array.shape}"
+                )
+        self._table.obsm = {k: np.asarray(v) for k, v in value.items()}
+
+    @property
+    def layers(self) -> Any:  # Layers (MutableMapping), not plain dict
+        return self._table.layers
+
+    @layers.setter
+    def layers(self, value: dict[str, Matrix]) -> None:
+        for name, layer in value.items():
+            layer = _coerce_matrix(layer)
+            if layer.shape != self.shape:
+                raise ValueError(
+                    f"layer {name!r} has shape {layer.shape}, expected {self.shape} to match X"
+                )
+        self._table.layers = {k: _coerce_matrix(v) for k, v in value.items()}
+
+    @property
+    def uns(self) -> dict[str, Any]:
+        return self._table.uns
+
+    @uns.setter
+    def uns(self, value: dict[str, Any]) -> None:
+        self._table.uns = dict(value)
+
+    # -- spatial-layer properties -----------------------------------------------
+    @property
+    def images(self) -> dict[str, np.ndarray]:
+        return self._images
+
+    @images.setter
+    def images(self, value: dict[str, np.ndarray]) -> None:
+        self._images = dict(value)
+
+    @property
+    def shapes(self) -> dict[str, Any]:
+        return self._shapes
+
+    @shapes.setter
+    def shapes(self, value: dict[str, Any]) -> None:
+        self._shapes = dict(value)
 
     # -- shape helpers ---------------------------------------------------------
     @property
     def n_obs(self) -> int:
-        return self.X.shape[0]
+        return self._table.n_obs
 
     @property
     def n_vars(self) -> int:
-        return self.X.shape[1]
+        return self._table.n_vars
 
     @property
     def shape(self) -> tuple[int, int]:
@@ -181,7 +336,7 @@ class SpatialTable:
     @property
     def spatial(self) -> np.ndarray | None:
         """Convenience accessor for the canonical spatial coordinates."""
-        return self.obsm.get(SPATIAL_KEY)
+        return self._table.obsm.get(SPATIAL_KEY)
 
     # -- provenance ------------------------------------------------------------
     def record(self, prov: Provenance) -> None:
@@ -194,14 +349,14 @@ class SpatialTable:
 
     def copy(self) -> SpatialTable:
         return SpatialTable(
-            X=self.X.copy(),
+            X=self._table.X.copy(),
             obs=self.obs.copy(),
             var=self.var.copy(),
-            obsm={k: v.copy() for k, v in self.obsm.items()},
-            layers={k: v.copy() for k, v in self.layers.items()},
-            images=copy.deepcopy(self.images),
-            shapes=copy.deepcopy(self.shapes),
-            uns=copy.deepcopy(self.uns),
+            obsm={k: v.copy() for k, v in self._table.obsm.items()},
+            layers={k: v.copy() for k, v in self._table.layers.items() if k is not None},
+            images=copy.deepcopy(self._images),
+            shapes=copy.deepcopy(self._shapes),
+            uns=copy.deepcopy(self._table.uns),
         )
 
     # -- subsetting ------------------------------------------------------------
@@ -219,10 +374,10 @@ class SpatialTable:
             X=self.X[mask],
             obs=self.obs.loc[mask].copy(),
             var=self.var.copy(),
-            obsm={k: v[mask] for k, v in self.obsm.items()},
-            layers={k: v[mask] for k, v in self.layers.items()},
-            images=copy.deepcopy(self.images),
-            shapes=copy.deepcopy(self.shapes),
+            obsm={k: v[mask] for k, v in self._table.obsm.items()},
+            layers={k: v[mask] for k, v in self._table.layers.items() if k is not None},
+            images=copy.deepcopy(self._images),
+            shapes=copy.deepcopy(self._shapes),
             uns=copy.deepcopy(self.uns),
         )
 
@@ -231,8 +386,8 @@ class SpatialTable:
         """Convert to :class:`anndata.AnnData` (requires the ``spatial`` extra).
 
         AnnData models only the molecular/tabular layer, so the spatial layers
-        (``images``/``shapes``) are **not** carried over — use a SpatialData bridge
-        when those must be preserved.
+        (``images``/``shapes``) are **not** carried over — use
+        :meth:`to_spatialdata` when those must be preserved.
         """
         try:
             from anndata import AnnData
@@ -257,8 +412,8 @@ class SpatialTable:
             X=self.X,
             obs=obs,
             var=var,
-            obsm=dict(self.obsm),
-            layers={k: v.copy() for k, v in self.layers.items()},
+            obsm=dict(self._table.obsm),
+            layers={k: v.copy() for k, v in self._table.layers.items() if k is not None},
             uns=_sanitize_uns_for_h5ad(self.uns),
         )
 
@@ -270,19 +425,140 @@ class SpatialTable:
             obs=adata.obs.copy(),
             var=adata.var.copy(),
             obsm={k: np.asarray(v) for k, v in adata.obsm.items()},
-            layers={k: v.copy() for k, v in adata.layers.items()},
+            layers={k: v.copy() for k, v in adata.layers.items() if k is not None},
             uns=dict(adata.uns),
         )
 
+    # -- SpatialData bridge ----------------------------------------------------
+    def to_spatialdata(
+        self,
+        *,
+        table_name: str = "table",
+    ) -> SpatialDataClass:
+        """Convert to a :class:`spatialdata.SpatialData` object (``spatial`` extra).
+
+        Unlike :meth:`to_anndata`, this bridge is **lossless for the spatial layers**:
+        the molecular/tabular part becomes a SpatialData *table* element (an
+        :class:`~anndata.AnnData` wrapped with :class:`spatialdata.models.TableModel`),
+        each entry of :attr:`images` becomes an ``Image2DModel`` element, and each
+        entry of :attr:`shapes` becomes a ``ShapesModel`` element.
+
+        Parameters
+        ----------
+        table_name
+            Key used for the table element inside the returned ``SpatialData``.
+        Notes
+        -----
+        The molecular table is intentionally non-annotating: HistoWeave does not assume
+        that arbitrary image or shape layers have a one-to-one relationship with rows.
+        Images are channel-last and are transposed to SpatialData's channel-first
+        convention on export.
+        """
+        try:
+            import geopandas as gpd
+            from shapely.geometry import Point
+            from spatialdata import SpatialData
+            from spatialdata.models import Image2DModel, ShapesModel, TableModel
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep
+            raise ModuleNotFoundError(
+                "spatialdata (and geopandas/shapely) are required for the SpatialData "
+                "bridge. Install with: pip install 'histoweave-spatial[spatial]'"
+            ) from exc
+
+        table = TableModel.parse(self.to_anndata())
+
+        images: dict[str, Any] = {}
+        for key, img in self.images.items():
+            arr = np.asarray(img)
+            if arr.ndim == 2:  # (y, x) -> (c=1, y, x)
+                parsed = Image2DModel.parse(arr[np.newaxis, ...], dims=("c", "y", "x"))
+            elif arr.ndim == 3:  # (y, x, c) channel-last -> (c, y, x)
+                parsed = Image2DModel.parse(np.transpose(arr, (2, 0, 1)), dims=("c", "y", "x"))
+            else:  # pragma: no cover - defensive
+                raise ValueError(f"image '{key}' must be 2D or 3D, got shape {arr.shape}")
+            images[key] = parsed
+
+        shapes: dict[str, Any] = {}
+        for key, geom in self.shapes.items():
+            if isinstance(geom, gpd.GeoDataFrame):
+                shapes[key] = ShapesModel.parse(geom)
+            else:
+                # Fall back to treating the object as an (n, 2) coordinate array of
+                # circle/point centroids — the minimal Visium-spot representation.
+                coords = np.asarray(geom, dtype=float)
+                gdf = gpd.GeoDataFrame({"geometry": [Point(float(x), float(y)) for x, y in coords]})
+                gdf["radius"] = 1.0
+                shapes[key] = ShapesModel.parse(gdf)
+
+        return SpatialData(images=images, shapes=shapes, tables={table_name: table})
+
+    @classmethod
+    def from_spatialdata(
+        cls,
+        sdata: SpatialDataClass,
+        *,
+        table_name: str | None = None,
+    ) -> SpatialTable:
+        """Build a :class:`SpatialTable` from a :class:`spatialdata.SpatialData`.
+
+        The chosen table element supplies ``X``/``obs``/``var``/``obsm``/``layers``
+        (via :meth:`from_anndata`); every ``images`` element is carried back as a
+        channel-last array in :attr:`images`; every ``shapes`` element is carried
+        back verbatim (as a ``geopandas.GeoDataFrame``) in :attr:`shapes`.
+
+        Parameters
+        ----------
+        table_name
+            Which table element to use. Defaults to the sole table when there is
+            exactly one; raises if ambiguous.
+        """
+        try:
+            import spatialdata  # noqa: F401
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep
+            raise ModuleNotFoundError(
+                "spatialdata is required for the SpatialData bridge. "
+                "Install with: pip install 'histoweave-spatial[spatial]'"
+            ) from exc
+
+        tables = dict(sdata.tables)
+        if not tables:
+            raise ValueError("SpatialData object has no table element to convert")
+        if table_name is None:
+            if len(tables) != 1:
+                raise ValueError(f"multiple tables {list(tables)}; pass table_name explicitly")
+            table_name = next(iter(tables))
+        table = tables[table_name]
+
+        st = cls.from_anndata(table)
+
+        for key, img in dict(sdata.images).items():
+            arr = np.asarray(img.data if hasattr(img, "data") else img)
+            # SpatialData images are channel-first (c, y, x) -> channel-last.
+            if arr.ndim == 3:
+                arr = np.transpose(arr, (1, 2, 0))
+                if arr.shape[-1] == 1:
+                    arr = arr[..., 0]
+            st.images[key] = arr
+
+        for key, geom in dict(sdata.shapes).items():
+            st.shapes[key] = geom
+
+        return st
+
     def __repr__(self) -> str:
-        obsm_keys = ", ".join(self.obsm) or "-"
-        layer_keys = ", ".join(self.layers) or "-"
-        spatial_keys = ", ".join([*self.images, *self.shapes]) or "-"
+        obsm_keys = ", ".join(self._table.obsm) or "-"
+        layer_keys = ", ".join(k for k in self._table.layers if k is not None) or "-"
+        spatial_keys = ", ".join([*self._images, *self._shapes]) or "-"
         return (
             f"SpatialTable(n_obs={self.n_obs}, n_vars={self.n_vars}, "
             f"obsm=[{obsm_keys}], layers=[{layer_keys}], spatial=[{spatial_keys}], "
             f"provenance_steps={len(self.provenance)})"
         )
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
 
 def _sanitize_uns_for_h5ad(uns: dict[str, Any]) -> dict[str, Any]:

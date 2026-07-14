@@ -1,0 +1,11 @@
+diff --git a/src/histoweave/plugins/interfaces.py b/src/histoweave/plugins/interfaces.py
+--- a/src/histoweave/plugins/interfaces.py
++++ b/src/histoweave/plugins/interfaces.py
+@@ -160,0 +161,1 @@
++    maturity: MethodMaturity = MethodMaturity.EXPERIMENTAL
+@@ -164,0 +166,5 @@
++
++    def __post_init__(self) -> None:
++        """Coerce string values so external plugin manifests remain ergonomic."""
++        if not isinstance(self.maturity, MethodMaturity):
++            object.__setattr__(self, "maturity", MethodMaturity(self.maturity))

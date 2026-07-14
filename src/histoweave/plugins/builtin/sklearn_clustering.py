@@ -55,9 +55,7 @@ class DBSCANDomains(SklearnClusterMethod):
 @register_sklearn_clusterer(
     name="agglomerative",
     clusterer_cls="sklearn.cluster.AgglomerativeClustering",
-    method_params=(
-        ParamSpec("n_domains", "int", 3, "Number of clusters to cut the tree at."),
-    ),
+    method_params=(ParamSpec("n_domains", "int", 3, "Number of clusters to cut the tree at."),),
     param_mapping={"n_domains": "n_clusters"},
     summary="Ward hierarchical clustering on spatial-PCA embedding.",
     wraps="sklearn.cluster.AgglomerativeClustering",
@@ -85,9 +83,7 @@ def _adapt_spectral_kwargs(
 @register_sklearn_clusterer(
     name="spectral",
     clusterer_cls="sklearn.cluster.SpectralClustering",
-    method_params=(
-        ParamSpec("n_domains", "int", 3, "Number of clusters."),
-    ),
+    method_params=(ParamSpec("n_domains", "int", 3, "Number of clusters."),),
     param_mapping={"n_domains": "n_clusters"},
     static_kwargs={"affinity": "nearest_neighbors", "assign_labels": "kmeans"},
     adapt_kwargs="_adapt_spectral_kwargs",
@@ -115,9 +111,7 @@ def _gmm_post_fit(
 @register_sklearn_clusterer(
     name="gaussian_mixture",
     clusterer_cls="sklearn.mixture.GaussianMixture",
-    method_params=(
-        ParamSpec("n_domains", "int", 3, "Number of mixture components."),
-    ),
+    method_params=(ParamSpec("n_domains", "int", 3, "Number of mixture components."),),
     param_mapping={"n_domains": "n_components", "random_state": "random_state"},
     static_kwargs={"n_init": 5},
     post_fit_hook="_gmm_post_fit",
@@ -138,7 +132,9 @@ class GaussianMixtureDomains(SklearnClusterMethod):
     clusterer_cls="sklearn.cluster.MeanShift",
     method_params=(
         ParamSpec(
-            "bandwidth", "float|None", None,
+            "bandwidth",
+            "float|None",
+            None,
             "Kernel bandwidth; None lets sklearn estimate it.",
         ),
     ),
@@ -156,9 +152,7 @@ class MeanShiftDomains(SklearnClusterMethod):
 @register_sklearn_clusterer(
     name="optics",
     clusterer_cls="sklearn.cluster.OPTICS",
-    method_params=(
-        ParamSpec("min_samples", "int", 5, "Min points to form a core point."),
-    ),
+    method_params=(ParamSpec("min_samples", "int", 5, "Min points to form a core point."),),
     param_mapping={"min_samples": "min_samples"},
     summary="OPTICS density-based clustering (handles varying density).",
     wraps="sklearn.cluster.OPTICS",
@@ -213,9 +207,7 @@ class MiniBatchKMeansDomains(SklearnClusterMethod):
 @register_sklearn_clusterer(
     name="bisecting_kmeans",
     clusterer_cls="sklearn.cluster.BisectingKMeans",
-    method_params=(
-        ParamSpec("n_domains", "int", 3, "Number of clusters."),
-    ),
+    method_params=(ParamSpec("n_domains", "int", 3, "Number of clusters."),),
     param_mapping={
         "n_domains": "n_clusters",
         "random_state": "random_state",

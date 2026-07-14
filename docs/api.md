@@ -1,47 +1,78 @@
 # API Reference
 
 The API reference is generated from HistoWeave's source and docstrings with
-mkdocstrings. The package-level modules below are the supported entry points for
-data containers, workflows, plugins, ingestion, benchmarking, and reporting.
+[mkdocstrings](https://mkdocstrings.github.io/).  The modules below are the
+supported entry points for data containers, workflows, plugins, ingestion,
+benchmarking, and reporting.
 
 ## Top-level API
 
 ::: histoweave
     options:
       members: true
+      show_root_heading: true
 
-## Data model
+## Data model ? `histoweave.data`
 
-::: histoweave.data
+::: histoweave.data.model
     options:
       members: true
+      show_root_heading: true
 
-## Workflow engine
+## Datasets ? `histoweave.datasets`
+
+::: histoweave.datasets
+    options:
+      members: true
+      show_root_heading: true
+
+## Workflow engine ? `histoweave.workflow`
 
 ::: histoweave.workflow
     options:
       members: true
+      show_root_heading: true
 
-## Plugin system
+## Plugin system ? `histoweave.plugins`
 
-::: histoweave.plugins
+::: histoweave.plugins.interfaces
+    options:
+      members: true
+      show_root_heading: true
+
+::: histoweave.plugins.registry
+    options:
+      members: true
+      show_root_heading: true
+
+## I/O and portable bundles ? `histoweave.io`
+
+### Base reader
+
+::: histoweave.io.base
+
+### Per-assay readers
+
+::: histoweave.io.readers
     options:
       members: true
 
-## Input and portable bundles
+### Bundle persistence
 
-::: histoweave.io
+::: histoweave.io.bundle
     options:
       members: true
 
-## Benchmarking
+## Benchmarking ? `histoweave.benchmark`
 
 ::: histoweave.benchmark
     options:
       members: true
+      show_root_heading: true
 
-## Reporting
+## Reporting ? `histoweave.report`
 
 ::: histoweave.report
     options:
       members: true
+      show_root_heading: true

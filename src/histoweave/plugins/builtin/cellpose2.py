@@ -6,8 +6,10 @@ import numpy as np
 
 from ...data import SpatialTable
 from ..interfaces import (
+    BackendRequirement,
     Method,
     MethodCategory,
+    MethodImplementation,
     MethodMaturity,
     MethodSpec,
     ParamSpec,
@@ -45,6 +47,21 @@ class Cellpose2Segmentation(Method):
             ParamSpec("flow_threshold", "float", 0.4, "Flow-error threshold.", minimum=0.0),
             ParamSpec("cellprob_threshold", "float", 0.0, "Cell probability threshold."),
             ParamSpec("min_size", "int", 15, "Minimum object size in pixels.", minimum=1),
+            ParamSpec("batch_size", "int", 8, "Inference batch size.", minimum=1),
+            ParamSpec(
+                "anisotropy",
+                "float|None",
+                None,
+                "Z-to-XY voxel-size ratio for 3D segmentation.",
+                minimum=0.01,
+            ),
+            ParamSpec(
+                "stitch_threshold",
+                "float",
+                0.0,
+                "Threshold for stitching masks between 2D planes.",
+                minimum=0.0,
+            ),
         ),
         assumptions=(
             "SpatialTable.images[image_key] is a numeric 2D/3D image array.",
@@ -55,6 +72,8 @@ class Cellpose2Segmentation(Method):
         maturity=MethodMaturity.BETA,
         wraps="cellpose 2.x CellposeModel",
         language="python",
+        implementation=MethodImplementation.EXTERNAL,
+        backends=(BackendRequirement("cellpose", ">=2,<3", "cellpose2"),),
     )
 
     def run(self, data: SpatialTable) -> SpatialTable:
@@ -79,6 +98,15 @@ class Cellpose2Segmentation(Method):
         channels = list(self.params["channels"])
         if len(channels) != 2 or not all(isinstance(value, int) for value in channels):
             raise ValueError("Cellpose channels must be a two-integer list")
+        if any(value < 0 or value > 3 for value in channels):
+            raise ValueError("Cellpose channel selectors must be between 0 and 3")
+        channel_axis = _normalize_axis(self.params["channel_axis"], image.ndim, "channel_axis")
+        z_axis = _normalize_axis(self.params["z_axis"], image.ndim, "z_axis")
+        if channel_axis is not None and z_axis == channel_axis:
+            raise ValueError("Cellpose channel_axis and z_axis must be different")
+        expected_shapes = _mask_shape_candidates(image.shape, channel_axis)
+        if bool(self.params["do_3d"]) and not any(len(shape) == 3 for shape in expected_shapes):
+            raise ValueError("Cellpose 3D mode requires three spatial dimensions")
 
         result = data.copy()
         model = models.CellposeModel(
@@ -89,25 +117,28 @@ class Cellpose2Segmentation(Method):
             image,
             diameter=self.params["diameter"],
             channels=channels,
-            channel_axis=self.params["channel_axis"],
-            z_axis=self.params["z_axis"],
+            channel_axis=channel_axis,
+            z_axis=z_axis,
             do_3D=bool(self.params["do_3d"]),
             normalize=bool(self.params["normalize"]),
             invert=bool(self.params["invert"]),
             flow_threshold=float(self.params["flow_threshold"]),
             cellprob_threshold=float(self.params["cellprob_threshold"]),
             min_size=int(self.params["min_size"]),
+            batch_size=int(self.params["batch_size"]),
+            anisotropy=self.params["anisotropy"],
+            stitch_threshold=float(self.params["stitch_threshold"]),
         )
         if not isinstance(evaluated, tuple) or not evaluated:
             raise RuntimeError("Cellpose returned an unexpected result")
         masks = np.asarray(evaluated[0])
-        expected_shape = tuple(
-            size for axis, size in enumerate(image.shape) if axis != self.params["channel_axis"]
-        )
-        if masks.shape != expected_shape:
+        if masks.shape not in expected_shapes:
             raise RuntimeError(
-                f"Cellpose mask shape {masks.shape} does not match image plane {expected_shape}"
+                f"Cellpose mask shape {masks.shape} is incompatible with image shape "
+                f"{image.shape}; expected one of {sorted(expected_shapes)}"
             )
+        if bool(self.params["do_3d"]) and masks.ndim != 3:
+            raise RuntimeError("Cellpose 3D mode did not return a three-dimensional mask")
         if not np.issubdtype(masks.dtype, np.integer) or (masks < 0).any():
             raise RuntimeError("Cellpose masks must be non-negative integer labels")
 
@@ -118,6 +149,35 @@ class Cellpose2Segmentation(Method):
             "image_key": image_key,
             "mask_key": mask_key,
             "model_type": self.params["model_type"],
-            "n_instances": int(masks.max(initial=0)),
+            "n_instances": int(np.count_nonzero(np.unique(masks) > 0)),
+            "max_label": int(masks.max(initial=0)),
+            "mask_shape": list(masks.shape),
         }
         return self.finalize(result, step="segmentation")
+
+
+def _normalize_axis(axis: int | None, ndim: int, name: str) -> int | None:
+    if axis is None:
+        return None
+    normalized = int(axis)
+    if normalized < 0:
+        normalized += ndim
+    if normalized < 0 or normalized >= ndim:
+        raise ValueError(f"Cellpose {name}={axis} is out of bounds for a {ndim}D image")
+    return normalized
+
+
+def _mask_shape_candidates(
+    image_shape: tuple[int, ...], channel_axis: int | None
+) -> set[tuple[int, ...]]:
+    candidates = {tuple(image_shape)}
+    if channel_axis is not None:
+        candidates.add(tuple(size for axis, size in enumerate(image_shape) if axis != channel_axis))
+    elif len(image_shape) in (3, 4):
+        # Cellpose 2 auto-detects a small channel axis when channel_axis is omitted.
+        for axis, size in enumerate(image_shape):
+            if size <= 4:
+                candidates.add(
+                    tuple(value for index, value in enumerate(image_shape) if index != axis)
+                )
+    return candidates

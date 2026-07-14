@@ -44,9 +44,6 @@
   .vitessce-loading { padding: 2rem; text-align: center; color: #7a7a8c;
                       font-style: italic; }
 </style>
-<!-- Vitessce v3 CDN -->
-<link rel="stylesheet" href="https://unpkg.com/vitessce@3.5.7/dist/umd/production/index.min.css"
-      onerror="document.getElementById('vitessce-container').innerHTML='<div class=\'vitessce-error\'>Vitessce CDN unavailable — showing static plots below.</div>'; document.getElementById('vitessce-container').style.minHeight='auto';">
 </head>
 <body>
 <header>
@@ -130,55 +127,68 @@ fully reproducible.</p>
   <a href="https://vitessce.io" rel="noopener">Vitessce</a>.
 </footer>
 
-<!-- Vitessce initialisation with inline data -->
-<script src="https://unpkg.com/vitessce@3.5.7/dist/umd/production/index.min.js"
-        onerror="document.getElementById('vitessce-container').innerHTML='<div class=\'vitessce-error\'>Vitessce CDN unavailable — see static plots below.</div>'; document.getElementById('vitessce-container').style.minHeight='auto';">
-</script>
-<script>
-(function() {
-  var container = document.getElementById('vitessce-container');
-  try {
-    var raw = {{ vitessce_json|safe }};
-    if (!raw || !raw.config) {
-      container.innerHTML = '<div class="vitessce-error">No spatial data available for interactive viewer — see static plots below.</div>';
-      container.style.minHeight = 'auto';
-      return;
-    }
+<!-- Inline Vitessce payload (config + inline CSV data files) -->
+<script id="vitessce-payload" type="application/json">{{ vitessce_json|safe }}</script>
 
-    // Build blob URLs from inline data files so Vitessce can load them
-    var config = raw.config;
-    var dataFiles = raw.data || {};
-    var geneNames = raw.gene_names || [];
-
-    // Replace file references with blob URLs pointing at the inline data
-    config.datasets.forEach(function(ds) {
-      ds.files.forEach(function(file) {
-        var key = file.fileType || 'cells.json';
-        if (key === 'cells.json' && ds.uid === 'histoweave_scatterplot') {
-          key = 'cells.json';
-        } else if (key === 'cells.json' && ds.uid === 'histoweave_heatmap') {
-          key = 'heatmap_cells.json';
-        }
-        if (dataFiles[key]) {
-          var blob = new Blob([dataFiles[key]], {type: 'application/json'});
-          file.url = URL.createObjectURL(blob);
-        }
-      });
-    });
-
-    // Create Vitessce instance
-    if (typeof Vitessce !== 'undefined') {
-      var vc = Vitessce.render({config: config}, container);
-      container.querySelector('.vitessce-loading').style.display = 'none';
-    } else {
-      container.innerHTML = '<div class="vitessce-error">Vitessce failed to load — see static plots below.</div>';
-      container.style.minHeight = 'auto';
-    }
-  } catch (e) {
-    container.innerHTML = '<div class="vitessce-error">Vitessce initialisation error: ' + e.message + ' — see static plots below.</div>';
-    container.style.minHeight = 'auto';
+<!--
+  Vitessce v3.5.7 is an ES module with react / react-dom peer dependencies.
+  The official distribution is loaded from jsdelivr; inline CSV strings are
+  rewritten to blob URLs before the React component is mounted.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "vitessce": "https://cdn.jsdelivr.net/npm/vitessce@3.5.7/dist/index.min.js"
   }
-})();
+}
+</script>
+<script type="module">
+  const container = document.getElementById('vitessce-container');
+  const fail = (msg) => {
+    container.innerHTML = '<div class="vitessce-error">' + msg +
+      ' — see static plots below.</div>';
+    container.style.minHeight = 'auto';
+  };
+  try {
+    const payloadEl = document.getElementById('vitessce-payload');
+    const raw = JSON.parse(payloadEl.textContent || '{}');
+    if (!raw || !raw.config || !raw.config.datasets) {
+      fail('No spatial data available for interactive viewer');
+    } else {
+      const [React, { createRoot }, vitessce] = await Promise.all([
+        import('react'),
+        import('react-dom/client'),
+        import('vitessce'),
+      ]);
+      const Vitessce = vitessce.Vitessce;
+      if (!Vitessce) throw new Error('Vitessce component not found in module');
+
+      const dataFiles = raw.data || {};
+      raw.config.datasets.forEach((dataset) => {
+        (dataset.files || []).forEach((file) => {
+          const ref = typeof file.url === 'string' && file.url.startsWith('inline:')
+            ? file.url.slice('inline:'.length) : null;
+          if (ref && dataFiles[ref] != null) {
+            const blob = new Blob([dataFiles[ref]], { type: 'text/csv' });
+            file.url = URL.createObjectURL(blob);
+          }
+        });
+      });
+
+      const loading = container.querySelector('.vitessce-loading');
+      if (loading) loading.remove();
+      createRoot(container).render(
+        React.createElement(Vitessce, { config: raw.config, theme: 'light', height: 520 })
+      );
+      container.setAttribute('data-vitessce-ready', 'true');
+    }
+  } catch (error) {
+    fail('Vitessce initialisation error: ' +
+      (error && error.message ? error.message : error));
+  }
 </script>
 </body>
 </html>

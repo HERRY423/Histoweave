@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -94,3 +95,19 @@ def test_banksy_and_spatialde_are_registered():
     methods = {(item["category"], item["name"]): item for item in list_methods()}
     assert methods[("domain_detection", "banksy")]["language"] == "container"
     assert methods[("svg", "spatialde")]["language"] == "python"
+
+
+def test_banksy_r_script_normalizes_before_spatial_clustering():
+    script_path = (
+        Path(__file__).parents[1]
+        / "workflows"
+        / "containers"
+        / "histoweave-r"
+        / "histoweave-banksy.R"
+    )
+    script = script_path.read_text(encoding="utf-8")
+    library_factors = script.index("scuttle::computeLibraryFactors")
+    log_normalization = script.index("scuttle::logNormCounts")
+    compute_banksy = script.index("Banksy::computeBanksy")
+    assert library_factors < log_normalization < compute_banksy
+    assert script.count('assay_name = "logcounts"') == 3

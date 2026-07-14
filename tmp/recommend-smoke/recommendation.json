@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "task": "domain_detection",
+  "dataset_name": "new_sample",
+  "ranked_methods": [
+    {
+      "method": "kmeans",
+      "score": 0.8195,
+      "confidence": 0.4314,
+      "wins": 1,
+      "neighbour_scores": {
+        "clean": 0.94,
+        "noisy": 0.48,
+        "regular": 0.7
+      },
+      "uncertainty": 0.1427,
+      "support": 3,
+      "coverage": 1.0
+    },
+    {
+      "method": "spectral",
+      "score": 0.8132,
+      "confidence": 0.4314,
+      "wins": 2,
+      "neighbour_scores": {
+        "clean": 0.82,
+        "noisy": 0.77,
+        "regular": 0.88
+      },
+      "uncertainty": 0.0207,
+      "support": 3,
+      "coverage": 1.0
+    }
+  ],
+  "neighbours": [
+    {
+      "name": "clean",
+      "similarity": 1.0,
+      "distance": 0.0,
+      "best_method": "kmeans"
+    },
+    {
+      "name": "noisy",
+      "similarity": 0.3184,
+      "distance": 0.6816,
+      "best_method": "spectral"
+    },
+    {
+      "name": "regular",
+      "similarity": 0.1042,
+      "distance": 0.8958,
+      "best_method": "spectral"
+    }
+  ],
+  "feature_order": [
+    "n_obs",
+    "n_vars",
+    "aspect_ratio",
+    "sparsity",
+    "mean_nonzero",
+    "library_mean",
+    "library_cv",
+    "expression_entropy",
+    "spatial_autocorrelation",
+    "cluster_tendency",
+    "mean_nn_distance",
+    "spatial_density_cv",
+    "spatial_entropy",
+    "effective_rank_90",
+    "effective_rank_95",
+    "sv_entropy"
+  ],
+  "feature_vector": [
+    55.0,
+    16.0,
+    0.2909090909090909,
+    0.22499999999999998,
+    4.4530791788856305,
+    55.21818181818182,
+    0.17019142483014724,
+    3.7422620522100196,
+    0.2948397913983156,
+    0.4879898985283999,
+    0.158657649750305,
+    0.45089442791375367,
+    5.194729486133925,
+    7.0,
+    9.0,
+    0.5630745432651674
+  ],
+  "warnings": [],
+  "ensemble_suggestion": "Run kmeans and spectral; align their labels, retain consensus regions, and flag disagreements for review. This is a suggestion, not an executed ensemble."
+}

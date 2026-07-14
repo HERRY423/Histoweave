@@ -25,6 +25,14 @@ def method_coverage_report() -> dict[str, object]:
     image_expression = sum(
         1 for method in methods if {"image", "expression"}.issubset(method["modalities"])
     )
+    external = sum(1 for method in methods if method["implementation"] == "external")
+    critical_names = {"cell2location", "banksy", "spatialde", "cellpose2", "scanvi"}
+    critical = {method["name"]: method for method in methods if method["name"] in critical_names}
+    critical_external = (
+        set(critical) == critical_names
+        and all(method["implementation"] == "external" for method in critical.values())
+        and all(method["backends"] for method in critical.values())
+    )
 
     def ratio(value: int) -> float:
         return value / total if total else 0.0
@@ -41,6 +49,8 @@ def method_coverage_report() -> dict[str, object]:
         "experimental_below_5_percent": ratios["experimental"] < 0.05,
         "deep_learning_at_least_10": deep_learning >= 10,
         "image_expression_multimodal": image_expression > 0,
+        "external_wrappers_at_least_15": external >= 15,
+        "critical_methods_use_real_backends": critical_external,
     }
     return {
         "total_methods": total,
@@ -50,6 +60,7 @@ def method_coverage_report() -> dict[str, object]:
             "experimental": experimental,
             "deep_learning": deep_learning,
             "image_expression": image_expression,
+            "external_wrappers": external,
         },
         "ratios": ratios,
         "targets": targets,

@@ -26,9 +26,13 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [
+    "anndata>=0.10",
     "numpy>=1.24",
     "pandas>=2.0",
     "jinja2>=3.1",
+    "packaging>=23",
+    "scipy>=1.10",
+    "spatialdata>=0.1",
 ]
 dynamic = ["version"]
 
@@ -37,6 +41,8 @@ spatial = [
     "anndata>=0.10",
     "spatialdata>=0.1",
     "spatialdata-io>=0.1",
+    "geopandas>=0.14",
+    "shapely>=2.0",
     "zarr>=2.16",
     "dask>=2024.1.0",
 ]
@@ -48,6 +54,7 @@ liana = ["anndata>=0.10", "liana>=1.2"]
 scanvi = ["anndata>=0.10", "scvi-tools>=1.3"]
 celltypist = ["anndata>=0.10", "celltypist>=1.7"]
 cellpose2 = ["cellpose>=2,<3"]
+harmony = ["harmonypy>=0.0.9", "scikit-learn>=1.3"]
 deep-learning = ["torch>=2.2"]
 docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
 dev = [
@@ -63,7 +70,7 @@ dev = [
     "scipy>=1.10",
 ]
 all = [
-    "histoweave-spatial[io,spatial,scanpy,spatialde,cell2location,liana,scanvi,celltypist,cellpose2,deep-learning,docs,dev]"
+    "histoweave-spatial[io,spatial,scanpy,spatialde,cell2location,liana,scanvi,celltypist,cellpose2,harmony,deep-learning,docs,dev]"
 ]
 
 [project.scripts]

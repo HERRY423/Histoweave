@@ -27,12 +27,20 @@ import pandas as pd
 
 from ..._math import zscore
 from ...data import SpatialTable
-from ..interfaces import Method, MethodCategory, MethodSpec, ParamSpec
+from ..interfaces import (
+    BackendRequirement,
+    Method,
+    MethodCategory,
+    MethodImplementation,
+    MethodSpec,
+    ParamSpec,
+)
 from ..registry import register
 
 # ---------------------------------------------------------------------------
 # Shared embedding helpers (same as before, kept here so the base is self-contained)
 # ---------------------------------------------------------------------------
+
 
 def _spatial_embedding(
     data: SpatialTable,
@@ -81,6 +89,7 @@ _COMMON_PARAMS: tuple[ParamSpec, ...] = (
 # ---------------------------------------------------------------------------
 # Base class
 # ---------------------------------------------------------------------------
+
 
 class SklearnClusterMethod(Method):
     """Generic domain-detection method backed by an sklearn clusterer.
@@ -167,6 +176,7 @@ class SklearnClusterMethod(Method):
 # Decorator that auto-generates a registered sklearn-clustering method
 # ---------------------------------------------------------------------------
 
+
 def register_sklearn_clusterer(
     *,
     name: str,
@@ -244,6 +254,8 @@ def register_sklearn_clusterer(
             params=all_params,
             assumptions=assumptions or ("scikit-learn installed.",),
             wraps=wraps or clusterer_cls,
+            implementation=MethodImplementation.EXTERNAL,
+            backends=(BackendRequirement("scikit-learn", ">=1.3", "scanpy"),),
         )
 
         # Attach configuration to the class (or its parent via direct assignment).

@@ -6,6 +6,20 @@ All notable changes to this project will be documented here. The format is based
 
 ## [Unreleased]
 
+### Added - real method adapters and method lifecycle
+
+- Registered strict adapters for cell2location, Bioconductor BANKSY, SpatialDE,
+  Cellpose 2, and scANVI. Missing optional backends now fail with installation
+  diagnostics; none of these adapters falls back to a heuristic substitute.
+- Added structured external-backend requirements and release gates covering the
+  critical scientific methods and the broader external-wrapper catalogue.
+- Versioned registry identities as `category:name@version`, with latest-active
+  resolution, exact version pinning in the SDK, pipeline, CLI, manifests, and
+  provenance, plus all-version discovery.
+- Added visible deprecation warnings, exact replacement targets, scheduled removal
+  metadata, declarative parameter renames/removals, cycle-safe chained migration,
+  and final-schema validation through `migrate_method_params`.
+
 ### Added - method coverage and multimodal maturity
 
 - Expanded the built-in registry from 33 to 51 runnable method contracts.

@@ -1,0 +1,33 @@
+diff --git a/src/histoweave/plugins/registry.py b/src/histoweave/plugins/registry.py
+--- a/src/histoweave/plugins/registry.py
++++ b/src/histoweave/plugins/registry.py
+@@ -13,1 +13,7 @@
+-from .interfaces import Method, MethodCategory, MethodSpec
++from .interfaces import (
++    METHOD_MATURITY_POLICIES,
++    Method,
++    MethodCategory,
++    MethodMaturity,
++    MethodSpec,
++)
+@@ -49,0 +56,4 @@
++
++def _coerce_maturity(maturity: str | MethodMaturity) -> MethodMaturity:
++    return maturity if isinstance(maturity, MethodMaturity) else MethodMaturity(maturity)
++
+@@ -71,0 +82,1 @@
++    minimum_maturity: str | MethodMaturity | None = None,
+@@ -80,0 +92,4 @@
++    minimum_rank = (
++        METHOD_MATURITY_POLICIES[_coerce_maturity(minimum_maturity)].rank
++        if minimum_maturity is not None else None
++    )
+@@ -87,0 +103,4 @@
++        policy = METHOD_MATURITY_POLICIES[spec.maturity]
++        if minimum_rank is not None and policy.rank < minimum_rank:
++            continue
++
+@@ -96,0 +116,3 @@
++                "maturity": spec.maturity.value,
++                "maturity_rank": policy.rank,
++                "quality_requirements": list(policy.requirements),

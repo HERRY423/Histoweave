@@ -53,8 +53,6 @@ def _emit(
     log_event(_LOGGER, logging.DEBUG, "cli.output", message, channel=channel)
 
 
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="histoweave", description=__doc__.splitlines()[0])
     parser.add_argument("--version", action="store_true", help="Print version and exit.")
@@ -78,6 +76,11 @@ def main(argv: list[str] | None = None) -> int:
     p_list.add_argument("--category", help="Filter by method category (e.g. qc, domain_detection).")
     p_list.add_argument("--assay", help="Filter by assay applicability (e.g. xenium).")
     p_list.add_argument("--json", action="store_true", help="Emit JSON.")
+    p_list.add_argument(
+        "--all-versions",
+        action="store_true",
+        help="Include deprecated and superseded method releases.",
+    )
 
     p_run = sub.add_parser("run", help="Run the default pipeline and write a report.")
     p_run.add_argument("--demo", action="store_true", help="Use the synthetic demo dataset.")
@@ -148,11 +151,15 @@ def main(argv: list[str] | None = None) -> int:
     p_step = sub.add_parser("step", help="Run one analysis method over a bundle.")
     p_step.add_argument("category", help="Method category, e.g. qc or domain_detection.")
     p_step.add_argument("--method", required=True, help="Registered method name.")
+    p_step.add_argument("--method-version", help="Exact registered wrapper version.")
     p_step.add_argument("--in", dest="in_path", required=True, help="Input bundle directory.")
     p_step.add_argument("--out", required=True, help="Output bundle directory.")
     p_step.add_argument("--force", action="store_true", help="Replace an existing bundle.")
     p_step.add_argument(
-        "--param", action="append", default=[], metavar="KEY=VALUE",
+        "--param",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
         help="Method parameter (repeatable); values are coerced to int/float/bool/str.",
     )
 
@@ -209,7 +216,11 @@ def _cmd_version() -> int:
 def _cmd_list_methods(args) -> int:
     from .plugins import list_methods
 
-    methods = list_methods(category=args.category, assay=args.assay)
+    methods = list_methods(
+        category=args.category,
+        assay=args.assay,
+        all_versions=args.all_versions,
+    )
     if args.json:
         _emit(json.dumps(methods, indent=2))
         return 0
@@ -243,7 +254,8 @@ def _cmd_list_methods(args) -> int:
                 line += f" {task_name:<16} {score_str:<6} {rank:<4}"
             else:
                 line += " -                -      -   "
-        line += f" {m['summary']}"
+        lifecycle = " [DEPRECATED]" if m["deprecated"] else ""
+        line += f"{lifecycle} {m['summary']}"
         _emit(line)
     return 0
 
@@ -516,7 +528,12 @@ def _cmd_step(args) -> int:
         data = read_bundle(args.in_path)
         result, record = execute_step(
             data,
-            PipelineStep(args.category, args.method, params),
+            PipelineStep(
+                args.category,
+                args.method,
+                params,
+                method_version=args.method_version,
+            ),
         )
     except (FileNotFoundError, RuntimeError, TypeError, ValueError, KeyError) as exc:
         _emit(f"error: {exc}", file=sys.stderr)
