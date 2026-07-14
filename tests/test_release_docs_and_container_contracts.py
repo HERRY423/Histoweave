@@ -37,13 +37,15 @@ def test_nextflow_smoke_runs_the_complete_local_demo_profile() -> None:
     assert "if: always()" in workflow
 
 
-def test_container_workflow_pushes_both_images_to_ghcr() -> None:
+def test_container_workflow_validates_prs_and_pushes_main_images() -> None:
     workflow = _read(WORKFLOWS / "containers.yml")
     assert "packages: write" in workflow
     assert "docker/login-action@v3" in workflow
     assert "docker/metadata-action@v5" in workflow
     assert "docker/build-push-action@v6" in workflow
-    assert "push: true" in workflow
+    assert "pull_request:" in workflow
+    assert "if: github.event_name != 'pull_request'" in workflow
+    assert "push: ${{ github.event_name != 'pull_request' }}" in workflow
     assert "sbom: true" in workflow
     for name in ("histoweave-python", "histoweave-r"):
         assert f"name: {name}" in workflow
