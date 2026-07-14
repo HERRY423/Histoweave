@@ -18,6 +18,7 @@ from ..interfaces import (
     ParamSpec,
 )
 from ..registry import register
+from ._validation import validate_count_matrix
 
 if TYPE_CHECKING:
     from anndata import AnnData
@@ -78,18 +79,24 @@ class SCANVIAnnotation(Method):
         labels_key = self.params["labels_key"]
         if labels_key not in result.obs:
             raise KeyError(f"scANVI labels column {labels_key!r} does not exist")
+        if result.obs[labels_key].isna().any():
+            raise ValueError("scANVI labels must not contain missing values")
         labels = result.obs[labels_key].astype(str)
         unlabeled = self.params["unlabeled_category"]
         if unlabeled not in set(labels):
             raise ValueError(f"scANVI labels must include unlabeled category {unlabeled!r}")
-        if not (labels != unlabeled).any():
-            raise ValueError("scANVI requires at least one labelled observation")
+        labelled_classes = sorted(set(labels) - {unlabeled})
+        if len(labelled_classes) < 2:
+            raise ValueError("scANVI requires at least two labelled cell-type classes")
+        result.obs[labels_key] = pd.Categorical(labels)
         batch_key = self.params["batch_key"]
         if batch_key is not None and batch_key not in result.obs:
             raise KeyError(f"scANVI batch column {batch_key!r} does not exist")
         layer = self.params["layer"]
         if layer is not None and layer not in result.layers:
             raise KeyError(f"scANVI count layer {layer!r} does not exist")
+        count_matrix = result.X if layer is None else result.layers[layer]
+        validate_count_matrix(count_matrix, method="scANVI")
 
         scvi.settings.seed = int(self.params["seed"])
         scvi.model.SCVI.setup_anndata(
@@ -116,30 +123,53 @@ class SCANVIAnnotation(Method):
 
         predictions = model.predict(adata=result, soft=False)
         probabilities_value = model.predict(adata=result, soft=True)
-        probabilities = (
-            probabilities_value.to_numpy()
-            if hasattr(probabilities_value, "to_numpy")
-            else np.asarray(probabilities_value)
-        )
+        expected_obs = pd.Index(result.obs_names.astype(str))
+        if isinstance(probabilities_value, pd.DataFrame):
+            probability_frame = probabilities_value.copy()
+            probability_frame.index = probability_frame.index.astype(str)
+            if probability_frame.index.has_duplicates or probability_frame.columns.has_duplicates:
+                raise RuntimeError("scANVI returned duplicate probability labels")
+            if not expected_obs.isin(probability_frame.index).all():
+                raise RuntimeError("scANVI probability rows do not match input observations")
+            probability_frame = probability_frame.reindex(expected_obs)
+            probabilities = probability_frame.to_numpy()
+        else:
+            probabilities = np.asarray(probabilities_value)
         probabilities = np.asarray(probabilities, dtype=float)
         if probabilities.ndim != 2 or probabilities.shape[0] != result.n_obs:
             raise RuntimeError("scANVI returned an invalid probability matrix")
         if not np.isfinite(probabilities).all():
             raise RuntimeError("scANVI returned non-finite probabilities")
+        if (probabilities < -1e-6).any() or (probabilities > 1 + 1e-6).any():
+            raise RuntimeError("scANVI probabilities must lie between zero and one")
+        if not np.allclose(probabilities.sum(axis=1), 1.0, rtol=1e-4, atol=1e-4):
+            raise RuntimeError("scANVI probability rows must sum to one")
 
-        predicted = np.asarray(predictions).reshape(-1).astype(str)
+        if isinstance(predictions, pd.Series):
+            predicted_series = predictions.copy()
+            predicted_series.index = predicted_series.index.astype(str)
+            if (
+                predicted_series.index.has_duplicates
+                or not expected_obs.isin(predicted_series.index).all()
+            ):
+                raise RuntimeError("scANVI prediction rows do not match input observations")
+            predicted = predicted_series.reindex(expected_obs).to_numpy().astype(str)
+        else:
+            predicted = np.asarray(predictions).reshape(-1).astype(str)
         if predicted.shape[0] != result.n_obs:
             raise RuntimeError("scANVI returned the wrong number of labels")
         if hasattr(probabilities_value, "columns"):
             classes = [str(value) for value in probabilities_value.columns]
         else:
-            classes = sorted(set(labels) - {unlabeled})
+            classes = labelled_classes
             if len(classes) != probabilities.shape[1]:
                 classes = [f"class_{index}" for index in range(probabilities.shape[1])]
 
-        latent = np.asarray(model.get_latent_representation(adata=result))
+        latent = np.asarray(model.get_latent_representation(adata=result), dtype=float)
         if latent.ndim != 2 or latent.shape[0] != result.n_obs:
             raise RuntimeError("scANVI returned an invalid latent representation")
+        if not np.isfinite(latent).all():
+            raise RuntimeError("scANVI returned a non-finite latent representation")
         result.obs[self.params["key_added"]] = pd.Categorical(predicted)
         result.obs[self.params["confidence_key"]] = probabilities.max(axis=1)
         result.obsm[self.params["probability_key"]] = probabilities
@@ -149,5 +179,7 @@ class SCANVIAnnotation(Method):
             "classes": classes,
             "probability_key": self.params["probability_key"],
             "latent_key": self.params["latent_key"],
+            "labels_key": labels_key,
+            "unlabeled_category": unlabeled,
         }
         return result

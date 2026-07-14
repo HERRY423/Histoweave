@@ -31,7 +31,7 @@ conda install -c conda-forge histoweave-spatial
 pip install "histoweave-spatial[io,spatial]"
 
 # Method-specific extras
-pip install "histoweave-spatial[scanpy,cell2location,liana,scanvi,celltypist,deep-learning]"
+pip install "histoweave-spatial[scanpy,cell2location,scanvi,cellpose2,spatialde,liana,celltypist,deep-learning]"
 
 # All extras + development tools
 pip install "histoweave-spatial[all]"
@@ -138,3 +138,11 @@ pytest                         # 230 tests (~68s), --fail-under=80
 ruff check .                   # zero-config linting
 mypy src                       # full type coverage
 ```
+
+## Real-data 5  10 benchmark
+
+The reproducible DLPFC Visium performance landscape, raw result tables, manifest,
+figures, and rerunnable scripts are in
+[5x10_dlpfc_benchmark](5x10_dlpfc_benchmark/report_5x10_dlpfc_benchmark.md).
+Set HISTOWEAVE_DLPFC_DATA to place downloaded slices outside the repository and
+HISTOWEAVE_BENCHMARK_OUT to redirect regenerated outputs.

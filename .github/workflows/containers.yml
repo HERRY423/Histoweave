@@ -29,7 +29,7 @@ jobs:
             context: .
             dockerfile: workflows/containers/histoweave-python/Dockerfile
           - name: histoweave-r
-            context: workflows/containers/histoweave-r
+            context: .
             dockerfile: workflows/containers/histoweave-r/Dockerfile
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +50,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}
           tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
             type=ref,event=tag
             type=semver,pattern={{version}}
@@ -67,6 +68,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.meta.outputs.version }}
+            REVISION=${{ github.sha }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
           provenance: mode=max

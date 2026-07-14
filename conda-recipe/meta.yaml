@@ -53,7 +53,7 @@ about:
   description: |
     HistoWeave is the connective tissue the spatial transcriptomics field
     lacks — a unified distribution, orchestration, and evaluation layer
-    that sits on top of scverse and Bioconductor. It wraps 28+ existing
+    that sits on top of scverse and Bioconductor. It wraps 50+ existing
     methods across every analysis category behind a single plugin
     interface, benchmarks them on structured reference datasets, and
     provides a data-driven recommendation engine that suggests the

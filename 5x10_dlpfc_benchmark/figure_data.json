@@ -1,0 +1,266 @@
+{
+  "protocol": "histoweave.landscape.dlpfc_real.v1",
+  "task": "domain_detection",
+  "metric": "ARI",
+  "higher_is_better": true,
+  "datasets": [
+    "151673",
+    "151674",
+    "151507",
+    "151669",
+    "151670"
+  ],
+  "methods": [
+    "agglomerative",
+    "birch",
+    "bisecting_kmeans",
+    "dbscan",
+    "gaussian_mixture",
+    "kmeans",
+    "mean_shift",
+    "minibatch_kmeans",
+    "optics",
+    "spectral"
+  ],
+  "seeds": [
+    42,
+    1,
+    2
+  ],
+  "n_domains_truth": {
+    "151673": 7,
+    "151674": 7,
+    "151507": 7,
+    "151669": 8,
+    "151670": 5
+  },
+  "performance_matrix_mean": {
+    "151673": {
+      "agglomerative": 0.14793332881049076,
+      "birch": 0.17007462879487056,
+      "bisecting_kmeans": 0.21642412676046208,
+      "dbscan": 0.0,
+      "gaussian_mixture": 0.23505787396902336,
+      "kmeans": 0.2500715350135494,
+      "mean_shift": 0.013342078689554794,
+      "minibatch_kmeans": 0.22937839342418828,
+      "optics": -0.001184453396388922,
+      "spectral": 0.2423138947172816
+    },
+    "151674": {
+      "agglomerative": 0.2212556785500249,
+      "birch": 0.2528450781106391,
+      "bisecting_kmeans": 0.29611830213797335,
+      "dbscan": 0.0,
+      "gaussian_mixture": 0.2693488827455323,
+      "kmeans": 0.29812818287020243,
+      "mean_shift": 0.0061895547377992495,
+      "minibatch_kmeans": 0.26462714729711917,
+      "optics": 0.0001314176083081434,
+      "spectral": 0.1761931129593751
+    },
+    "151507": {
+      "agglomerative": 0.21069571335220524,
+      "birch": 0.1320529975079289,
+      "bisecting_kmeans": 0.25039316088187813,
+      "dbscan": 0.0,
+      "gaussian_mixture": 0.22277446029210546,
+      "kmeans": 0.2401616476653766,
+      "mean_shift": 0.011715766869256747,
+      "minibatch_kmeans": 0.23722780389968542,
+      "optics": -0.000380274795399155,
+      "spectral": 0.20020453878111455
+    },
+    "151669": {
+      "agglomerative": 0.14540742516528352,
+      "birch": 0.12966854906833353,
+      "bisecting_kmeans": 0.18293873088608184,
+      "dbscan": 0.0,
+      "gaussian_mixture": 0.13965703696921683,
+      "kmeans": 0.16555647657420372,
+      "mean_shift": 0.010213176415602392,
+      "minibatch_kmeans": 0.17216394104595115,
+      "optics": 0.00022831922900889943,
+      "spectral": 0.16789329493648572
+    },
+    "151670": {
+      "agglomerative": 0.280014239444171,
+      "birch": 0.1876685778839524,
+      "bisecting_kmeans": 0.1932032994911729,
+      "dbscan": 0.0,
+      "gaussian_mixture": 0.17780756463547612,
+      "kmeans": 0.22146459984255526,
+      "mean_shift": -0.020566628382760563,
+      "minibatch_kmeans": 0.21123493042993477,
+      "optics": -0.005215331871593266,
+      "spectral": 0.346417381108651
+    }
+  },
+  "best_method_seedmean": {
+    "151673": "kmeans",
+    "151674": "kmeans",
+    "151507": "bisecting_kmeans",
+    "151669": "bisecting_kmeans",
+    "151670": "spectral"
+  },
+  "recommendation": {
+    "rows": [
+      {
+        "held_out_dataset": "151673",
+        "training_datasets": [
+          "151674",
+          "151507",
+          "151669",
+          "151670"
+        ],
+        "oracle_methods": [
+          "kmeans"
+        ],
+        "oracle_score": 0.2500715350135494,
+        "recommended_methods": [
+          "bisecting_kmeans",
+          "kmeans",
+          "minibatch_kmeans"
+        ],
+        "recommended_method": "bisecting_kmeans",
+        "recommended_score": 0.21642412676046208,
+        "top1_hit": false,
+        "top3_hit": true,
+        "selection_regret": 0.03364740825308732,
+        "global_best_baseline": "kmeans",
+        "global_best_score": 0.2500715350135494,
+        "global_best_regret": 0.0,
+        "random_expected_score": 0.1503411406783032,
+        "random_expected_regret": 0.09973039433524619
+      },
+      {
+        "held_out_dataset": "151674",
+        "training_datasets": [
+          "151673",
+          "151507",
+          "151669",
+          "151670"
+        ],
+        "oracle_methods": [
+          "kmeans"
+        ],
+        "oracle_score": 0.29812818287020243,
+        "recommended_methods": [
+          "spectral",
+          "kmeans",
+          "minibatch_kmeans"
+        ],
+        "recommended_method": "spectral",
+        "recommended_score": 0.1761931129593751,
+        "top1_hit": false,
+        "top3_hit": true,
+        "selection_regret": 0.12193506991082734,
+        "global_best_baseline": "spectral",
+        "global_best_score": 0.1761931129593751,
+        "global_best_regret": 0.12193506991082734,
+        "random_expected_score": 0.17848373570169734,
+        "random_expected_regret": 0.11964444716850509
+      },
+      {
+        "held_out_dataset": "151507",
+        "training_datasets": [
+          "151673",
+          "151674",
+          "151669",
+          "151670"
+        ],
+        "oracle_methods": [
+          "bisecting_kmeans"
+        ],
+        "oracle_score": 0.25039316088187813,
+        "recommended_methods": [
+          "spectral",
+          "agglomerative",
+          "kmeans"
+        ],
+        "recommended_method": "spectral",
+        "recommended_score": 0.20020453878111455,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.05018862210076358,
+        "global_best_baseline": "kmeans",
+        "global_best_score": 0.2401616476653766,
+        "global_best_regret": 0.010231513216501537,
+        "random_expected_score": 0.1504845814454152,
+        "random_expected_regret": 0.09990857943646292
+      },
+      {
+        "held_out_dataset": "151669",
+        "training_datasets": [
+          "151673",
+          "151674",
+          "151507",
+          "151670"
+        ],
+        "oracle_methods": [
+          "bisecting_kmeans"
+        ],
+        "oracle_score": 0.18293873088608184,
+        "recommended_methods": [
+          "spectral",
+          "kmeans",
+          "agglomerative"
+        ],
+        "recommended_method": "spectral",
+        "recommended_score": 0.16789329493648572,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.01504543594959612,
+        "global_best_baseline": "kmeans",
+        "global_best_score": 0.16555647657420372,
+        "global_best_regret": 0.01738225431187812,
+        "random_expected_score": 0.11137269502901677,
+        "random_expected_regret": 0.07156603585706507
+      },
+      {
+        "held_out_dataset": "151670",
+        "training_datasets": [
+          "151673",
+          "151674",
+          "151507",
+          "151669"
+        ],
+        "oracle_methods": [
+          "spectral"
+        ],
+        "oracle_score": 0.346417381108651,
+        "recommended_methods": [
+          "bisecting_kmeans",
+          "kmeans",
+          "minibatch_kmeans"
+        ],
+        "recommended_method": "bisecting_kmeans",
+        "recommended_score": 0.1932032994911729,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.1532140816174781,
+        "global_best_baseline": "kmeans",
+        "global_best_score": 0.22146459984255526,
+        "global_best_regret": 0.12495278126609574,
+        "random_expected_score": 0.15920286325815597,
+        "random_expected_regret": 0.18721451785049503
+      }
+    ],
+    "summary": {
+      "n_queries": 5,
+      "top1_accuracy": 0.0,
+      "top3_accuracy": 0.4,
+      "mean_selection_regret": 0.0748061235663505,
+      "median_selection_regret": 0.05018862210076358,
+      "global_best_mean_regret": 0.054900323741060554,
+      "random_expected_mean_regret": 0.11561279492955485,
+      "regret_reduction_vs_global_best": -0.3625807366669893,
+      "regret_reduction_vs_random": 0.3529598206502028
+    }
+  },
+  "limitations": [
+    "All 5 slices are from one study (Maynard 2021 human DLPFC) -> within-study validation.",
+    "Only 5 leave-one-out queries -> imprecise recommendation-accuracy estimate.",
+    "Cross-tissue / cross-platform generalization requires study-grouped multi-source data."
+  ]
+}

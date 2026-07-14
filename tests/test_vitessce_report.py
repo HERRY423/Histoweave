@@ -1,6 +1,7 @@
-"""Vitessce view config generation and report integration tests."""
+"""Vitessce v3 config generation and report integration tests."""
 
 import json
+from io import StringIO
 
 import numpy as np
 import pandas as pd
@@ -15,61 +16,94 @@ def _make_processed_table():
     data = make_synthetic(n_cells=100, n_genes=30, n_domains=3, seed=0)
     gene_names = [f"gene_{i}" for i in range(data.n_vars)]
     data.var.index = pd.Index(gene_names, name="feature_id")
+    data.obs["cell_type"] = pd.Categorical(["neuron"] * 50 + ["glia"] * 50)
+    data.obs["domain"] = data.obs["domain_truth"].astype("category")
     data.uns["svg"] = {
         "top_genes": [
-            {"gene": gene_names[0], "fsv": 0.9},
-            {"gene": gene_names[1], "fsv": 0.8},
-            {"gene": gene_names[2], "fsv": 0.7},
-            {"gene": gene_names[3], "fsv": 0.6},
-            {"gene": gene_names[4], "fsv": 0.5},
+            {"gene": gene_names[index], "fsv": 0.9 - index / 10}
+            for index in range(5)
         ]
     }
     return data
 
 
 class TestVitessceViewConfig:
-    """Vitessce view config generation contract."""
-
-    def test_returns_config_and_data_keys(self):
-        data = _make_processed_table()
-        vc = build_vitessce_view_config(data, top_genes=10)
-        assert "config" in vc
-        assert "data" in vc
-        assert "gene_names" in vc
-
-    def test_config_has_required_fields(self):
-        data = _make_processed_table()
-        vc = build_vitessce_view_config(data, top_genes=5)
+    def test_config_uses_v3_native_csv_file_types(self):
+        vc = build_vitessce_view_config(_make_processed_table(), top_genes=5)
         config = vc["config"]
         assert config["version"] == "1.0.16"
-        assert len(config["layout"]) >= 2
-        assert len(config["datasets"]) >= 2
-        components = [c["component"] for c in config["layout"]]
-        assert "scatterplot" in components
-        assert "heatmap" in components
+        assert len(config["datasets"]) == 1
+        file_types = {item["fileType"] for item in config["datasets"][0]["files"]}
+        assert file_types == {
+            "obsEmbedding.csv",
+            "obsSpots.csv",
+            "obsFeatureMatrix.csv",
+            "obsSets.csv",
+        }
+        matrix_file = next(
+            item for item in config["datasets"][0]["files"]
+            if item["fileType"] == "obsFeatureMatrix.csv"
+        )
+        assert matrix_file["options"] is None
 
-    def test_data_contains_cells_json(self):
-        data = _make_processed_table()
-        vc = build_vitessce_view_config(data, top_genes=5)
-        cells = json.loads(vc["data"]["cells.json"])
-        assert isinstance(cells, list)
-        assert len(cells) <= 100  # max spots
-        assert "x" in cells[0]
-        assert "y" in cells[0]
-        assert "mappings" in cells[0]
+    def test_coordination_space_and_views_are_schema_shaped(self):
+        config = build_vitessce_view_config(_make_processed_table())["config"]
+        assert set(config["coordinationSpace"]) >= {
+            "dataset",
+            "embeddingType",
+            "obsType",
+            "featureType",
+            "featureValueType",
+            "obsColorEncoding",
+        }
+        assert {view["component"] for view in config["layout"]} == {
+            "scatterplot",
+            "obsSets",
+            "heatmap",
+        }
+        for view in config["layout"]:
+            assert view["coordinationScopes"]["dataset"] == "A"
+            assert "props" not in view or view["component"] == "heatmap"
 
-    def test_cells_have_domain_mapping(self):
-        data = _make_processed_table()
-        data.obs["domain"] = pd.Categorical(["domain_0"] * data.n_obs)
-        vc = build_vitessce_view_config(data, top_genes=5)
-        cells = json.loads(vc["data"]["cells.json"])
-        assert "domain" in cells[0]["mappings"]
+    def test_inline_csv_payloads_parse_and_align(self):
+        vc = build_vitessce_view_config(_make_processed_table(), top_genes=5)
+        frames = {
+            key: pd.read_csv(StringIO(value))
+            for key, value in vc["data"].items()
+        }
+        assert set(frames) == {
+            "obs_spots.csv",
+            "obs_embedding.csv",
+            "obs_sets.csv",
+            "obs_matrix.csv",
+        }
+        assert all(len(frame) == 100 for frame in frames.values())
+        assert frames["obs_spots.csv"].columns.tolist() == ["obs_id", "x", "y"]
+        assert frames["obs_embedding.csv"].columns.tolist() == ["obs_id", "e0", "e1"]
+        assert frames["obs_matrix.csv"].shape == (100, 6)
+        expected_ids = frames["obs_spots.csv"]["obs_id"].tolist()
+        assert all(frame["obs_id"].tolist() == expected_ids for frame in frames.values())
 
-    def test_subsamples_when_too_many_spots(self):
+    def test_obs_sets_include_domain_and_cell_type(self):
+        vc = build_vitessce_view_config(_make_processed_table())
+        sets = pd.read_csv(StringIO(vc["data"]["obs_sets.csv"]))
+        assert {"domain", "cell_type"}.issubset(sets.columns)
+        sets_file = next(
+            item for item in vc["config"]["datasets"][0]["files"]
+            if item["fileType"] == "obsSets.csv"
+        )
+        assert [item["name"] for item in sets_file["options"]["obsSets"]][:2] == [
+            "Domain",
+            "Cell Type",
+        ]
+
+    def test_subsampling_is_deterministic_and_applies_to_every_file(self):
         data = make_synthetic(n_cells=300, n_genes=10, n_domains=3, seed=0)
-        vc = build_vitessce_view_config(data, top_genes=5, max_spots=50)
-        cells = json.loads(vc["data"]["cells.json"])
-        assert len(cells) <= 50
+        first = build_vitessce_view_config(data, top_genes=5, max_spots=50)
+        second = build_vitessce_view_config(data, top_genes=5, max_spots=50)
+        assert first["data"] == second["data"]
+        for payload in first["data"].values():
+            assert len(pd.read_csv(StringIO(payload))) == 50
 
     def test_no_spatial_raises(self):
         data = _make_processed_table()
@@ -77,50 +111,37 @@ class TestVitessceViewConfig:
         with pytest.raises(ValueError, match="spatial"):
             build_vitessce_view_config(data)
 
-    def test_gene_names_present(self):
-        data = _make_processed_table()
-        vc = build_vitessce_view_config(data, top_genes=3)
-        assert len(vc["gene_names"]) > 0
+    def test_json_round_trip(self):
+        parsed = json.loads(vitessce_data_json(_make_processed_table(), top_genes=5))
+        assert parsed["config"]["datasets"][0]["files"][2]["options"] is None
 
-    def test_vitessce_data_json_roundtrips(self):
-        data = _make_processed_table()
-        json_str = vitessce_data_json(data, top_genes=5)
-        parsed = json.loads(json_str)
-        assert "config" in parsed
-        assert "data" in parsed
-
-    def test_empty_report_falls_back_gracefully(self):
-        """Even with minimal data, config generation should not crash."""
-        X = np.ones((5, 3))
-        obs = pd.DataFrame(index=pd.Index(["c0","c1","c2","c3","c4"], name="barcode"))
-        var = pd.DataFrame(index=pd.Index(["a","b","c"], name="feature_id"))
+    def test_minimal_table_without_sets_uses_description_view(self):
         st = SpatialTable(
-            X=X, obs=obs, var=var,
+            X=np.ones((5, 3)),
+            obs=pd.DataFrame(index=pd.Index([f"c{i}" for i in range(5)])),
+            var=pd.DataFrame(index=pd.Index(["a", "b", "c"])),
             obsm={"spatial": np.arange(10).reshape(5, 2).astype(float)},
             uns={"assay": "test"},
         )
-        vc = build_vitessce_view_config(st, top_genes=3)
-        assert vc["config"]["version"] == "1.0.16"
+        config = build_vitessce_view_config(st)["config"]
+        assert "description" in {view["component"] for view in config["layout"]}
+        assert "obsSets.csv" not in {
+            item["fileType"] for item in config["datasets"][0]["files"]
+        }
 
 
 class TestBuildReportIntegration:
-    """build_report includes Vitessce data without crashing."""
-
-    def test_report_includes_vitessce_in_context(self, tmp_path):
+    def test_report_uses_official_esm_bundle_and_keeps_svg_fallback(self, tmp_path):
         from histoweave import build_report, run_pipeline
-        from histoweave.datasets import make_synthetic
 
-        data = make_synthetic(seed=0)
-        result = run_pipeline(data)
+        result = run_pipeline(make_synthetic(seed=0))
         out = build_report(result, tmp_path / "report.html")
-        assert out.exists()
         text = out.read_text(encoding="utf-8")
-
-        # Vitessce container
-        assert "vitessce-container" in text
-        # Vitessce CDN
-        assert "unpkg.com/vitessce" in text
-        # Fallback SVG still present
+        assert 'id="vitessce-payload"' in text
+        assert "cdn.jsdelivr.net/npm/vitessce@3.5.7/dist/index.min.js" in text
+        assert "unpkg.com/vitessce" not in text
+        assert "dist/index.min.css" not in text
+        assert "import('vitessce')" in text
+        assert "createRoot(container).render" in text
+        assert "type: 'text/csv'" in text
         assert "<svg" in text
-        # Static report still renders
-        assert "HistoWeave Analysis Report" in text

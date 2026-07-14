@@ -185,6 +185,9 @@ class TestCell2locationDLPFCContract:
         assert "setup" in calls
         assert calls["setup"]["layer"] == "counts"
         assert calls["train"]["max_epochs"] == 5
+        assert calls["train"]["accelerator"] == "cpu"
+        assert "use_gpu" not in calls["train"]
+        assert calls["posterior"]["sample_kwargs"]["use_gpu"] is False
 
 
 class TestCell2locationValidation:

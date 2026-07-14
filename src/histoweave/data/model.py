@@ -10,6 +10,7 @@ table while preserving the same public API that downstream code was written agai
 from __future__ import annotations
 
 import copy
+import re
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
@@ -26,9 +27,7 @@ Matrix: TypeAlias = np.ndarray | spmatrix
 SPATIAL_KEY = "spatial"
 
 # OME-Zarr / SpatialData enforces alphanumeric + underscore/dot/hyphen key names.
-import re as _re
-_SANITIZE_KEY_RE = _re.compile(r"[^a-zA-Z0-9_.\-]")
-del _re
+_SANITIZE_KEY_RE = re.compile(r"[^a-zA-Z0-9_.\-]")
 
 
 def _sanitize_mapping_keys(
@@ -188,13 +187,11 @@ class SpatialTable:
             array = np.asarray(value)
             if array.ndim == 0 or array.shape[0] != n_obs:
                 raise ValueError(
-                    f"obsm {name!r} has shape {array.shape}; "
-                    f"first dimension must be n_obs={n_obs}"
+                    f"obsm {name!r} has shape {array.shape}; first dimension must be n_obs={n_obs}"
                 )
             if name == SPATIAL_KEY and (array.ndim != 2 or array.shape[1] not in (2, 3)):
                 raise ValueError(
-                    f"obsm[{SPATIAL_KEY!r}] must have shape (n_obs, 2 or 3), "
-                    f"got {array.shape}"
+                    f"obsm[{SPATIAL_KEY!r}] must have shape (n_obs, 2 or 3), got {array.shape}"
                 )
             obsm[name] = array
 
@@ -244,9 +241,7 @@ class SpatialTable:
     @obs.setter
     def obs(self, value: pd.DataFrame) -> None:
         if len(value) != self.n_obs:
-            raise ValueError(
-                f"obs has {len(value)} rows but X has {self.n_obs} observations"
-            )
+            raise ValueError(f"obs has {len(value)} rows but X has {self.n_obs} observations")
         self._table.obs = value
 
     @property
@@ -256,9 +251,7 @@ class SpatialTable:
     @var.setter
     def var(self, value: pd.DataFrame) -> None:
         if len(value) != self.n_vars:
-            raise ValueError(
-                f"var has {len(value)} rows but X has {self.n_vars} variables"
-            )
+            raise ValueError(f"var has {len(value)} rows but X has {self.n_vars} variables")
         self._table.var = value
 
     @property
@@ -276,8 +269,7 @@ class SpatialTable:
                 )
             if name == SPATIAL_KEY and (array.ndim != 2 or array.shape[1] not in (2, 3)):
                 raise ValueError(
-                    f"obsm[{SPATIAL_KEY!r}] must have shape (n_obs, 2 or 3), "
-                    f"got {array.shape}"
+                    f"obsm[{SPATIAL_KEY!r}] must have shape (n_obs, 2 or 3), got {array.shape}"
                 )
         self._table.obsm = {k: np.asarray(v) for k, v in value.items()}
 
@@ -438,80 +430,120 @@ class SpatialTable:
         )
 
     # -- SpatialData bridge ----------------------------------------------------
-    def to_spatialdata(self):
-        """Return the backing :class:`spatialdata.SpatialData` object.
+    def to_spatialdata(
+        self,
+        *,
+        table_name: str = "table",
+    ) -> SpatialDataClass:
+        """Convert to a :class:`spatialdata.SpatialData` object (``spatial`` extra).
 
-        Images and shapes stored on this SpatialTable are merged into the
-        SpatialData before returning, so the result carries the complete data
-        (molecular + spatial layers).
-        """
-        # Merge images into the SpatialData (best-effort; SpatialImage wrapping
-        # may be needed for full fidelity).
-        for key, img in self._images.items():
-            if key not in self._sdata.images:
-                try:
-                    self._sdata.images[key] = img
-                except Exception:
-                    pass
-        # Merge shapes into the SpatialData.
-        for key, shp in self._shapes.items():
-            if key not in self._sdata.shapes:
-                try:
-                    self._sdata.shapes[key] = shp
-                except Exception:
-                    pass
-        return self._sdata
-
-    @classmethod
-    def from_spatialdata(cls, sdata) -> SpatialTable:
-        """Build a SpatialTable from a :class:`spatialdata.SpatialData`, preserving
-        images and shapes.
+        Unlike :meth:`to_anndata`, this bridge is **lossless for the spatial layers**:
+        the molecular/tabular part becomes a SpatialData *table* element (an
+        :class:`~anndata.AnnData` wrapped with :class:`spatialdata.models.TableModel`),
+        each entry of :attr:`images` becomes an ``Image2DModel`` element, and each
+        entry of :attr:`shapes` becomes a ``ShapesModel`` element.
 
         Parameters
         ----------
-        sdata : spatialdata.SpatialData
-            The SpatialData object to wrap.
-
-        Returns
-        -------
-        SpatialTable
+        table_name
+            Key used for the table element inside the returned ``SpatialData``.
+        Notes
+        -----
+        The molecular table is intentionally non-annotating: HistoWeave does not assume
+        that arbitrary image or shape layers have a one-to-one relationship with rows.
+        Images are channel-last and are transposed to SpatialData's channel-first
+        convention on export.
         """
-        # Extract the first table (AnnData).
-        if hasattr(sdata, "tables") and sdata.tables:
-            table = next(iter(sdata.tables.values()))
-        elif hasattr(sdata, "table"):
-            table = sdata.table
-        else:
-            raise ValueError("SpatialData has no tables; cannot build SpatialTable")
+        try:
+            import geopandas as gpd
+            from shapely.geometry import Point
+            from spatialdata import SpatialData
+            from spatialdata.models import Image2DModel, ShapesModel, TableModel
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep
+            raise ModuleNotFoundError(
+                "spatialdata (and geopandas/shapely) are required for the SpatialData "
+                "bridge. Install with: pip install 'histoweave-spatial[spatial]'"
+            ) from exc
 
-        # Extract images as numpy arrays (best-effort).
-        images: dict[str, np.ndarray] = {}
-        if hasattr(sdata, "images"):
-            for key in sdata.images:
-                try:
-                    images[key] = np.asarray(sdata.images[key])
-                except Exception:
-                    pass
+        table = TableModel.parse(self.to_anndata())
 
-        # Extract shapes.
+        images: dict[str, Any] = {}
+        for key, img in self.images.items():
+            arr = np.asarray(img)
+            if arr.ndim == 2:  # (y, x) -> (c=1, y, x)
+                parsed = Image2DModel.parse(arr[np.newaxis, ...], dims=("c", "y", "x"))
+            elif arr.ndim == 3:  # (y, x, c) channel-last -> (c, y, x)
+                parsed = Image2DModel.parse(np.transpose(arr, (2, 0, 1)), dims=("c", "y", "x"))
+            else:  # pragma: no cover - defensive
+                raise ValueError(f"image '{key}' must be 2D or 3D, got shape {arr.shape}")
+            images[key] = parsed
+
         shapes: dict[str, Any] = {}
-        if hasattr(sdata, "shapes"):
-            for key in sdata.shapes:
-                try:
-                    shapes[key] = sdata.shapes[key]
-                except Exception:
-                    pass
+        for key, geom in self.shapes.items():
+            if isinstance(geom, gpd.GeoDataFrame):
+                shapes[key] = ShapesModel.parse(geom)
+            else:
+                # Fall back to treating the object as an (n, 2) coordinate array of
+                # circle/point centroids — the minimal Visium-spot representation.
+                coords = np.asarray(geom, dtype=float)
+                gdf = gpd.GeoDataFrame({"geometry": [Point(float(x), float(y)) for x, y in coords]})
+                gdf["radius"] = 1.0
+                shapes[key] = ShapesModel.parse(gdf)
 
-        return cls(
-            X=table.X.copy(),
-            obs=table.obs.copy(),
-            var=table.var.copy(),
-            obsm={k: np.asarray(v) for k, v in table.obsm.items()},
-            layers={k: v.copy() for k, v in table.layers.items()},
-            images=images,
-            shapes=shapes,
-            uns=dict(table.uns),
-        )
+        return SpatialData(images=images, shapes=shapes, tables={table_name: table})
+
+    @classmethod
+    def from_spatialdata(
+        cls,
+        sdata: SpatialDataClass,
+        *,
+        table_name: str | None = None,
+    ) -> SpatialTable:
+        """Build a :class:`SpatialTable` from a :class:`spatialdata.SpatialData`.
+
+        The chosen table element supplies ``X``/``obs``/``var``/``obsm``/``layers``
+        (via :meth:`from_anndata`); every ``images`` element is carried back as a
+        channel-last array in :attr:`images`; every ``shapes`` element is carried
+        back verbatim (as a ``geopandas.GeoDataFrame``) in :attr:`shapes`.
+
+        Parameters
+        ----------
+        table_name
+            Which table element to use. Defaults to the sole table when there is
+            exactly one; raises if ambiguous.
+        """
+        try:
+            import spatialdata  # noqa: F401
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep
+            raise ModuleNotFoundError(
+                "spatialdata is required for the SpatialData bridge. "
+                "Install with: pip install 'histoweave-spatial[spatial]'"
+            ) from exc
+
+        tables = dict(sdata.tables)
+        if not tables:
+            raise ValueError("SpatialData object has no table element to convert")
+        if table_name is None:
+            if len(tables) != 1:
+                raise ValueError(f"multiple tables {list(tables)}; pass table_name explicitly")
+            table_name = next(iter(tables))
+        table = tables[table_name]
+
+        st = cls.from_anndata(table)
+
+        for key, img in dict(sdata.images).items():
+            arr = np.asarray(img.data if hasattr(img, "data") else img)
+            # SpatialData images are channel-first (c, y, x) -> channel-last.
+            if arr.ndim == 3:
+                arr = np.transpose(arr, (1, 2, 0))
+                if arr.shape[-1] == 1:
+                    arr = arr[..., 0]
+            st.images[key] = arr
+
+        for key, geom in dict(sdata.shapes).items():
+            st.shapes[key] = geom
+
+        return st
 
     def __repr__(self) -> str:
         obsm_keys = ", ".join(self._table.obsm) or "-"

@@ -12,6 +12,7 @@ from ..interfaces import (
 )
 from ..registry import register
 from ._r_base import RContainerMethod
+from ._validation import validate_count_matrix, validate_spatial_coordinates
 
 
 @register
@@ -24,6 +25,7 @@ class BANKSYDomains(RContainerMethod):
         version="0.1.0",
         summary="BANKSY neighbourhood-augmented spatial-domain detection.",
         params=(
+            ParamSpec("layer", "str|None", None, "Raw-count layer; None uses X."),
             ParamSpec(
                 "lambda_param",
                 "float",
@@ -33,6 +35,13 @@ class BANKSYDomains(RContainerMethod):
                 maximum=1.0,
             ),
             ParamSpec("k_geom", "int", 15, "Spatial neighbours used by BANKSY.", minimum=1),
+            ParamSpec(
+                "k_neighbors",
+                "int",
+                50,
+                "Shared-nearest-neighbour graph size for Leiden/Louvain.",
+                minimum=2,
+            ),
             ParamSpec("npcs", "int", 20, "BANKSY principal components.", minimum=2),
             ParamSpec(
                 "algorithm",
@@ -54,20 +63,29 @@ class BANKSYDomains(RContainerMethod):
         wraps="Bioconductor::Banksy",
         language="container",
         implementation=MethodImplementation.EXTERNAL,
-        backends=(BackendRequirement("Bioconductor::Banksy", "Bioconductor 3.19", runtime="r"),),
+        backends=(BackendRequirement("Bioconductor::Banksy", ">=1.0", runtime="r"),),
     )
     r_script = "/usr/local/bin/histoweave-banksy.R"
 
     def _validate_input(self, data: SpatialTable) -> None:
         if data.spatial is None:
             raise ValueError("obsm['spatial'] is required for BANKSY domain detection")
-        if data.spatial.shape[1] != 2:
-            raise ValueError("BANKSY currently requires two-dimensional spatial coordinates")
+        validate_spatial_coordinates(data.spatial, method="BANKSY", exact_dimensions=2)
+        if data.n_obs < 3 or data.n_vars < 3:
+            raise ValueError("BANKSY requires at least three observations and three genes")
+        layer = self.params["layer"]
+        if layer is not None and layer not in data.layers:
+            raise KeyError(f"BANKSY count layer {layer!r} does not exist")
+        matrix = data.X if layer is None else data.layers[layer]
+        validate_count_matrix(matrix, method="BANKSY")
 
     def _build_r_args(self, data: SpatialTable) -> list[str]:
+        layer = "" if self.params["layer"] is None else self.params["layer"]
         return [
+            f"layer={layer}",
             f"lambda={self.params['lambda_param']}",
             f"k_geom={self.params['k_geom']}",
+            f"k_neighbors={self.params['k_neighbors']}",
             f"npcs={self.params['npcs']}",
             f"algorithm={self.params['algorithm']}",
             f"resolution={self.params['resolution']}",
@@ -80,3 +98,13 @@ class BANKSYDomains(RContainerMethod):
             raise RuntimeError("BANKSY output is missing obs['domain']")
         if data.obs["domain"].isna().any():
             raise RuntimeError("BANKSY output contains missing domain labels")
+        labels = data.obs["domain"].astype(str)
+        if (labels.str.len() == 0).any():
+            raise RuntimeError("BANKSY output contains empty domain labels")
+        data.obs["domain"] = labels.astype("category")
+        data.uns["domain_detection"] = {
+            "method": "banksy",
+            "algorithm": self.params["algorithm"],
+            "lambda": float(self.params["lambda_param"]),
+            "n_domains": int(labels.nunique()),
+        }

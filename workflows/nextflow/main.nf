@@ -172,7 +172,7 @@ process QC {
 }
 
 process NORMALIZE {
-    container   params.python_image
+    container   { method in ['sctransform', 'r_lognorm'] ? params.r_image : params.python_image }
     publishDir  "${params.outdir}/bundles", mode: params.publish_mode
     errorStrategy 'terminate'
     label 'low_mem'
@@ -195,7 +195,7 @@ process NORMALIZE {
 }
 
 process DOMAIN_DETECTION {
-    container   { task.process.contains('r_') ? params.r_image : params.python_image }
+    container   { method == 'banksy' ? params.r_image : params.python_image }
     publishDir  "${params.outdir}/bundles", mode: params.publish_mode
     errorStrategy 'terminate'
     label 'domain_detection'

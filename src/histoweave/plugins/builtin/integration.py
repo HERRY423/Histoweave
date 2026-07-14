@@ -9,19 +9,30 @@ that run without the heavy scvi-tools / Harmony stacks:
   (2007) parametric ComBat model. Suitable for merging spatial samples from
   different slides / runs / donors when a per-observation batch label is available.
 
-Method-to-wrap candidates for Phase-2 (when scvi-tools is available):
+* ``harmony`` — Harmony embedding-space batch integration (Korsunsky et al., 2019),
+  wrapping the pure-Python ``harmonypy`` reference implementation. Operates on a
+  low-dimensional embedding (typically PCA) held in ``obsm`` and writes a
+  batch-corrected embedding back to a new ``obsm`` key, which downstream neighbour
+  graphs / clustering / domain detection can consume. This is the scanpy-standard
+  integration path and does not touch ``X``.
+
+Method-to-wrap candidates for later phases (when scvi-tools is available):
   * scVI / scANVI (Lopez et al., 2018; Xu et al., 2020)
-  * Harmony (Korsunsky et al., 2019)
   * BBKNN (Polanski et al., 2020)
 """
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 
 from ...data import SpatialTable
-from ..interfaces import Method, MethodCategory, MethodSpec, ParamSpec
+from ..interfaces import Method, MethodCategory, MethodMaturity, MethodSpec, ParamSpec
 from ..registry import register
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    import pandas as pd
 
 
 @register
@@ -203,3 +214,176 @@ def _combat_nonparametric(
             X_adj[mask, g] = np.quantile(xg, quantiles, method="linear")
 
     return X_adj
+
+
+@register
+class HarmonyIntegration(Method):
+    """Harmony batch integration in embedding space (Korsunsky et al., 2019).
+
+    Harmony iteratively clusters cells in a low-dimensional embedding and applies
+    a soft, cluster-aware linear correction that removes batch offsets while
+    preserving biological structure. Unlike :class:`ComBatIntegration`, it does
+    **not** modify the expression matrix ``X``; it corrects an embedding (usually
+    PCA) and writes the result to a new ``obsm`` key. Downstream neighbour graphs,
+    clustering, and spatial-domain detection then run on the corrected embedding.
+
+    Behaviour
+    ---------
+    * If ``use_rep`` is present in ``obsm`` it is used directly as the input
+      embedding. Otherwise a PCA of ``X`` (``n_pcs`` components) is computed on the
+      fly (requires scikit-learn) and stored in ``obsm['X_pca']``.
+    * The corrected embedding is written to ``obsm[key_added]`` (default
+      ``'X_pca_harmony'``), matching the scanpy convention so existing
+      embedding-consuming methods pick it up with no change.
+    * With a single batch, the input embedding is copied through unchanged.
+
+    References
+    ----------
+    Korsunsky et al. (2019). Fast, sensitive and accurate integration of
+    single-cell data with Harmony. *Nature Methods* 16, 1289–1296.
+    """
+
+    spec = MethodSpec(
+        name="harmony",
+        category=MethodCategory.INTEGRATION,
+        version="0.1.0",
+        summary="Harmony embedding-space batch integration (harmonypy).",
+        params=(
+            ParamSpec("batch_key", "str", "batch", "obs column with batch labels."),
+            ParamSpec(
+                "use_rep",
+                "str",
+                "X_pca",
+                "obsm key of the input embedding; computed via PCA if absent.",
+            ),
+            ParamSpec(
+                "key_added",
+                "str",
+                "X_pca_harmony",
+                "obsm key for the batch-corrected embedding.",
+            ),
+            ParamSpec("n_pcs", "int", 30, "PCA components if the embedding is built.", minimum=2),
+            ParamSpec("theta", "float", 2.0, "Diversity-clustering penalty.", minimum=0.0),
+            ParamSpec("max_iter_harmony", "int", 10, "Max Harmony iterations.", minimum=1),
+            ParamSpec("seed", "int", 0, "Random seed for PCA / Harmony.", minimum=0),
+        ),
+        assumptions=(
+            "obs[batch_key] holds batch labels (integers or strings).",
+            "A meaningful low-dimensional embedding (PCA) captures the shared signal.",
+            "Normalised, log-transformed expression recommended before PCA.",
+        ),
+        assays=("visium", "xenium", "cosmx", "merscope"),
+        maturity=MethodMaturity.BETA,
+        wraps="harmonypy.run_harmony (Korsunsky et al. 2019)",
+        language="python",
+    )
+
+    def run(self, data: SpatialTable) -> SpatialTable:
+        data = data.copy()
+        batch_key = self.params["batch_key"]
+        if batch_key not in data.obs:
+            columns = list(data.obs.columns)
+            raise ValueError(
+                f"Batch key '{batch_key}' not found in obs. Available columns: {columns}"
+            )
+
+        embedding = self._get_or_build_embedding(data)
+        batches = data.obs[batch_key].astype(str).to_numpy()
+        unique_batches = np.unique(batches)
+        key_added = self.params["key_added"]
+
+        if len(unique_batches) < 2:
+            # Single batch: nothing to correct, pass the embedding through.
+            data.obsm[key_added] = np.asarray(embedding, dtype=float).copy()
+            data.uns["integration"] = {
+                "method": "harmony",
+                "batch_key": batch_key,
+                "n_batches": int(len(unique_batches)),
+                "batches": [str(b) for b in unique_batches],
+                "use_rep": self.params["use_rep"],
+                "key_added": key_added,
+                "note": "single batch — embedding copied unchanged",
+            }
+            return self.finalize(data, step="integration")
+
+        corrected = self._run_harmony(embedding, data.obs, batch_key)
+        data.obsm[key_added] = corrected
+        data.uns["integration"] = {
+            "method": "harmony",
+            "batch_key": batch_key,
+            "n_batches": int(len(unique_batches)),
+            "batches": [str(b) for b in unique_batches],
+            "use_rep": self.params["use_rep"],
+            "key_added": key_added,
+            "theta": float(self.params["theta"]),
+            "max_iter_harmony": int(self.params["max_iter_harmony"]),
+        }
+        return self.finalize(data, step="integration")
+
+    # -- helpers ---------------------------------------------------------------
+    def _get_or_build_embedding(self, data: SpatialTable) -> np.ndarray:
+        use_rep = self.params["use_rep"]
+        if use_rep in data.obsm:
+            return np.asarray(data.obsm[use_rep], dtype=float)
+
+        try:
+            from sklearn.decomposition import PCA
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep
+            raise ModuleNotFoundError(
+                f"obsm['{use_rep}'] is absent and scikit-learn is required to build a "
+                "PCA embedding. Install with: pip install 'histoweave-spatial[harmony]'"
+            ) from exc
+
+        X = np.asarray(data.X, dtype=float)
+        n_comp = int(min(self.params["n_pcs"], min(X.shape) - 1))
+        n_comp = max(n_comp, 2)
+        pca = PCA(n_components=n_comp, random_state=int(self.params["seed"]))
+        emb = pca.fit_transform(X)
+        # Persist so callers / provenance can see the embedding that Harmony used.
+        data.obsm.setdefault("X_pca", emb)
+        return emb
+
+    def _run_harmony(
+        self, embedding: np.ndarray, obs: pd.DataFrame, batch_key: str
+    ) -> np.ndarray:
+        try:
+            import harmonypy
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep
+            raise ModuleNotFoundError(
+                "harmonypy is required for Harmony integration. "
+                "Install with: pip install 'histoweave-spatial[harmony]'"
+            ) from exc
+
+        try:  # harmonypy exposes a seed knob in recent releases only
+            import random
+
+            random.seed(int(self.params["seed"]))
+            np.random.seed(int(self.params["seed"]))
+        except Exception:  # pragma: no cover - defensive
+            pass
+
+        embedding = np.asarray(embedding, dtype=float)
+        n_cells, n_features = embedding.shape
+        ho = harmonypy.run_harmony(
+            embedding,
+            obs,
+            [batch_key],
+            theta=float(self.params["theta"]),
+            max_iter_harmony=int(self.params["max_iter_harmony"]),
+        )
+        # harmonypy's ``Z_corr`` orientation changed across releases: older
+        # versions return (n_features, n_cells), newer ones (n_cells, n_features).
+        # Orient robustly by matching the observation axis rather than assuming.
+        z = np.asarray(ho.Z_corr, dtype=float)
+        if z.shape == (n_cells, n_features):
+            return z
+        if z.shape == (n_features, n_cells):
+            return z.T
+        # Fallback: put the axis whose length equals n_cells first.
+        if z.shape[0] == n_cells:
+            return z
+        if z.shape[1] == n_cells:
+            return z.T
+        raise ValueError(  # pragma: no cover - defensive
+            f"unexpected harmonypy Z_corr shape {z.shape} for embedding {embedding.shape}"
+        )
