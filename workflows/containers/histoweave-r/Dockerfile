@@ -18,6 +18,11 @@ RUN set -eux; for attempt in 1 2 3 4 5; do apt-get -o Acquire::Retries=10 -o Acq
 
 RUN echo 'local({ r <- getOption("repos"); r["CRAN"] <- "https://packagemanager.posit.co/cran/__linux__/noble/latest"; r["CRAN2"] <- "https://cloud.r-project.org"; options(repos = r, timeout = 600) })' >> /usr/local/lib/R/etc/Rprofile.site
 
+# glmGamPoi still requests C++11 while current RcppArmadillo requires C++14.
+# Makevars.site is loaded after R's Makeconf, so this safely raises that target.
+RUN printf '%s\n' 'CXX11STD = -std=gnu++14' >> /usr/local/lib/R/etc/Makevars.site \
+    && grep -Fxq 'CXX11STD = -std=gnu++14' /usr/local/lib/R/etc/Makevars.site
+
 RUN --mount=type=cache,target=/root/.cache/R Rscript -e 'repos <- c("https://packagemanager.posit.co/cran/__linux__/noble/latest", "https://cloud.r-project.org"); dependencies <- c("Depends", "Imports", "LinkingTo"); loadable <- function(pkg) tryCatch({ loadNamespace(pkg); TRUE }, error = function(e) { message("Namespace check for ", pkg, " failed: ", conditionMessage(e)); FALSE }); install_one <- function(pkg) { if (loadable(pkg)) return(invisible(TRUE)); for (attempt in seq_len(5)) { for (repo in repos) { tryCatch(install.packages(pkg, repos = repo, dependencies = dependencies), error = function(e) message("Attempt ", attempt, " for ", pkg, " via ", repo, " failed: ", conditionMessage(e))); if (loadable(pkg)) return(invisible(TRUE)) }; Sys.sleep(10) }; stop("Failed to install ", pkg, " from all CRAN mirrors") }; invisible(lapply(c("jsonlite", "anndata", "Matrix", "SeuratObject", "sctransform", "BiocManager"), install_one))' && Rscript -e 'pkgs <- c("scran", "scater", "scuttle", "SpatialExperiment", "DropletUtils", "Banksy", "nnSVG", "glmGamPoi"); for (attempt in seq_len(5)) { missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]; if (!length(missing)) break; tryCatch(BiocManager::install(missing, ask = FALSE, update = FALSE), error = function(e) message("Bioconductor attempt ", attempt, " failed: ", conditionMessage(e))); if (attempt < 5) Sys.sleep(10) }; missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing Bioconductor packages: ", paste(missing, collapse = ", "))' && rm -rf /tmp/downloaded_packages
 
 ARG HISTOWEAVE_EXTRAS=io,spatial

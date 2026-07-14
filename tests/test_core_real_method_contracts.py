@@ -180,6 +180,10 @@ def test_r_scripts_call_real_backends_with_required_contracts():
     assert "return_only_var_genes" not in sct
     assert 'adata$layers[["counts"]] <- source' in sct
     assert "glmGamPoi" in dockerfile
+    assert "CXX11STD = -std=gnu++14" in dockerfile
+    assert dockerfile.index("CXX11STD = -std=gnu++14") < dockerfile.index(
+        "BiocManager::install"
+    )
 
 
 def test_count_validation_rejects_zero_library_observations():
