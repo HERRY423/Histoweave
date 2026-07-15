@@ -11,6 +11,7 @@ PRODUCTION_METHODS = {
     "agglomerative",
     "arcsinh_transform",
     "banksy",
+    "banksy_py",
     "basic_qc",
     "birch",
     "bisecting_kmeans",
@@ -66,6 +67,32 @@ BETA_METHODS = {
     "sctransform",
 }
 
+RESEARCH_METHODS = {
+    "weave_adaptive_radius_graph",
+    "weave_adaptive_saturation_qc",
+    "weave_anchor_residual_integrate",
+    "weave_anisotropy_svg",
+    "weave_bootstrap_robust_svg",
+    "weave_boundary_aware_domains",
+    "weave_boundary_svg",
+    "weave_expression_spatial_graph",
+    "weave_graph_diffusion_normalize",
+    "weave_hotspot_svg",
+    "weave_multiscale_consensus_domains",
+    "weave_multiscale_svg",
+    "weave_mutual_knn_graph",
+    "weave_neighbor_discordance_qc",
+    "weave_neighbor_marker_annotate",
+    "weave_rank_stabilize",
+    "weave_robust_pearson_residual",
+    "weave_spatial_entropy_qc",
+    "weave_spatial_median_normalize",
+    "weave_spatial_quantile_integrate",
+    "weave_spatial_simplex_deconv",
+    "weave_topology_regularized_domains",
+    "weave_uncertainty_domains",
+}
+
 DEEP_LEARNING_METHODS = {
     "cell2location",
     "cellpose2",
@@ -82,6 +109,7 @@ DEEP_LEARNING_METHODS = {
 
 MACHINE_LEARNING_METHODS = {
     "agglomerative",
+    "banksy_py",
     "birch",
     "bisecting_kmeans",
     "celltypist",
@@ -109,7 +137,7 @@ def apply_builtin_release_manifest() -> None:
         for cls in _REGISTRY.values()
         if cls.__module__.startswith("histoweave.plugins.builtin.")
     }
-    declared = PRODUCTION_METHODS | BETA_METHODS
+    declared = PRODUCTION_METHODS | BETA_METHODS | RESEARCH_METHODS
     if set(classes) != declared:
         missing = sorted(set(classes) - declared)
         stale = sorted(declared - set(classes))
@@ -118,7 +146,13 @@ def apply_builtin_release_manifest() -> None:
         )
 
     for name, cls in classes.items():
-        maturity = MethodMaturity.PRODUCTION if name in PRODUCTION_METHODS else MethodMaturity.BETA
+        maturity = (
+            MethodMaturity.PRODUCTION
+            if name in PRODUCTION_METHODS
+            else MethodMaturity.BETA
+            if name in BETA_METHODS
+            else MethodMaturity.EXPERIMENTAL
+        )
         model_family = (
             "deep_learning"
             if name in DEEP_LEARNING_METHODS

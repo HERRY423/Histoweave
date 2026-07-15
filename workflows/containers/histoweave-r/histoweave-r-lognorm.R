@@ -1,12 +1,12 @@
 #!/usr/bin/env Rscript
 #
-# histoweave-sc-transform.R — R-side log-normalisation for the Python ↔ R bridge.
+# histoweave-r-lognorm.R — R-side log-normalisation for the Python ↔ R bridge.
 #
 # This script is the reference implementation that proves the bridge works.
 # Production plugins follow the same pattern: read .h5ad, transform, write .h5ad.
 #
 # Usage:
-#   Rscript histoweave-sc-transform.R input.h5ad output.h5ad [target_sum=1e4]
+#   Rscript histoweave-r-lognorm.R input.h5ad output.h5ad [target_sum=1e4]
 #
 # The caller (histoweave.plugins.builtin.r_demo) handles the container orchestration;
 # this script runs inside the histoweave-r container image.
@@ -18,7 +18,7 @@ library(anndata)
 # ---------------------------------------------------------------------------
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) < 2) {
-  stop("Usage: Rscript histoweave-sc-transform.R <input.h5ad> <output.h5ad> [target_sum=1e4]")
+  stop("Usage: Rscript histoweave-r-lognorm.R <input.h5ad> <output.h5ad> [target_sum=1e4]")
 }
 
 input_path  <- args[1]

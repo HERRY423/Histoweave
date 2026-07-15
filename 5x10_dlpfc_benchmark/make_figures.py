@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 
@@ -14,6 +15,8 @@ matplotlib.use("Agg")
 matplotlib.rcParams["font.family"] = ["Liberation Sans", "Arimo", "DejaVu Sans"]
 matplotlib.rcParams["svg.fonttype"] = "none"
 import matplotlib.pyplot as plt  # noqa: E402
+
+_LOGGER = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 SRC = Path(os.environ.get("HISTOWEAVE_BENCHMARK_OUT", BASE_DIR))
@@ -140,8 +143,9 @@ def timing():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     heatmap()
     boxplot()
     landscape_embed()
     timing()
-    print("figures written to", FIG)
+    _LOGGER.info("figures written to %s", FIG)

@@ -1,0 +1,50 @@
+{
+  "protocol": "histoweave.landscape.cross_platform_spatial_aware.v1",
+  "artifacts": [
+    {
+      "path": "benchmark_long.csv",
+      "sha256": "4ba2179389f07bb30ba5fbf4694a3b8fc1094a4319eda7abdc485e3148803b04",
+      "bytes": 35215
+    },
+    {
+      "path": "dataset_features.csv",
+      "sha256": "790e70e75ce4376787f7e38323e9dc807d23a5b715a4689c2e884117bf49ee77",
+      "bytes": 2353
+    },
+    {
+      "path": "performance_matrix_mean.csv",
+      "sha256": "7a30b360bdb4a6d45f58c6bd7ad0501d35cffbef325d87bac83f6aef5c014deb",
+      "bytes": 2670
+    },
+    {
+      "path": "performance_matrix_std.csv",
+      "sha256": "1d270e293ad58147ba88d466a965598f461b757e002aa6e0d28daa1a25dab3c3",
+      "bytes": 1894
+    },
+    {
+      "path": "recommendation_loocv.csv",
+      "sha256": "26ebe7eb07729c23b0c75f8e2f4e7fc18a869b422f57577799c310fa92d9753c",
+      "bytes": 2793
+    },
+    {
+      "path": "timings_mean.csv",
+      "sha256": "3f78c0f3aa8027c19330c407da109dcac982018e766034ae84c40dfb1d2cc890",
+      "bytes": 4807
+    },
+    {
+      "path": "figure_data.json",
+      "sha256": "de3d7c49fb108d24df57bbab6bc429cb2dee9864c02a1be13ec0f88ecc87fee8",
+      "bytes": 16818
+    },
+    {
+      "path": "landscape.json",
+      "sha256": "c2ae5f595fef98f2ce46fea6689c7de8f5d38dbca3268e21c1738a7f144b6e27",
+      "bytes": 11711
+    },
+    {
+      "path": "recommendation_loocv.json",
+      "sha256": "4f36e5331b776b33828a762692cdc159d1fd850c2fb006cfcda84085a1aa95f8",
+      "bytes": 7856
+    }
+  ]
+}

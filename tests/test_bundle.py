@@ -1,5 +1,7 @@
 """Round-trip tests for the portable SpatialTable bundle (io.bundle)."""
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -11,6 +13,7 @@ from histoweave.io import (
     read_bundle,
     write_bundle,
 )
+from histoweave.io.bundle import _replace_with_retry
 from histoweave.plugins import create_method
 
 
@@ -35,6 +38,29 @@ def test_bundle_roundtrip_preserves_core(tmp_path):
     assert restored.images["he"].shape == (1, 4, 4)
     assert restored.shapes["cells"] == {"kind": "polygons", "n": 4}
     assert restored.uns["marker_genes"] == data.uns["marker_genes"]
+
+
+def test_bundle_commit_retries_transient_permission_error(tmp_path, monkeypatch):
+    """A short-lived Windows file lock must not make an atomic commit flaky."""
+    original_replace = Path.replace
+    attempts = 0
+    source = tmp_path / ".b.ttab.tmp-simulated"
+    destination = tmp_path / "b.ttab"
+    source.mkdir()
+
+    def transiently_locked(source, destination):
+        nonlocal attempts
+        if source.name.startswith(".b.ttab.tmp-") and attempts == 0:
+            attempts += 1
+            raise PermissionError("simulated filesystem-indexer lock")
+        return original_replace(source, destination)
+
+    monkeypatch.setattr(Path, "replace", transiently_locked)
+    _replace_with_retry(source, destination)
+
+    assert attempts == 1
+    assert destination.is_dir()
+    assert not source.exists()
 
 
 def test_bundle_preserves_categorical_and_numpy_uns(tmp_path):

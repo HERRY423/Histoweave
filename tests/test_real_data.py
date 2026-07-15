@@ -20,6 +20,7 @@ These tests exercise the full path that a real user would follow:
 from __future__ import annotations
 
 import json
+import logging
 from urllib.request import urlretrieve
 
 import numpy as np
@@ -32,9 +33,12 @@ from histoweave.io import read, read_bundle, write_bundle
 from histoweave.plugins import create_method
 from histoweave.workflow import PipelineStep
 
+_LOGGER = logging.getLogger(__name__)
+
 # ===========================================================================
 # 1. Format-faithful vendor fixtures (always run, no network needed)
 # ===========================================================================
+
 
 class TestVisiumFixturePipeline:
     """Full pipeline over a format-faithful Visium fixture."""
@@ -102,7 +106,11 @@ class TestXeniumFixturePipeline:
 
     def test_xenium_native_read_filter_and_pipeline(self, tmp_path):
         root = write_xenium_fixture(
-            tmp_path / "xenium", n_cells=100, n_genes=24, n_domains=3, seed=2,
+            tmp_path / "xenium",
+            n_cells=100,
+            n_genes=24,
+            n_domains=3,
+            seed=2,
             with_controls=True,
         )
         table = read("xenium", str(root))
@@ -125,6 +133,7 @@ class TestXeniumFixturePipeline:
 # ===========================================================================
 # 2. Benchmarking over fixture data with multiple domain-detection methods
 # ===========================================================================
+
 
 class TestBenchmarkOverFixture:
     """Run benchmark on fixture data — multiple sklearn methods compete."""
@@ -179,10 +188,9 @@ _REAL_SPATIAL_URL = (
 def _network_ok(timeout: int = 8) -> bool:
     """Check whether we can reach the 10x Genomics CDN."""
     import urllib.request
+
     try:
-        urllib.request.urlopen(
-            "https://cf.10xgenomics.com", timeout=timeout
-        )
+        urllib.request.urlopen("https://cf.10xgenomics.com", timeout=timeout)
         return True
     except Exception:
         return False
@@ -221,8 +229,12 @@ class TestRealVisiumDownload:
         assert np.allclose(mat.X, np.rint(mat.X))
         # At least some features are "Gene Expression".
         assert "Gene Expression" in mat.feature_types
-        print(f"  [ok] Downloaded Visium matrix: {mat.X.shape[0]} spots x "
-              f"{mat.X.shape[1]} genes, genome={mat.genome}")
+        _LOGGER.info(
+            "  [ok] Downloaded Visium matrix: %s spots x %s genes, genome=%s",
+            mat.X.shape[0],
+            mat.X.shape[1],
+            mat.genome,
+        )
 
     @network_required
     def test_ingest_and_pipeline_over_synthetic_visium(self, tmp_path):
@@ -242,6 +254,7 @@ class TestRealVisiumDownload:
 
         # Read the matrix to get real feature names and barcodes.
         from histoweave.io._tenx import read_10x_h5
+
         mat = read_10x_h5(str(h5_dest))
 
         # Build a minimal spatial/ directory with synthetic positions.
@@ -252,14 +265,17 @@ class TestRealVisiumDownload:
         coords = rng.uniform(0, 1000, size=(n_spots, 2))
 
         import pandas as pd
-        positions = pd.DataFrame({
-            "barcode": mat.barcodes,
-            "in_tissue": 1,
-            "array_row": np.arange(n_spots),
-            "array_col": np.zeros(n_spots, dtype=int),
-            "pxl_row_in_fullres": np.rint(coords[:, 1] * 10).astype(int),
-            "pxl_col_in_fullres": np.rint(coords[:, 0] * 10).astype(int),
-        })
+
+        positions = pd.DataFrame(
+            {
+                "barcode": mat.barcodes,
+                "in_tissue": 1,
+                "array_row": np.arange(n_spots),
+                "array_col": np.zeros(n_spots, dtype=int),
+                "pxl_row_in_fullres": np.rint(coords[:, 1] * 10).astype(int),
+                "pxl_col_in_fullres": np.rint(coords[:, 0] * 10).astype(int),
+            }
+        )
         positions.to_csv(spatial_dir / "tissue_positions.csv", index=False)
         scalefactors = {
             "spot_diameter_fullres": 89.0,
@@ -273,6 +289,7 @@ class TestRealVisiumDownload:
 
         # Move the H5 to expected path.
         import shutil
+
         shutil.move(str(h5_dest), str(tmp_path / "filtered_feature_bc_matrix.h5"))
 
         # Read via the native Visium reader.
@@ -295,13 +312,18 @@ class TestRealVisiumDownload:
         report_path = tmp_path / "real_visium_report.html"
         build_report(result, report_path)
         assert report_path.exists()
-        print(f"  [ok] Pipeline over real mouse brain: {n_spots} -> {result.n_obs} spots, "
-              f"{result.obs['domain'].nunique()} domains")
+        _LOGGER.info(
+            "  [ok] Pipeline over real mouse brain: %s -> %s spots, %s domains",
+            n_spots,
+            result.n_obs,
+            result.obs["domain"].nunique(),
+        )
 
 
 # ===========================================================================
 # 4. Edge cases: empty data, single-gene, minimal dimensions
 # ===========================================================================
+
 
 class TestEdgeCases:
     """Ensure the pipeline survives edge-case inputs that real data can produce."""

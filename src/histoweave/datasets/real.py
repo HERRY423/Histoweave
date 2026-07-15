@@ -1,7 +1,7 @@
 """Versioned, cacheable, checksummed dataset registry.
 
 Each entry describes one benchmark-ready public dataset: how to fetch it,
-what ground truth it carries, and which assay/ tissue/ species it represents.
+what ground truth it carries, and which assay/tissue/species it represents.
 The registry powers the recommendation engine (features are extracted once on
 first use) and guarantees that repeated analyses use an identical copy.
 
@@ -13,24 +13,22 @@ Dataset lifecycle
 3. **Load** — ``entry.load(cache_dir)`` returns a :class:`~histoweave.data.SpatialTable`.
 4. **Analyse** — downstream methods consume the table; provenance records the dataset.
 
-Adding a new dataset
---------------------
-.. code-block:: python
+DLPFC label baking
+------------------
+DLPFC slices are shipped as **self-contained, checksummed h5ad bundles** built
+by ``scripts/build_dlpfc_bundles.py``.  Each bundle carries the raw counts,
+``obs['spatialLIBD_layer']`` (canonical manual layer annotation from
+Maynard et al. 2021), ``obs['domain_truth']`` (alias for the benchmark
+harness), and ``obsm['spatial']`` (pxl_col, pxl_row).  This means
+``entry.load()`` performs a single SHA-256-guarded download and returns a
+ready-to-benchmark :class:`SpatialTable` — no separate label-fetch step.
 
-    _REGISTRY.append(DatasetEntry(
-        name="dlpfc_151507",
-        description="DLPFC slice 151507 (Maynard et al. 2021)",
-        url="https://zenodo.org/records/.../151507_spaceranger.zip",
-        sha256="abc123...",
-        assay="visium",
-        tissue="brain",
-        species="human",
-        n_obs=4226,
-        n_vars=33538,
-        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
-        license="CC-BY 4.0",
-        paper_doi="10.1038/s41593-020-00787-0",
-    ))
+Local bundles
+-------------
+URLs beginning with ``local://`` are resolved against the repository root
+(``<repo>/datasets_cache/dlpfc/...``).  This lets the same registry work for
+development (local mirror) and production (Zenodo mirror) with a single
+one-character URL rewrite.
 """
 
 from __future__ import annotations
@@ -49,6 +47,14 @@ from ..io import read as io_read
 
 _CACHE_DIR_DEFAULT = Path.home() / ".cache" / "histoweave" / "datasets"
 
+# Root used to resolve local:// URLs.  Points at the repository root by default
+# so ``local://datasets_cache/dlpfc/dlpfc_151507.h5ad`` maps to
+# ``<repo>/datasets_cache/dlpfc/dlpfc_151507.h5ad``.  Override via the
+# HISTOWEAVE_LOCAL_DATA env var for tests.
+_REPOSITORY_ROOT = (
+    Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) > 3 else Path.cwd()
+)
+
 
 @dataclass
 class DatasetEntry:
@@ -61,26 +67,31 @@ class DatasetEntry:
     description : str
         Human-readable one-liner.
     url : str
-        Download URL (compressed directory or single file).
+        Download URL (``https://``, ``http://``, or ``local://<relpath>``).
     sha256 : str
         Hex-encoded SHA-256 of the downloaded artefact.
     assay : str
-        Assay family: ``"visium"``, ``"xenium"``, ``"stereo_seq"``, ...
+        Assay family: ``"visium"``, ``"xenium"``, ``"stereo_seq"``, ``"merfish"``.
     tissue : str
-        Tissue/organ: ``"brain"``, ``"tumor"``, ``"lymph_node"``, ...
+        Tissue/organ: ``"brain"``, ``"tumor"``, ...
     species : str
         ``"human"``, ``"mouse"``, ...
     n_obs : int
-        Number of spots or cells (for informational display).
+        Number of spots or cells.
     n_vars : int
-        Number of genes (for informational display).
+        Number of genes.
     ground_truth : dict[str, str]
-        Map of annotation name → obs column path, e.g.
-        ``{"domain_truth": "spatialLIBD_layer"}``.
+        Map of annotation name → ``obs`` column path, e.g.
+        ``{"domain_truth": "obs['spatialLIBD_layer']"}``.
     license : str
         SPDX or human-readable licence identifier.
     paper_doi : str
         DOI of the original publication.
+    is_h5ad_bundle : bool
+        True when the artefact is a pre-built h5ad (counts + labels baked in).
+        For such bundles ``load()`` calls ``anndata.read_h5ad()`` directly and
+        constructs a :class:`SpatialTable` from ``obs['domain_truth']`` +
+        ``obsm['spatial']``, bypassing vendor-specific reader logic.
     """
 
     name: str
@@ -95,6 +106,7 @@ class DatasetEntry:
     ground_truth: dict[str, str] = field(default_factory=dict)
     license: str = ""
     paper_doi: str = ""
+    is_h5ad_bundle: bool = False
 
     # -- download & cache ---------------------------------------------------
 
@@ -116,39 +128,66 @@ class DatasetEntry:
 
         checksum_file = dest / ".histoweave_checksum"
         if checksum_file.exists():
-            if checksum_file.read_text(encoding="utf-8").strip() == self.sha256:
+            recorded = checksum_file.read_text(encoding="utf-8").strip()
+            artefact = dest / self._filename()
+            expected = self.sha256 or recorded
+            if artefact.exists() and expected and _sha256_file(artefact) == expected:
                 return dest
-            # Checksum mismatch — re-download.
+            # Missing or corrupted cache: remove it and fetch a verified copy.
             shutil.rmtree(dest)
             dest.mkdir(parents=True, exist_ok=True)
 
         artefact = dest / self._filename()
-        _download_with_progress(self.url, artefact)
+        if self.url.startswith("local://"):
+            rel = self.url[len("local://") :].lstrip("/")
+            configured_root = Path(os.environ.get("HISTOWEAVE_LOCAL_DATA", _REPOSITORY_ROOT))
+            candidates = [configured_root / rel]
+            rel_path = Path(rel)
+            if rel_path.parts and rel_path.parts[0] == "datasets_cache":
+                candidates.append(configured_root.joinpath(*rel_path.parts[1:]))
+            candidates.append(_REPOSITORY_ROOT / rel)
+            src = next((candidate for candidate in candidates if candidate.exists()), None)
+            if src is None:
+                raise FileNotFoundError(
+                    f"{self.name}: local artefact not found; tried {candidates}. "
+                    "Run scripts/build_dlpfc_bundles.py (DLPFC) or set "
+                    "HISTOWEAVE_LOCAL_DATA to either the repository or datasets_cache root."
+                )
+            # copyfile: S3 FUSE forbids the metadata-copying of copy2.
+            shutil.copyfile(src, artefact)
+        else:
+            _download_with_progress(self.url, artefact)
 
         digest = _sha256_file(artefact)
-        if digest != self.sha256:
+        if self.sha256 and digest != self.sha256:
             artefact.unlink(missing_ok=True)
             raise ChecksumError(f"{self.name}: expected sha256={self.sha256}, got {digest}")
-
-        checksum_file.write_text(self.sha256, encoding="utf-8")
+        # If sha256 is empty, record the observed digest so subsequent calls are pinned.
+        recorded = self.sha256 or digest
+        checksum_file.write_text(recorded, encoding="utf-8")
         return dest
 
     def load(self, cache_dir: Path | str | None = None) -> SpatialTable:
         """Download (if needed) and load as a :class:`SpatialTable`.
 
-        If the cached artefact is a compressed archive, it is extracted into the
-        cache directory first.
+        For h5ad bundles (``is_h5ad_bundle=True``) the artefact is read
+        directly with ``anndata.read_h5ad`` and mapped into a SpatialTable
+        with ``obs['domain_truth']`` and ``obsm['spatial']`` preserved.
+
+        For vendor-format artefacts (zip / tar / raw h5) the reader is
+        dispatched by ``assay``.
         """
         cache = self.download(cache_dir)
-
-        # If the artefact is a compressed archive, extract it.
         artefact = cache / self._filename()
+
+        if self.is_h5ad_bundle:
+            return _load_h5ad_bundle(artefact)
+
         if artefact.suffix in (".zip", ".tar", ".gz", ".bz2"):
             extract_dir = cache / "extracted"
             if not extract_dir.exists():
                 extract_dir.mkdir(parents=True, exist_ok=True)
                 _extract(artefact, extract_dir)
-            # The Space Ranger output is a directory; find it.
             data_dir = _find_data_dir(extract_dir)
         else:
             data_dir = cache
@@ -160,31 +199,242 @@ class DatasetEntry:
 
 
 # ---------------------------------------------------------------------------
+# H5AD bundle loader
+# ---------------------------------------------------------------------------
+
+
+def _load_h5ad_bundle(artefact: Path) -> SpatialTable:
+    """Read a bundled h5ad file directly into a :class:`SpatialTable`.
+
+    The bundle is expected to carry:
+
+    * ``X`` — count matrix (sparse or dense).
+    * ``obs['domain_truth']`` or ``obs['spatialLIBD_layer']`` — ground-truth
+      domain labels.  If both are present, ``domain_truth`` wins.
+    * ``obsm['spatial']`` — 2-D coordinates.
+
+    All ``uns`` provenance keys are forwarded (e.g. ``dlpfc_source_urls``,
+    ``dlpfc_bundle_version``).
+    """
+    import anndata as ad
+    import numpy as np
+
+    adata = ad.read_h5ad(artefact)
+
+    if "spatial" not in adata.obsm:
+        raise ValueError(f"h5ad bundle {artefact} is missing obsm['spatial']")
+
+    # Prefer the harness-standard column name; alias if only the canonical one exists.
+    obs = adata.obs.copy()
+    if "domain_truth" not in obs.columns and "spatialLIBD_layer" in obs.columns:
+        obs["domain_truth"] = obs["spatialLIBD_layer"]
+
+    return SpatialTable(
+        X=adata.X,
+        obs=obs,
+        var=adata.var.copy(),
+        obsm={
+            "spatial": np.asarray(adata.obsm["spatial"], dtype=float),
+        },
+        uns=dict(adata.uns),
+    )
+
+
+# ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
 
-# DLPFC slice 151507 — Maynard et al. 2021, Nature Neuroscience.
-# This is the de-facto gold-standard for spatial-domain benchmarks.
-# Data is sourced from the spatialLIBD Bioconductor package's export.
-_DLPFC_151507 = DatasetEntry(
-    name="dlpfc_151507",
-    description="DLPFC slice 151507 — human dorsolateral prefrontal cortex (Maynard et al. 2021)",
-    url=(
-        "https://spatial-dlpfc.s3.us-east-2.amazonaws.com/h5/151507_filtered_feature_bc_matrix.h5"
-    ),
-    sha256="c4f3d2a8e1b5f7a9d0c3e6f8a1b5d7c2e9f0a3b6d8e1f4a7c0d3e6f9",
-    assay="visium",
-    tissue="brain",
-    species="human",
-    n_obs=4226,
-    n_vars=33538,
-    ground_truth={"domain_truth": "spatialLIBD_layer"},
-    license="CC-BY 4.0",
-    paper_doi="10.1038/s41593-020-00787-0",
-)
+# --- DLPFC slices (12 bundles) ---------------------------------------------
+# Auto-generated by scripts/build_dlpfc_bundles.py.  Every checksum below was
+# computed on the actual on-disk artefact; regenerate with the build script to
+# refresh.  Layer labels are baked into the bundle (schema v1).
 
-# 10x Genomics CytAssist FFPE Mouse Brain — official demo dataset (~5 MB matrix).
-# Excellent for smoke-testing the Visium reader on a small real dataset.
+_DLPFC_SLICE_ENTRIES = [
+    DatasetEntry(
+        name="dlpfc_151507",
+        description="DLPFC slice 151507 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151507.h5ad",
+        sha256="639839200d01012c7967310627692ea785cc0f8a95e350c71d4f26dbb894ff78",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=4221,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151508",
+        description="DLPFC slice 151508 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151508.h5ad",
+        sha256="276a57ca312cc0927971f81535661365ad3bd06fc4661c0df16b83dfe81f8bb7",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=4381,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151509",
+        description="DLPFC slice 151509 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151509.h5ad",
+        sha256="bca3d130b21e680c40f8d09605469a693376d3cff5c6789c89fc780a1303d52e",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=4788,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151510",
+        description="DLPFC slice 151510 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151510.h5ad",
+        sha256="cf6530ada7dd502b395528de3d2dffe45eb373a528e19cc7bc72d901774cf193",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=4595,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151669",
+        description="DLPFC slice 151669 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151669.h5ad",
+        sha256="11d9ea11169a3e23fbffc89977f5c082c2365c679139f0550568b4994f0b5ece",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3645,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151670",
+        description="DLPFC slice 151670 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151670.h5ad",
+        sha256="23440b89a14caf8549523d3f2668689ae3de97deff89edc6c88df54b4b2e632d",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3484,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151671",
+        description="DLPFC slice 151671 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151671.h5ad",
+        sha256="a2658a292027edaded49bf30c6a1897d7b617a98919ead83b568d193a007efbb",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=4093,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151672",
+        description="DLPFC slice 151672 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151672.h5ad",
+        sha256="ac069789e0c4cefa39b9294d2485b8638705f566ac832c23f3749ccd29b8bb5d",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3888,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151673",
+        description="DLPFC slice 151673 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151673.h5ad",
+        sha256="22033dc65de247a4457f398228b7fd24facfad4dddf48a0b9e9f9b248391a626",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3611,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151674",
+        description="DLPFC slice 151674 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151674.h5ad",
+        sha256="4db3370d0f9c264273c0fd5f65768bceb266823cc324328ae45a9607ff061cc0",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3635,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151675",
+        description="DLPFC slice 151675 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151675.h5ad",
+        sha256="2d45c5f68ceec0b1f55656a4aaacc03a24266262a7e1191a6d84ff49e6c4bc37",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3566,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+    DatasetEntry(
+        name="dlpfc_151676",
+        description="DLPFC slice 151676 — spatialLIBD-labelled human prefrontal cortex",
+        url="local://datasets_cache/dlpfc/dlpfc_151676.h5ad",
+        sha256="6e84e4e049bd8406e19c252f11ad8168212c91ab3cceb0d56c1e4ddf2e83d986",
+        assay="visium",
+        tissue="brain",
+        species="human",
+        n_obs=3431,
+        n_vars=33538,
+        ground_truth={"domain_truth": "obs['spatialLIBD_layer']"},
+        license="CC-BY 4.0",
+        paper_doi="10.1038/s41593-020-00787-0",
+        is_h5ad_bundle=True,
+    ),
+]
+
+# --- Non-DLPFC entries ------------------------------------------------------
+
+# 10x Genomics CytAssist FFPE Mouse Brain — small demo dataset (~5 MB).
 _MOUSE_BRAIN_DEMO = DatasetEntry(
     name="mouse_brain_cytassist",
     description="10x CytAssist FFPE Mouse Brain (Rep 1) — official demo dataset",
@@ -193,7 +443,7 @@ _MOUSE_BRAIN_DEMO = DatasetEntry(
         "CytAssist_FFPE_Mouse_Brain_Rep1/"
         "CytAssist_FFPE_Mouse_Brain_Rep1_filtered_feature_bc_matrix.h5"
     ),
-    sha256="",  # 10x may update the dataset; we validate lazily
+    sha256="",  # 10x may update; validated lazily
     assay="visium",
     tissue="brain",
     species="mouse",
@@ -205,88 +455,44 @@ _MOUSE_BRAIN_DEMO = DatasetEntry(
 )
 
 # 10x Xenium Human Breast Cancer (Rep 1) — Janesick et al. 2023.
-# Single-cell resolution in-situ data with 313 genes + custom add-on panel.
-# ~167,000 cells with morphology and spatial coordinates at subcellular resolution.
-# Ground truth cell types from the 10x pre-trained classifier.
+# Bundled subsample (~50 K cells) with domain_truth from the 10x cell-type
+# predictor collapsed to tissue compartments; produced by
+# ``benchmark_crossplatform/prepare_xenium.py``.
 _XENIUM_BREAST = DatasetEntry(
     name="xenium_breast_cancer",
-    description="10x Xenium Human Breast Cancer (Rep 1) — Janesick et al. 2023",
-    url=(
-        "https://cf.10xgenomics.com/samples/xenium/2.0.0/"
-        "Xenium_V1_Human_Breast_Cancer_Rep1/"
-        "Xenium_V1_Human_Breast_Cancer_Rep1_cell_feature_matrix.h5"
-    ),
-    sha256="",
+    description="10x Xenium Human Breast Cancer Rep 1 (~50K-cell subsample) — Janesick et al. 2023",
+    url="local://datasets_cache/xenium/xenium_breast_cancer.h5ad",
+    sha256="",  # populated by prepare_xenium.py on first build
     assay="xenium",
     tissue="tumor",
     species="human",
-    n_obs=167780,
+    n_obs=50000,
     n_vars=313,
-    ground_truth={"cell_type": "obs['cell_type_predicted']"},
+    ground_truth={"domain_truth": "obs['domain_truth']"},
     license="10x Genomics EULA",
     paper_doi="10.1038/s41587-022-01583-2",
+    is_h5ad_bundle=True,
 )
 
-# MERFISH Mouse Brain (C57BL6J-638850) — Allen Institute for Brain Science.
-# Whole-mouse-brain MERFISH dataset with 500 genes × 4 million cells.
-# Includes CCFv3 spatial coordinates, cell-type taxonomy, and neurotransmitter
-# annotations.  This is the largest and most comprehensive spatial brain atlas.
+# MERFISH Mouse Brain (C57BL6J-638850) — 3 anterior sections, ~60 K cells each,
+# from the Allen Brain Cell Atlas (Yao et al. 2023).  Subclass labels are
+# collapsed to 10 CCF parent regions; produced by
+# ``benchmark_crossplatform/prepare_merfish.py``.
 _MERFISH_MOUSE_BRAIN = DatasetEntry(
     name="merfish_mouse_brain",
-    description=("MERFISH whole mouse brain (C57BL6J-638850) — Allen Institute / Yao et al. 2023"),
-    url=(
-        "https://allen-brain-cell-atlas.s3.us-west-2.amazonaws.com/"
-        "expression_matrices/MERFISH-C57BL6J-638850/20230830/"
-    ),
-    sha256="",  # directory listing — checksum not applicable
+    description="MERFISH mouse brain — three labelled anterior sections (Yao et al. 2023)",
+    url="local://datasets_cache/merfish/merfish_mouse_brain.h5ad",
+    sha256="",  # populated by prepare_merfish.py on first build
     assay="merfish",
     tissue="brain",
     species="mouse",
-    n_obs=4_000_000,
+    n_obs=180000,
     n_vars=500,
-    ground_truth={
-        "cell_type": "obs['cell_type']",
-        "subclass": "obs['subclass']",
-        "neurotransmitter": "obs['neurotransmitter']",
-    },
+    ground_truth={"domain_truth": "obs['domain_truth']"},
     license="CC-BY-NC 4.0",
     paper_doi="10.1038/s41586-023-06812-z",
+    is_h5ad_bundle=True,
 )
-
-# All 12 DLPFC slices — one entry per slice for fine-grained benchmarking.
-_DLPFC_SLICE_ENTRIES = []
-for _sl in [
-    "151507",
-    "151508",
-    "151509",
-    "151510",
-    "151669",
-    "151670",
-    "151671",
-    "151672",
-    "151673",
-    "151674",
-    "151675",
-    "151676",
-]:
-    _DLPFC_SLICE_ENTRIES.append(
-        DatasetEntry(
-            name=f"dlpfc_{_sl}",
-            description=(
-                f"DLPFC slice {_sl} — human dorsolateral prefrontal cortex (Maynard et al. 2021)"
-            ),
-            url=f"https://spatial-dlpfc.s3.us-east-2.amazonaws.com/h5/{_sl}_filtered_feature_bc_matrix.h5",
-            sha256="",
-            assay="visium",
-            tissue="brain",
-            species="human",
-            n_obs=0,  # varies per slice, loaded lazily
-            n_vars=33538,
-            ground_truth={"domain_truth": "spatialLIBD_layer"},
-            license="CC-BY 4.0",
-            paper_doi="10.1038/s41593-020-00787-0",
-        )
-    )
 
 _REGISTRY: list[DatasetEntry] = [
     *_DLPFC_SLICE_ENTRIES,
@@ -310,6 +516,7 @@ def list_datasets() -> list[dict[str, Any]]:
             "ground_truth": dict(e.ground_truth),
             "license": e.license,
             "paper_doi": e.paper_doi,
+            "is_h5ad_bundle": e.is_h5ad_bundle,
         }
         for e in _REGISTRY
     ]
@@ -358,7 +565,7 @@ def _download_with_progress(url: str, dest: Path) -> None:
 
 
 def _extract(artefact: Path, dest: Path) -> None:
-    """Extract a .zip archive into *dest*."""
+    """Extract a .zip or tar archive into *dest*."""
     if artefact.suffix == ".zip":
         with zipfile.ZipFile(artefact, "r") as zf:
             zf.extractall(dest)
@@ -372,11 +579,7 @@ def _extract(artefact: Path, dest: Path) -> None:
 
 
 def _find_data_dir(extract_dir: Path) -> Path:
-    """Walk *extract_dir* to find the Space Ranger / vendor output directory.
-
-    Heuristic: the first directory containing ``filtered_feature_bc_matrix.h5``
-    or ``cell_feature_matrix.h5``.
-    """
+    """Walk *extract_dir* to find the Space Ranger / vendor output directory."""
     markers = {
         "filtered_feature_bc_matrix.h5",
         "cell_feature_matrix.h5",
@@ -385,7 +588,6 @@ def _find_data_dir(extract_dir: Path) -> Path:
     for root, _dirs, files in os.walk(extract_dir):
         if markers & set(files):
             return Path(root)
-    # Fallback: return the extraction root and let the reader try.
     return extract_dir
 
 

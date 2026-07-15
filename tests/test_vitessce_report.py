@@ -130,6 +130,43 @@ class TestVitessceViewConfig:
         }
 
 
+class TestBidirectionalLinking:
+    def test_shared_interaction_scopes_present(self):
+        config = build_vitessce_view_config(_make_processed_table())["config"]
+        cs = config["coordinationSpace"]
+        # shared brushing/linking scopes for scatterplot <-> obsSets <-> heatmap
+        for key in ("obsSetSelection", "obsHighlight", "featureSelection"):
+            assert key in cs
+        # every view must reference the shared selection + feature scopes
+        for view in config["layout"]:
+            scopes = view["coordinationScopes"]
+            assert scopes.get("obsSetSelection") == "A"
+            assert scopes.get("featureSelection") == "A"
+
+    def test_cluster_top_markers_payload(self):
+        vc = build_vitessce_view_config(_make_processed_table(), top_genes=10)
+        markers = vc["cluster_top_markers"]
+        assert vc["primary_labelPlaceholder" if False else "primary_label"] is not None
+        # keyed by the display name of each label column
+        assert markers, "expected a non-empty per-cluster marker map"
+        # each cluster maps to a list of gene names drawn from the selected genes
+        gene_pool = set(vc["gene_names"])
+        for _hierarchy, by_cluster in markers.items():
+            assert by_cluster
+            for _cluster, genes in by_cluster.items():
+                assert isinstance(genes, list) and genes
+                assert set(genes) <= gene_pool
+
+    def test_report_embeds_linking_js(self, tmp_path):
+        from histoweave import build_report, run_pipeline
+
+        result = run_pipeline(make_synthetic(seed=0))
+        text = build_report(result, tmp_path / "r.html").read_text(encoding="utf-8")
+        assert "cluster_top_markers" in text
+        assert "onConfigChange" in text
+        assert "obsSetSelection" in text
+
+
 class TestBuildReportIntegration:
     def test_report_uses_official_esm_bundle_and_keeps_svg_fallback(self, tmp_path):
         from histoweave import build_report, run_pipeline

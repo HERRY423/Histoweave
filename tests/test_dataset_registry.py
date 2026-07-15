@@ -1,5 +1,7 @@
 """Tests for the versioned dataset registry (download, cache, checksum, metadata)."""
 
+import hashlib
+
 import pytest
 
 from histoweave.datasets import DatasetEntry, get_dataset, list_datasets
@@ -75,64 +77,86 @@ class TestDatasetCachePath:
 
     def test_cache_dir_default(self):
         e = DatasetEntry(
-            name="cache_test", description="", url="https://x.com/d.zip",
-            sha256="abc", assay="visium",
+            name="cache_test",
+            description="",
+            url="https://x.com/d.zip",
+            sha256="abc",
+            assay="visium",
         )
         assert e._cache_dir().name == "cache_test"
         assert ".cache" in str(e._cache_dir())
 
     def test_cache_dir_explicit(self, tmp_path):
         e = DatasetEntry(
-            name="explicit_test", description="", url="https://x.com/d.zip",
-            sha256="abc", assay="visium",
+            name="explicit_test",
+            description="",
+            url="https://x.com/d.zip",
+            sha256="abc",
+            assay="visium",
         )
         assert e._cache_dir(tmp_path) == tmp_path / "explicit_test"
+
+    def test_corrupted_cached_artifact_is_reverified(self, tmp_path, monkeypatch):
+        data_root = tmp_path / "datasets_cache"
+        data_root.mkdir()
+        source = data_root / "fixture.bin"
+        source.write_bytes(b"verified payload")
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()
+        monkeypatch.setenv("HISTOWEAVE_LOCAL_DATA", str(data_root))
+        entry = DatasetEntry(
+            name="checksum_fixture",
+            description="",
+            url="local://datasets_cache/fixture.bin",
+            sha256=digest,
+            assay="visium",
+        )
+        cache_root = tmp_path / "cache"
+        cache = entry.download(cache_root)
+        cached = cache / "fixture.bin"
+        cached.write_bytes(b"corrupted")
+
+        entry.download(cache_root)
+
+        assert cached.read_bytes() == b"verified payload"
+        assert hashlib.sha256(cached.read_bytes()).hexdigest() == digest
 
 
 # ---------------------------------------------------------------------------
 # Xenium + MERFISH metadata
 # ---------------------------------------------------------------------------
 
+
 class TestXeniumBreast:
-    """10x Xenium Human Breast Cancer — metadata contract."""
+    """10x Xenium Human Breast Cancer bundle metadata contract."""
 
     def test_metadata(self):
         entry = get_dataset("xenium_breast_cancer")
         assert entry.assay == "xenium"
         assert entry.tissue == "tumor"
         assert entry.species == "human"
-        assert entry.n_obs == 167780
+        assert entry.n_obs == 50000
         assert entry.n_vars == 313
-        assert "cell_type" in entry.ground_truth
+        assert "domain_truth" in entry.ground_truth
+        assert entry.is_h5ad_bundle
         assert entry.paper_doi == "10.1038/s41587-022-01583-2"
 
-    def test_url_is_reachable_from_ci(self):
-        """The 10x CDN URL should be accessible (HEAD check, may skip offline)."""
-        import urllib.request
-        try:
-            req = urllib.request.Request(
-                get_dataset("xenium_breast_cancer").url,
-                method='HEAD', headers={'User-Agent': 'Mozilla/5.0'}
-            )
-            urllib.request.urlopen(req, timeout=15)
-        except Exception:
-            pytest.skip("10x CDN unreachable from this environment")
+    def test_bundle_uses_domain_mapping(self):
+        entry = get_dataset("xenium_breast_cancer")
+        assert entry.url.endswith("xenium_breast_cancer.h5ad")
 
 
 class TestMERFISHMouseBrain:
-    """Allen Institute MERFISH whole mouse brain — metadata contract."""
+    """Allen Institute MERFISH mouse-brain bundle metadata contract."""
 
     def test_metadata(self):
         entry = get_dataset("merfish_mouse_brain")
         assert entry.assay == "merfish"
         assert entry.tissue == "brain"
         assert entry.species == "mouse"
-        assert entry.n_obs == 4_000_000
+        assert entry.n_obs == 180000
         assert entry.n_vars == 500
-        assert len(entry.ground_truth) >= 3
-        assert "cell_type" in entry.ground_truth
-        assert "subclass" in entry.ground_truth
-        assert "neurotransmitter" in entry.ground_truth
+        assert entry.ground_truth == {"domain_truth": "obs['domain_truth']"}
+        assert entry.is_h5ad_bundle
 
     def test_license_is_cc_by_nc(self):
         entry = get_dataset("merfish_mouse_brain")
@@ -148,7 +172,8 @@ class TestAllDatasetsPresent:
         assert len(datasets) >= 15, f"expected >=15 datasets, got {len(datasets)}"
         names = {d["name"] for d in datasets}
         for expected in (
-            "dlpfc_151507", "dlpfc_151676",
+            "dlpfc_151507",
+            "dlpfc_151676",
             "mouse_brain_cytassist",
             "xenium_breast_cancer",
             "merfish_mouse_brain",

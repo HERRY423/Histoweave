@@ -1,4 +1,23 @@
-"""Build a self-contained Vitessce v3 config and inline CSV data."""
+"""Build a self-contained Vitessce v3 config and inline CSV data.
+
+Bidirectional linking (task 3)
+------------------------------
+The scatterplot, obsSets, and heatmap views share coordination scopes so that
+interactions in one view drive the others:
+
+* **obsSet selection is shared** across scatterplot ↔ obsSets ↔ heatmap. Selecting
+  (or brushing) a cluster in any view highlights the same cells everywhere.
+* **A per-cluster top-marker table** (``uns['cluster_top_markers']``) is embedded in
+  the payload so the report can, on selection of a cluster, push that cluster's top
+  marker genes into the heatmap's ``featureSelection`` — "select cluster → show its
+  top markers → update heatmap".
+* **featureSelection / obsHighlight** scopes are declared so gene selection and cell
+  hovering are also linked between the heatmap and scatterplot.
+
+The Python side is responsible for (a) wiring the shared coordination scopes and
+(b) computing the per-cluster marker map; the report template's JS listens for
+obsSet selection changes and applies the marker map to the heatmap featureSelection.
+"""
 
 from __future__ import annotations
 
@@ -20,17 +39,48 @@ def _display_name(column: str) -> str:
     return column.replace("_", " ").title()
 
 
+def _cluster_top_markers(
+    matrix: np.ndarray,
+    gene_names: list[str],
+    labels: np.ndarray,
+    top_n: int = 10,
+) -> dict[str, list[str]]:
+    """Rank genes per cluster by mean-difference (cluster mean − rest mean).
+
+    Returns ``{cluster_label: [gene, ...]}`` — a lightweight one-vs-rest marker
+    score used to drive the "select cluster → show top markers" heatmap update.
+    """
+    markers: dict[str, list[str]] = {}
+    genes = np.asarray(gene_names)
+    uniq = pd.unique(labels)
+    global_mean = matrix.mean(axis=0)
+    for lab in uniq:
+        mask = labels == lab
+        if mask.sum() == 0:
+            continue
+        in_mean = matrix[mask].mean(axis=0)
+        # one-vs-rest difference; falls back to in-cluster mean if rest is empty
+        rest = ~mask
+        rest_mean = matrix[rest].mean(axis=0) if rest.any() else global_mean
+        score = in_mean - rest_mean
+        order = np.argsort(score)[::-1][:top_n]
+        markers[str(lab)] = [str(g) for g in genes[order]]
+    return markers
+
+
 def build_vitessce_view_config(
     data: SpatialTable,
     *,
     top_genes: int = 30,
     max_spots: int = 2000,
+    markers_per_cluster: int = 10,
 ) -> dict[str, Any]:
     """Return a Vitessce v3 config plus self-contained inline CSV payloads.
 
     Spatial coordinates are exposed through obsEmbedding.csv and obsSpots.csv.
     Categorical annotations become obsSets.csv, and an observation-by-gene
-    slice becomes obsFeatureMatrix.csv.
+    slice becomes obsFeatureMatrix.csv. The views are linked through shared
+    coordination scopes and a per-cluster top-marker map (see module docstring).
     """
     coords = data.spatial
     if coords is None:
@@ -100,6 +150,18 @@ def build_vitessce_view_config(
     feature_matrix = pd.DataFrame(matrix_array, columns=selected_genes)
     feature_matrix.insert(0, "obs_id", obs_ids)
 
+    # --- Per-cluster top markers for the "select cluster -> update heatmap" link ---
+    # Computed over the FULL selected-gene matrix using the primary label column so the
+    # heatmap can jump to a cluster's markers when it is selected in the scatterplot.
+    cluster_top_markers: dict[str, dict[str, list[str]]] = {}
+    if label_specs:
+        for spec in label_specs:
+            col = spec["column"]
+            labels = data.obs.iloc[sampled_indices][col].astype("string").fillna("NA").to_numpy()
+            cluster_top_markers[spec["name"]] = _cluster_top_markers(
+                matrix_array, selected_genes, labels, top_n=markers_per_cluster
+            )
+
     files: list[dict[str, Any]] = [
         {
             "fileType": "obsEmbedding.csv",
@@ -135,6 +197,13 @@ def build_vitessce_view_config(
             }
         )
 
+    # ---------------------------------------------------------------------
+    # Coordination space: shared scopes make the three views bidirectionally
+    # linked. All views point at the SAME scope for obsType/featureType/etc.,
+    # plus shared selection + highlight + feature scopes so brushing/linking
+    # propagates between scatterplot, obsSets, and heatmap.
+    # ---------------------------------------------------------------------
+    default_feature = selected_genes[0] if selected_genes else None
     coordination_space: dict[str, Any] = {
         "dataset": {"A": "histoweave"},
         "embeddingType": {"A": "Spatial"},
@@ -142,10 +211,19 @@ def build_vitessce_view_config(
         "featureType": {"A": "gene"},
         "featureValueType": {"A": "expression"},
         "obsColorEncoding": {"A": "cellSetSelection"},
+        # shared interaction scopes (task 3: bidirectional linking)
+        "obsSetSelection": {"A": None},
+        "obsSetColor": {"A": None},
+        "obsHighlight": {"A": None},
+        "featureSelection": {"A": [default_feature] if default_feature else None},
+        "featureValueColormap": {"A": "plasma"},
+        "featureValueColormapRange": {"A": [0.0, 1.0]},
     }
     if label_specs:
         coordination_space["obsSetSelection"] = {"A": [[label_specs[0]["name"]]]}
 
+    # Every view shares the same scope letter "A" for these coordination types,
+    # which is what makes selection/color/highlight/feature changes propagate.
     scopes = {
         "dataset": "A",
         "embeddingType": "A",
@@ -153,6 +231,12 @@ def build_vitessce_view_config(
         "featureType": "A",
         "featureValueType": "A",
         "obsColorEncoding": "A",
+        "obsSetSelection": "A",
+        "obsSetColor": "A",
+        "obsHighlight": "A",
+        "featureSelection": "A",
+        "featureValueColormap": "A",
+        "featureValueColormapRange": "A",
     }
     layout: list[dict[str, Any]] = [
         {
@@ -219,7 +303,14 @@ def build_vitessce_view_config(
         "obs_sets.csv": _csv(obs_sets),
         "obs_matrix.csv": _csv(feature_matrix),
     }
-    return {"config": config, "data": data_files, "gene_names": selected_genes}
+    return {
+        "config": config,
+        "data": data_files,
+        "gene_names": selected_genes,
+        # linking metadata consumed by the report template's JS
+        "cluster_top_markers": cluster_top_markers,
+        "primary_label": label_specs[0]["name"] if label_specs else None,
+    }
 
 
 def vitessce_data_json(data: SpatialTable, top_genes: int = 30) -> str:

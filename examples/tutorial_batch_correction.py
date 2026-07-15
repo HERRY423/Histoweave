@@ -9,12 +9,16 @@ See docs/tutorials/03_batch_effect_correction.md.
 
 from __future__ import annotations
 
+import logging
+
 import numpy as np
 import pandas as pd
 
 import histoweave as ts
 from histoweave.data import SpatialTable
 from histoweave.plugins import create_method
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def _build_two_batch_dataset(seed: int = 0) -> SpatialTable:
@@ -55,39 +59,46 @@ def _celltype_spread(emb: np.ndarray, obs: pd.DataFrame) -> float:
         [emb[(obs["cell_type"] == t).to_numpy()].mean(0) for t in obs["cell_type"].unique()]
     )
     return float(
-        np.mean([np.linalg.norm(a - b) for i, a in enumerate(cents) for b in cents[i + 1:]])
+        np.mean([np.linalg.norm(a - b) for i, a in enumerate(cents) for b in cents[i + 1 :]])
     )
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+
     from sklearn.decomposition import PCA
 
-    print(f"HistoWeave v{ts.__version__}\n")
+    _LOGGER.info("HistoWeave v%s\n", ts.__version__)
     data = _build_two_batch_dataset()
-    print("Input:", repr(data))
+    _LOGGER.info("Input: %r", data)
 
     raw = PCA(n_components=15, random_state=0).fit_transform(np.asarray(data.X))
     rows = [("RAW", _batch_dist(raw, data.obs), _celltype_spread(raw, data.obs))]
 
     try:
         h = create_method(
-            "integration", "harmony",
-            batch_key="batch", n_pcs=15, theta=2.0, max_iter_harmony=20, seed=0,
+            "integration",
+            "harmony",
+            batch_key="batch",
+            n_pcs=15,
+            theta=2.0,
+            max_iter_harmony=20,
+            seed=0,
         ).run(data)
         he = h.obsm["X_pca_harmony"]
         rows.append(("HARMONY", _batch_dist(he, h.obs), _celltype_spread(he, h.obs)))
     except ModuleNotFoundError as exc:
-        print("Harmony unavailable (install extra 'harmony'):", exc)
+        _LOGGER.warning("Harmony unavailable (install extra 'harmony'): %s", exc)
 
     c = create_method("integration", "combat", batch_key="batch").run(data)
     ce = PCA(n_components=15, random_state=0).fit_transform(np.asarray(c.X))
     rows.append(("COMBAT", _batch_dist(ce, c.obs), _celltype_spread(ce, c.obs)))
 
-    print("\n{:<9} {:>12} {:>18}".format("method", "batch_dist", "celltype_spread"))
-    print("-" * 41)
+    _LOGGER.info("\n%-9s %12s %18s", "method", "batch_dist", "celltype_spread")
+    _LOGGER.info("%s", "-" * 41)
     for name, bd, cs in rows:
-        print(f"{name:<9} {bd:>12.2f} {cs:>18.2f}")
-    print("\nLower batch_dist = better mixed; high celltype_spread = biology preserved.")
+        _LOGGER.info("%-9s %12.2f %18.2f", name, bd, cs)
+    _LOGGER.info("\nLower batch_dist = better mixed; high celltype_spread = biology preserved.")
 
 
 if __name__ == "__main__":

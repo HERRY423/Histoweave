@@ -199,10 +199,70 @@ fully reproducible.</p>
 
       const loading = container.querySelector('.vitessce-loading');
       if (loading) loading.remove();
-      createRoot(container).render(
-        React.createElement(Vitessce, { config: raw.config, theme: 'light', height: 520 })
-      );
+
+      // --- Bidirectional linking (task 3) ---------------------------------
+      // Vitessce views already share coordination scopes (obsSetSelection,
+      // obsHighlight, featureSelection), so brushing/linking between the
+      // scatterplot, obsSets and heatmap is native. Here we add the extra
+      // "select cluster -> show its top marker genes -> update the heatmap"
+      // behaviour by watching obsSetSelection and rewriting featureSelection
+      // to the selected cluster's markers from the embedded marker map.
+      const markerMap = raw.cluster_top_markers || {};
+      const primaryLabel = raw.primary_label;
+
+      const flattenSelection = (sel) => {
+        // obsSetSelection is a list of set paths like [["Domain","domain_2"], ...]
+        if (!Array.isArray(sel)) return [];
+        return sel
+          .filter((p) => Array.isArray(p) && p.length >= 2)
+          .map((p) => ({ hierarchy: String(p[0]), node: String(p[p.length - 1]) }));
+      };
+
+      const markersForSelection = (sel) => {
+        const picks = flattenSelection(sel);
+        const genes = [];
+        for (const { hierarchy, node } of picks) {
+          const byCluster = markerMap[hierarchy] || (primaryLabel ? markerMap[primaryLabel] : null);
+          if (byCluster && byCluster[node]) {
+            for (const g of byCluster[node]) if (!genes.includes(g)) genes.push(g);
+          }
+        }
+        return genes;
+      };
+
+      // Controlled Vitessce: we own the config and update featureSelection when
+      // the shared obsSetSelection scope changes.
+      let currentConfig = raw.config;
+      let lastSelectionKey = '';
+      const App = () => {
+        const [cfg, setCfg] = React.useState(currentConfig);
+        const onConfigChange = (next) => {
+          try {
+            const cs = (next && next.coordinationSpace) || {};
+            const sel = cs.obsSetSelection ? cs.obsSetSelection.A : null;
+            const key = JSON.stringify(sel);
+            if (key !== lastSelectionKey) {
+              lastSelectionKey = key;
+              const genes = markersForSelection(sel);
+              if (genes.length && next.coordinationSpace.featureSelection) {
+                next = JSON.parse(JSON.stringify(next));
+                next.coordinationSpace.featureSelection.A = genes;
+              }
+            }
+          } catch (_e) { /* keep viewer alive on any linking error */ }
+          currentConfig = next;
+          setCfg(next);
+        };
+        return React.createElement(Vitessce, {
+          config: cfg,
+          onConfigChange,
+          theme: 'light',
+          height: 520,
+        });
+      };
+      createRoot(container).render(React.createElement(App));
       container.setAttribute('data-vitessce-ready', 'true');
+      container.setAttribute('data-linking', 'enabled');
     }
   } catch (error) {
     fail('Vitessce initialisation error: ' +

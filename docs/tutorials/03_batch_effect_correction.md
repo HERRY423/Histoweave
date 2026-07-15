@@ -25,11 +25,16 @@ different expression baselines — a controllable stand-in for a real slide-to-s
 batch effect.
 
 ```python
+import logging
+
 import numpy as np
 import pandas as pd
 import histoweave as ts
 from histoweave.data import SpatialTable
 from histoweave.plugins import create_method
+
+_LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 rng = np.random.default_rng(0)
 n_genes = 60
@@ -54,7 +59,7 @@ var = pd.DataFrame(index=[f"gene{j}" for j in range(n_genes)])
 
 data = SpatialTable(X=X, obs=obs, var=var)
 data.obsm["spatial"] = rng.random((n, 2)) * 100
-print(data)
+_LOGGER.info("%s", data)
 ```
 
 ## 2. A metric for "how bad is the batch effect?"
@@ -79,8 +84,11 @@ def celltype_spread(emb, obs):
                           for i, a in enumerate(cents) for b in cents[i + 1:]]))
 
 raw_emb = PCA(n_components=15, random_state=0).fit_transform(np.asarray(data.X))
-print(f"RAW    batch_dist={batch_dist(raw_emb, data.obs):.2f}  "
-      f"celltype_spread={celltype_spread(raw_emb, data.obs):.2f}")
+_LOGGER.info(
+    "RAW    batch_dist=%.2f  celltype_spread=%.2f",
+    batch_dist(raw_emb, data.obs),
+    celltype_spread(raw_emb, data.obs),
+)
 ```
 
 ## 3. Harmony (embedding-space correction)
@@ -91,9 +99,12 @@ h = create_method("integration", "harmony",
                   max_iter_harmony=20, seed=0).run(data)
 
 harmony_emb = h.obsm["X_pca_harmony"]
-print(f"HARMONY batch_dist={batch_dist(harmony_emb, h.obs):.2f}  "
-      f"celltype_spread={celltype_spread(harmony_emb, h.obs):.2f}")
-print("provenance:", h.provenance[-1]["method"], h.uns["integration"])
+_LOGGER.info(
+    "HARMONY batch_dist=%.2f  celltype_spread=%.2f",
+    batch_dist(harmony_emb, h.obs),
+    celltype_spread(harmony_emb, h.obs),
+)
+_LOGGER.info("provenance: %s %s", h.provenance[-1]["method"], h.uns["integration"])
 ```
 
 Harmony pulls the batch centroids together (batch_dist drops) while keeping the
@@ -108,8 +119,11 @@ batch-corrected *gene* matrix rather than an embedding:
 c = create_method("integration", "combat", batch_key="batch").run(data)
 
 combat_emb = PCA(n_components=15, random_state=0).fit_transform(np.asarray(c.X))
-print(f"COMBAT  batch_dist={batch_dist(combat_emb, c.obs):.2f}  "
-      f"celltype_spread={celltype_spread(combat_emb, c.obs):.2f}")
+_LOGGER.info(
+    "COMBAT  batch_dist=%.2f  celltype_spread=%.2f",
+    batch_dist(combat_emb, c.obs),
+    celltype_spread(combat_emb, c.obs),
+)
 
 # The pre-correction matrix is preserved so the step is reversible.
 assert "pre_combat" in c.layers

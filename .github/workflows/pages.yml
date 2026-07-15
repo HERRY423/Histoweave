@@ -1,0 +1,64 @@
+name: Deploy leaderboard to GitHub Pages
+
+on:
+  # Rebuild whenever anything the site depends on changes.
+  push:
+    branches: [main]
+    paths:
+      - "leaderboard/**"
+      - "5x15_spatial_aware/benchmark_long.csv"
+      - "5x10_dlpfc_benchmark/benchmark_long.csv"
+      - "benchmark_crossplatform/benchmark_long.csv"
+      - "benchmark_crossplatform/dataset_manifest.json"
+      - ".github/workflows/pages.yml"
+  # Manual trigger from the Actions tab.
+  workflow_dispatch:
+
+# GH Pages: one deployment in flight at a time; skip queued duplicates.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # generate.py has no external dependencies beyond the stdlib + optional
+      # h5py; we don't install h5py here because CI has no h5ad files anyway
+      # and the script gracefully degrades.
+
+      - name: Regenerate data.json
+        run: python leaderboard/generate.py
+
+      - name: Prepare pages artefact
+        run: |
+          mkdir -p _site
+          cp -r leaderboard/*.html leaderboard/*.css leaderboard/*.js \
+                leaderboard/data.json leaderboard/README.md _site/
+
+      - name: Upload artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

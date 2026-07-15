@@ -15,7 +15,12 @@ pip-installable package, and how to benchmark it.
 Every method subclasses `histoweave.plugins.Method`:
 
 ```python
+import logging
+
 from histoweave.plugins import Method, MethodCategory, MethodSpec, ParamSpec, register
+
+_LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 @register                        # adds the class to the global registry
 class MyMethod(Method):
@@ -100,7 +105,7 @@ from histoweave.plugins import create_method
 
 data = ts.datasets.make_synthetic(n_cells=400, n_genes=40, n_domains=3, seed=0)
 smoothed = create_method("normalization", "spatial_smooth", k=8, alpha=0.6).run(data)
-print(smoothed.provenance[-1])          # {'step': 'normalization', 'method': 'spatial_smooth', ...}
+_LOGGER.info("%s", smoothed.provenance[-1])          # {'step': 'normalization', 'method': 'spatial_smooth', ...}
 ```
 
 ## Working through AnnData instead
@@ -147,7 +152,7 @@ from histoweave.benchmark import domain_detection_task, run_benchmark
 # Register a domain-detection plugin, then benchmark every registered method at once.
 bench = run_benchmark(domain_detection_task(data))
 for row in bench.leaderboard:
-    print(row["rank"], row["method"], row["score"])
+    _LOGGER.info("%s %s %s", row["rank"], row["method"], row["score"])
 ```
 
 Your method is ranked next to BANKSY, spectral clustering, GMM, and the rest on the same

@@ -1,6 +1,7 @@
 """Build brain cell-type reference from real DLPFC gene space + validate cell2location contract."""
 
 import json
+import logging
 import os
 import sys
 import tempfile
@@ -11,9 +12,12 @@ import h5py
 import numpy as np
 from scipy.sparse import csc_matrix
 
-print("=" * 68)
-print("  Cell2location DLPFC Reference Builder")
-print("=" * 68)
+_LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+_LOGGER.info("%s", "=" * 68)
+_LOGGER.info("  Cell2location DLPFC Reference Builder")
+_LOGGER.info("%s", "=" * 68)
 
 # ---- 1. Load real DLPFC matrix ----
 cache = os.path.join(
@@ -28,8 +32,12 @@ with h5py.File(cache, "r") as f:
     indptr = np.array(f["matrix/indptr"][:])
     shape = tuple(f["matrix/shape"][:])
 X = csc_matrix((data_arr, indices, indptr), shape=shape).tocsr().T
-print(
-    f"[1/5] Loaded: {X.shape[0]} spots x {X.shape[1]} genes ({X.nnz / 1e6:.1f}M entries, {time.time() - t0:.1f}s)"  # noqa: E501
+_LOGGER.info(
+    "[1/5] Loaded: %s spots x %s genes (%.1fM entries, %.1fs)",
+    X.shape[0],
+    X.shape[1],
+    X.nnz / 1e6,
+    time.time() - t0,  # noqa: E501
 )
 
 # ---- 2. Define brain cell-type marker genes ----
@@ -102,11 +110,14 @@ for cell_type, markers in MARKER_DEFS.items():
     found[cell_type] = [g for g in markers if g in feature_set]
     missing[cell_type] = [g for g in markers if g not in feature_set]
 
-print("\n[2/5] Marker gene mapping:")
+_LOGGER.info("\n[2/5] Marker gene mapping:")
 for ct in MARKER_DEFS:
-    print(
-        f"  {ct:<20} {len(found[ct])}/{len(MARKER_DEFS[ct])} found  "
-        f"(missing: {', '.join(missing[ct][:3]) if missing[ct] else 'none'})"
+    _LOGGER.info(
+        "  %-20s %s/%s found  (missing: %s)",
+        ct,
+        len(found[ct]),
+        len(MARKER_DEFS[ct]),
+        ", ".join(missing[ct][:3]) if missing[ct] else "none",
     )
 
 # ---- 4. Build reference signature matrix ----
@@ -132,18 +143,18 @@ for ct, profile in reference.items():
         ref_df.loc[gene, ct] = val
 ref_df = ref_df.clip(lower=1e-3)
 
-print(f"\n[3/5] Reference matrix: {ref_df.shape[0]} genes x {ref_df.shape[1]} cell types")
-print(f"  Cell types: {list(ref_df.columns)}")
+_LOGGER.info("\n[3/5] Reference matrix: %s genes x %s cell types", ref_df.shape[0], ref_df.shape[1])
+_LOGGER.info("  Cell types: %s", list(ref_df.columns))
 for ct in ref_df.columns:
     top3 = ref_df[ct].nlargest(3)
     genes_str = ", ".join(f"{g}={v:.1f}" for g, v in top3.items())
-    print(f"    {ct:<20} {genes_str}")
+    _LOGGER.info("    %-20s %s", ct, genes_str)
 
 ref_path = os.path.join(
     tempfile.gettempdir(), "histoweave_dlpfc_cache", "cell2location_reference.json"
 )
 ref_df.to_json(ref_path, orient="split")
-print(f"  Saved to {ref_path}")
+_LOGGER.info("  Saved to %s", ref_path)
 
 # ---- 5. Build SpatialTable ----
 from sklearn.decomposition import PCA  # noqa: E402
@@ -183,10 +194,10 @@ st = SpatialTable(
         "cell2location_reference": ref_df,
     },
 )
-print(f"\n[4/5] SpatialTable: {st!r}")
+_LOGGER.info("\n[4/5] SpatialTable: %r", st)
 
 # ---- 6. Validate cell2location contract with mock ----
-print("\n[5/5] Validating cell2location method contract...")
+_LOGGER.info("\n[5/5] Validating cell2location method contract...")
 from histoweave.plugins import create_method, list_methods  # noqa: E402
 
 assert "cell2location" in {m["name"] for m in list_methods(category="deconvolution")}
@@ -240,35 +251,32 @@ try:
     assert result.uns["deconvolution"]["cell_types"] == list(ref_df.columns)
 
     abundance = result.obsm["cell_abundance"]
-    print("\n  Cell2location contract VALIDATED")
-    print(f"  Abundance: {abundance.shape[0]} spots x {abundance.shape[1]} cell types")
-    print(f"  Cell types: {result.uns['deconvolution']['cell_types']}")
+    _LOGGER.info("\n  Cell2location contract VALIDATED")
+    _LOGGER.info("  Abundance: %s spots x %s cell types", abundance.shape[0], abundance.shape[1])
+    _LOGGER.info("  Cell types: %s", result.uns["deconvolution"]["cell_types"])
     for i, ct in enumerate(ref_df.columns):
         ct_abund = abundance[:, i]
-        print(f"    {ct:<20} mean={ct_abund.mean():.2f}  max={ct_abund.max():.1f}")
-    print("\n  [PASS] Full cell2location pipeline on DLPFC 151507")
+        _LOGGER.info("    %-20s mean=%.2f  max=%.1f", ct, ct_abund.mean(), ct_abund.max())
+    _LOGGER.info("\n  [PASS] Full cell2location pipeline on DLPFC 151507")
 except Exception as e:
-    print(f"\n  [FAIL] {type(e).__name__}: {e}")
-    import traceback
-
-    traceback.print_exc()
+    _LOGGER.exception("\n  [FAIL] %s: %s", type(e).__name__, e)
 finally:
     del sys.modules["cell2location"]
     del sys.modules["cell2location.models"]
 
 # ---- 7. Validate Vitessce config generation ----
-print("\n[Bonus] Validating Vitessce view config...")
+_LOGGER.info("\n[Bonus] Validating Vitessce view config...")
 from histoweave.report.vitessce_data import build_vitessce_view_config  # noqa: E402
 
 vc = build_vitessce_view_config(st, top_genes=10)
-print(f"  Config version: {vc['config']['version']}")
-print(f"  Layout components: {[c['component'] for c in vc['config']['layout']]}")
-print(f"  Datasets: {[d['uid'] for d in vc['config']['datasets']]}")
-print(f"  Data keys: {list(vc['data'].keys())}")
-print(f"  Cells count: {len(json.loads(vc['data']['cells.json']))}")
-print(f"  Gene names: {vc['gene_names'][:5]}...")
-print("  [PASS] Vitessce config generation")
+_LOGGER.info("  Config version: %s", vc["config"]["version"])
+_LOGGER.info("  Layout components: %s", [c["component"] for c in vc["config"]["layout"]])
+_LOGGER.info("  Datasets: %s", [d["uid"] for d in vc["config"]["datasets"]])
+_LOGGER.info("  Data keys: %s", list(vc["data"].keys()))
+_LOGGER.info("  Cells count: %s", len(json.loads(vc["data"]["cells.json"])))
+_LOGGER.info("  Gene names: %s...", vc["gene_names"][:5])
+_LOGGER.info("  [PASS] Vitessce config generation")
 
-print("\n" + "=" * 68)
-print("  Complete: cell2location reference + Vitessce integration")
-print("=" * 68)
+_LOGGER.info("\n%s", "=" * 68)
+_LOGGER.info("  Complete: cell2location reference + Vitessce integration")
+_LOGGER.info("%s", "=" * 68)

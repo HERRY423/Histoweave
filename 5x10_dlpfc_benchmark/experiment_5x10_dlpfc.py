@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 from pathlib import Path
 
@@ -26,6 +27,8 @@ from histoweave.benchmark.landscape import run_task_landscape
 from histoweave.benchmark.recommend import MethodRecommender
 from histoweave.data import SpatialTable
 from histoweave.plugins import MethodCategory
+
+_LOGGER = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = Path(os.environ.get("HISTOWEAVE_DLPFC_DATA", BASE_DIR / "data"))
@@ -75,20 +78,21 @@ def load_slice(sid: str) -> tuple[SpatialTable, int]:
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     datasets: dict[str, SpatialTable] = {}
     n_domains_map: dict[str, int] = {}
     for sid in SLICES:
         tab, k = load_slice(sid)
         datasets[sid] = tab
         n_domains_map[sid] = k
-        print(f"[load] {sid}: {tab.n_obs} spots, {tab.n_vars} genes, n_domains={k}")
+        _LOGGER.info("[load] %s: %s spots, %s genes, n_domains=%s", sid, tab.n_obs, tab.n_vars, k)
 
     # --- Multi-seed landscape ---
     per_seed_perf: dict[int, dict[str, dict[str, float]]] = {}
     per_seed_time: dict[int, dict[str, dict[str, float]]] = {}
     landscape_ref = None
     for seed in SEEDS:
-        print(f"\n=== seed {seed} ===")
+        _LOGGER.info("\n=== seed %s ===", seed)
 
         def factory(data: SpatialTable, _seed=seed) -> dict:
             return {"n_domains": n_domains_map[data.uns["slice_id"]], "random_state": _seed}
@@ -107,7 +111,9 @@ def main() -> None:
             landscape_ref = ls
         for ds in SLICES:
             best = ls.best_method.get(ds)
-            print(f"  {ds}: best={best} ARI={ls.performance[ds].get(best, float('nan')):.3f}")
+            _LOGGER.info(
+                "  %s: best=%s ARI=%.3f", ds, best, ls.performance[ds].get(best, float("nan"))
+            )
 
     # --- Aggregate mean +/- sd across seeds ---
     long_rows = []
@@ -217,12 +223,14 @@ def main() -> None:
     with open(OUT / "manifest.json", "w") as f:
         json.dump(manifest, f, indent=2)
 
-    print("\n=== DONE ===")
-    print(
-        f"LOOCV top1={summary['top1_accuracy']:.2f} top3={summary['top3_accuracy']:.2f} "
-        f"mean_regret={summary['mean_selection_regret']:.3f} "
-        f"(random={summary['random_expected_mean_regret']:.3f}, "
-        f"global_best={summary['global_best_mean_regret']:.3f})"
+    _LOGGER.info("\n=== DONE ===")
+    _LOGGER.info(
+        "LOOCV top1=%.2f top3=%.2f mean_regret=%.3f (random=%.3f, global_best=%.3f)",
+        summary["top1_accuracy"],
+        summary["top3_accuracy"],
+        summary["mean_selection_regret"],
+        summary["random_expected_mean_regret"],
+        summary["global_best_mean_regret"],
     )
 
 

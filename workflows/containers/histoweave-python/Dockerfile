@@ -42,7 +42,7 @@ COPY --from=builder /opt/histoweave-venv /opt/histoweave-venv
 USER histoweave
 WORKDIR /home/histoweave
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 CMD python -c "import histoweave, anndata, scanpy, SpatialDE, cell2location, cellpose, scvi; print(histoweave.__version__)" || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 CMD python -c "import logging, histoweave, anndata, scanpy, SpatialDE, cell2location, cellpose, scvi; logging.basicConfig(level=logging.INFO, format='%(message)s'); logging.getLogger('histoweave.healthcheck').info('HistoWeave %s', histoweave.__version__)" || exit 1
 
 ENTRYPOINT ["histoweave"]
 CMD ["--help"]

@@ -9,6 +9,7 @@ from histoweave.plugins import (
     list_methods,
     register,
 )
+from histoweave.plugins.registry import _REGISTRY
 
 
 def test_builtins_are_registered():
@@ -16,7 +17,17 @@ def test_builtins_are_registered():
     assert ("qc", "basic_qc") in names
     assert ("normalization", "log1p_cp10k") in names
     assert ("domain_detection", "kmeans") in names
+    assert ("domain_detection", "banksy_py") in names
     assert ("annotation", "marker_score") in names
+
+
+def test_banksy_py_is_owned_by_builtin_package():
+    from histoweave.plugins.experimental.banksy_py import BANKSYPyDomains as LegacyBANKSYPy
+
+    cls = get_method("domain_detection", "banksy_py")
+    assert cls.__module__ == "histoweave.plugins.builtin.banksy_py"
+    assert cls.spec.maturity.value == "production"
+    assert LegacyBANKSYPy is cls
 
 
 def test_filter_by_category():
@@ -60,15 +71,19 @@ def test_register_requires_spec():
 
 
 def test_register_custom_method():
-    @register
-    class MyNorm(Method):
-        spec = MethodSpec(
-            name="unit_test_norm",
-            category=MethodCategory.NORMALIZATION,
-            version="9.9",
-        )
+    key = (MethodCategory.NORMALIZATION, "unit_test_norm", "9.9")
+    try:
+        @register
+        class MyNorm(Method):
+            spec = MethodSpec(
+                name="unit_test_norm",
+                category=MethodCategory.NORMALIZATION,
+                version="9.9",
+            )
 
-        def run(self, data):
-            return data
+            def run(self, data):
+                return data
 
-    assert get_method("normalization", "unit_test_norm") is MyNorm
+        assert get_method("normalization", "unit_test_norm") is MyNorm
+    finally:
+        _REGISTRY.pop(key, None)
