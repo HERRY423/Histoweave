@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HistoWeave Leaderboard</title>
+<meta name="description" content="Head-to-head ARI leaderboard for HistoWeave domain-detection methods across spatial-omics platforms." />
+<link rel="stylesheet" href="styles.css" />
+<!-- D3 v7 pinned by version; can be swapped for a local vendored copy if the repo enforces
+     no third-party CDNs. Everything else is vanilla JS. -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
+<script src="main.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">HistoWeave · Leaderboard</span>
+    </div>
+    <nav>
+      <a href="https://github.com/HERRY423/Histoweave" rel="noopener">GitHub</a>
+      <a href="#methods">Methods</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+  <h1>Which method wins on your slide?</h1>
+  <p class="subtitle">
+    ARI vs ground-truth domains, averaged over 3 seeds, for every registered
+    domain-detection method on every benchmark dataset. Pick a dataset, pick a
+    family, and the site tells you what to reach for first.
+  </p>
+  <div class="hero-stats" id="hero-stats">
+    <div><span class="k" id="stat-methods">–</span><span class="l">methods</span></div>
+    <div><span class="k" id="stat-datasets">–</span><span class="l">datasets</span></div>
+    <div><span class="k" id="stat-platforms">–</span><span class="l">platforms</span></div>
+    <div><span class="k" id="stat-cells">–</span><span class="l">spots / cells</span></div>
+  </div>
+</section>
+
+<section class="controls" aria-label="filters">
+  <label class="control">
+    <span>Dataset</span>
+    <select id="filter-dataset"><option value="__all__">All datasets</option></select>
+  </label>
+  <label class="control">
+    <span>Platform / assay</span>
+    <select id="filter-platform"><option value="__all__">All platforms</option></select>
+  </label>
+  <label class="control">
+    <span>Tissue</span>
+    <select id="filter-tissue"><option value="__all__">All tissues</option></select>
+  </label>
+  <label class="control">
+    <span>Domain count</span>
+    <select id="filter-domains"><option value="__all__">Any domain count</option></select>
+  </label>
+  <label class="control">
+    <span>Matrix sparsity</span>
+    <select id="filter-sparsity">
+      <option value="__all__">Any sparsity</option>
+      <option value="high">High (≥ 90%)</option>
+      <option value="medium">Medium (75–90%)</option>
+      <option value="low">Low (&lt; 75%)</option>
+    </select>
+  </label>
+  <label class="control">
+    <span>Family</span>
+    <select id="filter-family">
+      <option value="__all__">All methods</option>
+      <option value="sklearn">sklearn baseline</option>
+      <option value="spatial_aware">spatial-aware</option>
+    </select>
+  </label>
+  <label class="control">
+    <span>Sort</span>
+    <select id="sort-by">
+      <option value="mean_ari">Mean ARI (desc)</option>
+      <option value="max_ari">Best ARI (desc)</option>
+      <option value="win_count">Wins across datasets</option>
+      <option value="seconds">Runtime (asc)</option>
+      <option value="name">Method name</option>
+    </select>
+  </label>
+</section>
+
+<section class="panel" id="panel-table">
+  <h2>Leaderboard</h2>
+  <p class="hint">Numbers are mean ARI over 3 seeds. <span class="chip win">win</span> marks the best method for a dataset.</p>
+  <div class="table-scroll">
+    <table id="lb-table">
+      <thead>
+        <tr id="lb-head"></tr>
+      </thead>
+      <tbody id="lb-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel" id="panel-heatmap">
+  <h2>ARI heatmap</h2>
+  <p class="hint">Rows = methods, columns = datasets. Colour intensity encodes ARI (0 to max in the visible slice).</p>
+  <div id="heatmap"></div>
+</section>
+
+<section class="panel" id="panel-smallmultiples">
+  <h2>Per-method ARI across datasets</h2>
+  <p class="hint">One panel per method; dots are per-dataset means, whiskers span the min→max across seeds.</p>
+  <div id="small-multiples"></div>
+</section>
+
+<section class="panel" id="methods">
+  <h2>Methods included</h2>
+  <div id="method-list" class="method-list"></div>
+</section>
+
+<section class="panel" id="about">
+  <h2>About</h2>
+  <p>
+    <strong>Metric.</strong> Adjusted Rand Index (ARI) against the annotated
+    ground-truth domain label for each dataset. Higher is better. 3 seeds per
+    (method, dataset) cell.
+  </p>
+  <p>
+    <strong>Ground truth.</strong> DLPFC slices use <code>spatialLIBD_layer</code>
+    from Maynard et al. (2021); MERFISH mouse hypothalamus uses the coarse
+    <code>Cell_class</code> compartment collapse from Moffitt et al. (2018); the
+    SlideseqV2 mouse hippocampus uses the cluster labels from Stickels et al.
+    (2021), collapsed to 6 compartments (see <code>domain_mappings.json</code>).
+    "Ambiguous" cells in MERFISH are bucketed as <code>other</code>.
+  </p>
+  <p>
+    <strong>Reproducibility.</strong> Every data point is a checkpointed
+    <code>(method, dataset, seed)</code> cell. The <code>generate.py</code>
+    script in this folder rebuilds <code>data.json</code> from the CSV artefacts
+    in <code>5x15_spatial_aware/</code> and <code>benchmark_crossplatform/</code>;
+    the GH Pages workflow (<code>.github/workflows/pages.yml</code>) runs it on
+    every push to <code>main</code>.
+  </p>
+  <p class="build-tag">
+    Built from
+    <span id="build-protocol">–</span>
+    · <span id="build-date">–</span>
+  </p>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© HistoWeave contributors. MIT-licensed.</span>
+    <span>Numbers are advisory: benchmark ARI is not a substitute for pilot experiments on your own slides.</span>
+  </div>
+</footer>
+
+</body>
+</html>

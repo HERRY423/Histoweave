@@ -44,6 +44,7 @@ work/
 # Generated outputs
 *.html
 !docs/**/*.html
+!leaderboard/index.html
 histoweave_report.html
 *.zarr/
 *.h5ad
