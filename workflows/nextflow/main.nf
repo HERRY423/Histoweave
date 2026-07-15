@@ -4,6 +4,7 @@
 nextflow.enable.dsl = 2
 
 params.input    = null
+params.bundle   = null
 params.assay    = null
 params.engine   = 'native'
 params.n_domains = null
@@ -24,6 +25,7 @@ params.qc_params        = ''
 params.normalize_params = ''
 params.domain_params    = ''
 params.annotation_params = ''
+params.deconvolution_params = ''
 
 // Override --container_version (or either full image parameter) for a released build.
 params.container_version = '0.0.1'
@@ -32,16 +34,17 @@ params.r_image      = "ghcr.io/histoweave-spatial/histoweave-r:${params.containe
 
 workflow {
     main:
-    if (params.demo && params.input) {
-        error("--demo and --input are mutually exclusive.")
+    def input_modes = [params.demo, params.input != null, params.bundle != null].count { it }
+    if (input_modes > 1) {
+        error("--demo, --input, and --bundle are mutually exclusive.")
     }
-    if (!params.demo && !params.input) {
-        error("One of --input or --demo is required.")
+    if (input_modes == 0) {
+        error("One of --input, --bundle, or --demo is required.")
     }
 
     def selected_steps = _parse_steps(params.steps)
     def engine = _validate_engine(params.engine)
-    def assay = _validate_assay(params.assay, params.demo)
+    def assay = _validate_assay(params.assay, params.demo || params.bundle != null)
     def n_domains = _validate_n_domains(params.n_domains)
 
     if (selected_steps.contains('domain_detection') && n_domains == null) {
@@ -51,7 +54,9 @@ workflow {
         error("Stereo-seq ingestion requires --engine spatialdata.")
     }
 
-    if (params.demo) {
+    if (params.bundle) {
+        ch_bundle = Channel.value(file(params.bundle, checkIfExists: true))
+    } else if (params.demo) {
         INGEST_DEMO(params.seed)
         ch_bundle = INGEST_DEMO.out.bundle
     } else {
@@ -87,7 +92,12 @@ workflow {
     }
 
     if (selected_steps.contains('deconvolution')) {
-        DECONVOLUTION(ch_bundle, params.deconvolution_method, '', params.seed)
+        DECONVOLUTION(
+            ch_bundle,
+            params.deconvolution_method,
+            params.deconvolution_params,
+            params.seed,
+        )
         ch_bundle = DECONVOLUTION.out.bundle
     }
 
@@ -286,9 +296,16 @@ process REPORT {
     """
 }
 
-def _param_args(String param_str) {
-    if (!param_str) return ''
-    return param_str.split(',').collect { "--param ${it.trim()}" }.join(' ')
+def _param_args(Object raw_params) {
+    if (!raw_params) return ''
+    def values = raw_params instanceof Collection
+        ? raw_params
+        : raw_params.toString().split(',')
+    return values.collect { "--param ${_shell_quote(it.toString().trim())}" }.join(' ')
+}
+
+def _shell_quote(String value) {
+    return "'" + value.replace("'", "'\"'\"'") + "'"
 }
 
 def _parse_steps(Object raw_steps) {

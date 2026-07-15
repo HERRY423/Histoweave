@@ -58,6 +58,21 @@ histoweave run --demo --out report.html
 open report.html
 ```
 
+## Ask HistoWeave in plain language
+
+The Spatial Pipeline Compiler turns a natural-language question into a validated
+pipeline made only from methods in the live plugin registry. It defaults to a dry run;
+`--model mock` is deterministic and offline, while the `[compiler]` extra enables any
+LiteLLM-compatible provider.
+
+```bash
+histoweave ask "Find spatial domains and annotate them" \
+  --in sample.ttab --model mock --plan-only --json
+```
+
+Review the plan, then add `--yes` to execute it and generate the normal Vitessce report.
+Unsupported concepts are explicitly recorded in `docs/COMPILER_GAPS.md`.
+
 ## Real data workflow
 
 ```bash

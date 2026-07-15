@@ -99,6 +99,25 @@
 </div>
 {% endif %}
 
+{% if compiler %}
+<h2>Compiler plan</h2>
+<div class="card">
+  <p><b>Question:</b> {{ compiler.question }}</p>
+  <p><b>Rationale:</b> {{ compiler.rationale }}</p>
+  <p><b>Assay assumed:</b> <code>{{ compiler.assay_assumed }}</code>
+     &middot; <b>Model:</b> <code>{{ compiler.model }}</code>
+     &middot; <b>Executor:</b> <code>{{ compiler.executor }}</code></p>
+  {% if compiler.gaps %}
+  <p><b>Capability approximations:</b></p>
+  <ul>
+    {% for gap in compiler.gaps %}
+    <li><code>{{ gap.concept }}</code>: {{ gap.reason }} &rarr; {{ gap.degraded_to }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}
+
 <h2>Pipeline &amp; provenance</h2>
 <p>Every step below is recorded with its method version and parameters, so this run is
 fully reproducible.</p>
