@@ -22,6 +22,7 @@ nav:
   - Home: index.md
   - API Reference: api.md
   - Quickstart: quickstart.md
+  - Spatial pipeline compiler: compiler.md
   - Tutorials:
       - Real Visium (DLPFC): tutorials/01_real_visium_dlpfc.md
       - Custom plugin development: tutorials/02_custom_plugin_development.md
@@ -30,6 +31,7 @@ nav:
   - Method lifecycle: method-lifecycle.md
   - Concepts: concepts.md
   - Roadmap: roadmap.md
+  - Compiler capability gaps: COMPILER_GAPS.md
 
 markdown_extensions:
   - admonition

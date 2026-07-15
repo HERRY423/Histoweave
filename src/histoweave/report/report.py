@@ -104,5 +104,6 @@ def _build_context(data: SpatialTable) -> dict:
         "plots": plots,
         "annotation_counts": annotation_counts,
         "steps": manifest.get("steps", []),
+        "compiler": manifest.get("compiler"),
         "vitessce_json": vitessce_json,
     }

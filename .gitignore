@@ -17,11 +17,14 @@ env/
 # Test / coverage / cache
 .pytest_cache/
 .pytest_tmp/
+.hypothesis/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
 coverage.xml
+junit*.xml
 pytest-tmp/
 
 # Tooling
@@ -30,6 +33,7 @@ pytest-tmp/
 
 # Docs
 site/
+.ipynb_checkpoints/
 
 # Workflow engines
 .nextflow/
@@ -44,6 +48,30 @@ histoweave_report.html
 *.zarr/
 *.h5ad
 results/
+*.params.json
+pipeline_trace.tsv
+
+# Repository-local data and scratch artifacts
+/datasets_cache/
+/tmp/
+/*.patch
+*.orig
+*.rej
+*.bak
+
+# Generated benchmark and case-study artifacts (keep source scripts trackable)
+/5x15_spatial_aware/checkpoints/
+/5x15_spatial_aware/figures/
+/5x15_spatial_aware/*.csv
+/5x15_spatial_aware/*.json
+/benchmark_crossplatform/checkpoints/
+/benchmark_crossplatform/figures/
+/benchmark_crossplatform/*.csv
+/benchmark_crossplatform/*.json
+/case_study_dlpfc_consistency/figures/
+/case_study_dlpfc_consistency/vitessce_config.json
+/variance_decomposition/figures/
+/variance_decomposition/variance_*.csv
 
 # OS / editor
 .DS_Store

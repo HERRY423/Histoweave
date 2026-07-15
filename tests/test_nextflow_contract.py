@@ -24,6 +24,15 @@ def test_real_vendor_input_is_ingested_before_analysis() -> None:
     assert not re.search(r"ch_bundle\s*=\s*Channel\.value\(file\(params\.input", MAIN)
 
 
+def test_compiler_bundle_handoff_bypasses_vendor_reingestion() -> None:
+    assert "params.bundle" in MAIN
+    assert "--demo, --input, and --bundle are mutually exclusive" in MAIN
+    assert "Channel.value(file(params.bundle, checkIfExists: true))" in MAIN
+    assert "params.deconvolution_params" in MAIN
+    assert "params.demo || params.bundle != null" in MAIN
+    assert "raw_params instanceof Collection" in MAIN
+
+
 def test_workflow_parameters_are_validated_and_domain_count_is_forwarded() -> None:
     for declaration in ("params.assay", "params.engine", "params.n_domains"):
         assert declaration in MAIN

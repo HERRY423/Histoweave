@@ -12,6 +12,7 @@ Commands
     histoweave benchmark [--task domain_detection] [--json]
     histoweave recommend --in data.ttab --knowledge-base landscape.json
                       [--k-neighbours 3] [--top 3] [--json]
+    histoweave ask "Find spatial domains" --in data.ttab [--model mock] [--yes]
 
 
 The next three drive the per-stage Nextflow pipeline: each reads and writes a portable
@@ -139,6 +140,34 @@ def main(argv: list[str] | None = None) -> int:
     p_recommend.add_argument("--json", action="store_true", help="Emit JSON.")
     p_recommend.add_argument("--out", help="Persist recommendation JSON.")
 
+    p_ask = sub.add_parser(
+        "ask",
+        help="Compile a natural-language question into an executable spatial pipeline.",
+    )
+    p_ask.add_argument("question", help="Natural-language spatial analysis question.")
+    p_ask.add_argument("--in", dest="in_path", required=True, help="Input bundle directory.")
+    p_ask.add_argument(
+        "--out", default="histoweave_compiled_report.html", help="Report or hand-off path."
+    )
+    p_ask.add_argument(
+        "--model",
+        help="LiteLLM model id; use 'mock' for deterministic offline compilation.",
+    )
+    p_ask.add_argument(
+        "--executor",
+        choices=("in-process", "nextflow"),
+        default="in-process",
+        help="Execution backend. Nextflow emits a params hand-off without spawning Nextflow.",
+    )
+    p_ask.add_argument("--plan-only", action="store_true", help="Compile and validate only.")
+    p_ask.add_argument("--json", action="store_true", help="Emit the compiled plan as JSON.")
+    p_ask.add_argument("--yes", action="store_true", help="Execute without confirmation.")
+    p_ask.add_argument(
+        "--gaps-file",
+        default="docs/COMPILER_GAPS.md",
+        help="Markdown audit log for approximated capabilities.",
+    )
+
     p_ingest = sub.add_parser("ingest", help="Read vendor data (or the demo) into a bundle.")
     p_ingest.add_argument("--demo", action="store_true", help="Use the synthetic demo dataset.")
     p_ingest.add_argument("--input", help="Vendor output directory.")
@@ -191,6 +220,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_benchmark(args)
     if args.command == "recommend":
         return _cmd_recommend(args)
+    if args.command == "ask":
+        return _cmd_ask(args)
     if args.command == "ingest":
         return _cmd_ingest(args)
     if args.command == "step":
@@ -210,6 +241,61 @@ def _cmd_version() -> int:
     from . import __version__
 
     _emit(f"histoweave {__version__}")
+    return 0
+
+
+def _cmd_ask(args) -> int:
+    from .compiler import CompilerValidationError, run_compiled
+    from .compiler import compile as compile_question
+    from .io import read_bundle
+    from .workflow import PipelineExecutionError
+
+    try:
+        data = read_bundle(args.in_path)
+        plan = compile_question(
+            args.question,
+            data=data,
+            provider=args.model,
+            executor=args.executor,
+            gaps_path=args.gaps_file,
+        )
+    except (OSError, ValueError, CompilerValidationError, RuntimeError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    if args.json:
+        _emit(json.dumps(plan.to_dict(), indent=2, ensure_ascii=False))
+    else:
+        _emit(f"Compiled rationale: {plan.rationale}")
+        for number, step in enumerate(plan.steps, start=1):
+            _emit(
+                f"  {number}. {step.category}:{step.method} "
+                f"{json.dumps(step.params, ensure_ascii=False)} — {step.purpose}"
+            )
+        for gap in plan.gaps:
+            _emit(f"  approximation: {gap.concept} -> {gap.degraded_to}", file=sys.stderr)
+
+    if args.plan_only:
+        return 0
+    if not args.yes:
+        if not sys.stdin.isatty():
+            _emit("Plan validated; not executed in a non-interactive session (use --yes).")
+            return 0
+        answer = input("Execute this pipeline? [y/N] ").strip().casefold()
+        if answer not in {"y", "yes"}:
+            _emit("Plan validated; execution cancelled.")
+            return 0
+
+    plan.dry_run = False
+    try:
+        result = run_compiled(plan, data=data, out=args.out)
+    except (PipelineExecutionError, OSError, ValueError, RuntimeError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 1
+    if isinstance(result, dict):
+        _emit(json.dumps(result, indent=2))
+    else:
+        _emit(f"Report written to {Path(args.out).resolve()}")
     return 0
 
 
