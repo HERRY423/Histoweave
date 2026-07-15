@@ -77,6 +77,25 @@ def test_mkdocstrings_api_reference_is_enabled_and_built_in_ci() -> None:
         assert f"::: {module}" in api
 
 
+def test_leaderboard_pages_workflow_packages_explicit_tracked_assets() -> None:
+    workflow = _read(WORKFLOWS / "pages.yml")
+    gitignore = _read(ROOT / ".gitignore")
+    required_assets = (
+        "leaderboard/index.html",
+        "leaderboard/styles.css",
+        "leaderboard/main.js",
+        "leaderboard/data.json",
+        "leaderboard/README.md",
+    )
+
+    assert "!leaderboard/index.html" in gitignore
+    assert "leaderboard/*.html" not in workflow
+    assert "Required GitHub Pages asset is missing" in workflow
+    for asset in required_assets:
+        assert (ROOT / asset).is_file()
+        assert asset in workflow
+
+
 def test_spatialtable_runtime_dependencies_are_core_dependencies() -> None:
     pyproject = _read(ROOT / "pyproject.toml")
     core_dependencies = pyproject.split("[project.optional-dependencies]", maxsplit=1)[0]

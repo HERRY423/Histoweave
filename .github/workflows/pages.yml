@@ -42,13 +42,26 @@ jobs:
       - name: Regenerate data.json
         run: python leaderboard/generate.py
 
-      - name: Prepare pages artefact
+      - name: Prepare pages artifact
         run: |
-          mkdir -p _site
-          cp -r leaderboard/*.html leaderboard/*.css leaderboard/*.js \
-                leaderboard/data.json leaderboard/README.md _site/
+          required_files=(
+            leaderboard/index.html
+            leaderboard/styles.css
+            leaderboard/main.js
+            leaderboard/data.json
+            leaderboard/README.md
+          )
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "::error file=$file::Required GitHub Pages asset is missing"
+              exit 1
+            fi
+          done
 
-      - name: Upload artefact
+          install -d _site
+          cp "${required_files[@]}" _site/
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
