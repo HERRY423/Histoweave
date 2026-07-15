@@ -25,17 +25,22 @@ ships hand-annotated cortical-layer ground truth via *spatialLIBD*. You will:
 ## 1. Load the slide
 
 ```python
+import logging
+
 import histoweave as ts
 from histoweave.datasets import get_dataset, list_datasets
+
+_LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 # The registry lists every benchmark-ready public dataset.
 for d in list_datasets():
     if d["assay"] == "visium":
-        print(d["name"], "-", d["description"])
+        _LOGGER.info("%s - %s", d["name"], d["description"])
 
 entry = get_dataset("dlpfc_151507")
 data = entry.load()          # -> SpatialTable, cached & checksum-verified
-print(data)                  # SpatialTable(n_obs=..., n_vars=..., obsm=[spatial], ...)
+_LOGGER.info("%s", data)                  # SpatialTable(n_obs=..., n_vars=..., obsm=[spatial], ...)
 ```
 
 The loaded `SpatialTable` carries the spot × gene count matrix in `X`, the array
@@ -61,7 +66,7 @@ the full processing chain stays auditable:
 
 ```python
 for step in data.provenance:
-    print(step["step"], "→", step["method"], step["method_version"])
+    _LOGGER.info("%s -> %s %s", step["step"], step["method"], step["method_version"])
 ```
 
 ## 3. Batch integration with Harmony
@@ -80,7 +85,7 @@ data = create_method(
 ).run(data)
 
 # Corrected embedding lands in obsm["X_pca_harmony"], ready for neighbours/clustering.
-print(data.obsm["X_pca_harmony"].shape)
+_LOGGER.info("%s", data.obsm["X_pca_harmony"].shape)
 ```
 
 ## 4. Cell-type annotation with scANVI
@@ -106,7 +111,7 @@ if "spatialLIBD_layer" in data.obs:
         layer="counts",          # scANVI needs raw counts
         scvi_epochs=50, scanvi_epochs=25,   # small for a tutorial; raise for real runs
     ).run(data)
-    print(data.obs[["cell_type", "scanvi_confidence"]].head())
+    _LOGGER.info("%s", data.obs[["cell_type", "scanvi_confidence"]].head())
 ```
 
 ## 5. Spatially variable genes with nnSVG
@@ -121,10 +126,10 @@ try:
         n_top=50, n_neighbors=10, assay_name="logcounts",
     ).run(data)
     top = data.var.sort_values("nnsvg_rank").head(10)
-    print(top[["nnsvg_rank", "nnsvg_LR_stat", "nnsvg_padj"]])
+    _LOGGER.info("%s", top[["nnsvg_rank", "nnsvg_LR_stat", "nnsvg_padj"]])
 except (RuntimeError, FileNotFoundError) as exc:
     # No R container available — fall back to the pure-Python Moran's I SVG method.
-    print("nnSVG unavailable, using Moran's I:", exc)
+    _LOGGER.warning("nnSVG unavailable, using Moran's I: %s", exc)
     data = create_method("svg", "morans_i", n_top=50).run(data)
 ```
 
@@ -147,14 +152,14 @@ if "spatialLIBD_layer" in data.obs:
         data.obs["spatialLIBD_layer"].to_numpy(),
         data.obs["domain"].to_numpy(),
     )
-    print(f"Domain ARI vs spatialLIBD layers: {ari:.3f}")
+    _LOGGER.info("Domain ARI vs spatialLIBD layers: %.3f", ari)
 ```
 
 ## 7. Interactive report
 
 ```python
 out = ts.build_report(data, "dlpfc_report.html")
-print("Open", out)
+_LOGGER.info("Open %s", out)
 ```
 
 The HTML report is self-contained (CDN-loaded Vitessce viewer, no Python server) and

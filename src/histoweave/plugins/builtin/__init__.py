@@ -13,6 +13,7 @@ def register_all() -> None:
     from . import (  # noqa: F401
         annotate,
         banksy,
+        banksy_py,
         cell2location,
         cellpose2,
         celltypist,
@@ -27,6 +28,9 @@ def register_all() -> None:
         normalize,
         qc,
         r_demo,
+        research_context,
+        research_preprocessing,
+        research_spatial,
         scanvi,
         sctransform,
         sklearn_clustering,

@@ -1,0 +1,272 @@
+{
+  "protocol": "histoweave.landscape.cross_platform_spatial_aware.v1",
+  "rows": [
+    {
+      "held_out_dataset": "151673",
+      "held_out_platform": "Visium",
+      "training_datasets": [
+        "151674",
+        "151507",
+        "151669",
+        "151670",
+        "merfish",
+        "slideseqv2",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "spectral@sw0.8"
+      ],
+      "oracle_score": 0.3018812441837427,
+      "recommended_methods": [
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "kmeans@sw0.3"
+      ],
+      "recommended_method": "agglomerative@sw0.8",
+      "recommended_score": 0.24560875008751212,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.05627249409623056,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.2500715350135494,
+      "global_best_regret": 0.051809709170193285,
+      "random_expected_score": 0.20566547814324762,
+      "random_expected_regret": 0.09621576604049506
+    },
+    {
+      "held_out_dataset": "151674",
+      "held_out_platform": "Visium",
+      "training_datasets": [
+        "151673",
+        "151507",
+        "151669",
+        "151670",
+        "merfish",
+        "slideseqv2",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "agglomerative@sw0.8"
+      ],
+      "oracle_score": 0.30002254262180444,
+      "recommended_methods": [
+        "spectral@sw0.3",
+        "gaussian_mixture@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "recommended_method": "spectral@sw0.3",
+      "recommended_score": 0.1761931129593751,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.12382942966242935,
+      "global_best_baseline": "spectral@sw0.3",
+      "global_best_score": 0.1761931129593751,
+      "global_best_regret": 0.12382942966242935,
+      "random_expected_score": 0.2339373079137227,
+      "random_expected_regret": 0.06608523470808175
+    },
+    {
+      "held_out_dataset": "151507",
+      "held_out_platform": "Visium",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151669",
+        "151670",
+        "merfish",
+        "slideseqv2",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "gaussian_mixture@sw0.8"
+      ],
+      "oracle_score": 0.26265344463682183,
+      "recommended_methods": [
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "kmeans@sw0.3"
+      ],
+      "recommended_method": "agglomerative@sw0.8",
+      "recommended_score": 0.21576135178991462,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.04689209284690721,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.2401616476653766,
+      "global_best_regret": 0.022491796971445238,
+      "random_expected_score": 0.1829573882959664,
+      "random_expected_regret": 0.07969605634085544
+    },
+    {
+      "held_out_dataset": "151669",
+      "held_out_platform": "Visium",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151670",
+        "merfish",
+        "slideseqv2",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "agglomerative@sw0.8"
+      ],
+      "oracle_score": 0.1895454791432171,
+      "recommended_methods": [
+        "spectral@sw0.3",
+        "gaussian_mixture@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "recommended_method": "spectral@sw0.3",
+      "recommended_score": 0.16789329493648572,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.021652184206731373,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.16555647657420372,
+      "global_best_regret": 0.023989002569013373,
+      "random_expected_score": 0.1384626219478405,
+      "random_expected_regret": 0.051082857195376585
+    },
+    {
+      "held_out_dataset": "151670",
+      "held_out_platform": "Visium",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151669",
+        "merfish",
+        "slideseqv2",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "spectral@sw0.3"
+      ],
+      "oracle_score": 0.346417381108651,
+      "recommended_methods": [
+        "spectral@sw0.8",
+        "gaussian_mixture@sw0.8",
+        "kmeans@sw0.8"
+      ],
+      "recommended_method": "spectral@sw0.8",
+      "recommended_score": 0.2207146398145301,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.1257027412941209,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.22146459984255526,
+      "global_best_regret": 0.12495278126609574,
+      "random_expected_score": 0.16936594598614152,
+      "random_expected_regret": 0.17705143512250948
+    },
+    {
+      "held_out_dataset": "merfish",
+      "held_out_platform": "MERFISH",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151669",
+        "151670",
+        "slideseqv2",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "spectral@sw0.0"
+      ],
+      "oracle_score": 0.5525071939119691,
+      "recommended_methods": [
+        "kmeans@sw0.3",
+        "kmeans@sw0.0",
+        "agglomerative@sw0.3"
+      ],
+      "recommended_method": "kmeans@sw0.3",
+      "recommended_score": 0.3001811644303521,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.25232602948161703,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.3001811644303521,
+      "global_best_regret": 0.25232602948161703,
+      "random_expected_score": 0.24212382031135282,
+      "random_expected_regret": 0.3103833736006163
+    },
+    {
+      "held_out_dataset": "slideseqv2",
+      "held_out_platform": "Slide-seqV2",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151669",
+        "151670",
+        "merfish",
+        "xenium"
+      ],
+      "oracle_methods": [
+        "agglomerative@sw0.3"
+      ],
+      "oracle_score": 0.09429149486889753,
+      "recommended_methods": [
+        "kmeans@sw0.3",
+        "agglomerative@sw0.3",
+        "kmeans@sw0.0"
+      ],
+      "recommended_method": "kmeans@sw0.3",
+      "recommended_score": 0.0911868873900723,
+      "top1_hit": false,
+      "top3_hit": true,
+      "selection_regret": 0.003104607478825225,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.0911868873900723,
+      "global_best_regret": 0.003104607478825225,
+      "random_expected_score": 0.06414399615081058,
+      "random_expected_regret": 0.030147498718086946
+    },
+    {
+      "held_out_dataset": "xenium",
+      "held_out_platform": "Xenium",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151669",
+        "151670",
+        "merfish",
+        "slideseqv2"
+      ],
+      "oracle_methods": [
+        "agglomerative@sw0.0"
+      ],
+      "oracle_score": 0.5207155124587609,
+      "recommended_methods": [
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "kmeans@sw0.3"
+      ],
+      "recommended_method": "agglomerative@sw0.8",
+      "recommended_score": 0.2463271151326959,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.274388397326065,
+      "global_best_baseline": "kmeans@sw0.3",
+      "global_best_score": 0.496968188584282,
+      "global_best_regret": 0.02374732387447892,
+      "random_expected_score": 0.39780938762040036,
+      "random_expected_regret": 0.12290612483836055
+    }
+  ],
+  "summary": {
+    "n_queries": 8,
+    "top1_accuracy": 0.0,
+    "top3_accuracy": 0.125,
+    "mean_selection_regret": 0.11302099704911583,
+    "median_selection_regret": 0.09005096187932995,
+    "global_best_mean_regret": 0.07828133505926227,
+    "random_expected_mean_regret": 0.11669604332054777,
+    "regret_reduction_vs_global_best": -0.4437796310391766,
+    "regret_reduction_vs_random": 0.031492466812581554
+  }
+}

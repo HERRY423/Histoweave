@@ -35,12 +35,12 @@ HistoWeave 的 Phase-0 脚手架完成度超过预期。六层架构清晰、API
 
 ### [B2] 容器镜像不存在
 
-**现状：** `r_demo.py` 引用 `/usr/local/bin/histoweave-sc-transform.R` 作为容器内路径，但项目中没有任何 Dockerfile、`workflows/containers/` 目录或容器构建脚本。R 桥接测试在 CI 中必然跳过（Windows 和 CI 环境均无 Rscript）。
+**现状：** `r_demo.py` 引用 `/usr/local/bin/histoweave-r-lognorm.R` 作为容器内路径，但项目中没有任何 Dockerfile、`workflows/containers/` 目录或容器构建脚本。R 桥接测试在 CI 中必然跳过（Windows 和 CI 环境均无 Rscript）。
 
 **影响：** R 互操作性是 HistoWeave 的核心卖点之一（"R↔Python divide becomes an implementation detail"）。没有容器镜像，这一承诺无法兑现。
 
 **修复方案：**
-1. 创建 `workflows/containers/histoweave-r/Dockerfile`（基于 rocker/r-base，安装 anndata R 包 + histoweave-sc-transform.R）
+1. 创建 `workflows/containers/histoweave-r/Dockerfile`（基于 rocker/r-base，安装 anndata R 包 + histoweave-r-lognorm.R）
 2. 添加 GitHub Actions 工作流构建并推送镜像到 ghcr.io
 3. `r_demo.py` 中的路径查找逻辑保持在 CI 中通过挂载卷可用
 

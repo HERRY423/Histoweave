@@ -12,6 +12,7 @@ HumanPilot repo (Analysis/Layer_Guesses).
 
 from __future__ import annotations
 
+import logging
 import os
 import urllib.parse
 import urllib.request
@@ -20,6 +21,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import scanpy as sc
+
+_LOGGER = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 CACHE = Path(os.environ.get("HISTOWEAVE_DLPFC_DATA", BASE_DIR / "data"))
@@ -121,6 +124,7 @@ def build_anndata(slice_id: str, h5: Path, lab: Path, pos: Path, n_hvg: int = N_
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     summary = []
     for sid, lab_rel in SLICES.items():
         h5, lab, pos = fetch_slice(sid, lab_rel)
@@ -137,9 +141,13 @@ if __name__ == "__main__":
                 layers=sorted(pd.Series(a.obs["domain_truth"]).unique().tolist()),
             )
         )
-        print(
-            f"[{sid}] spots={a.n_obs} hvg={a.n_vars} domains={a.uns['n_domains_truth']} "
-            f"annot={summary[-1]['annot_frac']}"
+        _LOGGER.info(
+            "[%s] spots=%s hvg=%s domains=%s annot=%s",
+            sid,
+            a.n_obs,
+            a.n_vars,
+            a.uns["n_domains_truth"],
+            summary[-1]["annot_frac"],
         )
     pd.DataFrame(summary).to_csv(CACHE / "slice_summary.csv", index=False)
-    print("\nWrote slice_summary.csv")
+    _LOGGER.info("\nWrote slice_summary.csv")

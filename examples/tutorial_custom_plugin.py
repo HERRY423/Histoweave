@@ -8,6 +8,8 @@ benchmarks it alongside the built-in methods. See docs/tutorials/02_custom_plugi
 
 from __future__ import annotations
 
+import logging
+
 import numpy as np
 from scipy.spatial import cKDTree
 
@@ -20,6 +22,8 @@ from histoweave.plugins import (
     create_method,
     register,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @register
@@ -34,9 +38,12 @@ class SpatialSmooth(Method):
         params=(
             ParamSpec("k", "int", 6, "Spatial neighbours per spot.", minimum=1),
             ParamSpec(
-                "alpha", "float", 0.5,
+                "alpha",
+                "float",
+                0.5,
                 "Self weight; 1.0 keeps the spot unchanged.",
-                minimum=0.0, maximum=1.0,
+                minimum=0.0,
+                maximum=1.0,
             ),
         ),
         assumptions=("obsm['spatial'] present.",),
@@ -64,24 +71,25 @@ class SpatialSmooth(Method):
 
 
 def main() -> None:
-    print(f"HistoWeave v{ts.__version__}\n")
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    _LOGGER.info("HistoWeave v%s\n", ts.__version__)
 
     data = ts.datasets.make_synthetic(n_cells=400, n_genes=40, n_domains=3, seed=0)
-    print("Input:", repr(data))
+    _LOGGER.info("Input: %r", data)
 
     smoothed = create_method("normalization", "spatial_smooth", k=8, alpha=0.6).run(data)
-    print("\nAfter spatial_smooth:")
-    print("  provenance:", smoothed.provenance[-1])
-    print("  pre_smooth layer stored:", "pre_smooth" in smoothed.layers)
+    _LOGGER.info("\nAfter spatial_smooth:")
+    _LOGGER.info("  provenance: %s", smoothed.provenance[-1])
+    _LOGGER.info("  pre_smooth layer stored: %s", "pre_smooth" in smoothed.layers)
     delta = np.abs(np.asarray(smoothed.X) - np.asarray(data.X)).mean()
-    print(f"  mean |Delta X| = {delta:.4f}")
+    _LOGGER.info("  mean |Delta X| = %.4f", delta)
 
-    print("\nBenchmarking domain detection (custom plugin lives alongside built-ins):")
+    _LOGGER.info("\nBenchmarking domain detection (custom plugin lives alongside built-ins):")
     from histoweave.benchmark import domain_detection_task, run_benchmark
 
     bench = run_benchmark(domain_detection_task(data))
     for row in bench.leaderboard[:5]:
-        print(f"  {row['rank']}. {row['method']:<16} score={row['score']}")
+        _LOGGER.info("  %s. %-16s score=%s", row["rank"], row["method"], row["score"])
 
 
 if __name__ == "__main__":

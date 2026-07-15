@@ -235,6 +235,8 @@ class MethodSpec:
     implementation: MethodImplementation = MethodImplementation.NATIVE
     backends: tuple[BackendRequirement, ...] = ()
     deprecation: MethodDeprecation | None = None
+    # Non-score classification tags; kept separate from benchmark task results.
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Coerce string values so external plugin manifests remain ergonomic."""

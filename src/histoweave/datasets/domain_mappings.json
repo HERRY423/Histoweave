@@ -1,0 +1,159 @@
+{
+    "schema_version":  "histoweave.domain_mappings.v1",
+    "description":  "Cross-platform cell_type -\u003e domain collapse tables. Each map takes a platform-specific cell_type / cluster label and collapses it into a small set of tissue-level compartments so ARI can be computed against \u0027domain_truth\u0027. User-selected Q6: \u0027domain-prior collapse\u0027 semantic.",
+    "merfish_mouse_hypothalamus":  {
+                                       "source":  "Moffitt 2018 MERFISH preoptic hypothalamus, via squidpy.datasets.merfish",
+                                       "input_column":  "Cell_class",
+                                       "domain_column":  "domain_truth",
+                                       "compartments":  {
+                                                            "neuron_excitatory":  [
+                                                                                      "Excitatory"
+                                                                                  ],
+                                                            "neuron_inhibitory":  [
+                                                                                      "Inhibitory"
+                                                                                  ],
+                                                            "glia_oligodendrocyte":  [
+                                                                                         "OD Mature 1",
+                                                                                         "OD Mature 2",
+                                                                                         "OD Mature 3",
+                                                                                         "OD Mature 4",
+                                                                                         "OD Immature 1",
+                                                                                         "OD Immature 2"
+                                                                                     ],
+                                                            "glia_astrocyte":  [
+                                                                                   "Astrocyte"
+                                                                               ],
+                                                            "other_glia":  [
+                                                                               "Ependymal",
+                                                                               "Microglia"
+                                                                           ],
+                                                            "vascular":  [
+                                                                             "Endothelial 1",
+                                                                             "Endothelial 2",
+                                                                             "Endothelial 3",
+                                                                             "Pericytes"
+                                                                         ]
+                                                        }
+                                   },
+    "slideseqv2_mouse_hippocampus":  {
+                                         "source":  "Stickels 2021 Slide-seq v2 mouse hippocampus, via squidpy.datasets.slideseqv2",
+                                         "input_column":  "cluster",
+                                         "domain_column":  "domain_truth",
+                                         "compartments":  {
+                                                              "hippocampus_pyramidal":  [
+                                                                                            "CA1_CA2_CA3_Subiculum",
+                                                                                            "DentatePyramids",
+                                                                                            "Subiculum_Entorhinal_cl2",
+                                                                                            "Subiculum_Entorhinal_cl3"
+                                                                                        ],
+                                                              "neuron_interneuron":  [
+                                                                                         "Interneurons",
+                                                                                         "Neurogenesis"
+                                                                                     ],
+                                                              "glia_astrocyte":  [
+                                                                                     "Astrocytes"
+                                                                                 ],
+                                                              "glia_oligodendrocyte":  [
+                                                                                           "Oligodendrocytes",
+                                                                                           "Polydendrocytes"
+                                                                                       ],
+                                                              "vascular":  [
+                                                                               "Endothelial_Stalk",
+                                                                               "Endothelial_Tip",
+                                                                               "Mural"
+                                                                           ],
+                                                              "other_glia":  [
+                                                                                 "Microglia",
+                                                                                 "Ependymal"
+                                                                             ]
+                                                          }
+                                     },
+    "xenium_breast_cancer":  {
+                                 "source":  "10x Genomics Xenium In-Situ Human Breast Cancer FFPE Rep1 (313-plex panel)",
+                                 "input_column":  "cell_type",
+                                 "domain_column":  "domain_truth",
+                                 "compartments":  {
+                                                      "tumor":  [
+                                                                    "Cancer Epithelial",
+                                                                    "Invasive Tumor",
+                                                                    "DCIS 1",
+                                                                    "DCIS 2",
+                                                                    "Prolif Invasive Tumor"
+                                                                ],
+                                                      "stromal":  [
+                                                                      "CAFs",
+                                                                      "Stromal",
+                                                                      "Myoepi ACTA2+",
+                                                                      "Myoepi KRT15+",
+                                                                      "Perivascular-Like"
+                                                                  ],
+                                                      "immune":  [
+                                                                     "B Cells",
+                                                                     "T Cell \u0026 Tumor Hybrid",
+                                                                     "Macrophages 1",
+                                                                     "Macrophages 2",
+                                                                     "Mast Cells",
+                                                                     "Plasmablasts",
+                                                                     "DCs",
+                                                                     "IRF7+ DCs",
+                                                                     "LAMP3+ DCs"
+                                                                 ],
+                                                      "vascular":  [
+                                                                       "Endothelial"
+                                                                   ],
+                                                      "normal_epithelial":  [
+                                                                                "Luminal Epithelial",
+                                                                                "Luminal Progenitor",
+                                                                                "Mature Luminal"
+                                                                            ]
+                                                  }
+                             },
+    "merfish_mouse_brain":  {
+                                "source":  "Allen Brain Cell Atlas MERFISH mouse brain; broad cell-type compartments for domain_truth",
+                                "input_column":  "subclass",
+                                "domain_column":  "domain_truth",
+                                "compartments":  {
+                                                     "excitatory_neuron":  [
+                                                                               "IT",
+                                                                               "ET",
+                                                                               "CT",
+                                                                               "NP",
+                                                                               "Glut"
+                                                                           ],
+                                                     "inhibitory_neuron":  [
+                                                                               "Pvalb",
+                                                                               "Sst",
+                                                                               "Vip",
+                                                                               "Lamp5",
+                                                                               "GABA"
+                                                                           ],
+                                                     "oligodendrocyte_lineage":  [
+                                                                                     "Oligo",
+                                                                                     "OPC",
+                                                                                     "COP"
+                                                                                 ],
+                                                     "astro_ependymal":  [
+                                                                             "Astro",
+                                                                             "Ependymal",
+                                                                             "Tanycyte"
+                                                                         ],
+                                                     "immune":  [
+                                                                    "Microglia",
+                                                                    "Macrophage",
+                                                                    "Immune"
+                                                                ],
+                                                     "vascular":  [
+                                                                      "Endothelial",
+                                                                      "Pericyte",
+                                                                      "VLMC",
+                                                                      "SMC"
+                                                                  ],
+                                                     "other_neural":  [
+                                                                          "Cholinergic",
+                                                                          "Dopaminergic",
+                                                                          "Serotonergic",
+                                                                          "Peptidergic"
+                                                                      ]
+                                                 }
+                            }
+}

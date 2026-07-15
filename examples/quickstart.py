@@ -7,18 +7,23 @@ Produces `quickstart_report.html` in the current directory.
 
 from __future__ import annotations
 
+import logging
+
 import histoweave as ts
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def main() -> None:
-    print(f"HistoWeave v{ts.__version__}\n")
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    _LOGGER.info("HistoWeave v%s\n", ts.__version__)
 
     # 1. A tiny canonical dataset with known ground-truth spatial domains.
     data = ts.datasets.make_synthetic(n_cells=800, n_genes=50, n_domains=4, seed=0)
-    print("Ingested:", repr(data))
+    _LOGGER.info("Ingested: %r", data)
 
     # 2. Run the default Phase-1 pipeline (QC -> normalize -> domains -> annotate).
-    print("\nRunning pipeline:")
+    _LOGGER.info("\nRunning pipeline:")
     result = ts.run_pipeline(data, verbose=True)
 
     # 3. How well did domain detection recover the planted structure?
@@ -28,19 +33,19 @@ def main() -> None:
         result.obs["domain_truth"].to_numpy(),
         result.obs["domain"].to_numpy(),
     )
-    print(f"\nDomain-detection ARI vs ground truth: {ari:.3f}")
+    _LOGGER.info("\nDomain-detection ARI vs ground truth: %.3f", ari)
 
     # 4. Write a shareable, self-contained HTML report.
     out = ts.build_report(result, "quickstart_report.html")
-    print(f"Report: {out.resolve()}")
+    _LOGGER.info("Report: %s", out.resolve())
 
     # 5. Benchmark all registered domain-detection methods.
     from histoweave.benchmark import domain_detection_task, run_benchmark
 
     bench = run_benchmark(domain_detection_task(data))
-    print("\nLeaderboard (domain_detection):")
+    _LOGGER.info("\nLeaderboard (domain_detection):")
     for row in bench.leaderboard:
-        print(f"  {row['rank']}. {row['method']:<16} score={row['score']}")
+        _LOGGER.info("  %s. %-16s score=%s", row["rank"], row["method"], row["score"])
 
 
 if __name__ == "__main__":

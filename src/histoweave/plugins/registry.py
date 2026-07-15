@@ -324,6 +324,7 @@ def list_methods(
                     for param in spec.params
                 ],
                 "benchmark": dict(spec.benchmark),
+                "metadata": dict(spec.metadata),
             }
         )
     return out

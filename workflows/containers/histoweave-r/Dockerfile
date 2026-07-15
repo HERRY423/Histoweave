@@ -34,12 +34,12 @@ WORKDIR /build
 COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade pip setuptools wheel && pip install ".[${HISTOWEAVE_EXTRAS}]" && python -m compileall -q /opt/histoweave-venv
-COPY workflows/containers/histoweave-r/histoweave-sc-transform.R /usr/local/bin/histoweave-sc-transform.R
+COPY workflows/containers/histoweave-r/histoweave-r-lognorm.R /usr/local/bin/histoweave-r-lognorm.R
 COPY workflows/containers/histoweave-r/histoweave-banksy.R /usr/local/bin/histoweave-banksy.R
 COPY workflows/containers/histoweave-r/histoweave-sctransform.R /usr/local/bin/histoweave-sctransform.R
 COPY workflows/containers/histoweave-r/histoweave-nnsvg.R /usr/local/bin/histoweave-nnsvg.R
 
-RUN chmod 0755 /usr/local/bin/histoweave-sc-transform.R /usr/local/bin/histoweave-banksy.R /usr/local/bin/histoweave-sctransform.R /usr/local/bin/histoweave-nnsvg.R && useradd --system --create-home --shell /usr/sbin/nologin histoweave
+RUN chmod 0755 /usr/local/bin/histoweave-r-lognorm.R /usr/local/bin/histoweave-banksy.R /usr/local/bin/histoweave-sctransform.R /usr/local/bin/histoweave-nnsvg.R && useradd --system --create-home --shell /usr/sbin/nologin histoweave
 
 USER histoweave
 WORKDIR /home/histoweave

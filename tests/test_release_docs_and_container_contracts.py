@@ -83,3 +83,27 @@ def test_spatialtable_runtime_dependencies_are_core_dependencies() -> None:
 
     for dependency in ("anndata>=0.10", "scipy>=1.10", "spatialdata>=0.1"):
         assert f'"{dependency}"' in core_dependencies
+
+
+def test_method_adapter_and_r_script_names_are_canonical() -> None:
+    adapters = ROOT / "5x15_spatial_aware" / "adapters"
+    assert (adapters / "banksy_py_adapter.py").is_file()
+    assert not (adapters / "banksy_python_adapter.py").exists()
+
+    r_dir = ROOT / "workflows" / "containers" / "histoweave-r"
+    scripts = {path.name for path in r_dir.glob("*.R")}
+    assert scripts == {
+        "histoweave-banksy.R",
+        "histoweave-nnsvg.R",
+        "histoweave-r-lognorm.R",
+        "histoweave-sctransform.R",
+    }
+    all_source = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in (
+            ROOT / "src" / "histoweave" / "plugins" / "builtin" / "r_demo.py",
+            r_dir / "Dockerfile",
+        )
+    )
+    assert "histoweave-sc-transform.R" not in all_source
+    assert "sc_transform.R" not in all_source

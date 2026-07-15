@@ -13,6 +13,7 @@ import hashlib
 import json
 import shutil
 import tempfile
+import time
 import warnings
 from datetime import UTC, datetime
 from pathlib import Path
@@ -419,20 +420,53 @@ def _looks_like_bundle(root: Path) -> bool:
 
 def _commit_directory(temporary: Path, root: Path, *, overwrite: bool) -> None:
     if not root.exists():
-        temporary.replace(root)
+        _replace_with_retry(temporary, root)
         return
     if not overwrite:
         raise FileExistsError(f"bundle output already exists: {root}")
 
     backup = root.parent / f".{root.name}.backup-{uuid4().hex}"
-    root.replace(backup)
+    _replace_with_retry(root, backup)
     try:
-        temporary.replace(root)
+        _replace_with_retry(temporary, root)
     except Exception:
-        backup.replace(root)
+        _replace_with_retry(backup, root)
         raise
     else:
-        shutil.rmtree(backup)
+        _rmtree_with_retry(backup)
+
+
+def _replace_with_retry(source: Path, destination: Path, *, attempts: int = 6) -> None:
+    """Replace a path, tolerating short-lived Windows file-handle contention.
+
+    Antivirus scanners and filesystem indexers can briefly open a newly written
+    Parquet or NumPy artifact between serialization and the atomic directory rename.
+    Windows then raises ``PermissionError`` even though neither path's permissions are
+    wrong. Retrying only that specific exception keeps the commit atomic while allowing
+    the external handle time to close; all other failures propagate at once.
+    """
+    for attempt in range(attempts):
+        try:
+            source.replace(destination)
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(0.01 * (2**attempt))
+
+
+def _rmtree_with_retry(path: Path, *, attempts: int = 6) -> None:
+    """Remove a committed bundle backup with the same bounded retry policy."""
+    for attempt in range(attempts):
+        try:
+            shutil.rmtree(path)
+            return
+        except FileNotFoundError:
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(0.01 * (2**attempt))
 
 
 def _read_legacy_bundle(root: Path) -> SpatialTable:

@@ -18,7 +18,7 @@ from ..interfaces import MethodCategory, MethodSpec, ParamSpec
 from ..registry import register
 from ._r_base import RContainerMethod
 
-_R_SCRIPT_NAME = "histoweave-sc-transform.R"
+_R_SCRIPT_NAME = "histoweave-r-lognorm.R"
 
 
 @register

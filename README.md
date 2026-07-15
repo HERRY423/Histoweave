@@ -73,6 +73,14 @@ histoweave ask "Find spatial domains and annotate them" \
 Review the plan, then add `--yes` to execute it and generate the normal Vitessce report.
 Unsupported concepts are explicitly recorded in `docs/COMPILER_GAPS.md`.
 
+## Research method incubator
+
+The built-in registry also exposes 23 dependency-light `weave_*` research candidates
+covering spatial QC, normalization, domains, SVGs, neighborhood graphs, integration,
+annotation, and deconvolution. They are intentionally marked `experimental` and
+`novelty=unvalidated`; see [the incubator contract](docs/research-methods.md) for the
+method matrix and graduation criteria.
+
 ## Real data workflow
 
 ```bash

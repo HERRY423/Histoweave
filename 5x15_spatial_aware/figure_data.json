@@ -1,0 +1,309 @@
+{
+  "protocol": "histoweave.landscape.dlpfc_spatial_aware.v1",
+  "task": "domain_detection_spatial_aware",
+  "metric": "ARI",
+  "higher_is_better": true,
+  "datasets": [
+    "151673",
+    "151674",
+    "151507",
+    "151669",
+    "151670"
+  ],
+  "configs": [
+    "kmeans@sw0.0",
+    "gaussian_mixture@sw0.0",
+    "agglomerative@sw0.0",
+    "spectral@sw0.0",
+    "birch@sw0.0",
+    "kmeans@sw0.3",
+    "gaussian_mixture@sw0.3",
+    "agglomerative@sw0.3",
+    "spectral@sw0.3",
+    "birch@sw0.3",
+    "kmeans@sw0.8",
+    "gaussian_mixture@sw0.8",
+    "agglomerative@sw0.8",
+    "spectral@sw0.8",
+    "birch@sw0.8"
+  ],
+  "core_methods": [
+    "kmeans",
+    "gaussian_mixture",
+    "agglomerative",
+    "spectral",
+    "birch"
+  ],
+  "spatial_weights": [
+    0.0,
+    0.3,
+    0.8
+  ],
+  "seeds": [
+    42,
+    1,
+    2
+  ],
+  "n_domains_truth": {
+    "151673": 7,
+    "151674": 7,
+    "151507": 7,
+    "151669": 8,
+    "151670": 5
+  },
+  "performance_matrix_mean": {
+    "151673": {
+      "kmeans@sw0.0": 0.17420667399051626,
+      "gaussian_mixture@sw0.0": 0.16533020665223666,
+      "agglomerative@sw0.0": 0.0992594801230638,
+      "spectral@sw0.0": 0.16831588076971818,
+      "birch@sw0.0": 0.08821344913490366,
+      "kmeans@sw0.3": 0.2500715350135494,
+      "gaussian_mixture@sw0.3": 0.23505787396902336,
+      "agglomerative@sw0.3": 0.14793332881049076,
+      "spectral@sw0.3": 0.2423138947172816,
+      "birch@sw0.3": 0.17007462879487056,
+      "kmeans@sw0.8": 0.2627784415201952,
+      "gaussian_mixture@sw0.8": 0.29897276692285363,
+      "agglomerative@sw0.8": 0.24560875008751212,
+      "spectral@sw0.8": 0.3018812441837427,
+      "birch@sw0.8": 0.23496401745875697
+    },
+    "151674": {
+      "kmeans@sw0.0": 0.20967256904797824,
+      "gaussian_mixture@sw0.0": 0.2082546041148925,
+      "agglomerative@sw0.0": 0.11884079288283696,
+      "spectral@sw0.0": 0.2177402139226832,
+      "birch@sw0.0": 0.1180367852092173,
+      "kmeans@sw0.3": 0.29812818287020243,
+      "gaussian_mixture@sw0.3": 0.2693488827455323,
+      "agglomerative@sw0.3": 0.2212556785500249,
+      "spectral@sw0.3": 0.1761931129593751,
+      "birch@sw0.3": 0.2528450781106391,
+      "kmeans@sw0.8": 0.2672779870189586,
+      "gaussian_mixture@sw0.8": 0.29425002550692975,
+      "agglomerative@sw0.8": 0.30002254262180444,
+      "spectral@sw0.8": 0.2802722777843898,
+      "birch@sw0.8": 0.27692088536037573
+    },
+    "151507": {
+      "kmeans@sw0.0": 0.18252147710380554,
+      "gaussian_mixture@sw0.0": 0.13082560581581545,
+      "agglomerative@sw0.0": 0.07968841720401587,
+      "spectral@sw0.0": 0.13830716377522523,
+      "birch@sw0.0": 0.045874087368512055,
+      "kmeans@sw0.3": 0.2401616476653766,
+      "gaussian_mixture@sw0.3": 0.22277446029210546,
+      "agglomerative@sw0.3": 0.21069571335220524,
+      "spectral@sw0.3": 0.20020453878111455,
+      "birch@sw0.3": 0.1320529975079289,
+      "kmeans@sw0.8": 0.1976265212769467,
+      "gaussian_mixture@sw0.8": 0.26265344463682183,
+      "agglomerative@sw0.8": 0.21576135178991462,
+      "spectral@sw0.8": 0.2338606355203309,
+      "birch@sw0.8": 0.2513527623493769
+    },
+    "151669": {
+      "kmeans@sw0.0": 0.13562278672614475,
+      "gaussian_mixture@sw0.0": 0.09850967821303404,
+      "agglomerative@sw0.0": 0.044205061170462245,
+      "spectral@sw0.0": 0.11494031961580202,
+      "birch@sw0.0": 0.030268636790949644,
+      "kmeans@sw0.3": 0.16555647657420372,
+      "gaussian_mixture@sw0.3": 0.13965703696921683,
+      "agglomerative@sw0.3": 0.14540742516528352,
+      "spectral@sw0.3": 0.16789329493648572,
+      "birch@sw0.3": 0.12966854906833353,
+      "kmeans@sw0.8": 0.1808052372738942,
+      "gaussian_mixture@sw0.8": 0.16915163227001595,
+      "agglomerative@sw0.8": 0.1895454791432171,
+      "spectral@sw0.8": 0.1786623462974188,
+      "birch@sw0.8": 0.18704536900314558
+    },
+    "151670": {
+      "kmeans@sw0.0": 0.262007775646567,
+      "gaussian_mixture@sw0.0": 0.0801675665947441,
+      "agglomerative@sw0.0": -0.07384442034784718,
+      "spectral@sw0.0": 0.10737939041986139,
+      "birch@sw0.0": -0.08513723452602168,
+      "kmeans@sw0.3": 0.22146459984255526,
+      "gaussian_mixture@sw0.3": 0.17780756463547612,
+      "agglomerative@sw0.3": 0.280014239444171,
+      "spectral@sw0.3": 0.346417381108651,
+      "birch@sw0.3": 0.1876685778839524,
+      "kmeans@sw0.8": 0.19297951764813936,
+      "gaussian_mixture@sw0.8": 0.24276469417135982,
+      "agglomerative@sw0.8": 0.1993220380186911,
+      "spectral@sw0.8": 0.2207146398145301,
+      "birch@sw0.8": 0.18076285943729278
+    }
+  },
+  "best_method_seedmean": {
+    "151673": "spectral@sw0.8",
+    "151674": "agglomerative@sw0.8",
+    "151507": "gaussian_mixture@sw0.8",
+    "151669": "agglomerative@sw0.8",
+    "151670": "spectral@sw0.3"
+  },
+  "recommendation": {
+    "rows": [
+      {
+        "held_out_dataset": "151673",
+        "training_datasets": [
+          "151674",
+          "151507",
+          "151669",
+          "151670"
+        ],
+        "oracle_methods": [
+          "spectral@sw0.8"
+        ],
+        "oracle_score": 0.3018812441837427,
+        "recommended_methods": [
+          "agglomerative@sw0.8",
+          "birch@sw0.8",
+          "gaussian_mixture@sw0.8"
+        ],
+        "recommended_method": "agglomerative@sw0.8",
+        "recommended_score": 0.24560875008751212,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.05627249409623056,
+        "global_best_baseline": "gaussian_mixture@sw0.8",
+        "global_best_score": 0.29897276692285363,
+        "global_best_regret": 0.002908477260889053,
+        "random_expected_score": 0.20566547814324762,
+        "random_expected_regret": 0.09621576604049506
+      },
+      {
+        "held_out_dataset": "151674",
+        "training_datasets": [
+          "151673",
+          "151507",
+          "151669",
+          "151670"
+        ],
+        "oracle_methods": [
+          "agglomerative@sw0.8"
+        ],
+        "oracle_score": 0.30002254262180444,
+        "recommended_methods": [
+          "spectral@sw0.3",
+          "gaussian_mixture@sw0.8",
+          "spectral@sw0.8"
+        ],
+        "recommended_method": "spectral@sw0.3",
+        "recommended_score": 0.1761931129593751,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.12382942966242935,
+        "global_best_baseline": "gaussian_mixture@sw0.8",
+        "global_best_score": 0.29425002550692975,
+        "global_best_regret": 0.005772517114874698,
+        "random_expected_score": 0.2339373079137227,
+        "random_expected_regret": 0.06608523470808175
+      },
+      {
+        "held_out_dataset": "151507",
+        "training_datasets": [
+          "151673",
+          "151674",
+          "151669",
+          "151670"
+        ],
+        "oracle_methods": [
+          "gaussian_mixture@sw0.8"
+        ],
+        "oracle_score": 0.26265344463682183,
+        "recommended_methods": [
+          "spectral@sw0.3",
+          "agglomerative@sw0.3",
+          "gaussian_mixture@sw0.8"
+        ],
+        "recommended_method": "spectral@sw0.3",
+        "recommended_score": 0.20020453878111455,
+        "top1_hit": false,
+        "top3_hit": true,
+        "selection_regret": 0.06244890585570728,
+        "global_best_baseline": "gaussian_mixture@sw0.8",
+        "global_best_score": 0.26265344463682183,
+        "global_best_regret": 0.0,
+        "random_expected_score": 0.1829573882959664,
+        "random_expected_regret": 0.07969605634085544
+      },
+      {
+        "held_out_dataset": "151669",
+        "training_datasets": [
+          "151673",
+          "151674",
+          "151507",
+          "151670"
+        ],
+        "oracle_methods": [
+          "agglomerative@sw0.8"
+        ],
+        "oracle_score": 0.1895454791432171,
+        "recommended_methods": [
+          "spectral@sw0.3",
+          "gaussian_mixture@sw0.8",
+          "kmeans@sw0.3"
+        ],
+        "recommended_method": "spectral@sw0.3",
+        "recommended_score": 0.16789329493648572,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.021652184206731373,
+        "global_best_baseline": "gaussian_mixture@sw0.8",
+        "global_best_score": 0.16915163227001595,
+        "global_best_regret": 0.020393846873201144,
+        "random_expected_score": 0.1384626219478405,
+        "random_expected_regret": 0.051082857195376585
+      },
+      {
+        "held_out_dataset": "151670",
+        "training_datasets": [
+          "151673",
+          "151674",
+          "151507",
+          "151669"
+        ],
+        "oracle_methods": [
+          "spectral@sw0.3"
+        ],
+        "oracle_score": 0.346417381108651,
+        "recommended_methods": [
+          "agglomerative@sw0.8",
+          "birch@sw0.8",
+          "gaussian_mixture@sw0.8"
+        ],
+        "recommended_method": "agglomerative@sw0.8",
+        "recommended_score": 0.1993220380186911,
+        "top1_hit": false,
+        "top3_hit": false,
+        "selection_regret": 0.1470953430899599,
+        "global_best_baseline": "gaussian_mixture@sw0.8",
+        "global_best_score": 0.24276469417135982,
+        "global_best_regret": 0.10365268693729118,
+        "random_expected_score": 0.16936594598614152,
+        "random_expected_regret": 0.17705143512250948
+      }
+    ],
+    "summary": {
+      "n_queries": 5,
+      "top1_accuracy": 0.0,
+      "top3_accuracy": 0.2,
+      "mean_selection_regret": 0.08225967138221169,
+      "median_selection_regret": 0.06244890585570728,
+      "global_best_mean_regret": 0.026545505637251214,
+      "random_expected_mean_regret": 0.09402626988146366,
+      "regret_reduction_vs_global_best": -2.0988172727355012,
+      "regret_reduction_vs_random": 0.12514160685184905
+    }
+  },
+  "design_note": "The '15' axis is a spatial-weight sweep: 5 core k-aware clusterers (kmeans, gaussian_mixture, agglomerative, spectral, birch) x 3 spatial weights {0.0, 0.3, 0.8}. spatial_weight blends the expression embedding with the spatial-neighbourhood term (0=expression-only, 1=space-only). BANKSY (the one distinct spatial-aware method in the registry) is container/R-only and was not runnable in this environment.",
+  "limitations": [
+    "All 5 slices are from one study (Maynard 2021 human DLPFC) -> within-study validation.",
+    "Only 5 leave-one-out queries -> imprecise recommendation-accuracy estimate.",
+    "Spatial-aware set is a param sweep of sklearn-family clusterers, not dedicated GNN/HMRF spatial methods (BANKSY, SpaGCN, etc. require containers)."
+  ]
+}

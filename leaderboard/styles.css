@@ -1,0 +1,297 @@
+/*
+ * HistoWeave leaderboard styles.
+ *
+ * Palette (Phylo, per project guidance):
+ *   #000000 ink, #ECE9E2 stone, #FAF9F3 paper, #E9ED4C accent-lime,
+ *   #FF9400 accent-orange, #75A025 accent-green, #FD9BED accent-pink,
+ *   #0279EE accent-blue.
+ *
+ * We keep the body neutral (paper) with ink text, use accent-blue for links
+ * and "wins", accent-orange for the leader in the table, accent-green for
+ * spatial-aware chips, and lime as a highlight tint (never for text).
+ */
+
+:root {
+  --ink: #000000;
+  --stone: #ECE9E2;
+  --paper: #FAF9F3;
+  --accent-lime: #E9ED4C;
+  --accent-orange: #FF9400;
+  --accent-green: #75A025;
+  --accent-pink: #FD9BED;
+  --accent-blue: #0279EE;
+
+  --font-body: "Liberation Sans", "Arimo", "DejaVu Sans", system-ui, sans-serif;
+  --font-mono: "Menlo", "DejaVu Sans Mono", monospace;
+
+  --radius: 6px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------- header -------- */
+.site-header {
+  border-bottom: 1px solid var(--stone);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.brand-mark {
+  width: 14px; height: 14px;
+  background: var(--accent-blue);
+  border-radius: 2px;
+  display: inline-block;
+}
+.site-header nav a {
+  color: var(--ink);
+  text-decoration: none;
+  margin-left: 22px;
+  font-size: 14px;
+  border-bottom: 1px solid transparent;
+}
+.site-header nav a:hover { border-bottom-color: var(--ink); }
+
+/* -------- hero -------- */
+.hero { padding: 40px 0 24px; }
+.hero h1 {
+  font-size: 34px;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.subtitle {
+  max-width: 720px;
+  color: #333;
+  font-size: 17px;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--stone);
+  border-radius: var(--radius);
+}
+.hero-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hero-stats .k {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.hero-stats .l {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #555;
+}
+
+/* -------- controls -------- */
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 24px 0 8px;
+}
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #555;
+}
+.control select {
+  padding: 6px 10px;
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+  background: white;
+  font: inherit;
+  color: var(--ink);
+  min-width: 180px;
+}
+.control select:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 1px;
+}
+
+/* -------- panels -------- */
+.panel {
+  background: white;
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+.panel h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  letter-spacing: -0.005em;
+}
+.panel .hint {
+  color: #555;
+  font-size: 13px;
+  margin: 0 0 14px;
+}
+
+/* -------- leaderboard table -------- */
+.table-scroll { overflow-x: auto; }
+#lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  min-width: 600px;
+}
+#lb-table th, #lb-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--stone);
+  text-align: right;
+  font-size: 14px;
+  white-space: nowrap;
+}
+#lb-table th:first-child, #lb-table td:first-child {
+  text-align: left;
+}
+#lb-table thead th {
+  background: var(--stone);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+#lb-table tbody tr:hover {
+  background: var(--paper);
+}
+.chip {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.chip.sklearn { background: var(--stone); color: #333; }
+.chip.spatial_aware { background: var(--accent-green); color: white; }
+.chip.win { background: var(--accent-orange); color: white; }
+.chip.nan { background: #eee; color: #999; font-weight: 400; }
+
+/* Cell highlighting for winning method per dataset */
+.cell-win {
+  background: rgba(255, 148, 0, 0.15);
+  font-weight: 600;
+}
+
+/* -------- heatmap -------- */
+#heatmap { overflow-x: auto; padding-bottom: 8px; }
+#heatmap svg { display: block; }
+
+/* -------- small multiples -------- */
+#small-multiples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.sm-panel {
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  background: var(--paper);
+}
+.sm-panel h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.sm-panel .sm-sub {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 4px;
+}
+.sm-panel svg { display: block; }
+
+/* -------- methods list -------- */
+.method-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.method-card {
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  background: var(--paper);
+  font-size: 13px;
+}
+.method-card .name { font-weight: 600; margin-bottom: 2px; }
+.method-card .desc { color: #444; font-size: 12px; }
+.method-card .fam { margin-top: 6px; }
+
+/* -------- footer -------- */
+.site-footer {
+  border-top: 1px solid var(--stone);
+  background: var(--paper);
+  color: #666;
+  font-size: 12px;
+  margin-top: 40px;
+  padding: 20px 0;
+}
+.site-footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.build-tag {
+  color: #666;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 640px) {
+  .hero h1 { font-size: 26px; }
+  .site-header .wrap { padding-top: 10px; padding-bottom: 10px; }
+  .panel { padding: 16px; }
+}
+
+/* Print / SVG downloads: keep the palette readable. */
+@media print {
+  .controls, .site-header nav, .site-footer { display: none; }
+  .panel { break-inside: avoid; box-shadow: none; }
+}

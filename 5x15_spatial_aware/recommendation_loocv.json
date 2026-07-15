@@ -1,0 +1,156 @@
+{
+  "protocol": "histoweave.landscape.dlpfc_spatial_aware.v1",
+  "rows": [
+    {
+      "held_out_dataset": "151673",
+      "training_datasets": [
+        "151674",
+        "151507",
+        "151669",
+        "151670"
+      ],
+      "oracle_methods": [
+        "spectral@sw0.8"
+      ],
+      "oracle_score": 0.3018812441837427,
+      "recommended_methods": [
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "gaussian_mixture@sw0.8"
+      ],
+      "recommended_method": "agglomerative@sw0.8",
+      "recommended_score": 0.24560875008751212,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.05627249409623056,
+      "global_best_baseline": "gaussian_mixture@sw0.8",
+      "global_best_score": 0.29897276692285363,
+      "global_best_regret": 0.002908477260889053,
+      "random_expected_score": 0.20566547814324762,
+      "random_expected_regret": 0.09621576604049506
+    },
+    {
+      "held_out_dataset": "151674",
+      "training_datasets": [
+        "151673",
+        "151507",
+        "151669",
+        "151670"
+      ],
+      "oracle_methods": [
+        "agglomerative@sw0.8"
+      ],
+      "oracle_score": 0.30002254262180444,
+      "recommended_methods": [
+        "spectral@sw0.3",
+        "gaussian_mixture@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "recommended_method": "spectral@sw0.3",
+      "recommended_score": 0.1761931129593751,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.12382942966242935,
+      "global_best_baseline": "gaussian_mixture@sw0.8",
+      "global_best_score": 0.29425002550692975,
+      "global_best_regret": 0.005772517114874698,
+      "random_expected_score": 0.2339373079137227,
+      "random_expected_regret": 0.06608523470808175
+    },
+    {
+      "held_out_dataset": "151507",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151669",
+        "151670"
+      ],
+      "oracle_methods": [
+        "gaussian_mixture@sw0.8"
+      ],
+      "oracle_score": 0.26265344463682183,
+      "recommended_methods": [
+        "spectral@sw0.3",
+        "agglomerative@sw0.3",
+        "gaussian_mixture@sw0.8"
+      ],
+      "recommended_method": "spectral@sw0.3",
+      "recommended_score": 0.20020453878111455,
+      "top1_hit": false,
+      "top3_hit": true,
+      "selection_regret": 0.06244890585570728,
+      "global_best_baseline": "gaussian_mixture@sw0.8",
+      "global_best_score": 0.26265344463682183,
+      "global_best_regret": 0.0,
+      "random_expected_score": 0.1829573882959664,
+      "random_expected_regret": 0.07969605634085544
+    },
+    {
+      "held_out_dataset": "151669",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151670"
+      ],
+      "oracle_methods": [
+        "agglomerative@sw0.8"
+      ],
+      "oracle_score": 0.1895454791432171,
+      "recommended_methods": [
+        "spectral@sw0.3",
+        "gaussian_mixture@sw0.8",
+        "kmeans@sw0.3"
+      ],
+      "recommended_method": "spectral@sw0.3",
+      "recommended_score": 0.16789329493648572,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.021652184206731373,
+      "global_best_baseline": "gaussian_mixture@sw0.8",
+      "global_best_score": 0.16915163227001595,
+      "global_best_regret": 0.020393846873201144,
+      "random_expected_score": 0.1384626219478405,
+      "random_expected_regret": 0.051082857195376585
+    },
+    {
+      "held_out_dataset": "151670",
+      "training_datasets": [
+        "151673",
+        "151674",
+        "151507",
+        "151669"
+      ],
+      "oracle_methods": [
+        "spectral@sw0.3"
+      ],
+      "oracle_score": 0.346417381108651,
+      "recommended_methods": [
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "gaussian_mixture@sw0.8"
+      ],
+      "recommended_method": "agglomerative@sw0.8",
+      "recommended_score": 0.1993220380186911,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.1470953430899599,
+      "global_best_baseline": "gaussian_mixture@sw0.8",
+      "global_best_score": 0.24276469417135982,
+      "global_best_regret": 0.10365268693729118,
+      "random_expected_score": 0.16936594598614152,
+      "random_expected_regret": 0.17705143512250948
+    }
+  ],
+  "summary": {
+    "n_queries": 5,
+    "top1_accuracy": 0.0,
+    "top3_accuracy": 0.2,
+    "mean_selection_regret": 0.08225967138221169,
+    "median_selection_regret": 0.06244890585570728,
+    "global_best_mean_regret": 0.026545505637251214,
+    "random_expected_mean_regret": 0.09402626988146366,
+    "regret_reduction_vs_global_best": -2.0988172727355012,
+    "regret_reduction_vs_random": 0.12514160685184905
+  }
+}

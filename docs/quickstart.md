@@ -56,7 +56,12 @@ a **self-contained HTML report** with interactive Vitessce spatial scatterplots,
 expression heatmaps, and a complete provenance table — all on synthetic data.
 
 ```python
+import logging
+
 import histoweave as ts
+
+_LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 data = ts.datasets.make_synthetic(seed=0)     # 600 cells, 3 ground-truth domains
 result = ts.run_pipeline(data, verbose=True)   # QC → normalize → domains → annotate
@@ -64,7 +69,7 @@ ts.build_report(result, "report.html")         # HTML + Vitessce interactive vie
 
 # Every step is provenance-tracked (method, version, params, timing)
 for step in result.uns["run_manifest"]["steps"]:
-    print(step["category"], step["method"], step["version"])
+    _LOGGER.info("%s %s %s", step["category"], step["method"], step["version"])
 ```
 
 ## 4. Ingest real Visium data
@@ -139,9 +144,9 @@ RANK  METHOD              ARI     TIME(s)
 from histoweave.benchmark import domain_detection_task, run_benchmark
 
 result = run_benchmark(domain_detection_task())
-print(result.best())           # the top-ranked method
+_LOGGER.info("%s", result.best())           # the top-ranked method
 for row in result.leaderboard:
-    print(row["rank"], row["method"], row["score"])
+    _LOGGER.info("%s %s %s", row["rank"], row["method"], row["score"])
 ```
 
 ## 7. Recommend methods — HistoWeave's killer feature
@@ -295,6 +300,7 @@ Distribute it as an independently versioned package by advertising on the
 
 ## Next steps
 
+- [Method selection guide](method-selection.md) - objective-aware method and parameter choices
 - [API reference](api.md) — complete method specs, data model, benchmark tasks
 - [Architecture](architecture.md) — six-layer design, plugin contract, data flow
 - [Concepts](concepts.md) — SpatialTable, provenance, maturity levels
