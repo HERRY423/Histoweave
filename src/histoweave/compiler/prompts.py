@@ -30,9 +30,19 @@ def _few_shot_messages(catalog: list[dict[str, Any]]) -> list[dict[str, str]]:
                     "content": json.dumps(
                         {"question": template["question"], "data_context": {}},
                         separators=(",", ":"),
+                        ensure_ascii=False,
+                        allow_nan=False,
                     ),
                 },
-                {"role": "assistant", "content": json.dumps(plan, separators=(",", ":"))},
+                {
+                    "role": "assistant",
+                    "content": json.dumps(
+                        plan,
+                        separators=(",", ":"),
+                        ensure_ascii=False,
+                        allow_nan=False,
+                    ),
+                },
             ]
         )
     return messages
@@ -56,5 +66,13 @@ def build_messages(
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
         *_few_shot_messages(catalog),
-        {"role": "user", "content": json.dumps(payload, separators=(",", ":"))},
+        {
+            "role": "user",
+            "content": json.dumps(
+                payload,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ),
+        },
     ]

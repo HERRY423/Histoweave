@@ -598,3 +598,127 @@ def make_developmental_gradient(
         )
     )
     return table
+
+
+def make_scalable_synthetic(
+    n_cells: int,
+    n_genes: int = 2_000,
+    n_domains: int = 8,
+    density: float = 0.05,
+    *,
+    seed: int | None = 42,
+    layout: str = "blob",
+    with_batch: bool = True,
+    chunk_size: int = 50_000,
+) -> SpatialTable:
+    """Create a sparse, million-cell-ready synthetic spatial dataset.
+
+    The expression matrix is assembled as CSR chunks, never as a dense
+    ``(n_cells, n_genes)`` array.  Domain labels, markers, coordinates and batch
+    labels are retained so the object can be used by scaling benchmarks.
+    """
+    from scipy import sparse
+
+    if n_cells < 1 or n_genes < 1 or n_domains < 1:
+        raise ValueError("n_cells, n_genes, and n_domains must all be positive")
+    if not 0.0 < density <= 1.0:
+        raise ValueError("density must be in (0, 1]")
+    if chunk_size < 1:
+        raise ValueError("chunk_size must be positive")
+
+    rng = np.random.default_rng(seed)
+    grid = np.array([100.0, 100.0], dtype=np.float32)
+    if layout == "grid":
+        side = int(np.ceil(np.sqrt(n_cells)))
+        x, y = np.meshgrid(
+            np.linspace(0.0, grid[0], side, dtype=np.float32),
+            np.linspace(0.0, grid[1], side, dtype=np.float32),
+        )
+        coords = np.column_stack((x.ravel()[:n_cells], y.ravel()[:n_cells]))
+        coords += rng.normal(0.0, 1.0, size=coords.shape).astype(np.float32)
+        dom_side = int(np.ceil(np.sqrt(n_domains)))
+        cx, cy = np.meshgrid(
+            np.linspace(20.0, 80.0, dom_side, dtype=np.float32),
+            np.linspace(20.0, 80.0, dom_side, dtype=np.float32),
+        )
+        centroids = np.column_stack((cx.ravel()[:n_domains], cy.ravel()[:n_domains]))
+    elif layout == "blob":
+        coords = rng.uniform(0.0, grid, size=(n_cells, 2)).astype(np.float32)
+        centroids = rng.uniform(0.0, grid, size=(n_domains, 2)).astype(np.float32)
+    else:
+        raise ValueError("layout must be 'blob' or 'grid'")
+
+    distances = np.sum((coords[:, None, :] - centroids[None, :, :]) ** 2, axis=2)
+    domain = distances.argmin(axis=1)
+    gene_names = [f"gene_{i:04d}" for i in range(n_genes)]
+    marker_count = min(20, max(1, n_genes // n_domains))
+    marker_genes = {
+        f"domain_{domain_id}": [
+            gene_names[(domain_id * marker_count + offset) % n_genes]
+            for offset in range(marker_count)
+        ]
+        for domain_id in range(n_domains)
+    }
+    entries_per_cell = max(1, int(round(n_genes * density)))
+    marker_slots = min(3, entries_per_cell, marker_count)
+    chunks: list[Any] = []
+    offsets = np.arange(entries_per_cell, dtype=np.int32)
+    for start in range(0, n_cells, chunk_size):
+        stop = min(start + chunk_size, n_cells)
+        cell_ids = np.arange(start, stop, dtype=np.int64)
+        indices = (cell_ids[:, None] * 997 + offsets[None, :] * 37) % n_genes
+        if marker_slots:
+            marker_offsets = np.arange(marker_slots, dtype=np.int32)
+            indices[:, :marker_slots] = (
+                domain[start:stop, None] * marker_count + marker_offsets[None, :]
+            ) % n_genes
+        values = rng.poisson(1.0, size=indices.shape).astype(np.float32)
+        values[values == 0.0] = 1.0
+        if marker_slots:
+            values[:, :marker_slots] += rng.poisson(5.0, size=(stop - start, marker_slots))
+        indptr = np.arange(0, (stop - start + 1) * entries_per_cell, entries_per_cell)
+        chunk = sparse.csr_matrix(
+            (values.ravel(), indices.astype(np.int32, copy=False).ravel(), indptr),
+            shape=(stop - start, n_genes),
+            dtype=np.float32,
+        )
+        chunk.sum_duplicates()
+        chunks.append(chunk)
+    X = sparse.vstack(chunks, format="csr", dtype=np.float32)
+
+    obs_data: dict[str, pd.Categorical] = {
+        "domain_truth": pd.Categorical([f"domain_{item}" for item in domain])
+    }
+    if with_batch:
+        obs_data["batch"] = pd.Categorical([f"batch_{item % 3}" for item in range(n_cells)])
+    obs = pd.DataFrame(obs_data, index=[f"cell_{item:07d}" for item in range(n_cells)])
+    var = pd.DataFrame({"mito": [False] * n_genes}, index=gene_names)
+    table = SpatialTable(
+        X=X,
+        obs=obs,
+        var=var,
+        obsm={"spatial": coords},
+        uns={
+            "marker_genes": marker_genes,
+            "n_domains": n_domains,
+            "assay": "synthetic_scalable",
+            "density_target": density,
+            "density_actual": float(X.nnz / (n_cells * n_genes)),
+        },
+    )
+    table.record(
+        Provenance(
+            step="ingestion",
+            method="make_scalable_synthetic",
+            method_version="1.0.0",
+            params={
+                "n_cells": n_cells,
+                "n_genes": n_genes,
+                "n_domains": n_domains,
+                "density": density,
+                "with_batch": with_batch,
+                "seed": seed,
+            },
+        )
+    )
+    return table

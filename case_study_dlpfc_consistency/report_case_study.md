@@ -63,6 +63,33 @@ both correct** — the layer transitions that method alone cannot resolve.
   HistoWeave is built to orchestrate. Relying on any single method silently loses these
   transition zones.
 
+### Target-free uncertainty map recovers single-method blind spots
+
+The unique-miss count above uses the manual layers to define an error after the fact. To
+make the signal usable when manual layers are unavailable, we additionally computed a
+**target-free boundary-uncertainty map** from the three prediction maps alone. For every
+method, a 6-nearest-neighbour edge receives a boundary vote when the method assigns its two
+endpoints to different domains. The spot score aggregates the Bernoulli entropy of these
+cross-method edge votes. It is invariant to each method's arbitrary cluster-label names;
+manual layers and the `is_boundary` field are used only for post-hoc validation.
+
+The resulting map identifies areas in which a single method's smooth boundary conflicts
+with a boundary supported by the other methods:
+
+| Validation target | Positives | AUROC | Enrichment at uncertainty >= P80 | Recall at >= P80 |
+|---|---:|---:|---:|---:|
+| manual boundary spot | 1,023 | 0.633 | 1.29x | 44.7% |
+| any uniquely missed boundary | 129 | **0.702** | **1.83x** | **63.6%** |
+| uniquely missed by BANKSY | 29 | 0.660 | 1.79x | 62.1% |
+| uniquely missed by GMM | 68 | 0.702 | 1.82x | 63.2% |
+| uniquely missed by scANVI | 32 | **0.720** | **1.89x** | **65.6%** |
+
+At the inclusive 80th-percentile threshold, the map flags 1,253 of 3,611 spots and
+contains 82 of the 129 single-method blind spots. The flagged set is larger than exactly
+20% because many spots tie at the P80 score; the enrichment calculation uses the full
+inclusive set. These results support the intended use of uncertainty as a review-priority
+map, not as a replacement for manual annotation or a calibrated probability of error.
+
 ## Figures
 
 - `figures/fig1_layer_comparison.svg` — spatial maps: manual layers vs BANKSY / GMM / scANVI.
@@ -70,6 +97,12 @@ both correct** — the layer transitions that method alone cannot resolve.
   boundary spots per method.
 - `figures/fig3_agreement_map.svg` — per-spot cross-method agreement (0–3 methods correct);
   low-agreement regions trace the layer boundaries.
+- `figures/fig4_uncertainty_boundary_map.svg` — manual boundary reference, target-free
+  uncertainty, uniquely missed boundaries, and enrichment at uncertainty >= P80.
+
+Machine-readable uncertainty artifacts are in `results/per_spot_uncertainty.csv`,
+`results/uncertainty_hotspots.csv`, and `results/uncertainty_validation.json`; the
+checksummed build record is `results/uncertainty_manifest.json`.
 
 ## Interactive comparison (Vitessce)
 
@@ -98,4 +131,9 @@ both correct** — the layer transitions that method alone cannot resolve.
 ```bash
 python case_study_dlpfc_consistency/prepare.py        # fetch + build 151673.h5ad
 python case_study_dlpfc_consistency/run_case_study.py # methods, metrics, figures, config
+python case_study_dlpfc_consistency/build_uncertainty_case.py # target-free map + validation
 ```
+
+The last command can also be rerun independently from the archived
+`case_study_dlpfc_consistency/results/per_spot.csv`; it does not require refetching the raw
+Visium data.

@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "protocol": "domain_detection",
+  "feature_schema": "histoweave.target_free.v1",
+  "feature_order": [
+    "n_obs",
+    "n_vars",
+    "aspect_ratio",
+    "sparsity",
+    "mean_nonzero",
+    "library_mean",
+    "library_cv",
+    "expression_entropy",
+    "spatial_autocorrelation",
+    "cluster_tendency",
+    "mean_nn_distance",
+    "spatial_density_cv",
+    "spatial_entropy",
+    "effective_rank_90",
+    "effective_rank_95",
+    "sv_entropy"
+  ],
+  "preprocessing": {
+    "missing_values": "column_median",
+    "scaling": "population_zscore",
+    "centers": {
+      "n_obs": 4567.25,
+      "n_vars": 1558.875,
+      "aspect_ratio": 0.3891226821125117,
+      "sparsity": 0.8848347950007862,
+      "mean_nonzero": 3.0888837133141807,
+      "library_mean": 372.40847682506353,
+      "library_cv": 0.437532842798555,
+      "expression_entropy": 6.833490319836006,
+      "spatial_autocorrelation": 0.4326241726436343,
+      "cluster_tendency": 0.4794117269317114,
+      "mean_nn_distance": 0.014784873727121998,
+      "spatial_density_cv": 0.3179239491798157,
+      "spatial_entropy": 6.49473420290203,
+      "effective_rank_90": 101.5,
+      "effective_rank_95": 163.625,
+      "sv_entropy": 0.3467187649840944
+    },
+    "scales": {
+      "n_obs": 1113.7129062285308,
+      "n_vars": 765.0077511862216,
+      "aspect_ratio": 0.2144299724022798,
+      "sparsity": 0.09313031264778711,
+      "mean_nonzero": 1.094593840937478,
+      "library_mean": 234.6727623006447,
+      "library_cv": 0.10577910598950095,
+      "expression_entropy": 0.9084182672003669,
+      "spatial_autocorrelation": 0.18182606781162491,
+      "cluster_tendency": 0.10904516295451644,
+      "mean_nn_distance": 0.002344317988504986,
+      "spatial_density_cv": 0.09712167044463449,
+      "spatial_entropy": 0.0667993847708065,
+      "effective_rank_90": 185.13170987164787,
+      "effective_rank_95": 261.1641904530558,
+      "sv_entropy": 0.25438154395465784
+    }
+  },
+  "embedding": {
+    "method": "svd_pca",
+    "explained_variance_ratio": [
+      0.5030402410107779,
+      0.2914720379340932
+    ],
+    "loadings": {
+      "pc1": {
+        "n_obs": -0.3268326529641252,
+        "n_vars": 0.16098886498189904,
+        "aspect_ratio": 0.254254892763389,
+        "sparsity": 0.05509000323098219,
+        "mean_nonzero": 0.17387825688784303,
+        "library_mean": 0.3144605857906595,
+        "library_cv": -0.13863519814844674,
+        "expression_entropy": -0.28137275740794704,
+        "spatial_autocorrelation": 0.25419878777985044,
+        "cluster_tendency": -0.2904056777395446,
+        "mean_nn_distance": 0.3372417509499735,
+        "spatial_density_cv": -0.1406172276497689,
+        "spatial_entropy": 0.1915664882122923,
+        "effective_rank_90": -0.26647817024233356,
+        "effective_rank_95": -0.26403030093061775,
+        "sv_entropy": -0.33495532425677843
+      },
+      "pc2": {
+        "n_obs": -0.1671600669840742,
+        "n_vars": 0.39587755991824775,
+        "aspect_ratio": 0.3126476547384162,
+        "sparsity": 0.45549565773218215,
+        "mean_nonzero": -0.3789704871798097,
+        "library_mean": -0.009195953426187072,
+        "library_cv": 0.09424930498705006,
+        "expression_entropy": 0.23367095920304448,
+        "spatial_autocorrelation": 0.26726282631896037,
+        "cluster_tendency": 0.022726469048471608,
+        "mean_nn_distance": 0.11679436476592345,
+        "spatial_density_cv": 0.07638158879794382,
+        "spatial_entropy": -0.2829908717295593,
+        "effective_rank_90": 0.24720106762883526,
+        "effective_rank_95": 0.25652906202081677,
+        "sv_entropy": -0.06711953887252894
+      }
+    }
+  },
+  "datasets": [
+    {
+      "dataset": "151673",
+      "platform": "Visium",
+      "pc1": 2.7265278613928117,
+      "pc2": 0.4059700659759303,
+      "winner": "spectral@sw0.8",
+      "winner_family": "spectral",
+      "winning_spatial_weight": 0.8,
+      "best_score": 0.3018812441837427,
+      "runner_up": "gaussian_mixture@sw0.8",
+      "runner_up_score": 0.2989727669228536,
+      "top2_margin": 0.0029084772608891085,
+      "selection_ambiguity": 0.9863878538166021
+    },
+    {
+      "dataset": "151674",
+      "platform": "Visium",
+      "pc1": 2.9203584773202143,
+      "pc2": 0.2906288281549426,
+      "winner": "agglomerative@sw0.8",
+      "winner_family": "agglomerative",
+      "winning_spatial_weight": 0.8,
+      "best_score": 0.3000225426218044,
+      "runner_up": "kmeans@sw0.3",
+      "runner_up_score": 0.2981281828702024,
+      "top2_margin": 0.001894359751602015,
+      "selection_ambiguity": 0.989590615339709
+    },
+    {
+      "dataset": "151507",
+      "platform": "Visium",
+      "pc1": 0.03947033814354344,
+      "pc2": 1.3806412923395495,
+      "winner": "gaussian_mixture@sw0.8",
+      "winner_family": "gaussian_mixture",
+      "winning_spatial_weight": 0.8,
+      "best_score": 0.2626534446368218,
+      "runner_up": "birch@sw0.8",
+      "runner_up_score": 0.2513527623493769,
+      "top2_margin": 0.011300682287444852,
+      "selection_ambiguity": 0.9478701181244952
+    },
+    {
+      "dataset": "151669",
+      "platform": "Visium",
+      "pc1": 1.9169399134321514,
+      "pc2": 0.649258334559822,
+      "winner": "agglomerative@sw0.8",
+      "winner_family": "agglomerative",
+      "winning_spatial_weight": 0.8,
+      "best_score": 0.1895454791432171,
+      "runner_up": "birch@sw0.8",
+      "runner_up_score": 0.1870453690031455,
+      "top2_margin": 0.002500110140071593,
+      "selection_ambiguity": 0.9843033669983099
+    },
+    {
+      "dataset": "151670",
+      "platform": "Visium",
+      "pc1": 2.23256217528112,
+      "pc2": 0.5500767050231636,
+      "winner": "spectral@sw0.3",
+      "winner_family": "spectral",
+      "winning_spatial_weight": 0.3,
+      "best_score": 0.346417381108651,
+      "runner_up": "agglomerative@sw0.3",
+      "runner_up_score": 0.280014239444171,
+      "top2_margin": 0.06640314166448003,
+      "selection_ambiguity": 0.8461303870732023
+    },
+    {
+      "dataset": "merfish",
+      "platform": "MERFISH",
+      "pc1": -1.389917444414716,
+      "pc2": -4.861419303298821,
+      "winner": "spectral@sw0.0",
+      "winner_family": "spectral",
+      "winning_spatial_weight": 0.0,
+      "best_score": 0.5525071939119691,
+      "runner_up": "gaussian_mixture@sw0.0",
+      "runner_up_score": 0.3634569581889726,
+      "top2_margin": 0.1890502357229965,
+      "selection_ambiguity": 0.6377435510483284
+    },
+    {
+      "dataset": "slideseqv2",
+      "platform": "Slide-seqV2",
+      "pc1": -5.263960508291678,
+      "pc2": 2.976408060069131,
+      "winner": "agglomerative@sw0.3",
+      "winner_family": "agglomerative",
+      "winning_spatial_weight": 0.3,
+      "best_score": 0.0942914948688975,
+      "runner_up": "kmeans@sw0.3",
+      "runner_up_score": 0.0911868873900723,
+      "top2_margin": 0.003104607478825197,
+      "selection_ambiguity": 0.9456904347300046
+    },
+    {
+      "dataset": "xenium",
+      "platform": "Xenium",
+      "pc1": -3.1819808128634484,
+      "pc2": -1.3915639828237256,
+      "winner": "agglomerative@sw0.0",
+      "winner_family": "agglomerative",
+      "winning_spatial_weight": 0.0,
+      "best_score": 0.5207155124587609,
+      "runner_up": "kmeans@sw0.0",
+      "runner_up_score": 0.506459569927994,
+      "top2_margin": 0.014255942530766896,
+      "selection_ambiguity": 0.9529997851236682
+    }
+  ],
+  "platform_response": {
+    "MERFISH": {
+      "0": 0.3775900373843771,
+      "0.3": 0.3067682612048369,
+      "0.8": 0.04201316234484442
+    },
+    "Slide-seqV2": {
+      "0": 0.050154824059569635,
+      "0.3": 0.07548400081229752,
+      "0.8": 0.06679316358056446
+    },
+    "Visium": {
+      "0": 0.11436827869676465,
+      "0.3": 0.20922666799072195,
+      "0.8": 0.23463829868466454
+    },
+    "Xenium": {
+      "0": 0.4935345887555493,
+      "0.3": 0.4580788790260664,
+      "0.8": 0.2418146950795851
+    }
+  },
+  "validation": {
+    "dataset_count": 8,
+    "platform_count": 4,
+    "method_configuration_count": 15,
+    "target_derived_features": [],
+    "finite_coordinates": true
+  }
+}

@@ -139,6 +139,29 @@ In `7x15_cross_platform/figures/` (SVG + PNG):
 - **heatmap_7x15** — 8 datasets × 15 configs, mean ARI, platform in row labels.
 - **spatial_weight_by_platform_7x15** — mean ARI vs spatial_weight, one line per platform
   (the headline divergence: Visium rises, MERFISH/Xenium fall).
+- **platform_topography** — a two-panel terrain view linking target-free dataset geometry
+  to the winning configuration and to each platform's spatial-weight response.
+
+### 6.1 Target-free platform topography
+
+The topography standardises the archived 16-feature `histoweave.target_free.v1` vectors
+with population z-scores (column-median imputation for missing values), then computes a
+deterministic two-component SVD/PCA embedding. No ARI, ground-truth label, predicted domain,
+or other target-derived feature enters the embedding; performance is overlaid only after
+the coordinates have been fixed. PC1 and PC2 explain 50.3% and 29.1% of feature variance,
+respectively (79.5% combined).
+
+In this eight-dataset sample, PC1 places all five Visium slices on one side and all three
+non-Visium datasets on the other. The overlaid winners reproduce the response analysis:
+the Visium slices select `sw0.3` or `sw0.8`, whereas MERFISH and Xenium select `sw0.0`.
+The map also makes selection uncertainty visible. Six of eight datasets have a top-two ARI
+margin no larger than 0.0143, while MERFISH (0.1891) and DLPFC 151670 (0.0664) are more
+decisive. Thus the terrain view conveys both where a recommendation lies and how fragile
+the winner is, rather than presenting the argmax alone.
+
+This PCA is descriptive, not a learned generalisation result: eight datasets cannot
+establish a universal platform taxonomy, and the proxy-label caveat still governs the
+performance overlay.
 
 ---
 
@@ -156,6 +179,8 @@ In `7x15_cross_platform/figures/` (SVG + PNG):
    transfer is itself a finding, not merely noise.
 5. Xenium proxy labels are a Leiden clustering we computed, so its "ground truth" is
    circular w.r.t. transcriptomic clustering methods — treat its high ARI with caution.
+6. The two-dimensional topography is fitted to only eight archived feature vectors; its
+   apparent platform separation is a case-study observation, not an out-of-sample claim.
 
 ---
 
@@ -165,4 +190,12 @@ In `7x15_cross_platform/`: `benchmark_long.csv`, `performance_matrix_mean.csv`,
 `performance_matrix_std.csv`, `timings_mean.csv`, `dataset_features.csv`, `landscape.json`,
 `recommendation_loocv.csv`/`.json`, `figure_data.json`, `manifest.json`, and `figures/`.
 Scripts: `_prep_common.py`, `prep_merfish.py`, `prep_slideseqv2.py`, `prep_xenium.py`,
-`experiment_7x15.py`, `make_figures_7x15.py`.
+`experiment_7x15.py`, `make_figures_7x15.py`. The terrain build additionally writes
+`platform_topography.csv`, `platform_topography.json`, and `topography_manifest.json`.
+
+Rebuild the terrain artifacts from the archived feature and performance matrices (no raw
+`.h5ad` input is required):
+
+```bash
+python benchmark_crossplatform/build_topography.py --results-dir 7x15_cross_platform
+```

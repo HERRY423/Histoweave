@@ -6,6 +6,34 @@ All notable changes to this project will be documented here. The format is based
 
 ## [Unreleased]
 
+### Added - production compiler v1
+
+- Added content-addressed `hwc1_...` plan identities and SHA-256 catalog digests so an
+  executable plan is tied deterministically to its question, registry-backed steps,
+  capability gaps, execution contract, model, and catalog snapshot.
+- Added a bounded strict-JSON schema for plans and parameters, including finite-number,
+  nesting, size, step-count, and unknown-field validation before registry validation.
+- Added atomic `save_plan`/`load_plan` persistence with schema and integrity verification,
+  live-registry revalidation, and optional strict catalog-drift detection.
+- Pinned every compiled step to its exact `method_version`, materialized registry defaults,
+  and persisted the real `catalog_assay` filter separately from model assay assumptions.
+- Required a sealed, untampered plan plus explicit non-persistent execution confirmation;
+  CLI `--yes` and SDK `confirmed=True` no longer mutate plan identity.
+- Added provider timeouts, configurable repair-attempt limits, and CLI plan-artifact output
+  for auditable, reproducible natural-language compilation.
+
+### Added - platform topography and boundary uncertainty
+
+- Added a target-free cross-platform terrain experiment over the archived 8-dataset x
+  15-configuration landscape. The deterministic z-score PCA, winner/runner-up margins,
+  spatial-weight response panel, machine-readable CSV/JSON, and SHA-256 manifest can be
+  rebuilt without raw assay files.
+- Added a label-permutation-invariant boundary-uncertainty map that combines method-specific
+  neighbourhood boundary votes without using ground truth during discovery.
+- Added a DLPFC case study showing that uncertainty >= P80 enriches boundaries uniquely
+  missed by one method 1.83x and recovers 82/129 (63.6%) of those blind spots, with
+  per-spot outputs, validation metrics, publication figures, and a checksum manifest.
+
 ### Added - real method adapters and method lifecycle
 
 - Registered strict adapters for cell2location, Bioconductor BANKSY, SpatialDE,
@@ -128,3 +156,10 @@ All notable changes to this project will be documented here. The format is based
 - `Task.prep` is typed `list[PipelineStep]` (was bare `list`).
 
 [Unreleased]: https://github.com/histoweave-spatial/histoweave/commits/main
+
+### Added - computational scalability proof
+
+- Added sparse `make_scalable_synthetic`, isolated scaling harness, empirical complexity fits,
+  and the `histoweave scale` CLI for reproducible pyramid scans with timeout/OOM ceilings.
+- Added the 16-vCPU/64-GB 1,000,000-cell x 30-method proof artifacts: 150 measured cells,
+  source CSV/JSON, report, and five editable SVG/PNG figures under `scalability_proof/`.
