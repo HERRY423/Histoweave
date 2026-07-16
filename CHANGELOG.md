@@ -6,6 +6,22 @@ All notable changes to this project will be documented here. The format is based
 
 ## [Unreleased]
 
+### Added - cross-tissue real-data validation
+
+- Added a 7x19 validation protocol spanning five DLPFC slices, pathology-labelled
+  Xenium Prime Human Lymph Node, and Allen Brain Atlas MERFISH mouse brain.
+- Added reproducible bundle preparation, truth-source manifests, deterministic
+  stratified subsampling, and explicit unsupported status for BayesSpace on
+  non-Visium coordinate systems.
+
+### Added - SOTA spatial-domain benchmark
+
+- Extended the DLPFC landscape from 15 to 19 methods with official SpaGCN,
+  GraphST, BayesSpace, and STAGATE backends.
+- Added method-specific isolated interpreter support, a native BayesSpace R
+  bridge, explicit per-cell failure fields, dynamic 5x19 reports/figures, and
+  adapter contract tests.
+
 ### Added - production compiler v1
 
 - Added content-addressed `hwc1_...` plan identities and SHA-256 catalog digests so an

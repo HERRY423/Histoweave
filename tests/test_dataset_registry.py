@@ -145,6 +145,21 @@ class TestXeniumBreast:
         assert entry.url.endswith("xenium_breast_cancer.h5ad")
 
 
+class TestXeniumHumanLymphNode:
+    """10x Xenium Prime Human Lymph Node bundle metadata contract."""
+
+    def test_metadata(self):
+        entry = get_dataset("xenium_human_lymph_node")
+        assert entry.assay == "xenium"
+        assert entry.tissue == "lymph_node"
+        assert entry.species == "human"
+        assert entry.n_obs == 15000
+        assert entry.n_vars == 4624
+        assert entry.ground_truth == {"domain_truth": "obs['domain_truth']"}
+        assert entry.is_h5ad_bundle
+        assert entry.license == "CC-BY 4.0"
+
+
 class TestMERFISHMouseBrain:
     """Allen Institute MERFISH mouse-brain bundle metadata contract."""
 
@@ -168,14 +183,15 @@ class TestAllDatasetsPresent:
 
     def test_all_expected_datasets_registered(self):
         datasets = list_datasets()
-        # 12 DLPFC slices + mouse_brain + xenium + merfish = 15
-        assert len(datasets) >= 15, f"expected >=15 datasets, got {len(datasets)}"
+        # 12 DLPFC slices + mouse_brain + 2 xenium + merfish = 16
+        assert len(datasets) >= 16, f"expected >=16 datasets, got {len(datasets)}"
         names = {d["name"] for d in datasets}
         for expected in (
             "dlpfc_151507",
             "dlpfc_151676",
             "mouse_brain_cytassist",
             "xenium_breast_cancer",
+            "xenium_human_lymph_node",
             "merfish_mouse_brain",
         ):
             assert expected in names, f"{expected} missing from registry"

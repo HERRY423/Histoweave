@@ -1,4 +1,4 @@
-"""Generate ``heatmap_5x15.svg`` from ``performance_matrix_mean.csv``.
+"""Generate ``heatmap_5x19.svg`` from ``performance_matrix_mean.csv``.
 
 Rows = slices (biological order), columns = methods sorted by mean ARI
 descending. Cell colour = ARI (0 → paper, mid → lime, high → orange), text
@@ -124,7 +124,7 @@ def build(csv: Path, out_svg: Path, out_png: Path, benchmark_json: Path | None =
     cbar.ax.tick_params(labelsize=8)
 
     ax.set_title(
-        "HistoWeave 5×15 — DLPFC domain-detection ARI",
+        f"HistoWeave {n_rows}×{n_cols} — DLPFC domain-detection ARI",
         fontsize=12,
         pad=10,
     )
@@ -145,8 +145,8 @@ def build(csv: Path, out_svg: Path, out_png: Path, benchmark_json: Path | None =
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--csv", default=str(_HERE / "performance_matrix_mean.csv"))
-    ap.add_argument("--svg", default=str(_HERE / "heatmap_5x15.svg"))
-    ap.add_argument("--png", default=str(_HERE / "heatmap_5x15.png"))
+    ap.add_argument("--svg", default=str(_HERE / "heatmap_5x19.svg"))
+    ap.add_argument("--png", default=str(_HERE / "heatmap_5x19.png"))
     args = ap.parse_args()
     build(Path(args.csv), Path(args.svg), Path(args.png))
 

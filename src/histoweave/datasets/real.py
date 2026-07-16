@@ -474,15 +474,33 @@ _XENIUM_BREAST = DatasetEntry(
     is_h5ad_bundle=True,
 )
 
-# MERFISH Mouse Brain (C57BL6J-638850) — 3 anterior sections, ~60 K cells each,
-# from the Allen Brain Cell Atlas (Yao et al. 2023).  Subclass labels are
-# collapsed to 10 CCF parent regions; produced by
-# ``benchmark_crossplatform/prepare_merfish.py``.
+# 10x Xenium Prime Human Lymph Node preview. The compact benchmark bundle
+# retains only cells covered by unambiguous pathology annotation polygons;
+# produced by ``benchmark_cross_tissue/prepare_human_lymph_node.py``.
+_XENIUM_HUMAN_LYMPH_NODE = DatasetEntry(
+    name="xenium_human_lymph_node",
+    description="10x Xenium Prime Human Lymph Node pathology-labelled subsample",
+    url="local://datasets_cache/xenium/xenium_human_lymph_node.h5ad",
+    sha256="",  # populated by prepare_human_lymph_node.py on first build
+    assay="xenium",
+    tissue="lymph_node",
+    species="human",
+    n_obs=15000,
+    n_vars=4624,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="CC-BY 4.0",
+    paper_doi="",
+    is_h5ad_bundle=True,
+)
+
+# Allen Brain Cell Atlas MERFISH mouse brain (Yao et al. 2023).
+# The primary benchmark uses anatomical CCF division/region labels prepared by
+# ``benchmark_cross_tissue/prepare_allen_mouse_brain.py``.
 _MERFISH_MOUSE_BRAIN = DatasetEntry(
     name="merfish_mouse_brain",
     description="MERFISH mouse brain — three labelled anterior sections (Yao et al. 2023)",
     url="local://datasets_cache/merfish/merfish_mouse_brain.h5ad",
-    sha256="",  # populated by prepare_merfish.py on first build
+    sha256="",  # populated by prepare_allen_mouse_brain.py on first build
     assay="merfish",
     tissue="brain",
     species="mouse",
@@ -498,6 +516,7 @@ _REGISTRY: list[DatasetEntry] = [
     *_DLPFC_SLICE_ENTRIES,
     _MOUSE_BRAIN_DEMO,
     _XENIUM_BREAST,
+    _XENIUM_HUMAN_LYMPH_NODE,
     _MERFISH_MOUSE_BRAIN,
 ]
 

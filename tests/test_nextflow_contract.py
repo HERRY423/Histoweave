@@ -8,9 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MAIN = (ROOT / "workflows" / "nextflow" / "main.nf").read_text(encoding="utf-8")
-CONFIG = (ROOT / "workflows" / "nextflow" / "nextflow.config").read_text(
-    encoding="utf-8"
-)
+CONFIG = (ROOT / "workflows" / "nextflow" / "nextflow.config").read_text(encoding="utf-8")
 CI = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 
 
@@ -61,6 +59,12 @@ def test_analysis_processes_consume_pinned_method_versions() -> None:
         assert "${version_arg}" in body
 
 
+def test_optional_method_versions_never_create_null_process_inputs() -> None:
+    for prefix in ("qc", "normalize", "domain", "annotation", "deconvolution"):
+        assert re.search(rf"params\.{prefix}_version\s*=\s*''", MAIN)
+        assert not re.search(rf"params\.{prefix}_version\s*=\s*null", MAIN)
+
+
 def test_workflow_parameters_are_validated_and_domain_count_is_forwarded() -> None:
     for declaration in ("params.assay", "params.engine", "params.n_domains"):
         assert declaration in MAIN
@@ -105,9 +109,7 @@ def test_ci_separates_quality_build_from_fresh_install_tests() -> None:
     assert "python -m build" in CI
     assert "python -m pip check" in CI
     assert 'python -m pip install -e ".[dev]"' in CI
-    assert (
-        "histoweave benchmark --min-score 0.90 --fail-on-error --out benchmark.json" in CI
-    )
+    assert "histoweave benchmark --min-score 0.90 --fail-on-error --out benchmark.json" in CI
 
     with (ROOT / "pyproject.toml").open("rb") as handle:
         project = tomllib.load(handle)

@@ -1,4 +1,4 @@
-"""Generate ``report_5x15.md`` from the aggregated benchmark artefacts.
+"""Generate ``report_5x19.md`` from the aggregated benchmark artefacts.
 
 Reads ``performance_matrix_mean.csv``, ``performance_matrix_std.csv``,
 ``timings_mean.csv``, and ``benchmark.json``. Emits a self-contained
@@ -9,7 +9,7 @@ markdown report with:
 * the mean/std ARI table (formatted, top-3 methods per slice **bolded**),
 * per-method runtime medians,
 * per-method commentary,
-* the ``heatmap_5x15.svg`` figure link.
+* the ``heatmap_5x19.svg`` figure link.
 """
 
 from __future__ import annotations
@@ -41,9 +41,22 @@ SPATIAL = {
     "nnsvg_kmeans",
     "harmony_kmeans",
     "moran_spectral",
+    "spagcn",
+    "graphst",
+    "bayesspace",
+    "stagate",
 }
 
 METHOD_NOTES = {
+    "spagcn": "Official SpaGCN 1.2.7 graph-convolutional domain model using "
+    "expression and coordinates (histology disabled because the benchmark bundle "
+    "does not contain a registered tissue image); includes Visium hex-grid refinement.",
+    "graphst": "Official GraphST graph self-supervised contrastive embedding, followed "
+    "by the benchmark's fixed-q full-covariance Gaussian-mixture clustering.",
+    "bayesspace": "Official Bioconductor BayesSpace spatialPreprocess + spatialCluster "
+    "pipeline with truth-derived q and 10,000 MCMC iterations.",
+    "stagate": "Official PyTorch-Geometric STAGATE graph-attention autoencoder with an "
+    "adaptive six-neighbour radius, followed by fixed-q Gaussian-mixture clustering.",
     "banksy_py": "Python port of the BANKSY neighbourhood-averaged expression recipe "
     "(k_geom=15, λ=0.8). Deterministic per seed; no external R/Bioconductor "
     "dependency. Runs in seconds because it operates on 2000 HVGs.",
@@ -120,7 +133,7 @@ def build(out: Path) -> None:
     sa_mean = float(np.nanmean(mean[sa_cols].values)) if sa_cols else float("nan")
 
     lines: list[str] = []
-    lines.append("# 5 × 15 spatial-aware benchmark — DLPFC")
+    lines.append(f"# {len(mean.index)} × {len(mean.columns)} spatial-aware benchmark — DLPFC")
     lines.append("")
     lines.append(
         f"Protocol: `{bench.get('protocol', '—')}`.  "
@@ -202,7 +215,9 @@ def build(out: Path) -> None:
 
     lines.append("## Heatmap")
     lines.append("")
-    lines.append("![5×15 ARI heatmap](heatmap_5x15.svg)")
+    lines.append(
+        f"![{len(mean.index)}×{len(mean.columns)} ARI heatmap](heatmap_5x19.svg)"
+    )
     lines.append("")
     lines.append("## Limitations")
     lines.append("")
@@ -216,7 +231,7 @@ def build(out: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=str(_HERE / "report_5x15.md"))
+    ap.add_argument("--out", default=str(_HERE / "report_5x19.md"))
     args = ap.parse_args()
     build(Path(args.out))
 

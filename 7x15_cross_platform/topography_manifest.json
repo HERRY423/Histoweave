@@ -16,18 +16,18 @@
   "artifacts": [
     {
       "path": "platform_topography.csv",
-      "sha256": "bb81e8366d397745ff3ef1f2191b932ba1cbf6240a5324e6f55fe78dd4237758",
-      "bytes": 1300
+      "sha256": "253f7907467de911dcd5037dc80be7cee4e97be7c26766abe23f5d04d64574d7",
+      "bytes": 1291
     },
     {
       "path": "platform_topography.json",
-      "sha256": "2a2c9948cdc9ed7351ebd5ebc09b8aab4059b594ecdeeab0cf6af25ce1edeabb",
-      "bytes": 8325
+      "sha256": "5d07db9f4e3a5119f9eabf3904b956011c5aeba621e4882f95dbbd5702f619d5",
+      "bytes": 8074
     },
     {
       "path": "figures/platform_topography.svg",
-      "sha256": "e0f98deac0c66b81823c8bec5b3f5632e8dcb3364a37c3952bae4de1f590ac8f",
-      "bytes": 35310
+      "sha256": "3b796e7132f4854c0a1a02504095ee6d6093a6de731be522e638465453af8b5d",
+      "bytes": 34299
     },
     {
       "path": "figures/platform_topography.png",

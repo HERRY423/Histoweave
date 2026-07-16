@@ -130,7 +130,9 @@ def main(argv: list[str] | None = None) -> int:
     p_scale.add_argument("--scales", default="1000,10000,100000,500000,1000000")
     p_scale.add_argument("--genes", type=int, default=2000)
     p_scale.add_argument("--density", type=float, default=0.05)
-    p_scale.add_argument("--methods", default="all-compute", help="all-compute or category:method pairs.")
+    p_scale.add_argument(
+        "--methods", default="all-compute", help="all-compute or category:method pairs."
+    )
     p_scale.add_argument("--timeout", type=float, default=1800.0)
     p_scale.add_argument("--mem-cap", type=float, default=58.0)
     p_scale.add_argument("--seed", type=int, default=42)
@@ -776,12 +778,14 @@ def _write_json_atomic(path: Path, value: dict) -> None:
         temporary.unlink(missing_ok=True)
 
 
-
-
-
 def _cmd_scale(args) -> int:
     """Run the reproducible pyramid benchmark and persist its machine-readable artifacts."""
-    from .benchmark import DEFAULT_COMPUTE_METHODS, ScalingConfig, run_scaling, write_scaling_artifacts
+    from .benchmark import (
+        DEFAULT_COMPUTE_METHODS,
+        ScalingConfig,
+        run_scaling,
+        write_scaling_artifacts,
+    )
 
     try:
         if args.methods == "all-compute":
@@ -789,7 +793,9 @@ def _cmd_scale(args) -> int:
         else:
             methods = tuple(tuple(item.split(":", 1)) for item in args.methods.split(","))
             if any(len(item) != 2 or not all(item) for item in methods):
-                raise ValueError("methods must be all-compute or comma-separated category:method pairs")
+                raise ValueError(
+                    "methods must be all-compute or comma-separated category:method pairs"
+                )
         scales = tuple(int(item) for item in args.scales.split(","))
         if args.quick:
             scales = (200, 500)
@@ -809,11 +815,14 @@ def _cmd_scale(args) -> int:
         _emit(f"error: {exc}", file=sys.stderr)
         return 2
     summary = result.summary()
-    _emit(f"Scaling sweep: {len(result.records)} cells measured; "
-          f"{summary['n_methods_reaching_max_scale']} methods reached {summary['max_scale']:,} cells.")
+    _emit(
+        f"Scaling sweep: {len(result.records)} cells measured; "
+        f"{summary['n_methods_reaching_max_scale']} methods reached {summary['max_scale']:,} cells."
+    )
     for name, path in artifacts.items():
         _emit(f"{name}: {path.resolve()}")
     return 0
+
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())

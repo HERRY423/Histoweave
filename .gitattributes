@@ -1,0 +1,7 @@
+* text=auto
+*.svg text eol=lf
+7x15_cross_platform/dataset_features.csv text eol=lf
+7x15_cross_platform/performance_matrix_mean.csv text eol=lf
+7x15_cross_platform/platform_topography.csv text eol=lf
+7x15_cross_platform/platform_topography.json text eol=lf
+7x15_cross_platform/topography_manifest.json text eol=lf
