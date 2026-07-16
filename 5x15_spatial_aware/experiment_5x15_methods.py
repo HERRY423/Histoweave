@@ -1,13 +1,15 @@
-"""HistoWeave 5-dataset x 15-method spatial-aware performance landscape on DLPFC.
+"""HistoWeave 5-dataset x 19-method spatial-aware performance landscape on DLPFC.
 
 Extends ``5x10_dlpfc_benchmark/experiment_5x10_dlpfc.py`` from 10 sklearn
-methods to 15 methods (10 sklearn + 5 spatial-aware):
+methods to 19 methods (10 sklearn + 5 spatial-aware + 4 SOTA):
 
 * Sklearn family (unchanged from the 5×10 harness):
     agglomerative, birch, bisecting_kmeans, dbscan, gaussian_mixture, kmeans,
     mean_shift, minibatch_kmeans, optics, spectral
 * Spatial-aware family (new adapters under ``adapters/``):
     banksy_py, spatialde_kmeans, nnsvg_kmeans, harmony_kmeans, moran_spectral
+* Published SOTA spatial-domain family (official external backends):
+    spagcn, graphst, bayesspace, stagate
 
 Metric: ARI vs `spatialLIBD_layer`. 3 seeds (42/1/2). n_domains per slice
 matches the true layer count read from the h5ad bundle.
@@ -15,8 +17,8 @@ matches the true layer count read from the h5ad bundle.
 Outputs are written next to this script (or ``HISTOWEAVE_5x15_OUT`` if set):
   * ``benchmark_long.csv``, ``performance_matrix_mean.csv``, ``_std.csv``
   * ``timings_mean.csv``, ``benchmark.json``, ``manifest.json``
-  * ``figures/heatmap_5x15.svg`` (produced by :file:`make_heatmap.py`)
-  * ``report_5x15.md`` (produced by :file:`make_report.py`)
+  * ``heatmap_5x19.svg`` (produced by :file:`make_heatmap.py`)
+  * ``report_5x19.md`` (produced by :file:`make_report.py`)
 
 Bundle path: reads the 12 DLPFC h5ad bundles from Task 1 either from
 ``HISTOWEAVE_LOCAL_DATA=/path/to/histoweave_upgrade`` via the registry
@@ -36,7 +38,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import scanpy as sc
 from sklearn.metrics import adjusted_rand_score
 
 # --- import path shim so adapters/ + svg_domain_pipeline.py both resolve ---
@@ -46,11 +47,16 @@ if str(_HERE) not in sys.path:
 
 from adapters import (  # noqa: E402
     banksy_py_adapter,
+    bayesspace_adapter,
+    graphst_adapter,
     harmony_adapter,
     moran_adapter,
     nnsvg_adapter,
+    spagcn_adapter,
     spatialde_adapter,
+    stagate_adapter,
 )
+from sota_runner import checkpoint_metadata, run_sota_cell  # noqa: E402
 
 from histoweave.data import SpatialTable  # noqa: E402
 
@@ -81,9 +87,10 @@ SPATIAL_METHODS = [
     "harmony_kmeans",
     "moran_spectral",
 ]
-METHODS = SKLEARN_METHODS + SPATIAL_METHODS
+SOTA_METHODS = ["spagcn", "graphst", "bayesspace", "stagate"]
+METHODS = SKLEARN_METHODS + SPATIAL_METHODS + SOTA_METHODS
 SEEDS = [42, 1, 2]
-PROTOCOL = "histoweave.landscape.dlpfc_spatial_aware.v1"
+PROTOCOL = "histoweave.landscape.dlpfc_spatial_sota.v2"
 
 
 # --------------------------------------------------------------------------
@@ -112,6 +119,8 @@ def _bundle_path(sid: str) -> Path:
 
 def load_slice(sid: str) -> tuple[SpatialTable, int]:
     """Load a DLPFC bundle as (SpatialTable, n_domains)."""
+    import scanpy as sc
+
     p = _bundle_path(sid)
     if not p.exists():
         raise FileNotFoundError(
@@ -125,6 +134,9 @@ def load_slice(sid: str) -> tuple[SpatialTable, int]:
     truth = a.obs.get("domain_truth", a.obs.get("spatialLIBD_layer"))
     truth = pd.Categorical(truth.astype(str).values)
     obs = pd.DataFrame({"domain_truth": truth}, index=a.obs_names.astype(str))
+    for coord in ("array_row", "array_col"):
+        if coord in a.obs:
+            obs[coord] = a.obs[coord].to_numpy()
     var = pd.DataFrame(index=a.var_names.astype(str))
     # float32 keeps 5 slices below 2 GB combined and matches downstream
     # adapters' precision — sklearn methods internally upcast when needed.
@@ -154,6 +166,9 @@ def _adapter_labels(
     X = counts if counts is not None else tab.X
     spatial = tab.obsm["spatial"]
     gene_names = tab.var.index.tolist()
+    array_coords = None
+    if {"array_row", "array_col"}.issubset(tab.obs.columns):
+        array_coords = tab.obs[["array_row", "array_col"]].to_numpy()
     if method == "banksy_py":
         return banksy_py_adapter.run(X, spatial, seed=seed, n_domains=n_domains)
     if method == "harmony_kmeans":
@@ -164,6 +179,28 @@ def _adapter_labels(
         return spatialde_adapter.run(X, spatial, gene_names, seed=seed, n_domains=n_domains)
     if method == "nnsvg_kmeans":
         return nnsvg_adapter.run(X, spatial, gene_names, seed=seed, n_domains=n_domains)
+    if method == "spagcn":
+        return spagcn_adapter.run(
+            X,
+            spatial,
+            gene_names,
+            seed=seed,
+            n_domains=n_domains,
+            array_coords=array_coords,
+        )
+    if method == "graphst":
+        return graphst_adapter.run(X, spatial, gene_names, seed=seed, n_domains=n_domains)
+    if method == "bayesspace":
+        return bayesspace_adapter.run(
+            X,
+            spatial,
+            gene_names,
+            seed=seed,
+            n_domains=n_domains,
+            array_coords=array_coords,
+        )
+    if method == "stagate":
+        return stagate_adapter.run(X, spatial, gene_names, seed=seed, n_domains=n_domains)
     raise KeyError(f"unknown spatial-aware method: {method}")
 
 
@@ -173,7 +210,8 @@ def _run_spatial_cell(
     ckpt = CHK / f"{method}__{sid}__seed{seed}.json"
     if ckpt.exists():
         cached = json.loads(ckpt.read_text())
-        return cached["ari"], cached["seconds"]
+        ari = cached.get("ari")
+        return (float(ari) if ari is not None else float("nan")), cached["seconds"]
     t0 = time.time()
     try:
         labels = _adapter_labels(method, tab, seed=seed, n_domains=n_domains)
@@ -212,7 +250,8 @@ def _run_sklearn_cell(
     ckpt = CHK / f"{method}__{sid}__seed{seed}.json"
     if ckpt.exists():
         cached = json.loads(ckpt.read_text())
-        return cached["ari"], cached["seconds"]
+        ari = cached.get("ari")
+        return (float(ari) if ari is not None else float("nan")), cached["seconds"]
 
     import subprocess
 
@@ -251,7 +290,7 @@ def _run_sklearn_cell(
     try:
         env = {
             **os.environ,
-            "PYTHONPATH": f"{_HERE.parent / 'src'}:{_HERE}",
+            "PYTHONPATH": os.pathsep.join((str(_HERE.parent / "src"), str(_HERE))),
             "HISTOWEAVE_LOCAL_DATA": os.environ.get("HISTOWEAVE_LOCAL_DATA", str(_HERE.parent)),
         }
         r = subprocess.run(
@@ -287,7 +326,7 @@ def _run_sklearn_cell(
 
 def main() -> None:
     # Iterate slice-by-slice, seed-by-seed with explicit gc between slices so
-    # 5×15 fits comfortably in a 16 GB sandbox. ``run_task_landscape`` copies
+    # 5×19 fits comfortably in a 16 GB sandbox. ``run_task_landscape`` copies
     # the SpatialTable per method internally; holding all 5 slices resident
     # plus concurrent copies is what OOMed a prior 32 GB run.
     import gc
@@ -317,6 +356,13 @@ def main() -> None:
                 per_seed_perf[seed][sid][method] = ari
                 per_seed_time[seed][sid][method] = secs
                 _log(f"  {method:>18s} @ {sid} seed={seed}: ARI={ari:.3f} ({secs:.1f}s)")
+            for method in SOTA_METHODS:
+                ari, secs = run_sota_cell(
+                    method, sid, seed, k, benchmark_dir=_HERE, checkpoint_dir=CHK
+                )
+                per_seed_perf[seed][sid][method] = ari
+                per_seed_time[seed][sid][method] = secs
+                _log(f"  {method:>18s} @ {sid} seed={seed}: ARI={ari:.3f} ({secs:.1f}s)")
 
         # Free this slice before loading the next.
         del tab
@@ -327,15 +373,24 @@ def main() -> None:
     for sid in SLICES:
         for m in METHODS:
             for s in SEEDS:
+                status, error = checkpoint_metadata(m, sid, s, checkpoint_dir=CHK)
                 long_rows.append(
                     {
                         "dataset": sid,
                         "method": m,
-                        "family": "sklearn" if m in SKLEARN_METHODS else "spatial_aware",
+                        "family": (
+                            "sklearn"
+                            if m in SKLEARN_METHODS
+                            else "sota"
+                            if m in SOTA_METHODS
+                            else "spatial_aware"
+                        ),
                         "seed": s,
                         "ari": _f(per_seed_perf[s][sid].get(m, np.nan)),
                         "seconds": per_seed_time[s][sid].get(m),
                         "n_domains_truth": n_domains_map[sid],
+                        "status": status,
+                        "error": error,
                     }
                 )
     long_df = pd.DataFrame(long_rows)
@@ -368,6 +423,7 @@ def main() -> None:
         "methods": METHODS,
         "sklearn_methods": SKLEARN_METHODS,
         "spatial_methods": SPATIAL_METHODS,
+        "sota_methods": SOTA_METHODS,
         "seeds": SEEDS,
         "n_domains_truth": n_domains_map,
         "performance_matrix_mean": _js(
@@ -392,9 +448,14 @@ def main() -> None:
         "limitations": [
             "5 slices from one study (Maynard 2021 human DLPFC) => within-study validation only.",
             "SpatialDE/nnSVG are ranking-only; downstream clustering is fixed "
-            "to top-N -> PCA -> KMeans."
+            "to top-N -> PCA -> KMeans.",
             "banksy_py is a from-scratch reimplementation of the BANKSY recipe "
             "(not the Bioconductor Banksy).",
+            "GraphST and STAGATE embeddings use the same fixed-q full-covariance "
+            "Gaussian-mixture downstream clustering; BayesSpace and SpaGCN retain "
+            "their native clustering procedures.",
+            "Official SOTA backends have incompatible legacy dependencies and are "
+            "therefore run through method-specific isolated Python interpreters.",
         ],
     }
     with open(OUT / "benchmark.json", "w") as f:

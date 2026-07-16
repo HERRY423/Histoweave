@@ -1,9 +1,9 @@
-﻿"""Empirical log-log complexity fitting for scaling sweeps."""
+"""Empirical log-log complexity fitting for scaling sweeps."""
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
-from typing import Iterable
 
 import numpy as np
 
@@ -35,4 +35,6 @@ def fit_complexity(scales: Iterable[int], values: Iterable[float]) -> Complexity
     fitted = exponent * x + intercept
     total = float(np.sum((y - y.mean()) ** 2))
     r_squared = 1.0 if total == 0.0 else 1.0 - float(np.sum((y - fitted) ** 2)) / total
-    return ComplexityFit(float(exponent), float(np.exp(intercept)), float(r_squared), len(pairs), "ok")
+    return ComplexityFit(
+        float(exponent), float(np.exp(intercept)), float(r_squared), len(pairs), "ok"
+    )

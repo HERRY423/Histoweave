@@ -88,6 +88,7 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(
         json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
 
 
@@ -323,7 +324,8 @@ def build_topography(results_dir: str | Path) -> dict[str, Any]:
         root / "figures" / "platform_topography",
     )
     table_path = root / "platform_topography.csv"
-    selection.to_csv(table_path, index=False, float_format="%.10g")
+    with table_path.open("w", encoding="utf-8", newline="\n") as handle:
+        selection.to_csv(handle, index=False, float_format="%.10g", lineterminator="\n")
 
     payload: dict[str, Any] = {
         "schema_version": 1,

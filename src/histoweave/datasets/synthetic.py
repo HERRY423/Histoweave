@@ -626,25 +626,35 @@ def make_scalable_synthetic(
     if chunk_size < 1:
         raise ValueError("chunk_size must be positive")
 
-    rng = np.random.default_rng(seed)
+    # Keep layout, background expression, and marker lift on independent child
+    # streams.  This makes ``chunk_size`` a pure memory-control knob: changing
+    # how rows are batched must not change the generated dataset.
+    seed_sequence = np.random.SeedSequence(seed)
+    layout_rng, expression_rng, marker_rng = (
+        np.random.default_rng(child) for child in seed_sequence.spawn(3)
+    )
     grid = np.array([100.0, 100.0], dtype=np.float32)
     if layout == "grid":
         side = int(np.ceil(np.sqrt(n_cells)))
+        x: np.ndarray
+        y: np.ndarray
         x, y = np.meshgrid(
             np.linspace(0.0, grid[0], side, dtype=np.float32),
             np.linspace(0.0, grid[1], side, dtype=np.float32),
         )
         coords = np.column_stack((x.ravel()[:n_cells], y.ravel()[:n_cells]))
-        coords += rng.normal(0.0, 1.0, size=coords.shape).astype(np.float32)
+        coords += layout_rng.normal(0.0, 1.0, size=coords.shape).astype(np.float32)
         dom_side = int(np.ceil(np.sqrt(n_domains)))
+        cx: np.ndarray
+        cy: np.ndarray
         cx, cy = np.meshgrid(
             np.linspace(20.0, 80.0, dom_side, dtype=np.float32),
             np.linspace(20.0, 80.0, dom_side, dtype=np.float32),
         )
         centroids = np.column_stack((cx.ravel()[:n_domains], cy.ravel()[:n_domains]))
     elif layout == "blob":
-        coords = rng.uniform(0.0, grid, size=(n_cells, 2)).astype(np.float32)
-        centroids = rng.uniform(0.0, grid, size=(n_domains, 2)).astype(np.float32)
+        coords = layout_rng.uniform(0.0, grid, size=(n_cells, 2)).astype(np.float32)
+        centroids = layout_rng.uniform(0.0, grid, size=(n_domains, 2)).astype(np.float32)
     else:
         raise ValueError("layout must be 'blob' or 'grid'")
 
@@ -662,20 +672,20 @@ def make_scalable_synthetic(
     entries_per_cell = max(1, int(round(n_genes * density)))
     marker_slots = min(3, entries_per_cell, marker_count)
     chunks: list[Any] = []
-    offsets = np.arange(entries_per_cell, dtype=np.int32)
+    offsets: np.ndarray = np.arange(entries_per_cell, dtype=np.int32)
     for start in range(0, n_cells, chunk_size):
         stop = min(start + chunk_size, n_cells)
-        cell_ids = np.arange(start, stop, dtype=np.int64)
+        cell_ids: np.ndarray = np.arange(start, stop, dtype=np.int64)
         indices = (cell_ids[:, None] * 997 + offsets[None, :] * 37) % n_genes
         if marker_slots:
-            marker_offsets = np.arange(marker_slots, dtype=np.int32)
+            marker_offsets: np.ndarray = np.arange(marker_slots, dtype=np.int32)
             indices[:, :marker_slots] = (
                 domain[start:stop, None] * marker_count + marker_offsets[None, :]
             ) % n_genes
-        values = rng.poisson(1.0, size=indices.shape).astype(np.float32)
+        values = expression_rng.poisson(1.0, size=indices.shape).astype(np.float32)
         values[values == 0.0] = 1.0
         if marker_slots:
-            values[:, :marker_slots] += rng.poisson(5.0, size=(stop - start, marker_slots))
+            values[:, :marker_slots] += marker_rng.poisson(5.0, size=(stop - start, marker_slots))
         indptr = np.arange(0, (stop - start + 1) * entries_per_cell, entries_per_cell)
         chunk = sparse.csr_matrix(
             (values.ravel(), indices.astype(np.int32, copy=False).ravel(), indptr),

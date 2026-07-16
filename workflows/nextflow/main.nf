@@ -21,11 +21,13 @@ params.domain_method    = 'kmeans'
 params.annotation_method = 'marker_score'
 params.deconvolution_method = 'marker_deconv'
 
-params.qc_version           = null
-params.normalize_version    = null
-params.domain_version       = null
-params.annotation_version   = null
-params.deconvolution_version = null
+// Nextflow process `val` inputs reject null values. Empty strings preserve the
+// optional CLI contract because each process omits --method-version when empty.
+params.qc_version            = ''
+params.normalize_version     = ''
+params.domain_version        = ''
+params.annotation_version    = ''
+params.deconvolution_version = ''
 
 params.qc_params        = ''
 params.normalize_params = ''

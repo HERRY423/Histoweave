@@ -140,6 +140,15 @@ def finalize_figure(
         if normalized == "png":
             options["dpi"] = dpi
         fig.savefig(target, **options)
+        if normalized == "svg":
+            # Matplotlib may emit platform-native newlines. Canonical LF keeps
+            # checked-in SVG hashes and byte counts stable across operating systems.
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace("\r\n", "\n").replace("\r", "\n"),
+                encoding="utf-8",
+                newline="\n",
+            )
         saved.append(target)
     if close:
         plt.close(fig)

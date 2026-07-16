@@ -170,7 +170,7 @@ def boundary_mask_from_labels(coords: np.ndarray, labels: np.ndarray, *, k: int 
 
 def _average_ranks(values: np.ndarray) -> np.ndarray:
     order = np.argsort(values, kind="mergesort")
-    ranks = np.empty(len(values), dtype=float)
+    ranks: np.ndarray = np.empty(len(values), dtype=float)
     start = 0
     while start < len(values):
         stop = start + 1
