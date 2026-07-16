@@ -472,3 +472,12 @@ HistoWeave 的独特优势（工程纪律 + Nextflow 编排 + 方法推荐引擎
 2. 下载 DLPFC 数据集并创建 benchmark fixture
 3. Vitessce CDN + JSON config 的最小集成
 4. 配置 `mkdocstrings` 生成 API 参考
+
+### 5.2 Update — computational scalability proof completed (2026-07-15)
+
+The missing scale pyramid is now implemented as `histoweave scale` and backed by a
+single-node 16-vCPU/64-GB execution over 1k, 10k, 100k, 500k and 1M cells (2,000 genes,
+5% CSR density) across 30 pure-compute methods. The checked-in `scalability_proof/` artifacts
+record all 150 method-scale cells, including 104 successful runs, 20 memory ceilings and 26
+intentional post-ceiling skips. Ten methods reached 1M cells; full methodology, per-method
+boundaries, CSV measurements and editable SVG/PNG figures are included rather than inferred.

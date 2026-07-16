@@ -104,6 +104,11 @@
 <div class="card">
   <p><b>Question:</b> {{ compiler.question }}</p>
   <p><b>Rationale:</b> {{ compiler.rationale }}</p>
+  {% if compiler.plan_id %}
+  <p><b>Plan ID:</b> <code>{{ compiler.plan_id }}</code>
+     &middot; <b>Schema:</b> <code>v{{ compiler.schema_version }}</code>
+     &middot; <b>Attempts:</b> <code>{{ compiler.attempt_count }}</code></p>
+  {% endif %}
   <p><b>Assay assumed:</b> <code>{{ compiler.assay_assumed }}</code>
      &middot; <b>Model:</b> <code>{{ compiler.model }}</code>
      &middot; <b>Executor:</b> <code>{{ compiler.executor }}</code></p>

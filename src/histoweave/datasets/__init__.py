@@ -23,3 +23,7 @@ __all__ = [
     "write_visium_fixture",
     "write_xenium_fixture",
 ]
+
+from .synthetic import make_scalable_synthetic
+
+__all__.append("make_scalable_synthetic")

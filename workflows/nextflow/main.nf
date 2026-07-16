@@ -21,6 +21,12 @@ params.domain_method    = 'kmeans'
 params.annotation_method = 'marker_score'
 params.deconvolution_method = 'marker_deconv'
 
+params.qc_version           = null
+params.normalize_version    = null
+params.domain_version       = null
+params.annotation_version   = null
+params.deconvolution_version = null
+
 params.qc_params        = ''
 params.normalize_params = ''
 params.domain_params    = ''
@@ -66,12 +72,18 @@ workflow {
     }
 
     if (selected_steps.contains('qc')) {
-        QC(ch_bundle, params.qc_method, params.qc_params, params.seed)
+        QC(ch_bundle, params.qc_method, params.qc_version, params.qc_params, params.seed)
         ch_bundle = QC.out.bundle
     }
 
     if (selected_steps.contains('normalize')) {
-        NORMALIZE(ch_bundle, params.normalize_method, params.normalize_params, params.seed)
+        NORMALIZE(
+            ch_bundle,
+            params.normalize_method,
+            params.normalize_version,
+            params.normalize_params,
+            params.seed,
+        )
         ch_bundle = NORMALIZE.out.bundle
     }
 
@@ -79,6 +91,7 @@ workflow {
         DOMAIN_DETECTION(
             ch_bundle,
             params.domain_method,
+            params.domain_version,
             params.domain_params,
             n_domains,
             params.seed,
@@ -87,7 +100,13 @@ workflow {
     }
 
     if (selected_steps.contains('annotation')) {
-        ANNOTATION(ch_bundle, params.annotation_method, params.annotation_params, params.seed)
+        ANNOTATION(
+            ch_bundle,
+            params.annotation_method,
+            params.annotation_version,
+            params.annotation_params,
+            params.seed,
+        )
         ch_bundle = ANNOTATION.out.bundle
     }
 
@@ -95,6 +114,7 @@ workflow {
         DECONVOLUTION(
             ch_bundle,
             params.deconvolution_method,
+            params.deconvolution_version,
             params.deconvolution_params,
             params.seed,
         )
@@ -167,6 +187,7 @@ process QC {
     input:
     path bundle_in
     val  method
+    val  method_version
     val  params_str
     val  seed
 
@@ -176,8 +197,9 @@ process QC {
     script:
     bundle_name = bundle_in.simpleName - ~/\.ttab$/
     def param_args = params_str ? _param_args(params_str) : ''
+    def version_arg = method_version ? "--method-version ${_shell_quote(method_version.toString())}" : ''
     """
-    histoweave step qc --method ${method} ${param_args} --in ${bundle_in} --out ${bundle_name}_qc.ttab
+    histoweave step qc --method ${method} ${version_arg} ${param_args} --in ${bundle_in} --out ${bundle_name}_qc.ttab
     """
 }
 
@@ -190,6 +212,7 @@ process NORMALIZE {
     input:
     path bundle_in
     val  method
+    val  method_version
     val  params_str
     val  seed
 
@@ -199,8 +222,9 @@ process NORMALIZE {
     script:
     bundle_name = bundle_in.simpleName - ~/\.ttab$/
     def param_args = params_str ? _param_args(params_str) : ''
+    def version_arg = method_version ? "--method-version ${_shell_quote(method_version.toString())}" : ''
     """
-    histoweave step normalization --method ${method} ${param_args} --in ${bundle_in} --out ${bundle_name}_normalized.ttab
+    histoweave step normalization --method ${method} ${version_arg} ${param_args} --in ${bundle_in} --out ${bundle_name}_normalized.ttab
     """
 }
 
@@ -213,6 +237,7 @@ process DOMAIN_DETECTION {
     input:
     path bundle_in
     val  method
+    val  method_version
     val  params_str
     val  n_domains
     val  seed
@@ -223,8 +248,9 @@ process DOMAIN_DETECTION {
     script:
     bundle_name = bundle_in.simpleName - ~/\.ttab$/
     def param_args = params_str ? _param_args(params_str) : ''
+    def version_arg = method_version ? "--method-version ${_shell_quote(method_version.toString())}" : ''
     """
-    histoweave step domain_detection --method ${method} ${param_args} \
+    histoweave step domain_detection --method ${method} ${version_arg} ${param_args} \
         --param n_domains=${n_domains} --in ${bundle_in} --out ${bundle_name}_domains.ttab
     """
 }
@@ -238,6 +264,7 @@ process ANNOTATION {
     input:
     path bundle_in
     val  method
+    val  method_version
     val  params_str
     val  seed
 
@@ -247,8 +274,9 @@ process ANNOTATION {
     script:
     bundle_name = bundle_in.simpleName - ~/\.ttab$/
     def param_args = params_str ? _param_args(params_str) : ''
+    def version_arg = method_version ? "--method-version ${_shell_quote(method_version.toString())}" : ''
     """
-    histoweave step annotation --method ${method} ${param_args} --in ${bundle_in} --out ${bundle_name}_annotated.ttab
+    histoweave step annotation --method ${method} ${version_arg} ${param_args} --in ${bundle_in} --out ${bundle_name}_annotated.ttab
     """
 }
 
@@ -261,6 +289,7 @@ process DECONVOLUTION {
     input:
     path bundle_in
     val  method
+    val  method_version
     val  params_str
     val  seed
 
@@ -270,8 +299,9 @@ process DECONVOLUTION {
     script:
     bundle_name = bundle_in.simpleName - ~/\.ttab$/
     def param_args = params_str ? _param_args(params_str) : ''
+    def version_arg = method_version ? "--method-version ${_shell_quote(method_version.toString())}" : ''
     """
-    histoweave step deconvolution --method ${method} ${param_args} --in ${bundle_in} --out ${bundle_name}_deconv.ttab
+    histoweave step deconvolution --method ${method} ${version_arg} ${param_args} --in ${bundle_in} --out ${bundle_name}_deconv.ttab
     """
 }
 

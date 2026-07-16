@@ -32,6 +32,12 @@ from .landscape import (
     run_task_landscape,
 )
 from .recommend import MethodRecommender, MethodScore, Recommendation
+from .uncertainty import (
+    BoundaryUncertaintyResult,
+    boundary_mask_from_labels,
+    boundary_uncertainty,
+    uncertainty_enrichment,
+)
 
 __all__ = [
     # harness
@@ -49,4 +55,22 @@ __all__ = [
     # features
     "RECOMMENDATION_FEATURE_ORDER",
     "extract_features", "feature_vector", "feature_dataframe",
+    # boundary uncertainty
+    "BoundaryUncertaintyResult", "boundary_uncertainty",
+    "boundary_mask_from_labels", "uncertainty_enrichment",
 ]
+
+from .complexity import ComplexityFit, fit_complexity
+from .scaling import (
+    DEFAULT_COMPUTE_METHODS,
+    ScalingConfig,
+    ScalingRecord,
+    ScalingResult,
+    run_scaling,
+    write_scaling_artifacts,
+)
+
+__all__.extend([
+    "ComplexityFit", "fit_complexity", "DEFAULT_COMPUTE_METHODS", "ScalingConfig",
+    "ScalingRecord", "ScalingResult", "run_scaling", "write_scaling_artifacts",
+])

@@ -33,6 +33,34 @@ def test_compiler_bundle_handoff_bypasses_vendor_reingestion() -> None:
     assert "raw_params instanceof Collection" in MAIN
 
 
+def test_analysis_processes_consume_pinned_method_versions() -> None:
+    workflow = MAIN.split("process INGEST_DEMO", maxsplit=1)[0]
+    stages = {
+        "QC": "qc",
+        "NORMALIZE": "normalize",
+        "DOMAIN_DETECTION": "domain",
+        "ANNOTATION": "annotation",
+        "DECONVOLUTION": "deconvolution",
+    }
+
+    for stage, prefix in stages.items():
+        assert re.search(
+            rf"{stage}\(.*?params\.{prefix}_version",
+            workflow,
+            flags=re.DOTALL,
+        )
+        process = re.search(
+            rf"process {stage} \{{(?P<body>.*?)(?=\nprocess [A-Z_]+ \{{|\ndef _param_args)",
+            MAIN,
+            flags=re.DOTALL,
+        )
+        assert process is not None
+        body = process.group("body")
+        assert "val  method_version" in body
+        assert '"--method-version ${_shell_quote(method_version.toString())}"' in body
+        assert "${version_arg}" in body
+
+
 def test_workflow_parameters_are_validated_and_domain_count_is_forwarded() -> None:
     for declaration in ("params.assay", "params.engine", "params.n_domains"):
         assert declaration in MAIN

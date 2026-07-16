@@ -126,6 +126,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Fail when any candidate method raises an exception.",
     )
 
+    p_scale = sub.add_parser("scale", help="Run an isolated computational scaling sweep.")
+    p_scale.add_argument("--scales", default="1000,10000,100000,500000,1000000")
+    p_scale.add_argument("--genes", type=int, default=2000)
+    p_scale.add_argument("--density", type=float, default=0.05)
+    p_scale.add_argument("--methods", default="all-compute", help="all-compute or category:method pairs.")
+    p_scale.add_argument("--timeout", type=float, default=1800.0)
+    p_scale.add_argument("--mem-cap", type=float, default=58.0)
+    p_scale.add_argument("--seed", type=int, default=42)
+    p_scale.add_argument("--out-dir", default="scalability_proof")
+    p_scale.add_argument("--quick", action="store_true", help="Use a small smoke-test sweep.")
     p_recommend = sub.add_parser(
         "recommend",
         help="Recommend methods for a bundle from benchmark evidence.",
@@ -160,6 +170,21 @@ def main(argv: list[str] | None = None) -> int:
         help="Execution backend. Nextflow emits a params hand-off without spawning Nextflow.",
     )
     p_ask.add_argument("--plan-only", action="store_true", help="Compile and validate only.")
+    p_ask.add_argument(
+        "--plan-out",
+        help="Persist the validated v1 plan JSON for review or later SDK loading.",
+    )
+    p_ask.add_argument(
+        "--timeout",
+        type=float,
+        help="Model request timeout in seconds (1-600).",
+    )
+    p_ask.add_argument(
+        "--max-repair-attempts",
+        type=int,
+        default=1,
+        help="Schema/registry repair retries (0-3). Default: 1.",
+    )
     p_ask.add_argument("--json", action="store_true", help="Emit the compiled plan as JSON.")
     p_ask.add_argument("--yes", action="store_true", help="Execute without confirmation.")
     p_ask.add_argument(
@@ -218,6 +243,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_run(args)
     if args.command == "benchmark":
         return _cmd_benchmark(args)
+    if args.command == "scale":
+        return _cmd_scale(args)
     if args.command == "recommend":
         return _cmd_recommend(args)
     if args.command == "ask":
@@ -245,7 +272,7 @@ def _cmd_version() -> int:
 
 
 def _cmd_ask(args) -> int:
-    from .compiler import CompilerValidationError, run_compiled
+    from .compiler import CompilerValidationError, run_compiled, save_plan
     from .compiler import compile as compile_question
     from .io import read_bundle
     from .workflow import PipelineExecutionError
@@ -258,7 +285,11 @@ def _cmd_ask(args) -> int:
             provider=args.model,
             executor=args.executor,
             gaps_path=args.gaps_file,
+            timeout=args.timeout,
+            max_repair_attempts=args.max_repair_attempts,
         )
+        if args.plan_out:
+            save_plan(plan, args.plan_out)
     except (OSError, ValueError, CompilerValidationError, RuntimeError) as exc:
         _emit(f"error: {exc}", file=sys.stderr)
         return 2
@@ -267,6 +298,7 @@ def _cmd_ask(args) -> int:
         _emit(json.dumps(plan.to_dict(), indent=2, ensure_ascii=False))
     else:
         _emit(f"Compiled rationale: {plan.rationale}")
+        _emit(f"Plan ID: {plan.plan_id}")
         for number, step in enumerate(plan.steps, start=1):
             _emit(
                 f"  {number}. {step.category}:{step.method} "
@@ -274,6 +306,8 @@ def _cmd_ask(args) -> int:
             )
         for gap in plan.gaps:
             _emit(f"  approximation: {gap.concept} -> {gap.degraded_to}", file=sys.stderr)
+        if args.plan_out:
+            _emit(f"Plan written to {Path(args.plan_out).resolve()}")
 
     if args.plan_only:
         return 0
@@ -286,9 +320,8 @@ def _cmd_ask(args) -> int:
             _emit("Plan validated; execution cancelled.")
             return 0
 
-    plan.dry_run = False
     try:
-        result = run_compiled(plan, data=data, out=args.out)
+        result = run_compiled(plan, data=data, out=args.out, confirmed=True)
     except (PipelineExecutionError, OSError, ValueError, RuntimeError) as exc:
         _emit(f"error: {exc}", file=sys.stderr)
         return 1
@@ -742,6 +775,45 @@ def _write_json_atomic(path: Path, value: dict) -> None:
     finally:
         temporary.unlink(missing_ok=True)
 
+
+
+
+
+def _cmd_scale(args) -> int:
+    """Run the reproducible pyramid benchmark and persist its machine-readable artifacts."""
+    from .benchmark import DEFAULT_COMPUTE_METHODS, ScalingConfig, run_scaling, write_scaling_artifacts
+
+    try:
+        if args.methods == "all-compute":
+            methods = DEFAULT_COMPUTE_METHODS
+        else:
+            methods = tuple(tuple(item.split(":", 1)) for item in args.methods.split(","))
+            if any(len(item) != 2 or not all(item) for item in methods):
+                raise ValueError("methods must be all-compute or comma-separated category:method pairs")
+        scales = tuple(int(item) for item in args.scales.split(","))
+        if args.quick:
+            scales = (200, 500)
+            methods = methods if args.methods != "all-compute" else (("qc", "basic_qc"),)
+        config = ScalingConfig(
+            scales=scales,
+            n_genes=min(args.genes, 250) if args.quick else args.genes,
+            density=args.density,
+            methods=methods,
+            per_method_timeout_s=args.timeout,
+            per_method_mem_cap_gb=args.mem_cap,
+            seed=args.seed,
+        )
+        result = run_scaling(config)
+        artifacts = write_scaling_artifacts(result, args.out_dir)
+    except (OSError, ValueError, RuntimeError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+    summary = result.summary()
+    _emit(f"Scaling sweep: {len(result.records)} cells measured; "
+          f"{summary['n_methods_reaching_max_scale']} methods reached {summary['max_scale']:,} cells.")
+    for name, path in artifacts.items():
+        _emit(f"{name}: {path.resolve()}")
+    return 0
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())

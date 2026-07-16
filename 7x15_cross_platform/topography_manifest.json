@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "protocol": "histoweave.cross_platform_topography.v1",
+  "inputs": [
+    {
+      "path": "dataset_features.csv",
+      "sha256": "790e70e75ce4376787f7e38323e9dc807d23a5b715a4689c2e884117bf49ee77",
+      "bytes": 2353
+    },
+    {
+      "path": "performance_matrix_mean.csv",
+      "sha256": "7a30b360bdb4a6d45f58c6bd7ad0501d35cffbef325d87bac83f6aef5c014deb",
+      "bytes": 2670
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "platform_topography.csv",
+      "sha256": "bb81e8366d397745ff3ef1f2191b932ba1cbf6240a5324e6f55fe78dd4237758",
+      "bytes": 1300
+    },
+    {
+      "path": "platform_topography.json",
+      "sha256": "2a2c9948cdc9ed7351ebd5ebc09b8aab4059b594ecdeeab0cf6af25ce1edeabb",
+      "bytes": 8325
+    },
+    {
+      "path": "figures/platform_topography.svg",
+      "sha256": "e0f98deac0c66b81823c8bec5b3f5632e8dcb3364a37c3952bae4de1f590ac8f",
+      "bytes": 35310
+    },
+    {
+      "path": "figures/platform_topography.png",
+      "sha256": "829713f34e51e5e4f9b89a543f9ef5a39d3b75197b15001d8a19143a274f1610",
+      "bytes": 353134
+    }
+  ]
+}

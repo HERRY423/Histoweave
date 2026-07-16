@@ -1,0 +1,151 @@
+category,method,n_cells,n_genes,density,wall_seconds,peak_rss_mb,throughput_cells_per_s,status,error,version
+qc,basic_qc,1000,2000,0.05,0.074,4072.33,13512.6,ok,,0.1.0
+qc,basic_qc,10000,2000,0.05,0.2474,4337.45,40421.69,ok,,0.1.0
+qc,basic_qc,100000,2000,0.05,3.9555,6953.71,25281.05,ok,,0.1.0
+qc,basic_qc,500000,2000,0.05,18.7588,18727.9,26654.11,ok,,0.1.0
+qc,basic_qc,1000000,2000,0.05,40.7404,32941.73,24545.67,ok,,0.1.0
+qc,gene_complexity_qc,1000,2000,0.05,0.0728,4095.66,13742.44,ok,,1.0.0
+qc,gene_complexity_qc,10000,2000,0.05,0.2816,4441.59,35505.51,ok,,1.0.0
+qc,gene_complexity_qc,100000,2000,0.05,3.2536,7844.69,30735.18,ok,,1.0.0
+qc,gene_complexity_qc,500000,2000,0.05,22.8361,23132.09,21895.14,ok,,1.0.0
+qc,gene_complexity_qc,1000000,2000,0.05,49.2998,41775.34,20284.05,ok,,1.0.0
+qc,library_size_qc,1000,2000,0.05,0.0684,4100.12,14614.6,ok,,1.0.0
+qc,library_size_qc,10000,2000,0.05,0.2592,4402.75,38573.93,ok,,1.0.0
+qc,library_size_qc,100000,2000,0.05,3.1428,7853.14,31819.03,ok,,1.0.0
+qc,library_size_qc,500000,2000,0.05,18.7245,23143.77,26702.99,ok,,1.0.0
+qc,library_size_qc,1000000,2000,0.05,43.2612,41762.65,23115.42,ok,,1.0.0
+qc,mitochondrial_qc,1000,2000,0.05,0.0675,4086.38,14803.96,ok,,1.0.0
+qc,mitochondrial_qc,10000,2000,0.05,0.2687,4424.33,37213.58,ok,,1.0.0
+qc,mitochondrial_qc,100000,2000,0.05,2.3715,7859.67,42167.28,ok,,1.0.0
+qc,mitochondrial_qc,500000,2000,0.05,20.0364,23152.91,24954.57,ok,,1.0.0
+qc,mitochondrial_qc,1000000,2000,0.05,43.7294,41774.61,22867.93,ok,,1.0.0
+normalization,arcsinh_transform,1000,2000,0.05,0.0783,4113.55,12778.94,ok,,1.0.0
+normalization,arcsinh_transform,10000,2000,0.05,0.3888,4704.65,25720.2,ok,,1.0.0
+normalization,arcsinh_transform,100000,2000,0.05,4.4856,10839.61,22293.68,ok,,1.0.0
+normalization,arcsinh_transform,500000,2000,0.05,31.1541,38106.33,16049.24,ok,,1.0.0
+normalization,arcsinh_transform,1000000,2000,0.05,,58035.71,,oom,peak RSS exceeded 58.0 GB cap,
+normalization,clr_per_cell,1000,2000,0.05,0.0766,4126.12,13053.16,ok,,1.0.0
+normalization,clr_per_cell,10000,2000,0.05,0.4192,4736.18,23855.37,ok,,1.0.0
+normalization,clr_per_cell,100000,2000,0.05,4.4512,10808.06,22465.96,ok,,1.0.0
+normalization,clr_per_cell,500000,2000,0.05,34.0646,38129.74,14677.98,ok,,1.0.0
+normalization,clr_per_cell,1000000,2000,0.05,,58015.58,,oom,peak RSS exceeded 58.0 GB cap,
+normalization,library_size_scale,1000,2000,0.05,0.0774,4113.14,12925.53,ok,,1.0.0
+normalization,library_size_scale,10000,2000,0.05,0.3903,4758.55,25619.56,ok,,1.0.0
+normalization,library_size_scale,100000,2000,0.05,4.4884,10871.41,22279.48,ok,,1.0.0
+normalization,library_size_scale,500000,2000,0.05,30.4616,38130.28,16414.1,ok,,1.0.0
+normalization,library_size_scale,1000000,2000,0.05,,58000.83,,oom,peak RSS exceeded 58.0 GB cap,
+normalization,log1p_cp10k,1000,2000,0.05,0.0756,4125.67,13230.85,ok,,0.1.0
+normalization,log1p_cp10k,10000,2000,0.05,0.401,4619.67,24938.01,ok,,0.1.0
+normalization,log1p_cp10k,100000,2000,0.05,4.6392,10873.41,21555.32,ok,,0.1.0
+normalization,log1p_cp10k,500000,2000,0.05,33.5927,38107.29,14884.2,ok,,0.1.0
+normalization,log1p_cp10k,1000000,2000,0.05,,58032.74,,oom,peak RSS exceeded 58.0 GB cap,
+normalization,sqrt_transform,1000,2000,0.05,0.0684,4119.91,14616.92,ok,,1.0.0
+normalization,sqrt_transform,10000,2000,0.05,0.3313,4480.12,30183.29,ok,,1.0.0
+normalization,sqrt_transform,100000,2000,0.05,2.7435,9186.89,36449.36,ok,,1.0.0
+normalization,sqrt_transform,500000,2000,0.05,22.8014,30112.05,21928.48,ok,,1.0.0
+normalization,sqrt_transform,1000000,2000,0.05,50.5282,55689.59,19790.93,ok,,1.0.0
+normalization,tfidf_l2,1000,2000,0.05,0.0913,4132.53,10952.75,ok,,1.0.0
+normalization,tfidf_l2,10000,2000,0.05,0.6249,4916.51,16003.07,ok,,1.0.0
+normalization,tfidf_l2,100000,2000,0.05,9.4042,12448.87,10633.57,ok,,1.0.0
+normalization,tfidf_l2,500000,2000,0.05,50.566,46139.49,9888.06,ok,,1.0.0
+normalization,tfidf_l2,1000000,2000,0.05,,58022.58,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,agglomerative,1000,2000,0.05,0.7306,4225.26,1368.71,ok,,0.1.0
+domain_detection,agglomerative,10000,2000,0.05,10.2962,6679.27,971.23,ok,,0.1.0
+domain_detection,agglomerative,100000,2000,0.05,,58020.64,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,agglomerative,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,agglomerative,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,birch,1000,2000,0.05,0.8122,4203.04,1231.26,ok,,0.1.0
+domain_detection,birch,10000,2000,0.05,10.096,6785.33,990.49,ok,,0.1.0
+domain_detection,birch,100000,2000,0.05,,58002.81,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,birch,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,birch,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,bisecting_kmeans,1000,2000,0.05,0.8171,4225.63,1223.83,ok,,0.1.0
+domain_detection,bisecting_kmeans,10000,2000,0.05,8.2941,6692.18,1205.67,ok,,0.1.0
+domain_detection,bisecting_kmeans,100000,2000,0.05,,58013.36,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,bisecting_kmeans,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,bisecting_kmeans,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,dbscan,1000,2000,0.05,0.858,4199.63,1165.46,ok,,0.1.0
+domain_detection,dbscan,10000,2000,0.05,9.8847,6692.86,1011.66,ok,,0.1.0
+domain_detection,dbscan,100000,2000,0.05,,58028.31,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,dbscan,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,dbscan,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,gaussian_mixture,1000,2000,0.05,1.3031,4256.46,767.38,ok,,0.1.0
+domain_detection,gaussian_mixture,10000,2000,0.05,8.9123,6715.46,1122.04,ok,,0.1.0
+domain_detection,gaussian_mixture,100000,2000,0.05,,58005.4,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,gaussian_mixture,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,gaussian_mixture,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,kmeans,1000,2000,0.05,0.2361,4155.24,4235.93,ok,,0.1.0
+domain_detection,kmeans,10000,2000,0.05,8.0425,6624.52,1243.39,ok,,0.1.0
+domain_detection,kmeans,100000,2000,0.05,,58015.2,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,kmeans,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,kmeans,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,mean_shift,1000,2000,0.05,2.7784,4206.42,359.92,ok,,0.1.0
+domain_detection,mean_shift,10000,2000,0.05,75.9795,6718.84,131.61,ok,,0.1.0
+domain_detection,mean_shift,100000,2000,0.05,,58001.98,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,mean_shift,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,mean_shift,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,minibatch_kmeans,1000,2000,0.05,0.7842,4200.33,1275.24,ok,,0.1.0
+domain_detection,minibatch_kmeans,10000,2000,0.05,8.6752,6817.34,1152.72,ok,,0.1.0
+domain_detection,minibatch_kmeans,100000,2000,0.05,,58026.47,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,minibatch_kmeans,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,minibatch_kmeans,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,optics,1000,2000,0.05,1.2594,4217.16,794.0,ok,,0.1.0
+domain_detection,optics,10000,2000,0.05,16.9638,6797.46,589.49,ok,,0.1.0
+domain_detection,optics,100000,2000,0.05,,58007.35,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,optics,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,optics,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,spectral,1000,2000,0.05,0.967,4201.37,1034.12,ok,,0.1.0
+domain_detection,spectral,10000,2000,0.05,12.9009,6711.91,775.14,ok,,0.1.0
+domain_detection,spectral,100000,2000,0.05,,58005.5,,oom,peak RSS exceeded 58.0 GB cap,
+domain_detection,spectral,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+domain_detection,spectral,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+svg,gearys_c,1000,2000,0.05,0.2124,4251.62,4708.1,ok,,1.0.0
+svg,gearys_c,10000,2000,0.05,4.9954,7296.21,2001.83,ok,,1.0.0
+svg,gearys_c,100000,2000,0.05,,58011.19,,oom,peak RSS exceeded 58.0 GB cap,
+svg,gearys_c,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+svg,gearys_c,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+svg,morans_i,1000,2000,0.05,0.1047,4130.78,9546.65,ok,,0.1.0
+svg,morans_i,10000,2000,0.05,0.6223,4897.15,16068.38,ok,,0.1.0
+svg,morans_i,100000,2000,0.05,7.751,12379.43,12901.61,ok,,0.1.0
+svg,morans_i,500000,2000,0.05,48.9678,46056.52,10210.79,ok,,0.1.0
+svg,morans_i,1000000,2000,0.05,,58972.98,,oom,peak RSS exceeded 58.0 GB cap,
+svg,spatial_variance_ratio,1000,2000,0.05,0.1496,4139.56,6685.96,ok,,1.0.0
+svg,spatial_variance_ratio,10000,2000,0.05,4.375,6815.48,2285.69,ok,,1.0.0
+svg,spatial_variance_ratio,100000,2000,0.05,,58003.86,,oom,peak RSS exceeded 58.0 GB cap,
+svg,spatial_variance_ratio,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+svg,spatial_variance_ratio,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+neighborhood,spatial_graph,1000,2000,0.05,0.1223,4075.82,8175.0,ok,,0.1.0
+neighborhood,spatial_graph,10000,2000,0.05,0.9831,4340.53,10172.02,ok,,0.1.0
+neighborhood,spatial_graph,100000,2000,0.05,11.1634,6837.36,8957.82,ok,,0.1.0
+neighborhood,spatial_graph,500000,2000,0.05,71.3464,18125.75,7008.06,ok,,0.1.0
+neighborhood,spatial_graph,1000000,2000,0.05,142.2041,32109.39,7032.14,ok,,0.1.0
+integration,combat,1000,2000,0.05,0.1608,4168.45,6218.56,ok,,0.1.0
+integration,combat,10000,2000,0.05,1.3057,5043.77,7658.77,ok,,0.1.0
+integration,combat,100000,2000,0.05,13.0785,14039.46,7646.15,ok,,0.1.0
+integration,combat,500000,2000,0.05,112.9928,54164.24,4425.06,ok,,0.1.0
+integration,combat,1000000,2000,0.05,,58032.23,,oom,peak RSS exceeded 58.0 GB cap,
+integration,denoising_spatial_autoencoder,1000,2000,0.05,1.4633,4342.44,683.39,ok,,1.0.0
+integration,denoising_spatial_autoencoder,10000,2000,0.05,3.772,4636.61,2651.12,ok,,1.0.0
+integration,denoising_spatial_autoencoder,100000,2000,0.05,26.9486,8389.75,3710.76,ok,,1.0.0
+integration,denoising_spatial_autoencoder,500000,2000,0.05,138.7207,25551.76,3604.36,ok,,1.0.0
+integration,denoising_spatial_autoencoder,1000000,2000,0.05,272.4889,46996.85,3669.87,ok,,1.0.0
+integration,graph_expression_autoencoder,1000,2000,0.05,1.3707,4349.72,729.57,ok,,1.0.0
+integration,graph_expression_autoencoder,10000,2000,0.05,5.5738,6603.3,1794.11,ok,,1.0.0
+integration,graph_expression_autoencoder,100000,2000,0.05,,58003.53,,oom,peak RSS exceeded 58.0 GB cap,
+integration,graph_expression_autoencoder,500000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+integration,graph_expression_autoencoder,1000000,2000,0.05,,,,skipped_after_limit,ceiling reached at a smaller scale,
+integration,harmony,1000,2000,0.05,1.2975,4207.3,770.7,ok,,0.1.0
+integration,harmony,10000,2000,0.05,3.2802,4708.13,3048.55,ok,,0.1.0
+integration,harmony,100000,2000,0.05,12.0775,9638.33,8279.88,ok,,0.1.0
+integration,harmony,500000,2000,0.05,56.7601,30492.19,8809.0,ok,,0.1.0
+integration,harmony,1000000,2000,0.05,124.6194,56533.3,8024.43,ok,,0.1.0
+integration,spatial_autoencoder,1000,2000,0.05,1.3419,4325.24,745.22,ok,,1.0.0
+integration,spatial_autoencoder,10000,2000,0.05,1.7209,4635.21,5810.91,ok,,1.0.0
+integration,spatial_autoencoder,100000,2000,0.05,6.2927,8375.1,15891.39,ok,,1.0.0
+integration,spatial_autoencoder,500000,2000,0.05,29.5805,25543.86,16903.05,ok,,1.0.0
+integration,spatial_autoencoder,1000000,2000,0.05,64.3957,46980.21,15529.0,ok,,1.0.0
+integration,variational_spatial_autoencoder,1000,2000,0.05,1.2821,4325.04,779.97,ok,,1.0.0
+integration,variational_spatial_autoencoder,10000,2000,0.05,1.8237,4544.07,5483.24,ok,,1.0.0
+integration,variational_spatial_autoencoder,100000,2000,0.05,6.6384,8369.0,15063.85,ok,,1.0.0
+integration,variational_spatial_autoencoder,500000,2000,0.05,29.8076,25541.46,16774.23,ok,,1.0.0
+integration,variational_spatial_autoencoder,1000000,2000,0.05,68.7262,46977.31,14550.5,ok,,1.0.0

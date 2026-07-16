@@ -1,5 +1,9 @@
 """Static contracts for release, documentation, workflow, and container automation."""
 
+import csv
+import hashlib
+import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -126,3 +130,40 @@ def test_method_adapter_and_r_script_names_are_canonical() -> None:
     )
     assert "histoweave-sc-transform.R" not in all_source
     assert "sc_transform.R" not in all_source
+
+
+def test_cross_platform_topography_artifacts_match_manifest() -> None:
+    study = ROOT / "7x15_cross_platform"
+    manifest = json.loads((study / "topography_manifest.json").read_text(encoding="utf-8"))
+
+    assert manifest["schema_version"] == 1
+    assert manifest["protocol"] == "histoweave.cross_platform_topography.v1"
+    for record in [*manifest["inputs"], *manifest["artifacts"]]:
+        artifact = study / record["path"]
+        content = artifact.read_bytes()
+        assert len(content) == record["bytes"]
+        assert hashlib.sha256(content).hexdigest() == record["sha256"]
+
+    payload = json.loads((study / "platform_topography.json").read_text(encoding="utf-8"))
+    validation = payload["validation"]
+    assert validation == {
+        "dataset_count": 8,
+        "platform_count": 4,
+        "method_configuration_count": 15,
+        "target_derived_features": [],
+        "finite_coordinates": True,
+    }
+
+    with (study / "platform_topography.csv").open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert len(rows) == validation["dataset_count"]
+    assert {row["platform"] for row in rows} == {
+        "Visium",
+        "MERFISH",
+        "Slide-seqV2",
+        "Xenium",
+    }
+    for row in rows:
+        for field in ("pc1", "pc2", "best_score", "top2_margin", "selection_ambiguity"):
+            assert math.isfinite(float(row[field]))
+        assert 0.0 <= float(row["selection_ambiguity"]) <= 1.0
