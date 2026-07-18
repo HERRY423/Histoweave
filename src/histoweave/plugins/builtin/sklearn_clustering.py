@@ -102,7 +102,7 @@ class SpectralDomains(SklearnClusterMethod):
 def _gmm_post_fit(
     data: SpatialTable,
     embedding: np.ndarray,
-    clusterer: Any,  # type: ignore[explicit-any]  # sklearn GaussianMixture
+    clusterer: Any,
 ) -> None:
     """Store soft (posterior) assignments for downstream uncertainty analysis."""
     data.obsm["domain_posterior"] = clusterer.predict_proba(embedding)
@@ -239,7 +239,7 @@ class _DeepLearningStub(SklearnClusterMethod):
     # spec is inherited from Method (type annotation only — concrete
     # subclasses must assign a MethodSpec instance).
 
-    def run(self, data):  # type: ignore[override]
+    def run(self, data):
         raise NotImplementedError(
             "This is a documentation stub — install the corresponding plugin package"
         )

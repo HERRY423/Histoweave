@@ -26,7 +26,7 @@ def test_banksy_py_is_owned_by_builtin_package():
 
     cls = get_method("domain_detection", "banksy_py")
     assert cls.__module__ == "histoweave.plugins.builtin.banksy_py"
-    assert cls.spec.maturity.value == "production"
+    assert cls.spec.maturity.value == "validated"
     assert LegacyBANKSYPy is cls
 
 
@@ -73,6 +73,7 @@ def test_register_requires_spec():
 def test_register_custom_method():
     key = (MethodCategory.NORMALIZATION, "unit_test_norm", "9.9")
     try:
+
         @register
         class MyNorm(Method):
             spec = MethodSpec(

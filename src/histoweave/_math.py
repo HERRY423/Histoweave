@@ -104,12 +104,38 @@ def _kmeanspp_init(X: np.ndarray, k: int, rng: np.random.Generator) -> np.ndarra
 def knn_indices(coords: np.ndarray, k: int) -> np.ndarray:
     """Indices of the ``k`` nearest neighbours (by Euclidean distance) per point.
 
-    Brute force — fine for the small canonical datasets this scaffold targets; a real
-    deployment uses squidpy's spatial graph on chunked data.
+    Uses :class:`scipy.spatial.cKDTree` (``O(n log n)`` build / query) so spatial
+    neighbourhood steps remain usable beyond a few thousand observations.  Falls
+    back to a dense distance matrix only when SciPy is unavailable or ``n`` is
+    tiny enough that the dense path is cheaper.
     """
-    k = int(min(k, coords.shape[0]))
-    d = np.linalg.norm(coords[:, None, :] - coords[None, :, :], axis=2)
-    return np.argsort(d, axis=1)[:, :k]
+    coords = np.asarray(coords, dtype=float)
+    if coords.ndim != 2:
+        raise ValueError(f"coords must be 2-D, got shape {coords.shape}")
+    n = int(coords.shape[0])
+    if n == 0:
+        return np.empty((0, 0), dtype=int)
+    k = int(min(max(k, 1), n))
+    if k == n and n <= 64:
+        # Dense path is fine for very small tables (and keeps unit tests simple).
+        d = np.linalg.norm(coords[:, None, :] - coords[None, :, :], axis=2)
+        return np.argsort(d, axis=1, kind="stable")[:, :k]
+    try:
+        from scipy.spatial import cKDTree
+    except ImportError:  # pragma: no cover - scipy is a core dependency
+        d = np.linalg.norm(coords[:, None, :] - coords[None, :, :], axis=2)
+        return np.argsort(d, axis=1, kind="stable")[:, :k]
+
+    tree = cKDTree(coords)
+    # workers=-1 uses all cores when SciPy was built with OpenMP; safe no-op otherwise.
+    try:
+        _dist, indices = tree.query(coords, k=k, workers=-1)
+    except TypeError:  # older SciPy without workers=
+        _dist, indices = tree.query(coords, k=k)
+    indices = np.asarray(indices, dtype=int)
+    if k == 1:
+        indices = indices.reshape(n, 1)
+    return indices
 
 
 def neighborhood_mean(features: np.ndarray, coords: np.ndarray, k: int) -> np.ndarray:
@@ -156,7 +182,5 @@ def proportions_rmsd(true: np.ndarray, pred: np.ndarray) -> float:
     true_arr = np.asarray(true, dtype=float)
     pred_arr = np.asarray(pred, dtype=float)
     if true_arr.shape != pred_arr.shape:
-        raise ValueError(
-            f"shape mismatch: true {true_arr.shape} vs pred {pred_arr.shape}"
-        )
+        raise ValueError(f"shape mismatch: true {true_arr.shape} vs pred {pred_arr.shape}")
     return float(np.sqrt(np.mean((true_arr - pred_arr) ** 2)))

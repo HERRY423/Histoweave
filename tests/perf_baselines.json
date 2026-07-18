@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "protocol": "histoweave.perf_regression.v1",
+  "notes": "Micro-benchmark ceilings for pure-Python hot paths. Times are wall seconds on a typical CI runner; gates use a slack factor rather than absolute machines.",
+  "slack_factor": 3.0,
+  "benchmarks": {
+    "knn_indices_n2000_k15": {
+      "max_seconds": 0.35,
+      "n_obs": 2000,
+      "k": 15,
+      "description": "cKDTree kNN for 2k spatial points"
+    },
+    "zscore_n4000_g2000": {
+      "max_seconds": 0.15,
+      "n_obs": 4000,
+      "n_vars": 2000,
+      "description": "column z-score of a Visium-scale dense block"
+    },
+    "pca_n4000_g2000_k20": {
+      "max_seconds": 1.50,
+      "n_obs": 4000,
+      "n_vars": 2000,
+      "n_components": 20,
+      "description": "Gram-path PCA on genes >> spots"
+    },
+    "extract_features_n800_g500": {
+      "max_seconds": 2.00,
+      "n_obs": 800,
+      "n_vars": 500,
+      "description": "target-free feature extraction for recommendation"
+    }
+  }
+}

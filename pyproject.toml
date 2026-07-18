@@ -62,14 +62,18 @@ docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
 dev = [
     "build>=1.2",
     "h5py>=3.7",
+    "hypothesis>=6.100",
     "mypy>=1.8",
     "networkx>=3.0",
+    "pandas-stubs>=2.0",
     "pyarrow>=14.0",
     "pytest>=7.4",
+    "pytest-benchmark>=4.0",
     "pytest-cov>=4.1",
     "ruff>=0.4",
     "scikit-learn>=1.3",
     "scipy>=1.10",
+    "types-psutil>=5.9",
 ]
 all = [
     "histoweave-spatial[io,spatial,scanpy,banksy,spatialde,cell2location,liana,scanvi,celltypist,cellpose2,harmony,compiler,deep-learning,docs,dev]"
@@ -96,6 +100,10 @@ path = "src/histoweave/__init__.py"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --basetemp=.pytest_tmp"
+markers = [
+    "property: property-based Hypothesis tests",
+    "perf: micro-benchmarks used for performance regression gates",
+]
 
 [tool.ruff]
 line-length = 100
@@ -104,7 +112,66 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "W", "G"]
 
+[tool.ruff.lint.per-file-ignores]
+# Research runners embed report tables and protocol text whose exact layout is an output contract.
+"research/**/*.py" = ["E501"]
+# Tutorial cells deliberately interleave setup and explanatory imports.
+"examples/*.ipynb" = ["E402"]
+
+# Type-checking policy (strengthened from the former follow_imports=skip /
+# ignore_missing_imports=true defaults that hid many real errors):
+# - follow_imports=silent: analyse our package fully; follow third-party imports
+#   for signatures without reporting their internal errors
+# - ignore_missing_imports=false globally; untyped science deps are overridden
+# - check_untyped_defs catches bugs inside unannotated helpers
 [tool.mypy]
 python_version = "3.12"
-follow_imports = "skip"
+follow_imports = "silent"
+ignore_missing_imports = false
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = false
+check_untyped_defs = true
+no_implicit_optional = true
+# Incomplete CLI handlers remain annotated at the return type only; enable
+# disallow_incomplete_defs once argparse.Namespace typing is fully rolled out.
+disallow_incomplete_defs = false
+pretty = true
+show_error_codes = true
+exclude = "(?x)(^tests/|^site/|^tmp/)"
+
+# Third-party scientific stack without complete py.typed / stub packages.
+[[tool.mypy.overrides]]
+module = [
+    "spatialdata.*",
+    "spatialdata_io.*",
+    "anndata.*",
+    "scipy.*",
+    "sklearn.*",
+    "networkx.*",
+    "jinja2.*",
+    "litellm.*",
+    "pydantic.*",
+    "torch.*",
+    "SpaGCN.*",
+    "scanpy.*",
+    "harmonypy.*",
+    "cell2location.*",
+    "celltypist.*",
+    "cellpose.*",
+    "liana.*",
+    "scvi.*",
+    "SpatialDE.*",
+    "NaiveDE.*",
+    "louvain.*",
+    "pyarrow.*",
+    "h5py.*",
+    "geopandas.*",
+    "shapely.*",
+    "shapely.geometry.*",
+    "zarr.*",
+    "dask.*",
+    "numba.*",
+]
 ignore_missing_imports = true

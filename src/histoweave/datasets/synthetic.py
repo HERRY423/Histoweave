@@ -696,12 +696,17 @@ def make_scalable_synthetic(
         chunks.append(chunk)
     X = sparse.vstack(chunks, format="csr", dtype=np.float32)
 
-    obs_data: dict[str, pd.Categorical] = {
-        "domain_truth": pd.Categorical([f"domain_{item}" for item in domain])
-    }
-    if with_batch:
-        obs_data["batch"] = pd.Categorical([f"batch_{item % 3}" for item in range(n_cells)])
-    obs = pd.DataFrame(obs_data, index=[f"cell_{item:07d}" for item in range(n_cells)])
+    obs = pd.DataFrame(
+        {
+            "domain_truth": pd.Categorical([f"domain_{item}" for item in domain]),
+            **(
+                {"batch": pd.Categorical([f"batch_{item % 3}" for item in range(n_cells)])}
+                if with_batch
+                else {}
+            ),
+        },
+        index=[f"cell_{item:07d}" for item in range(n_cells)],
+    )
     var = pd.DataFrame({"mito": [False] * n_genes}, index=gene_names)
     table = SpatialTable(
         X=X,

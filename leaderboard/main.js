@@ -20,6 +20,7 @@ const state = {
   filterDomains: '__all__',
   filterSparsity: '__all__',
   filterFamily: '__all__',
+  filterTask: '__all__',
   sortBy: 'mean_ari',
 };
 
@@ -54,6 +55,18 @@ function visibleDatasets() {
     if (state.filterPlatform !== '__all__' && dataset.platform !== state.filterPlatform) return false;
     if (state.filterTissue !== '__all__' && dataset.tissue !== state.filterTissue) return false;
     if (state.filterDomains !== '__all__' && String(dataset.n_domains) !== state.filterDomains) return false;
+    if (state.filterTask !== '__all__') {
+      const task = dataset.task || state.data.task_default || 'spatial_domain';
+      if (task !== state.filterTask) return false;
+      // P0/P1 contract: never show self-supervised labels on the domain board.
+      if (
+        state.filterTask === 'spatial_domain' &&
+        dataset.ground_truth_kind &&
+        ['self_supervised', 'leiden', 'louvain', 'cluster_proxy'].includes(dataset.ground_truth_kind)
+      ) {
+        return false;
+      }
+    }
     const sparsity = dataset.sparsity;
     if (state.filterSparsity === 'high' && !(sparsity >= 0.90)) return false;
     if (state.filterSparsity === 'medium' && !(sparsity >= 0.75 && sparsity < 0.90)) return false;
@@ -62,8 +75,11 @@ function visibleDatasets() {
   }).map(dataset => dataset.id);
 }
 function visibleMethods() {
-  if (state.filterFamily === '__all__') return state.data.methods.map(m => m.name);
-  return state.data.methods.filter(m => m.family === state.filterFamily).map(m => m.name);
+  let methods = state.data.methods;
+  if (state.filterFamily !== '__all__') {
+    methods = methods.filter(m => m.family === state.filterFamily);
+  }
+  return methods.map(m => m.name);
 }
 
 // records grouped as: {method → {dataset → [ari per seed]}}
@@ -140,6 +156,12 @@ function bindControls() {
   document.getElementById('filter-family').addEventListener('change', e => {
     state.filterFamily = e.target.value; rerender();
   });
+  const taskFilter = document.getElementById('filter-task');
+  if (taskFilter) {
+    taskFilter.addEventListener('change', e => {
+      state.filterTask = e.target.value; rerender();
+    });
+  }
   document.getElementById('sort-by').addEventListener('change', e => {
     state.sortBy = e.target.value; rerender();
   });

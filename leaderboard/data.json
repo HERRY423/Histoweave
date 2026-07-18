@@ -1,6 +1,8 @@
 {
-  "protocol": "histoweave.leaderboard.v1",
-  "generated_at": "2026-07-15T03:49:09+00:00",
+  "protocol": "histoweave.leaderboard.v2",
+  "generated_at": "2026-07-18T04:54:33+00:00",
+  "task_default": "spatial_domain",
+  "submission_schema": "histoweave.external_submission.v1",
   "datasets": [
     {
       "id": "151507",
@@ -8,7 +10,12 @@
       "tissue": "DLPFC",
       "n_obs": 4221,
       "n_domains": 7,
-      "sparsity": 0.957974
+      "sparsity": 0.957974,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "Maynard2021_spatialLIBD",
+      "registry_name": "dlpfc_151507",
+      "license": "CC-BY 4.0"
     },
     {
       "id": "151669",
@@ -16,7 +23,12 @@
       "tissue": "DLPFC",
       "n_obs": 3645,
       "n_domains": 8,
-      "sparsity": 0.946434
+      "sparsity": 0.946434,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "Maynard2021_spatialLIBD",
+      "registry_name": "dlpfc_151669",
+      "license": "CC-BY 4.0"
     },
     {
       "id": "151670",
@@ -24,7 +36,12 @@
       "tissue": "DLPFC",
       "n_obs": 3484,
       "n_domains": 5,
-      "sparsity": 0.950032
+      "sparsity": 0.950032,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "Maynard2021_spatialLIBD",
+      "registry_name": "dlpfc_151670",
+      "license": "CC-BY 4.0"
     },
     {
       "id": "151673",
@@ -32,7 +49,12 @@
       "tissue": "DLPFC",
       "n_obs": 3611,
       "n_domains": 7,
-      "sparsity": 0.934164
+      "sparsity": 0.934164,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "Maynard2021_spatialLIBD",
+      "registry_name": "dlpfc_151673",
+      "license": "CC-BY 4.0"
     },
     {
       "id": "151674",
@@ -40,62 +62,2560 @@
       "tissue": "DLPFC",
       "n_obs": 3635,
       "n_domains": 7,
-      "sparsity": 0.919568
+      "sparsity": 0.919568,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "Maynard2021_spatialLIBD",
+      "registry_name": "dlpfc_151674",
+      "license": "CC-BY 4.0"
+    },
+    {
+      "id": "allen_merfish_brain_section",
+      "platform": "MERFISH",
+      "tissue": "mouse brain",
+      "n_obs": 15000,
+      "n_domains": 8,
+      "sparsity": null,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "Yao2023_Allen_MERFISH",
+      "registry_name": "allen_merfish_brain_section",
+      "license": "CC-BY-NC 4.0"
+    },
+    {
+      "id": "visium_hd_crc",
+      "platform": "Visium HD",
+      "tissue": "human colorectal cancer",
+      "n_obs": 15000,
+      "n_domains": 7,
+      "sparsity": null,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "10x_VisiumHD_CRC_Zenodo11077886",
+      "registry_name": "visium_hd_crc",
+      "license": "10x Genomics EULA (data) + CC0 (annotation)"
+    },
+    {
+      "id": "visium_mouse_brain",
+      "platform": "Visium v2",
+      "tissue": "mouse brain",
+      "n_obs": 2688,
+      "n_domains": 15,
+      "sparsity": null,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "10x_Visium_Mouse_Brain_Squidpy",
+      "registry_name": "visium_mouse_brain",
+      "license": "10x Genomics EULA"
+    },
+    {
+      "id": "xenium_lung_cancer",
+      "platform": "Xenium",
+      "tissue": "human lung adenocarcinoma",
+      "n_obs": 15000,
+      "n_domains": 5,
+      "sparsity": null,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "10x_Xenium_FFPE_Lung_Cancer",
+      "registry_name": "xenium_lung_cancer",
+      "license": "10x Genomics EULA"
+    },
+    {
+      "id": "xenium_ovarian_cancer",
+      "platform": "Xenium Prime",
+      "tissue": "human ovarian cancer",
+      "n_obs": 15000,
+      "n_domains": 6,
+      "sparsity": null,
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study": "10x_Xenium_Prime_Ovarian_Cancer",
+      "registry_name": "xenium_ovarian_cancer",
+      "license": "10x Genomics EULA"
     }
   ],
   "methods": [
     {
       "name": "agglomerative",
+      "base_method": "agglomerative",
       "family": "sklearn",
       "summary": "Ward-linkage hierarchical clustering on the PCA + spatial embedding."
     },
     {
+      "name": "agglomerative@sw0.0",
+      "base_method": "agglomerative",
+      "family": "sklearn",
+      "summary": "Ward-linkage hierarchical clustering on the PCA + spatial embedding."
+    },
+    {
+      "name": "agglomerative@sw0.3",
+      "base_method": "agglomerative",
+      "family": "sklearn",
+      "summary": "Ward-linkage hierarchical clustering on the PCA + spatial embedding."
+    },
+    {
+      "name": "agglomerative@sw0.8",
+      "base_method": "agglomerative",
+      "family": "sklearn",
+      "summary": "Ward-linkage hierarchical clustering on the PCA + spatial embedding."
+    },
+    {
+      "name": "banksy_py",
+      "base_method": "banksy_py",
+      "family": "sota",
+      "summary": "Python BANKSY: own + neighbourhood-mean expression, PCA + KMeans."
+    },
+    {
       "name": "birch",
+      "base_method": "birch",
+      "family": "sklearn",
+      "summary": "BIRCH incremental clustering (memory-frugal baseline)."
+    },
+    {
+      "name": "birch@sw0.0",
+      "base_method": "birch",
+      "family": "sklearn",
+      "summary": "BIRCH incremental clustering (memory-frugal baseline)."
+    },
+    {
+      "name": "birch@sw0.3",
+      "base_method": "birch",
+      "family": "sklearn",
+      "summary": "BIRCH incremental clustering (memory-frugal baseline)."
+    },
+    {
+      "name": "birch@sw0.8",
+      "base_method": "birch",
       "family": "sklearn",
       "summary": "BIRCH incremental clustering (memory-frugal baseline)."
     },
     {
       "name": "bisecting_kmeans",
+      "base_method": "bisecting_kmeans",
       "family": "sklearn",
       "summary": "Divisive k-means; useful when clusters vary in size."
     },
     {
       "name": "dbscan",
+      "base_method": "dbscan",
       "family": "sklearn",
       "summary": "Density-based DBSCAN; strong on well-separated compartments."
     },
     {
       "name": "gaussian_mixture",
+      "base_method": "gaussian_mixture",
       "family": "sklearn",
       "summary": "GMM with full covariances on the embedding."
     },
     {
+      "name": "gaussian_mixture@sw0.0",
+      "base_method": "gaussian_mixture",
+      "family": "sklearn",
+      "summary": "GMM with full covariances on the embedding."
+    },
+    {
+      "name": "gaussian_mixture@sw0.3",
+      "base_method": "gaussian_mixture",
+      "family": "sklearn",
+      "summary": "GMM with full covariances on the embedding."
+    },
+    {
+      "name": "gaussian_mixture@sw0.8",
+      "base_method": "gaussian_mixture",
+      "family": "sklearn",
+      "summary": "GMM with full covariances on the embedding."
+    },
+    {
+      "name": "graphst",
+      "base_method": "graphst",
+      "family": "sota",
+      "summary": "GraphST contrastive graph representation + fixed-q clustering."
+    },
+    {
+      "name": "harmony_kmeans",
+      "base_method": "harmony_kmeans",
+      "family": "spatial_aware",
+      "summary": "Harmony-integrated PCA (spatial quadrants as pseudo-batches) + KMeans."
+    },
+    {
       "name": "kmeans",
+      "base_method": "kmeans",
+      "family": "sklearn",
+      "summary": "Vanilla k-means baseline on PCA + spatial embedding."
+    },
+    {
+      "name": "kmeans@sw0.0",
+      "base_method": "kmeans",
+      "family": "sklearn",
+      "summary": "Vanilla k-means baseline on PCA + spatial embedding."
+    },
+    {
+      "name": "kmeans@sw0.3",
+      "base_method": "kmeans",
+      "family": "sklearn",
+      "summary": "Vanilla k-means baseline on PCA + spatial embedding."
+    },
+    {
+      "name": "kmeans@sw0.8",
+      "base_method": "kmeans",
       "family": "sklearn",
       "summary": "Vanilla k-means baseline on PCA + spatial embedding."
     },
     {
       "name": "mean_shift",
+      "base_method": "mean_shift",
       "family": "sklearn",
       "summary": "Non-parametric mean-shift; no k required."
     },
     {
       "name": "minibatch_kmeans",
+      "base_method": "minibatch_kmeans",
       "family": "sklearn",
       "summary": "Mini-batch k-means; the fast large-n baseline."
     },
     {
+      "name": "moran_spectral",
+      "base_method": "moran_spectral",
+      "family": "spatial_aware",
+      "summary": "Moran's I gene ranking \u2192 spectral clustering on the spatial graph."
+    },
+    {
+      "name": "nnsvg_kmeans",
+      "base_method": "nnsvg_kmeans",
+      "family": "spatial_aware",
+      "summary": "nnSVG-ranked HVGs \u2192 PCA + KMeans."
+    },
+    {
       "name": "optics",
+      "base_method": "optics",
       "family": "sklearn",
       "summary": "Ordering points to identify clustering structure."
     },
     {
+      "name": "spagcn",
+      "base_method": "spagcn",
+      "family": "sota",
+      "summary": "SpaGCN graph-convolutional spatial domains (official)."
+    },
+    {
+      "name": "spatialde_kmeans",
+      "base_method": "spatialde_kmeans",
+      "family": "spatial_aware",
+      "summary": "SpatialDE-ranked HVGs \u2192 PCA + KMeans."
+    },
+    {
       "name": "spectral",
+      "base_method": "spectral",
       "family": "sklearn",
       "summary": "Normalised-cut spectral clustering on kNN affinity."
+    },
+    {
+      "name": "spectral@sw0.0",
+      "base_method": "spectral",
+      "family": "sklearn",
+      "summary": "Normalised-cut spectral clustering on kNN affinity."
+    },
+    {
+      "name": "spectral@sw0.3",
+      "base_method": "spectral",
+      "family": "sklearn",
+      "summary": "Normalised-cut spectral clustering on kNN affinity."
+    },
+    {
+      "name": "spectral@sw0.8",
+      "base_method": "spectral",
+      "family": "sklearn",
+      "summary": "Normalised-cut spectral clustering on kNN affinity."
+    },
+    {
+      "name": "stagate",
+      "base_method": "stagate",
+      "family": "sota",
+      "summary": "STAGATE graph-attention autoencoder + fixed-q clustering."
     }
   ],
   "records": [
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.0",
+      "seed": 42,
+      "ari": 0.18008458233836966,
+      "seconds": 8.0531,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.0",
+      "seed": 1,
+      "ari": 0.17401024988008934,
+      "seconds": 7.123,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.0",
+      "seed": 2,
+      "ari": 0.16852518975308975,
+      "seconds": 6.9538,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 42,
+      "ari": 0.1729852129186529,
+      "seconds": 8.3565,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 1,
+      "ari": 0.17822826466546693,
+      "seconds": 7.2549,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 2,
+      "ari": 0.1447771423725902,
+      "seconds": 7.1881,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.0",
+      "seed": 42,
+      "ari": 0.0992594801230638,
+      "seconds": 7.9608,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.0",
+      "seed": 1,
+      "ari": 0.0992594801230638,
+      "seconds": 6.5647,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.0",
+      "seed": 2,
+      "ari": 0.0992594801230638,
+      "seconds": 6.6901,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.0",
+      "seed": 42,
+      "ari": 0.1683158807697182,
+      "seconds": 11.2488,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.0",
+      "seed": 1,
+      "ari": 0.1683158807697182,
+      "seconds": 11.2163,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.0",
+      "seed": 2,
+      "ari": 0.1683158807697182,
+      "seconds": 9.4748,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.0",
+      "seed": 42,
+      "ari": 0.08821344913490367,
+      "seconds": 8.0846,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.0",
+      "seed": 1,
+      "ari": 0.08821344913490367,
+      "seconds": 7.4474,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.0",
+      "seed": 2,
+      "ari": 0.08821344913490367,
+      "seconds": 7.2359,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.3",
+      "seed": 42,
+      "ari": 0.22153475207812348,
+      "seconds": 8.4106,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.3",
+      "seed": 1,
+      "ari": 0.26433992648126237,
+      "seconds": 7.84,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.3",
+      "seed": 2,
+      "ari": 0.26433992648126237,
+      "seconds": 8.1689,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 42,
+      "ari": 0.1933045262412574,
+      "seconds": 9.2243,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 1,
+      "ari": 0.2584992805851701,
+      "seconds": 8.7888,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 2,
+      "ari": 0.25336981508064266,
+      "seconds": 8.6632,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.3",
+      "seed": 42,
+      "ari": 0.14793332881049076,
+      "seconds": 8.3995,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.3",
+      "seed": 1,
+      "ari": 0.14793332881049076,
+      "seconds": 7.9745,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.3",
+      "seed": 2,
+      "ari": 0.14793332881049076,
+      "seconds": 8.3508,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.3",
+      "seed": 42,
+      "ari": 0.24208635799871364,
+      "seconds": 9.5929,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.3",
+      "seed": 1,
+      "ari": 0.24242766307656555,
+      "seconds": 8.3982,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.3",
+      "seed": 2,
+      "ari": 0.24242766307656555,
+      "seconds": 9.8673,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.3",
+      "seed": 42,
+      "ari": 0.17007462879487056,
+      "seconds": 8.869,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.3",
+      "seed": 1,
+      "ari": 0.17007462879487056,
+      "seconds": 7.5542,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.3",
+      "seed": 2,
+      "ari": 0.17007462879487056,
+      "seconds": 7.3218,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.8",
+      "seed": 42,
+      "ari": 0.2802279351972797,
+      "seconds": 7.9509,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.8",
+      "seed": 1,
+      "ari": 0.26477163552873756,
+      "seconds": 7.6544,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans@sw0.8",
+      "seed": 2,
+      "ari": 0.2433357538345684,
+      "seconds": 7.7505,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 42,
+      "ari": 0.2738763142847892,
+      "seconds": 8.8651,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 1,
+      "ari": 0.3108553005145124,
+      "seconds": 8.1513,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 2,
+      "ari": 0.31218668596925925,
+      "seconds": 8.0366,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.8",
+      "seed": 42,
+      "ari": 0.24560875008751212,
+      "seconds": 8.6014,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.8",
+      "seed": 1,
+      "ari": 0.24560875008751212,
+      "seconds": 6.8425,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative@sw0.8",
+      "seed": 2,
+      "ari": 0.24560875008751212,
+      "seconds": 8.0319,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.8",
+      "seed": 42,
+      "ari": 0.3018812441837427,
+      "seconds": 8.3263,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.8",
+      "seed": 1,
+      "ari": 0.3018812441837427,
+      "seconds": 7.8129,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral@sw0.8",
+      "seed": 2,
+      "ari": 0.3018812441837427,
+      "seconds": 8.2338,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.8",
+      "seed": 42,
+      "ari": 0.23496401745875697,
+      "seconds": 8.7608,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.8",
+      "seed": 1,
+      "ari": 0.23496401745875697,
+      "seconds": 7.1288,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "birch@sw0.8",
+      "seed": 2,
+      "ari": 0.23496401745875697,
+      "seconds": 7.96,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.0",
+      "seed": 42,
+      "ari": 0.19206485883241162,
+      "seconds": 8.2707,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.0",
+      "seed": 1,
+      "ari": 0.19597789132000243,
+      "seconds": 10.2151,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.0",
+      "seed": 2,
+      "ari": 0.24097495699152063,
+      "seconds": 7.1579,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 42,
+      "ari": 0.21014242901335037,
+      "seconds": 8.7986,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 1,
+      "ari": 0.2023777153539675,
+      "seconds": 8.1948,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 2,
+      "ari": 0.2122436679773596,
+      "seconds": 7.4493,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.0",
+      "seed": 42,
+      "ari": 0.11884079288283697,
+      "seconds": 8.1124,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.0",
+      "seed": 1,
+      "ari": 0.11884079288283697,
+      "seconds": 7.5523,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.0",
+      "seed": 2,
+      "ari": 0.11884079288283697,
+      "seconds": 6.6725,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.0",
+      "seed": 42,
+      "ari": 0.2179984036961138,
+      "seconds": 10.8848,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.0",
+      "seed": 1,
+      "ari": 0.21725738778697087,
+      "seconds": 9.6437,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.0",
+      "seed": 2,
+      "ari": 0.21796485028496493,
+      "seconds": 9.5938,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.0",
+      "seed": 42,
+      "ari": 0.11803678520921732,
+      "seconds": 8.4117,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.0",
+      "seed": 1,
+      "ari": 0.11803678520921732,
+      "seconds": 7.5102,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.0",
+      "seed": 2,
+      "ari": 0.11803678520921732,
+      "seconds": 7.0802,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.3",
+      "seed": 42,
+      "ari": 0.293174585397493,
+      "seconds": 8.164,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.3",
+      "seed": 1,
+      "ari": 0.30060498160655713,
+      "seconds": 7.4911,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.3",
+      "seed": 2,
+      "ari": 0.30060498160655713,
+      "seconds": 7.1826,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 42,
+      "ari": 0.30717634084922985,
+      "seconds": 9.2261,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 1,
+      "ari": 0.23184170700557769,
+      "seconds": 7.6785,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 2,
+      "ari": 0.26902860038178944,
+      "seconds": 7.7471,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.3",
+      "seed": 42,
+      "ari": 0.22125567855002487,
+      "seconds": 8.6861,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.3",
+      "seed": 1,
+      "ari": 0.22125567855002487,
+      "seconds": 7.5739,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.3",
+      "seed": 2,
+      "ari": 0.22125567855002487,
+      "seconds": 7.2725,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.3",
+      "seed": 42,
+      "ari": 0.17605372548877324,
+      "seconds": 9.3483,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.3",
+      "seed": 1,
+      "ari": 0.1762882616224639,
+      "seconds": 8.6703,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.3",
+      "seed": 2,
+      "ari": 0.17623735176688818,
+      "seconds": 8.409,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.3",
+      "seed": 42,
+      "ari": 0.2528450781106391,
+      "seconds": 8.2514,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.3",
+      "seed": 1,
+      "ari": 0.2528450781106391,
+      "seconds": 7.0922,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.3",
+      "seed": 2,
+      "ari": 0.2528450781106391,
+      "seconds": 7.3824,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.8",
+      "seed": 42,
+      "ari": 0.2193841020240993,
+      "seconds": 9.2276,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.8",
+      "seed": 1,
+      "ari": 0.2912249295163883,
+      "seconds": 7.5601,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans@sw0.8",
+      "seed": 2,
+      "ari": 0.2912249295163883,
+      "seconds": 7.4244,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 42,
+      "ari": 0.2891349314450569,
+      "seconds": 9.3459,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 1,
+      "ari": 0.3014962071215501,
+      "seconds": 7.9104,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 2,
+      "ari": 0.29211893795418226,
+      "seconds": 7.8161,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.8",
+      "seed": 42,
+      "ari": 0.30002254262180444,
+      "seconds": 8.626,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.8",
+      "seed": 1,
+      "ari": 0.30002254262180444,
+      "seconds": 7.1756,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative@sw0.8",
+      "seed": 2,
+      "ari": 0.30002254262180444,
+      "seconds": 7.5088,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.8",
+      "seed": 42,
+      "ari": 0.28027371009686014,
+      "seconds": 9.0672,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.8",
+      "seed": 1,
+      "ari": 0.28026941315944903,
+      "seconds": 7.0995,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral@sw0.8",
+      "seed": 2,
+      "ari": 0.28027371009686014,
+      "seconds": 7.3751,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.8",
+      "seed": 42,
+      "ari": 0.27692088536037573,
+      "seconds": 8.7147,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.8",
+      "seed": 1,
+      "ari": 0.27692088536037573,
+      "seconds": 7.3542,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151674",
+      "method": "birch@sw0.8",
+      "seed": 2,
+      "ari": 0.27692088536037573,
+      "seconds": 7.2037,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.0",
+      "seed": 42,
+      "ari": 0.18935929395760556,
+      "seconds": 5.6421,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.0",
+      "seed": 1,
+      "ari": 0.19308290387731325,
+      "seconds": 5.2696,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.0",
+      "seed": 2,
+      "ari": 0.1651222334764978,
+      "seconds": 5.4127,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 42,
+      "ari": 0.10591651752950733,
+      "seconds": 5.9416,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 1,
+      "ari": 0.132589875538945,
+      "seconds": 5.8454,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 2,
+      "ari": 0.15397042437899408,
+      "seconds": 5.5746,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.0",
+      "seed": 42,
+      "ari": 0.07968841720401587,
+      "seconds": 5.6243,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.0",
+      "seed": 1,
+      "ari": 0.07968841720401587,
+      "seconds": 5.5558,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.0",
+      "seed": 2,
+      "ari": 0.07968841720401587,
+      "seconds": 5.1093,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.0",
+      "seed": 42,
+      "ari": 0.13842479316457637,
+      "seconds": 11.1287,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.0",
+      "seed": 1,
+      "ari": 0.13842479316457637,
+      "seconds": 10.7056,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.0",
+      "seed": 2,
+      "ari": 0.13807190499652294,
+      "seconds": 10.3572,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.0",
+      "seed": 42,
+      "ari": 0.045874087368512055,
+      "seconds": 6.1912,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.0",
+      "seed": 1,
+      "ari": 0.045874087368512055,
+      "seconds": 5.5715,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.0",
+      "seed": 2,
+      "ari": 0.045874087368512055,
+      "seconds": 5.5718,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.3",
+      "seed": 42,
+      "ari": 0.18854267591544563,
+      "seconds": 6.611,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.3",
+      "seed": 1,
+      "ari": 0.2646976469978433,
+      "seconds": 5.9366,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.3",
+      "seed": 2,
+      "ari": 0.26724462008284083,
+      "seconds": 6.0498,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 42,
+      "ari": 0.20366776368219577,
+      "seconds": 6.8519,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 1,
+      "ari": 0.21604224883968845,
+      "seconds": 6.8352,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 2,
+      "ari": 0.24861336835443215,
+      "seconds": 6.5114,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.3",
+      "seed": 42,
+      "ari": 0.21069571335220524,
+      "seconds": 6.3422,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.3",
+      "seed": 1,
+      "ari": 0.21069571335220524,
+      "seconds": 6.3656,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.3",
+      "seed": 2,
+      "ari": 0.21069571335220524,
+      "seconds": 6.0504,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.3",
+      "seed": 42,
+      "ari": 0.20033591965718253,
+      "seconds": 9.1181,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.3",
+      "seed": 1,
+      "ari": 0.19994177702897856,
+      "seconds": 8.8123,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.3",
+      "seed": 2,
+      "ari": 0.20033591965718253,
+      "seconds": 8.6563,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.3",
+      "seed": 42,
+      "ari": 0.1320529975079289,
+      "seconds": 7.3856,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.3",
+      "seed": 1,
+      "ari": 0.1320529975079289,
+      "seconds": 6.3283,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.3",
+      "seed": 2,
+      "ari": 0.1320529975079289,
+      "seconds": 6.2577,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.8",
+      "seed": 42,
+      "ari": 0.22382172334514383,
+      "seconds": 6.4068,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.8",
+      "seed": 1,
+      "ari": 0.18452892024284812,
+      "seconds": 6.1934,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans@sw0.8",
+      "seed": 2,
+      "ari": 0.18452892024284812,
+      "seconds": 6.2667,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 42,
+      "ari": 0.24147899012747137,
+      "seconds": 6.9244,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 1,
+      "ari": 0.2756006304880253,
+      "seconds": 6.6142,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 2,
+      "ari": 0.2708807132949689,
+      "seconds": 6.6394,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.8",
+      "seed": 42,
+      "ari": 0.21576135178991462,
+      "seconds": 6.5076,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.8",
+      "seed": 1,
+      "ari": 0.21576135178991462,
+      "seconds": 6.1159,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative@sw0.8",
+      "seed": 2,
+      "ari": 0.21576135178991462,
+      "seconds": 6.1822,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.8",
+      "seed": 42,
+      "ari": 0.2338606355203309,
+      "seconds": 7.2652,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.8",
+      "seed": 1,
+      "ari": 0.2338606355203309,
+      "seconds": 6.352,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral@sw0.8",
+      "seed": 2,
+      "ari": 0.2338606355203309,
+      "seconds": 6.8305,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.8",
+      "seed": 42,
+      "ari": 0.2513527623493769,
+      "seconds": 7.2532,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.8",
+      "seed": 1,
+      "ari": 0.2513527623493769,
+      "seconds": 6.3168,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151507",
+      "method": "birch@sw0.8",
+      "seed": 2,
+      "ari": 0.2513527623493769,
+      "seconds": 6.2364,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.0",
+      "seed": 42,
+      "ari": 0.12945691916294957,
+      "seconds": 7.7507,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.0",
+      "seed": 1,
+      "ari": 0.14167116718476835,
+      "seconds": 6.6898,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.0",
+      "seed": 2,
+      "ari": 0.13574027383071632,
+      "seconds": 6.847,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 42,
+      "ari": 0.09036967219248872,
+      "seconds": 8.4694,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 1,
+      "ari": 0.0990093278153822,
+      "seconds": 7.196,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 2,
+      "ari": 0.10615003463123122,
+      "seconds": 7.0181,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.0",
+      "seed": 42,
+      "ari": 0.044205061170462245,
+      "seconds": 8.0524,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.0",
+      "seed": 1,
+      "ari": 0.044205061170462245,
+      "seconds": 6.2815,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.0",
+      "seed": 2,
+      "ari": 0.044205061170462245,
+      "seconds": 7.2269,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.0",
+      "seed": 42,
+      "ari": 0.11503454320830074,
+      "seconds": 11.1917,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.0",
+      "seed": 1,
+      "ari": 0.11503454320830074,
+      "seconds": 9.823,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.0",
+      "seed": 2,
+      "ari": 0.11475187243080458,
+      "seconds": 10.3195,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.0",
+      "seed": 42,
+      "ari": 0.030268636790949644,
+      "seconds": 7.8008,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.0",
+      "seed": 1,
+      "ari": 0.030268636790949644,
+      "seconds": 6.5391,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.0",
+      "seed": 2,
+      "ari": 0.030268636790949644,
+      "seconds": 6.8091,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.3",
+      "seed": 42,
+      "ari": 0.1545338457760148,
+      "seconds": 8.4967,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.3",
+      "seed": 1,
+      "ari": 0.17106779197329816,
+      "seconds": 7.2675,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.3",
+      "seed": 2,
+      "ari": 0.17106779197329816,
+      "seconds": 7.2692,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 42,
+      "ari": 0.12738650089136433,
+      "seconds": 9.141,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 1,
+      "ari": 0.15520468598170237,
+      "seconds": 7.7676,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 2,
+      "ari": 0.1363799240345838,
+      "seconds": 7.7903,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.3",
+      "seed": 42,
+      "ari": 0.14540742516528352,
+      "seconds": 8.5733,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.3",
+      "seed": 1,
+      "ari": 0.14540742516528352,
+      "seconds": 6.9995,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.3",
+      "seed": 2,
+      "ari": 0.14540742516528352,
+      "seconds": 7.5806,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.3",
+      "seed": 42,
+      "ari": 0.16819219837232247,
+      "seconds": 11.0535,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.3",
+      "seed": 1,
+      "ari": 0.16776344438149812,
+      "seconds": 9.6418,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.3",
+      "seed": 2,
+      "ari": 0.16772424205563655,
+      "seconds": 9.6183,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.3",
+      "seed": 42,
+      "ari": 0.12966854906833353,
+      "seconds": 8.8249,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.3",
+      "seed": 1,
+      "ari": 0.12966854906833353,
+      "seconds": 7.2863,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.3",
+      "seed": 2,
+      "ari": 0.12966854906833353,
+      "seconds": 7.8179,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.8",
+      "seed": 42,
+      "ari": 0.1830791797994539,
+      "seconds": 8.4003,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.8",
+      "seed": 1,
+      "ari": 0.17866103923084553,
+      "seconds": 7.2378,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans@sw0.8",
+      "seed": 2,
+      "ari": 0.18067549279138312,
+      "seconds": 7.3887,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 42,
+      "ari": 0.16196638647701414,
+      "seconds": 8.4429,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 1,
+      "ari": 0.16933494447156094,
+      "seconds": 7.985,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 2,
+      "ari": 0.17615356586147274,
+      "seconds": 7.999,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.8",
+      "seed": 42,
+      "ari": 0.1895454791432171,
+      "seconds": 8.6776,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.8",
+      "seed": 1,
+      "ari": 0.1895454791432171,
+      "seconds": 8.2104,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative@sw0.8",
+      "seed": 2,
+      "ari": 0.1895454791432171,
+      "seconds": 7.3864,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.8",
+      "seed": 42,
+      "ari": 0.1786623462974188,
+      "seconds": 8.5642,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.8",
+      "seed": 1,
+      "ari": 0.1786623462974188,
+      "seconds": 8.0258,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral@sw0.8",
+      "seed": 2,
+      "ari": 0.1786623462974188,
+      "seconds": 7.3973,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.8",
+      "seed": 42,
+      "ari": 0.18704536900314558,
+      "seconds": 8.3002,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.8",
+      "seed": 1,
+      "ari": 0.18704536900314558,
+      "seconds": 7.4262,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151669",
+      "method": "birch@sw0.8",
+      "seed": 2,
+      "ari": 0.18704536900314558,
+      "seconds": 7.67,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.0",
+      "seed": 42,
+      "ari": 0.19870997976848603,
+      "seconds": 7.4543,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.0",
+      "seed": 1,
+      "ari": 0.29365667358560754,
+      "seconds": 6.1639,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.0",
+      "seed": 2,
+      "ari": 0.29365667358560754,
+      "seconds": 7.0616,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 42,
+      "ari": 0.0875329874561709,
+      "seconds": 8.0069,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 1,
+      "ari": 0.10275137746239962,
+      "seconds": 6.4366,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.0",
+      "seed": 2,
+      "ari": 0.05021833486566174,
+      "seconds": 6.7827,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.0",
+      "seed": 42,
+      "ari": -0.07384442034784718,
+      "seconds": 7.357,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.0",
+      "seed": 1,
+      "ari": -0.07384442034784718,
+      "seconds": 6.3859,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.0",
+      "seed": 2,
+      "ari": -0.07384442034784718,
+      "seconds": 7.115,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.0",
+      "seed": 42,
+      "ari": 0.10854755646404793,
+      "seconds": 10.4303,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.0",
+      "seed": 1,
+      "ari": 0.10679530739776812,
+      "seconds": 9.2982,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.0",
+      "seed": 2,
+      "ari": 0.10679530739776812,
+      "seconds": 10.8263,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.0",
+      "seed": 42,
+      "ari": -0.08513723452602168,
+      "seconds": 7.8991,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.0",
+      "seed": 1,
+      "ari": -0.08513723452602168,
+      "seconds": 7.006,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.0",
+      "seed": 2,
+      "ari": -0.08513723452602168,
+      "seconds": 7.3851,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.3",
+      "seed": 42,
+      "ari": 0.18579638789571923,
+      "seconds": 7.7147,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.3",
+      "seed": 1,
+      "ari": 0.27977048258045684,
+      "seconds": 6.6476,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.3",
+      "seed": 2,
+      "ari": 0.1988269290514897,
+      "seconds": 7.5864,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 42,
+      "ari": 0.149152717375441,
+      "seconds": 7.7139,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 1,
+      "ari": 0.20862126069274428,
+      "seconds": 7.3851,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.3",
+      "seed": 2,
+      "ari": 0.17564871583824304,
+      "seconds": 7.6332,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.3",
+      "seed": 42,
+      "ari": 0.280014239444171,
+      "seconds": 7.6519,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.3",
+      "seed": 1,
+      "ari": 0.280014239444171,
+      "seconds": 6.5249,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.3",
+      "seed": 2,
+      "ari": 0.280014239444171,
+      "seconds": 7.6527,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.3",
+      "seed": 42,
+      "ari": 0.3466703776908864,
+      "seconds": 10.2164,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.3",
+      "seed": 1,
+      "ari": 0.34591138794418025,
+      "seconds": 9.0845,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.3",
+      "seed": 2,
+      "ari": 0.3466703776908864,
+      "seconds": 9.7345,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.3",
+      "seed": 42,
+      "ari": 0.1876685778839524,
+      "seconds": 8.0441,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.3",
+      "seed": 1,
+      "ari": 0.1876685778839524,
+      "seconds": 6.7267,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.3",
+      "seed": 2,
+      "ari": 0.1876685778839524,
+      "seconds": 7.7312,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.8",
+      "seed": 42,
+      "ari": 0.19230420332862755,
+      "seconds": 7.1148,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.8",
+      "seed": 1,
+      "ari": 0.1933171748078953,
+      "seconds": 6.4782,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans@sw0.8",
+      "seed": 2,
+      "ari": 0.1933171748078953,
+      "seconds": 7.1858,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 42,
+      "ari": 0.228861365915845,
+      "seconds": 7.2149,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 1,
+      "ari": 0.2389227378313427,
+      "seconds": 7.1276,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture@sw0.8",
+      "seed": 2,
+      "ari": 0.26050997876689175,
+      "seconds": 7.5522,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.8",
+      "seed": 42,
+      "ari": 0.1993220380186911,
+      "seconds": 6.7468,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.8",
+      "seed": 1,
+      "ari": 0.1993220380186911,
+      "seconds": 6.7487,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative@sw0.8",
+      "seed": 2,
+      "ari": 0.1993220380186911,
+      "seconds": 7.4188,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.8",
+      "seed": 42,
+      "ari": 0.2207146398145301,
+      "seconds": 7.7201,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.8",
+      "seed": 1,
+      "ari": 0.2207146398145301,
+      "seconds": 6.9225,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral@sw0.8",
+      "seed": 2,
+      "ari": 0.2207146398145301,
+      "seconds": 7.9629,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.8",
+      "seed": 42,
+      "ari": 0.18076285943729278,
+      "seconds": 7.2442,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.8",
+      "seed": 1,
+      "ari": 0.18076285943729278,
+      "seconds": 7.1952,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151670",
+      "method": "birch@sw0.8",
+      "seed": 2,
+      "ari": 0.18076285943729278,
+      "seconds": 7.9129,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "151673",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.2002286192280746,
+      "seconds": 40.8603,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151673",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.19701305268308078,
+      "seconds": 40.7008,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151673",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.19701305268308078,
+      "seconds": 33.3252,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151674",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.24562405007519283,
+      "seconds": 38.6198,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151674",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.24687015537539472,
+      "seconds": 39.0407,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151674",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.24687015537539472,
+      "seconds": 43.3601,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151507",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.219914128864775,
+      "seconds": 49.6739,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151507",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.21842294818584987,
+      "seconds": 45.3329,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151507",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.21842294818584987,
+      "seconds": 42.2691,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151669",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.1701151689612016,
+      "seconds": 38.2274,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151669",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.149454740797727,
+      "seconds": 35.5061,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151669",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.149454740797727,
+      "seconds": 35.3578,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151670",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.2992182251380389,
+      "seconds": 32.795,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151670",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.2921442434344363,
+      "seconds": 34.3963,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151670",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.2921442434344363,
+      "seconds": 32.9742,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "151673",
+      "method": "spagcn",
+      "seed": 42,
+      "ari": 0.41801215319980684,
+      "seconds": 54.7079,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "spagcn",
+      "seed": 1,
+      "ari": 0.3374587419734721,
+      "seconds": 45.1251,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "spagcn",
+      "seed": 2,
+      "ari": 0.40030653455437765,
+      "seconds": 15.8766,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "spagcn",
+      "seed": 42,
+      "ari": 0.277973187660665,
+      "seconds": 13.7852,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "spagcn",
+      "seed": 1,
+      "ari": 0.41647808958054977,
+      "seconds": 11.8103,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "spagcn",
+      "seed": 2,
+      "ari": 0.49392910704106086,
+      "seconds": 13.7002,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "spagcn",
+      "seed": 42,
+      "ari": 0.384601763764735,
+      "seconds": 11.7938,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "spagcn",
+      "seed": 1,
+      "ari": 0.4198353878343491,
+      "seconds": 11.3716,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "spagcn",
+      "seed": 2,
+      "ari": 0.34592894750132674,
+      "seconds": 16.5233,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "spagcn",
+      "seed": 42,
+      "ari": 0.2071767762479999,
+      "seconds": 16.7206,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "spagcn",
+      "seed": 1,
+      "ari": 0.1947004241841073,
+      "seconds": 13.2319,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "spagcn",
+      "seed": 2,
+      "ari": 0.19587965001433974,
+      "seconds": 16.5775,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "spagcn",
+      "seed": 42,
+      "ari": 0.2126642847549074,
+      "seconds": 11.7227,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "spagcn",
+      "seed": 1,
+      "ari": 0.24687980530006892,
+      "seconds": 17.7399,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "spagcn",
+      "seed": 2,
+      "ari": 0.2053446113530491,
+      "seconds": 12.3698,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "graphst",
+      "seed": 1,
+      "ari": 0.14871980046989525,
+      "seconds": 7.071,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "graphst",
+      "seed": 2,
+      "ari": 0.1129927230428775,
+      "seconds": 6.842,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "graphst",
+      "seed": 42,
+      "ari": 0.11977882708653592,
+      "seconds": 7.927,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "graphst",
+      "seed": 1,
+      "ari": 0.06949984240092544,
+      "seconds": 7.015,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "graphst",
+      "seed": 2,
+      "ari": 0.05608519589887582,
+      "seconds": 10.564,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "graphst",
+      "seed": 42,
+      "ari": 0.06926105683523578,
+      "seconds": 7.099,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "graphst",
+      "seed": 1,
+      "ari": 0.08471087116814628,
+      "seconds": 7.985,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "graphst",
+      "seed": 2,
+      "ari": 0.10639116026085502,
+      "seconds": 8.111,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "graphst",
+      "seed": 42,
+      "ari": 0.10126712671537925,
+      "seconds": 9.955,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "graphst",
+      "seed": 1,
+      "ari": 0.1355362876988183,
+      "seconds": 6.555,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "graphst",
+      "seed": 2,
+      "ari": 0.1686175672628382,
+      "seconds": 7.247,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "graphst",
+      "seed": 42,
+      "ari": 0.17989549794135504,
+      "seconds": 25.184,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "graphst",
+      "seed": 1,
+      "ari": 0.16977650696134933,
+      "seconds": 9.119,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "graphst",
+      "seed": 2,
+      "ari": 0.15428381345686448,
+      "seconds": 8.69,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "graphst",
+      "seed": 42,
+      "ari": 0.13273866611283094,
+      "seconds": 7.062,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "stagate",
+      "seed": 1,
+      "ari": 0.4435549015053823,
+      "seconds": 10.938,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "stagate",
+      "seed": 2,
+      "ari": 0.40806164231164976,
+      "seconds": 11.433,
+      "family": "sota"
+    },
+    {
+      "dataset": "151507",
+      "method": "stagate",
+      "seed": 42,
+      "ari": 0.44555953134680043,
+      "seconds": 11.216,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "stagate",
+      "seed": 1,
+      "ari": 0.17941653654987524,
+      "seconds": 11.225,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "stagate",
+      "seed": 2,
+      "ari": 0.1661739023421693,
+      "seconds": 11.633,
+      "family": "sota"
+    },
+    {
+      "dataset": "151669",
+      "method": "stagate",
+      "seed": 42,
+      "ari": 0.1460898823205943,
+      "seconds": 10.829,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "stagate",
+      "seed": 1,
+      "ari": 0.1776098809582233,
+      "seconds": 12.539,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "stagate",
+      "seed": 2,
+      "ari": 0.3567433431722266,
+      "seconds": 14.477,
+      "family": "sota"
+    },
+    {
+      "dataset": "151670",
+      "method": "stagate",
+      "seed": 42,
+      "ari": 0.2253816093951481,
+      "seconds": 11.128,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "stagate",
+      "seed": 1,
+      "ari": 0.3031493557910663,
+      "seconds": 11.349,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "stagate",
+      "seed": 2,
+      "ari": 0.2909504991928594,
+      "seconds": 11.76,
+      "family": "sota"
+    },
+    {
+      "dataset": "151673",
+      "method": "stagate",
+      "seed": 42,
+      "ari": 0.28777610588347446,
+      "seconds": 30.131,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "stagate",
+      "seed": 1,
+      "ari": 0.30981793824922343,
+      "seconds": 11.308,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "stagate",
+      "seed": 2,
+      "ari": 0.2784674247364789,
+      "seconds": 11.583,
+      "family": "sota"
+    },
+    {
+      "dataset": "151674",
+      "method": "stagate",
+      "seed": 42,
+      "ari": 0.25632822936048405,
+      "seconds": 11.539,
+      "family": "sota"
+    },
     {
       "dataset": "151673",
       "method": "agglomerative",
@@ -1295,6 +3815,1806 @@
       "ari": 0.3466703776908864,
       "seconds": 4.656,
       "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.36191532279386235,
+      "seconds": 46.40111994743347,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.5984641087478529,
+      "seconds": 41.1829617023468,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.3291368357802185,
+      "seconds": 32.80337333679199,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": -0.023885516938088193,
+      "seconds": 33.6355836391449,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.3027063753580713,
+      "seconds": 67.66832184791565,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.3289035861896425,
+      "seconds": 33.65270185470581,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": -0.0009577117270035014,
+      "seconds": 250.8494644165039,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.2097185840432363,
+      "seconds": 31.11673641204834,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.011734574211779866,
+      "seconds": 60.60358142852783,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.6759023502019201,
+      "seconds": 70.1290636062622,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.43990053803276274,
+      "seconds": 3.1911730766296387,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "spatialde_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 0.00032806396484375,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "nnsvg_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 6.24497127532959,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "harmony_kmeans",
+      "seed": 42,
+      "ari": 0.22165150624647104,
+      "seconds": 4.641152858734131,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "moran_spectral",
+      "seed": 42,
+      "ari": 0.07848844139894796,
+      "seconds": 5.529121160507202,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.36191532279386235,
+      "seconds": 42.21393537521362,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.5984641087478529,
+      "seconds": 37.66403770446777,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.30319515303427397,
+      "seconds": 31.877254247665405,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": -0.023885516938088193,
+      "seconds": 31.36482334136963,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.4208193018428709,
+      "seconds": 68.47599458694458,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.26494657195158433,
+      "seconds": 32.47163987159729,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": -0.0009577117270035014,
+      "seconds": 252.46423506736755,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.2963528400318983,
+      "seconds": 29.660792350769043,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.011734574211779866,
+      "seconds": 61.392709255218506,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.6760078241096353,
+      "seconds": 70.53125548362732,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.3465385228255728,
+      "seconds": 3.1870570182800293,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "spatialde_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 0.00039577484130859375,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "nnsvg_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 6.193769693374634,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "harmony_kmeans",
+      "seed": 1,
+      "ari": 0.2219570011245568,
+      "seconds": 4.641798734664917,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "moran_spectral",
+      "seed": 1,
+      "ari": 0.07848844139894796,
+      "seconds": 5.94034743309021,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.36191532279386235,
+      "seconds": 43.03323173522949,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.5984641087478529,
+      "seconds": 39.12093901634216,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.37286663544479803,
+      "seconds": 32.82692289352417,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": -0.023885516938088193,
+      "seconds": 33.19743847846985,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.30397182138237383,
+      "seconds": 66.45286631584167,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.26494657195158433,
+      "seconds": 33.953397035598755,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": -0.0009577117270035014,
+      "seconds": 252.98454928398132,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.2599918299977943,
+      "seconds": 30.883729696273804,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.011734574211779866,
+      "seconds": 62.10751509666443,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.6758333074834451,
+      "seconds": 70.20089149475098,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.3285028998932732,
+      "seconds": 3.029280185699463,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "spatialde_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 0.0005128383636474609,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "nnsvg_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 6.253928184509277,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "harmony_kmeans",
+      "seed": 2,
+      "ari": 0.2217743651560808,
+      "seconds": 4.682269811630249,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_hd_crc",
+      "method": "moran_spectral",
+      "seed": 2,
+      "ari": 0.07848844139894796,
+      "seconds": 5.560962677001953,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.013293688440166224,
+      "seconds": 30.970601797103882,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.009019995175941807,
+      "seconds": 30.313581705093384,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.10084836622860224,
+      "seconds": 21.554693460464478,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.01576138196104107,
+      "seconds": 22.09885597229004,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.06406435562655013,
+      "seconds": 53.53628206253052,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.08823197517460496,
+      "seconds": 22.90512442588806,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.18301058198044418,
+      "seconds": 229.26689052581787,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.014717967427425727,
+      "seconds": 20.122064113616943,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.03454557953926807,
+      "seconds": 53.26394033432007,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.15340591766364742,
+      "seconds": 137.3704845905304,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.08124768974976546,
+      "seconds": 0.742530107498169,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "spatialde_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 0.0006241798400878906,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "nnsvg_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 5.602280616760254,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "harmony_kmeans",
+      "seed": 42,
+      "ari": 0.10138167977142266,
+      "seconds": 1.534747838973999,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "moran_spectral",
+      "seed": 42,
+      "ari": 0.012538121509486622,
+      "seconds": 4.715841054916382,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.013293688440166224,
+      "seconds": 31.76060914993286,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.009019995175941807,
+      "seconds": 30.577946186065674,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.07948458911984382,
+      "seconds": 21.233150482177734,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.01576138196104107,
+      "seconds": 22.41360878944397,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.03982651357092654,
+      "seconds": 52.34408950805664,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.0018969983785888257,
+      "seconds": 21.538284063339233,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.18301058198044418,
+      "seconds": 228.53324794769287,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.0388222504417043,
+      "seconds": 19.7984881401062,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.03454557953926807,
+      "seconds": 55.307666540145874,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.15340591766364742,
+      "seconds": 138.93307185173035,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.08123129568027389,
+      "seconds": 0.6913697719573975,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "spatialde_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 0.00037670135498046875,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "nnsvg_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 5.492170810699463,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "harmony_kmeans",
+      "seed": 1,
+      "ari": 0.03308599300599671,
+      "seconds": 1.5329222679138184,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "moran_spectral",
+      "seed": 1,
+      "ari": 0.012585562575006372,
+      "seconds": 4.854072570800781,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.013293688440166224,
+      "seconds": 35.68559908866882,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.009019995175941807,
+      "seconds": 35.19670605659485,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.06263871513308598,
+      "seconds": 22.73708701133728,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.01576138196104107,
+      "seconds": 25.743465900421143,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.06406435562655013,
+      "seconds": 41.26142978668213,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.0018969983785888257,
+      "seconds": 25.31291890144348,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.18301058198044418,
+      "seconds": 235.63042616844177,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.045880515549149466,
+      "seconds": 24.31644558906555,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.03454557953926807,
+      "seconds": 56.89681649208069,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.15340591766364742,
+      "seconds": 140.1187813282013,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.08062067281578705,
+      "seconds": 0.7846336364746094,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "spatialde_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 0.0003306865692138672,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "nnsvg_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 5.534255266189575,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "harmony_kmeans",
+      "seed": 2,
+      "ari": 0.03334080680435539,
+      "seconds": 1.5811207294464111,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_lung_cancer",
+      "method": "moran_spectral",
+      "seed": 2,
+      "ari": 0.012527431884631365,
+      "seconds": 5.118947744369507,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.2489186544034689,
+      "seconds": 106.54858708381653,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.19879696613518205,
+      "seconds": 98.53911519050598,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.21269613975615756,
+      "seconds": 85.0024619102478,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.08770735031021322,
+      "seconds": 83.10401201248169,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.2696884187296754,
+      "seconds": 124.74663138389587,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.1329873192068098,
+      "seconds": 89.93131971359253,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.003105453304494067,
+      "seconds": 296.8632414340973,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.1884638253630042,
+      "seconds": 78.1780788898468,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.0034331565501115797,
+      "seconds": 117.43471693992615,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.4628050032409442,
+      "seconds": 167.80452513694763,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.12268210421089303,
+      "seconds": 3.814758539199829,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "spatialde_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 0.00043201446533203125,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "nnsvg_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 6.879469633102417,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "harmony_kmeans",
+      "seed": 42,
+      "ari": 0.032915243768220484,
+      "seconds": 5.433837413787842,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "moran_spectral",
+      "seed": 42,
+      "ari": 0.06177752984523179,
+      "seconds": 7.579016447067261,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.2489186544034689,
+      "seconds": 94.52129459381104,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.19879696613518205,
+      "seconds": 87.9609842300415,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.15412014327020937,
+      "seconds": 78.15500712394714,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.08770735031021322,
+      "seconds": 78.85385322570801,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.27366769030122556,
+      "seconds": 103.43273377418518,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.13815289027575067,
+      "seconds": 79.509938955307,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.003105453304494067,
+      "seconds": 291.7836639881134,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.1776878706007749,
+      "seconds": 89.4330050945282,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.0034331565501115797,
+      "seconds": 119.95361757278442,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.4628050032409442,
+      "seconds": 165.26574611663818,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.12479695904020352,
+      "seconds": 3.783954381942749,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "spatialde_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 0.000354766845703125,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "nnsvg_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 6.566460371017456,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "harmony_kmeans",
+      "seed": 1,
+      "ari": 0.03306787180871742,
+      "seconds": 5.298939943313599,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "moran_spectral",
+      "seed": 1,
+      "ari": 0.293259003463778,
+      "seconds": 7.876067876815796,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.2489186544034689,
+      "seconds": 110.68666005134583,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.19879696613518205,
+      "seconds": 93.84038496017456,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.16982884708314389,
+      "seconds": 86.29504418373108,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.08770735031021322,
+      "seconds": 79.60944390296936,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.18383109968696723,
+      "seconds": 101.54418277740479,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.13815289027575067,
+      "seconds": 79.46961164474487,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.003105453304494067,
+      "seconds": 300.76698422431946,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.1551564127367378,
+      "seconds": 79.98533868789673,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.0034331565501115797,
+      "seconds": 113.56098747253418,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.4628050032409442,
+      "seconds": 160.53616786003113,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.11873496401595814,
+      "seconds": 4.000988245010376,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "spatialde_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 0.000347137451171875,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "nnsvg_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 6.801935195922852,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "harmony_kmeans",
+      "seed": 2,
+      "ari": 0.03281416040273549,
+      "seconds": 5.2195656299591064,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "xenium_ovarian_cancer",
+      "method": "moran_spectral",
+      "seed": 2,
+      "ari": 0.15858558905562548,
+      "seconds": 7.616785049438477,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.5072501202864982,
+      "seconds": 4.480015993118286,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.5124022081796006,
+      "seconds": 4.631103754043579,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.45752004414310915,
+      "seconds": 4.903299570083618,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.00014106008675336584,
+      "seconds": 4.666445732116699,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.4680679593725207,
+      "seconds": 8.577853918075562,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.5564453111585249,
+      "seconds": 5.338221549987793,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.0048397336088484835,
+      "seconds": 17.203844785690308,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.5549002207500872,
+      "seconds": 5.282402753829956,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.010203581342413445,
+      "seconds": 8.279017448425293,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.6096625448579925,
+      "seconds": 5.935508728027344,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.4790287540598212,
+      "seconds": 0.9049689769744873,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "spatialde_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 0.0003139972686767578,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "nnsvg_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 5.364755153656006,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "harmony_kmeans",
+      "seed": 42,
+      "ari": 0.5677275806231796,
+      "seconds": 1.4416775703430176,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "moran_spectral",
+      "seed": 42,
+      "ari": 0.2679140127980005,
+      "seconds": 0.9320814609527588,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.5072501202864982,
+      "seconds": 5.421396732330322,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.5124022081796006,
+      "seconds": 5.341627359390259,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.5048420781563456,
+      "seconds": 5.874357223510742,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.00014106008675336584,
+      "seconds": 4.971178770065308,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.48945865299915975,
+      "seconds": 8.482303380966187,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.586379666882553,
+      "seconds": 4.912403106689453,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.0048397336088484835,
+      "seconds": 16.971378087997437,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.5801480793082053,
+      "seconds": 4.670895576477051,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.010203581342413445,
+      "seconds": 7.7999186515808105,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.6348749690426602,
+      "seconds": 5.727301597595215,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.4661774267424644,
+      "seconds": 0.8547952175140381,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "spatialde_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 0.000331878662109375,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "nnsvg_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 5.545806884765625,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "harmony_kmeans",
+      "seed": 1,
+      "ari": 0.565471914269635,
+      "seconds": 0.9930579662322998,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "moran_spectral",
+      "seed": 1,
+      "ari": 0.2679109748190009,
+      "seconds": 1.043259620666504,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.5072501202864982,
+      "seconds": 4.931997776031494,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.5124022081796006,
+      "seconds": 5.447061061859131,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.5611684868883265,
+      "seconds": 5.872332572937012,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.00014106008675336584,
+      "seconds": 4.835850238800049,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.523391728635728,
+      "seconds": 8.094645977020264,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.586379666882553,
+      "seconds": 5.12119197845459,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.0048397336088484835,
+      "seconds": 16.745805025100708,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.6050666319242206,
+      "seconds": 4.386734247207642,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.010203581342413445,
+      "seconds": 7.832143783569336,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.6359106606637928,
+      "seconds": 5.4744508266448975,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.46607819263141853,
+      "seconds": 1.1864805221557617,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "spatialde_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 0.0003376007080078125,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "nnsvg_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 5.5360612869262695,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "harmony_kmeans",
+      "seed": 2,
+      "ari": 0.5427983789125413,
+      "seconds": 1.9658310413360596,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "visium_mouse_brain",
+      "method": "moran_spectral",
+      "seed": 2,
+      "ari": 0.2667005570152916,
+      "seconds": 0.9990952014923096,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.21247192140914883,
+      "seconds": 36.93139696121216,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.22240335959751717,
+      "seconds": 29.952144384384155,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.25575573056499556,
+      "seconds": 23.40721821784973,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.0,
+      "seconds": 24.156774282455444,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.21875626041855864,
+      "seconds": 56.2463116645813,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.25741495341149223,
+      "seconds": 24.56555151939392,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.02902322307624626,
+      "seconds": 239.1239185333252,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.23153696442626634,
+      "seconds": 25.69693422317505,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.021638057397410426,
+      "seconds": 56.940316677093506,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.2909222377355104,
+      "seconds": 50.977078914642334,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": 0.27848451457615814,
+      "seconds": 2.1091432571411133,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "spatialde_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 0.00032591819763183594,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "nnsvg_kmeans",
+      "seed": 42,
+      "ari": null,
+      "seconds": 5.803621292114258,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "harmony_kmeans",
+      "seed": 42,
+      "ari": 0.20912559626266833,
+      "seconds": 1.658308744430542,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "moran_spectral",
+      "seed": 42,
+      "ari": 0.14101638337094782,
+      "seconds": 5.678147077560425,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.21247192140914883,
+      "seconds": 40.481897830963135,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.22240335959751717,
+      "seconds": 32.29376029968262,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.24663348086689485,
+      "seconds": 25.160292863845825,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.0,
+      "seconds": 25.696924209594727,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.22096874593865604,
+      "seconds": 54.58952975273132,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.2379522133150489,
+      "seconds": 25.785186767578125,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.02902322307624626,
+      "seconds": 242.03740000724792,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.2123004361543354,
+      "seconds": 24.826357126235962,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.021638057397410426,
+      "seconds": 55.94825720787048,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.2779568570286814,
+      "seconds": 48.15514135360718,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": 0.27912918376865203,
+      "seconds": 1.861325740814209,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "spatialde_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 0.0003180503845214844,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "nnsvg_kmeans",
+      "seed": 1,
+      "ari": null,
+      "seconds": 5.305038213729858,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "harmony_kmeans",
+      "seed": 1,
+      "ari": 0.20928048052209702,
+      "seconds": 1.495595932006836,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "moran_spectral",
+      "seed": 1,
+      "ari": 0.14101638337094782,
+      "seconds": 5.0940001010894775,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.21247192140914883,
+      "seconds": 34.493892431259155,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.22240335959751717,
+      "seconds": 31.02962827682495,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.2576261768132188,
+      "seconds": 24.541736364364624,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.0,
+      "seconds": 25.241119146347046,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.2123104096570172,
+      "seconds": 62.13538908958435,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.2379522133150489,
+      "seconds": 24.983757495880127,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.02902322307624626,
+      "seconds": 242.12273168563843,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.26388045750424394,
+      "seconds": 23.95008659362793,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.021638057397410426,
+      "seconds": 54.05805492401123,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.2776930154331586,
+      "seconds": 46.41681456565857,
+      "family": "sklearn"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": 0.2790477961877944,
+      "seconds": 1.815579891204834,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "spatialde_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 0.0003173351287841797,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "nnsvg_kmeans",
+      "seed": 2,
+      "ari": null,
+      "seconds": 5.372565031051636,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "harmony_kmeans",
+      "seed": 2,
+      "ari": 0.21362148064018904,
+      "seconds": 1.531639814376831,
+      "family": "spatial_aware"
+    },
+    {
+      "dataset": "allen_merfish_brain_section",
+      "method": "moran_spectral",
+      "seed": 2,
+      "ari": 0.14101638337094782,
+      "seconds": 5.1864001750946045,
+      "family": "spatial_aware"
     }
   ]
 }

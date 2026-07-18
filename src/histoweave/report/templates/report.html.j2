@@ -85,6 +85,17 @@
   {% for plot in plots %}<div>{{ plot|safe }}</div>{% endfor %}
 </div>
 
+{% if uncertainty %}
+<h2>Multi-method boundary uncertainty</h2>
+<p>{{ uncertainty.note }}</p>
+<div class="grid">
+  <div class="card"><div class="k">{{ uncertainty.methods|length }}</div><div class="l">Methods compared</div></div>
+  <div class="card"><div class="k">{{ "%.3f"|format(uncertainty.summary.uncertainty_mean) }}</div><div class="l">Mean uncertainty</div></div>
+  <div class="card"><div class="k">{{ "%.3f"|format(uncertainty.summary.uncertainty_max) }}</div><div class="l">Max uncertainty</div></div>
+</div>
+<p class="sub">Methods: {% for m in uncertainty.methods %}<code>{{ m }}</code>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+{% endif %}
+
 {% if annotation_counts %}
 <h2>Annotation summary</h2>
 <div class="overflow">

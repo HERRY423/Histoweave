@@ -73,7 +73,9 @@ def extract_features(
     features: dict[str, float] = {}
 
     # -- expression ---------------------------------------------------------
-    X = np.asarray(data.X, dtype=float)
+    # Keep sparse matrices sparse for summary statistics; densify only the
+    # geometry SVD path on a bounded gene subset when needed.
+    X = data.X
     features["n_obs"] = float(data.n_obs)
     features["n_vars"] = float(data.n_vars)
     features["aspect_ratio"] = data.n_vars / max(data.n_obs, 1)
@@ -165,10 +167,30 @@ _DOMAIN_KEYS = {"n_domains", "domain_balance", "domain_spatial_coherence"}
 # ====================================================================
 # Expression features
 # ====================================================================
-def _expression_features(X: np.ndarray) -> dict[str, float]:
-    nz = X[X > 0] if X.size else np.array([0.0])
-    lib_sizes = X.sum(axis=1)
-    mean_expr = np.clip(X.mean(axis=0), 0.0, None)
+def _as_matrix(X):
+    """Return a 2-D matrix without forcing sparse → dense when possible."""
+    if hasattr(X, "tocsr"):
+        return X.tocsr()
+    return np.asarray(X, dtype=float)
+
+
+def _expression_features(X) -> dict[str, float]:
+    matrix = _as_matrix(X)
+    n_obs, n_vars = matrix.shape
+    n_total = max(n_obs * n_vars, 1)
+    if hasattr(matrix, "nnz"):
+        nnz = int(matrix.nnz)
+        data = np.asarray(matrix.data, dtype=float) if nnz else np.array([0.0])
+        nz = data[data > 0] if data.size else np.array([0.0])
+        lib_sizes = np.asarray(matrix.sum(axis=1)).ravel()
+        mean_expr = np.clip(np.asarray(matrix.mean(axis=0)).ravel(), 0.0, None)
+        sparsity = float(1.0 - nnz / n_total)
+    else:
+        dense = np.asarray(matrix, dtype=float)
+        nz = dense[dense > 0] if dense.size else np.array([0.0])
+        lib_sizes = dense.sum(axis=1)
+        mean_expr = np.clip(dense.mean(axis=0), 0.0, None)
+        sparsity = float(1.0 - (dense > 0).sum() / n_total)
     # Shannon entropy of the normalised mean-expression distribution.
     total_mean = float(mean_expr.sum())
     if total_mean > 0:
@@ -179,7 +201,7 @@ def _expression_features(X: np.ndarray) -> dict[str, float]:
         entropy = 0.0
 
     return {
-        "sparsity": float(1.0 - (X > 0).sum() / max(X.size, 1)),
+        "sparsity": sparsity,
         "mean_nonzero": float(nz.mean()) if len(nz) else 0.0,
         "library_mean": float(lib_sizes.mean()),
         "library_cv": float(lib_sizes.std() / (lib_sizes.mean() + 1e-8)),
@@ -190,20 +212,33 @@ def _expression_features(X: np.ndarray) -> dict[str, float]:
 # ====================================================================
 # Spatial features
 # ====================================================================
-def _spatial_features(X: np.ndarray, coords: np.ndarray) -> dict[str, float]:
+def _spatial_features(X, coords: np.ndarray) -> dict[str, float]:
     n = coords.shape[0]
+    matrix = _as_matrix(X)
 
     # Moran's I on the top-10 highest-variance genes
     try:
         from ..plugins.builtin.spatial_svg import _build_spatial_weight_matrix
 
-        var_genes = np.argsort(X.var(axis=0))[::-1][: min(10, X.shape[1])]
+        if hasattr(matrix, "multiply"):
+            # Population variance from sparse moments without full densify.
+            mean = np.asarray(matrix.mean(axis=0)).ravel()
+            mean_sq = np.asarray(matrix.power(2).mean(axis=0)).ravel()
+            variance = np.maximum(mean_sq - mean * mean, 0.0)
+        else:
+            variance = np.asarray(matrix, dtype=float).var(axis=0)
+        var_genes = np.argsort(variance)[::-1][: min(10, matrix.shape[1])]
         moran_vals: list[float] = []
         W, W_sum = _build_spatial_weight_matrix(coords, 6)
-        Xc = X - X.mean(axis=0, keepdims=True)
-        for g in var_genes:
-            num = float(Xc[:, g].T @ W @ Xc[:, g])
-            denom = float((Xc[:, g] ** 2).sum()) + 1e-12
+        # Densify only the selected gene columns.
+        if hasattr(matrix, "tocsc"):
+            subset = matrix.tocsc()[:, var_genes].toarray()
+        else:
+            subset = np.asarray(matrix, dtype=float)[:, var_genes]
+        Xc = subset - subset.mean(axis=0, keepdims=True)
+        for col in range(Xc.shape[1]):
+            num = float(Xc[:, col].T @ W @ Xc[:, col])
+            denom = float((Xc[:, col] ** 2).sum()) + 1e-12
             moran_vals.append((n / W_sum) * num / denom)
         spatial_ac = float(np.mean(moran_vals)) if moran_vals else float("nan")
     except Exception:
@@ -288,7 +323,7 @@ def _spatial_density_cv(coords: np.ndarray, grid_size: int = 10) -> float:
     bins = [
         np.linspace(mins[d] - 1e-9, maxs[d] + 1e-9, grid_size + 1) for d in range(coords.shape[1])
     ]
-    hist, _ = np.histogramdd(coords, bins=bins)  # type: ignore[call-overload]
+    hist, _ = np.histogramdd(coords, bins=bins)
     counts = hist.ravel()
     counts = counts[counts > 0]
     if len(counts) < 2:
@@ -305,7 +340,7 @@ def _spatial_entropy(coords: np.ndarray, grid_size: int = 10) -> float:
     bins = [
         np.linspace(mins[d] - 1e-9, maxs[d] + 1e-9, grid_size + 1) for d in range(coords.shape[1])
     ]
-    hist, _ = np.histogramdd(coords, bins=bins)  # type: ignore[call-overload]
+    hist, _ = np.histogramdd(coords, bins=bins)
     probs = hist.ravel() / hist.sum()
     probs = probs[probs > 0]
     return -float(np.sum(probs * np.log2(probs)))
@@ -314,11 +349,35 @@ def _spatial_entropy(coords: np.ndarray, grid_size: int = 10) -> float:
 # ====================================================================
 # Geometry features
 # ====================================================================
-def _geometry_features(X: np.ndarray) -> dict[str, float]:
-    Xc = X - X.mean(axis=0, keepdims=True)
+def _geometry_features(X) -> dict[str, float]:
+    matrix = _as_matrix(X)
+    # Bound the SVD working set so geometry features stay tractable at 1e5 cells.
+    max_genes = 500
+    max_obs = 5000
+    if hasattr(matrix, "tocsc"):
+        if matrix.shape[1] > max_genes:
+            mean = np.asarray(matrix.mean(axis=0)).ravel()
+            mean_sq = np.asarray(matrix.power(2).mean(axis=0)).ravel()
+            variance = np.maximum(mean_sq - mean * mean, 0.0)
+            keep = np.argsort(-variance, kind="stable")[:max_genes]
+            matrix = matrix.tocsc()[:, keep]
+        dense = (
+            matrix.toarray()
+            if matrix.shape[0] <= max_obs
+            else matrix[np.linspace(0, matrix.shape[0] - 1, max_obs, dtype=int)].toarray()
+        )
+    else:
+        dense = np.asarray(matrix, dtype=float)
+        if dense.shape[1] > max_genes:
+            variance = dense.var(axis=0)
+            keep = np.argsort(-variance, kind="stable")[:max_genes]
+            dense = dense[:, keep]
+        if dense.shape[0] > max_obs:
+            dense = dense[np.linspace(0, dense.shape[0] - 1, max_obs, dtype=int)]
+    Xc = dense - dense.mean(axis=0, keepdims=True)
     try:
         # Economy SVD — use the smaller dimension
-        U, S, Vt = np.linalg.svd(Xc, full_matrices=False)
+        _U, S, _Vt = np.linalg.svd(Xc, full_matrices=False)
         total_var = float((S**2).sum())
         if total_var > 0:
             cumsum = np.cumsum(S**2) / total_var

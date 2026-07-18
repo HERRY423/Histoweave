@@ -39,6 +39,14 @@ jobs:
       - name: Type-check
         run: mypy src
 
+      - name: Quality inventory (mypy strength + test/src ratio)
+        run: pytest tests/test_quality_inventory.py -q
+
+      - name: Method docs cover every registered method
+        run: |
+          python scripts/generate_method_docs.py
+          pytest tests/test_method_docs_coverage.py tests/test_method_coverage_expansion.py -q
+
       - name: Build distributions
         run: python -m build
 
@@ -84,8 +92,14 @@ jobs:
       - name: Test
         run: pytest --cov=histoweave --cov-report=term-missing --cov-fail-under=80
 
+      - name: Property-based tests
+        run: pytest -m property -q
+
+      - name: Performance regression gates
+        run: pytest -m perf -q --tb=short
+
   benchmark:
-    name: benchmark regression gate
+    name: scientific + performance regression gates
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -97,6 +111,44 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
-      # The harness gates releases against performance regressions (plan section 7).
-      - name: Domain-detection leaderboard
-        run: histoweave benchmark --min-score 0.90 --fail-on-error --out benchmark.json
+      # Scientific accuracy gate (ARI / leaderboard).
+      # Oracle-K is explicit here: this gate checks method capacity when K is known.
+      # The default scientific protocol uses k_policy=estimate (non-oracle).
+      - name: Domain-detection leaderboard (oracle-K capacity gate)
+        run: >
+          histoweave benchmark --min-score 0.90 --fail-on-error
+          --k-policy oracle --allow-oracle-k
+          --out benchmark.json
+      - name: Non-oracle K + statistical review smoke
+        run: >
+          histoweave benchmark --k-policy estimate --stats --n-boot 50
+          --out benchmark_estimate_stats.json
+      - name: Stats review + K-selection unit tests
+        run: pytest tests/test_stats_review.py tests/test_k_selection.py tests/test_harness_stats_and_k.py -q
+      # Computational performance gate (kNN / zscore / PCA / features).
+      - name: Micro-benchmark performance ceilings
+        run: pytest -m perf -q --tb=line
+
+      - name: Freeze phenomenology capability plan
+        run: |
+          histoweave benchmark --suite phenomenology --dry-run \
+            --out-dir phenomenology_plan
+
+      - name: Run dependency-light phenomenology smoke
+        run: |
+          histoweave benchmark --suite phenomenology --tiny \
+            --phenomena compartment --conditions clean \
+            --methods basic_qc,log1p_cp10k,kmeans \
+            --fail-on-error --out-dir phenomenology_smoke
+
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-regression-artifacts
+          path: |
+            benchmark.json
+            benchmark_estimate_stats.json
+            phenomenology_plan/
+            phenomenology_smoke/
+          if-no-files-found: warn

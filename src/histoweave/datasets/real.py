@@ -39,8 +39,10 @@ import shutil
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from urllib.request import urlretrieve
+
+import pandas as pd
 
 from ..data import SpatialTable
 from ..io import read as io_read
@@ -92,6 +94,14 @@ class DatasetEntry:
         For such bundles ``load()`` calls ``anndata.read_h5ad()`` directly and
         constructs a :class:`SpatialTable` from ``obs['domain_truth']`` +
         ``obsm['spatial']``, bypassing vendor-specific reader logic.
+    analysis_task : str
+        Primary evaluation task: ``spatial_domain`` or ``cell_type``.
+    ground_truth_kind : str
+        What the labels represent (must match the task contract).
+    label_key : str
+        Default ``obs`` column used for scoring.
+    study : str
+        Study / cohort identifier for LOOCV grouping.
     """
 
     name: str
@@ -107,6 +117,62 @@ class DatasetEntry:
     license: str = ""
     paper_doi: str = ""
     is_h5ad_bundle: bool = False
+    analysis_task: str = "spatial_domain"
+    ground_truth_kind: str = "spatial_domain"
+    label_key: str = "domain_truth"
+    study: str = ""
+    scale_contract_name: str = ""
+
+    def to_dataset_meta(self) -> dict[str, Any]:
+        """Machine-readable priors for recommendation / leaderboard rows."""
+        meta = {
+            "platform": self.assay,
+            "assay": self.assay,
+            "tissue": self.tissue,
+            "species": self.species,
+            "task": self.analysis_task,
+            "ground_truth_kind": self.ground_truth_kind,
+            "label_key": self.label_key,
+            "study": self.study or self.name,
+            "license": self.license,
+            "paper_doi": self.paper_doi,
+            "n_obs": self.n_obs,
+            "n_vars": self.n_vars,
+            "has_ground_truth": bool(self.ground_truth),
+        }
+        if self.scale_contract_name:
+            meta["scale_contract"] = self.scale_contract_name
+        else:
+            from .scale_contract import scale_contract_for_assay
+
+            meta["scale_contract"] = scale_contract_for_assay(self.assay, self.n_obs).name
+        return meta
+
+    def scale_plan(self) -> dict[str, Any]:
+        """Return the resource plan for this dataset's nominal size."""
+        from .scale_contract import SCALE_CONTRACTS, scale_contract_for_assay
+
+        if self.scale_contract_name and self.scale_contract_name in SCALE_CONTRACTS:
+            contract = SCALE_CONTRACTS[self.scale_contract_name]
+        else:
+            contract = scale_contract_for_assay(self.assay, self.n_obs)
+        return contract.plan_for(self.n_obs)
+
+    def task_contract(self) -> Any:
+        """Return a validated :class:`~histoweave.benchmark.task_contract.TaskContract`."""
+        from ..benchmark.task_contract import AnalysisTask, GroundTruthKind, TaskContract
+
+        if self.ground_truth_kind == "none" or not self.ground_truth:
+            raise ValueError(f"{self.name}: no scorable ground truth; cannot build a TaskContract")
+        contract = TaskContract(
+            task=AnalysisTask(self.analysis_task),
+            ground_truth_kind=GroundTruthKind(self.ground_truth_kind),
+            label_key=self.label_key,
+            platform=self.assay,
+            study=self.study or self.name,
+        )
+        contract.validate()
+        return contract
 
     # -- download & cache ---------------------------------------------------
 
@@ -225,14 +291,16 @@ def _load_h5ad_bundle(artefact: Path) -> SpatialTable:
         raise ValueError(f"h5ad bundle {artefact} is missing obsm['spatial']")
 
     # Prefer the harness-standard column name; alias if only the canonical one exists.
-    obs = adata.obs.copy()
+    obs = cast(pd.DataFrame, adata.obs).copy()
     if "domain_truth" not in obs.columns and "spatialLIBD_layer" in obs.columns:
-        obs["domain_truth"] = obs["spatialLIBD_layer"]
+        obs["domain_truth"] = obs["spatialLIBD_layer"].astype(str)
 
+    if adata.X is None:
+        raise ValueError(f"h5ad bundle {artefact} is missing X")
     return SpatialTable(
         X=adata.X,
         obs=obs,
-        var=adata.var.copy(),
+        var=cast(pd.DataFrame, adata.var).copy(),
         obsm={
             "spatial": np.asarray(adata.obsm["spatial"], dtype=float),
         },
@@ -452,12 +520,15 @@ _MOUSE_BRAIN_DEMO = DatasetEntry(
     ground_truth={},
     license="10x Genomics EULA",
     paper_doi="",
+    analysis_task="spatial_domain",
+    ground_truth_kind="none",
+    label_key="domain_truth",
+    study="10x_cytassist_mouse_brain_demo",
 )
 
 # 10x Xenium Human Breast Cancer (Rep 1) — Janesick et al. 2023.
-# Bundled subsample (~50 K cells) with domain_truth from the 10x cell-type
-# predictor collapsed to tissue compartments; produced by
-# ``benchmark_crossplatform/prepare_xenium.py``.
+# Bundled subsample (~50 K cells). Labels come from the 10x cell-type predictor
+# collapsed to compartments — score under *cell_type*, not spatial_domain.
 _XENIUM_BREAST = DatasetEntry(
     name="xenium_breast_cancer",
     description="10x Xenium Human Breast Cancer Rep 1 (~50K-cell subsample) — Janesick et al. 2023",
@@ -472,11 +543,15 @@ _XENIUM_BREAST = DatasetEntry(
     license="10x Genomics EULA",
     paper_doi="10.1038/s41587-022-01583-2",
     is_h5ad_bundle=True,
+    analysis_task="cell_type",
+    ground_truth_kind="cell_type",
+    label_key="domain_truth",
+    study="Janesick2023_Xenium_breast",
+    scale_contract_name="xenium_50k",
 )
 
-# 10x Xenium Prime Human Lymph Node preview. The compact benchmark bundle
-# retains only cells covered by unambiguous pathology annotation polygons;
-# produced by ``benchmark_cross_tissue/prepare_human_lymph_node.py``.
+# 10x Xenium Prime Human Lymph Node preview. Pathology annotation polygons —
+# valid spatial-domain evidence when polygons are expert-drawn.
 _XENIUM_HUMAN_LYMPH_NODE = DatasetEntry(
     name="xenium_human_lymph_node",
     description="10x Xenium Prime Human Lymph Node pathology-labelled subsample",
@@ -491,11 +566,14 @@ _XENIUM_HUMAN_LYMPH_NODE = DatasetEntry(
     license="CC-BY 4.0",
     paper_doi="",
     is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="10x_xenium_prime_lymph_node",
 )
 
 # Allen Brain Cell Atlas MERFISH mouse brain (Yao et al. 2023).
-# The primary benchmark uses anatomical CCF division/region labels prepared by
-# ``benchmark_cross_tissue/prepare_allen_mouse_brain.py``.
+# Anatomical CCF division/region labels — spatial_domain task.
 _MERFISH_MOUSE_BRAIN = DatasetEntry(
     name="merfish_mouse_brain",
     description="MERFISH mouse brain — three labelled anterior sections (Yao et al. 2023)",
@@ -510,7 +588,139 @@ _MERFISH_MOUSE_BRAIN = DatasetEntry(
     license="CC-BY-NC 4.0",
     paper_doi="10.1038/s41586-023-06812-z",
     is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="Yao2023_Allen_MERFISH",
+    scale_contract_name="merfish_100k",
 )
+
+# Slide-seqV2 mouse hippocampus (Stickels et al. / Rodriques lineage). When the
+# prepared h5ad is absent the entry still documents the contract for cross-platform
+# landscapes; load() fails closed with a clear path error.
+_SLIDESEQ_HIPPOCAMPUS = DatasetEntry(
+    name="slideseqv2_hippocampus",
+    description="Slide-seqV2 mouse hippocampus puck (prepared benchmark bundle)",
+    url="local://datasets_cache/slideseq/slideseqv2_hippocampus.h5ad",
+    sha256="",
+    assay="slideseq",
+    tissue="brain",
+    species="mouse",
+    n_obs=40000,
+    n_vars=20000,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="CC-BY 4.0",
+    paper_doi="10.1038/s41587-020-0739-1",
+    is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="Stickels2021_SlideSeqV2",
+)
+
+_VISIUM_HD_CRC = DatasetEntry(
+    name="visium_hd_crc",
+    description="Visium HD human colorectal cancer (FFPE) - pathologist region labels",
+    url="local://datasets_cache/visium_hd_crc/visium_hd_crc.h5ad",
+    sha256="8c0c64a5e5443de5f5f992bc35ed256796cc07efd20f00100bce47704f5dc4f8",
+    assay="visium_hd",
+    tissue="colorectal_cancer",
+    species="human",
+    n_obs=15000,
+    n_vars=2000,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="10x Genomics EULA (data) + CC0 (annotation)",
+    paper_doi="10.1038/s41588-025-02193-3",
+    is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="10x_VisiumHD_CRC_Zenodo11077886",
+)
+
+_XENIUM_LUNG_CANCER = DatasetEntry(
+    name="xenium_lung_cancer",
+    description="10x Xenium FFPE human lung cancer - pathology polygon labels",
+    url="local://datasets_cache/xenium/xenium_lung_cancer.h5ad",
+    sha256="17563faa5a14d90dfcc481eff229e317a5b8720979f723315f1d3f529269dbc4",
+    assay="xenium",
+    tissue="lung_cancer",
+    species="human",
+    n_obs=15000,
+    n_vars=377,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="10x Genomics EULA",
+    is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="10x_Xenium_FFPE_Lung_Cancer",
+)
+
+_XENIUM_OVARIAN_CANCER = DatasetEntry(
+    name="xenium_ovarian_cancer",
+    description="10x Xenium Prime human ovarian cancer - pathology polygon labels",
+    url="local://datasets_cache/xenium/xenium_ovarian_cancer.h5ad",
+    sha256="04b6e117de4fdc37040121577ba6419b3969445d538fbbfdeb6c917f67f1629d",
+    assay="xenium",
+    tissue="ovarian_cancer",
+    species="human",
+    n_obs=15000,
+    n_vars=5101,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="10x Genomics EULA",
+    is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="10x_Xenium_Prime_Ovarian_Cancer",
+)
+
+_VISIUM_MOUSE_BRAIN = DatasetEntry(
+    name="visium_mouse_brain",
+    description="10x Visium adult mouse brain (H&E) - 15 Allen anatomical regions",
+    url="local://datasets_cache/visium/visium_mouse_brain.h5ad",
+    sha256="40951bf48dfe1764125f6d3edd1fbfd455902f87b79850afa138c6c28f302ea6",
+    assay="visium",
+    tissue="brain",
+    species="mouse",
+    n_obs=2688,
+    n_vars=2000,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="10x Genomics EULA",
+    is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="10x_Visium_Mouse_Brain_Squidpy",
+)
+
+_ALLEN_MERFISH_BRAIN_SECTION = DatasetEntry(
+    name="allen_merfish_brain_section",
+    description="Allen Brain Cell Atlas MERFISH mouse section - CCF anatomical labels",
+    url="local://datasets_cache/merfish/allen_merfish_brain_section.h5ad",
+    sha256="29afdede0d79e49031e923be1f259c59038b840d34ca2653add6ffd1bbab5d2c",
+    assay="merfish",
+    tissue="brain",
+    species="mouse",
+    n_obs=15000,
+    n_vars=550,
+    ground_truth={"domain_truth": "obs['domain_truth']"},
+    license="CC-BY-NC 4.0",
+    paper_doi="10.1038/s41586-023-06812-z",
+    is_h5ad_bundle=True,
+    analysis_task="spatial_domain",
+    ground_truth_kind="spatial_domain",
+    label_key="domain_truth",
+    study="Yao2023_Allen_MERFISH",
+)
+
+# Stamp DLPFC study metadata onto the twelve spatialLIBD slices.
+for _entry in _DLPFC_SLICE_ENTRIES:
+    _entry.analysis_task = "spatial_domain"
+    _entry.ground_truth_kind = "spatial_domain"
+    _entry.label_key = "domain_truth"
+    _entry.study = "Maynard2021_spatialLIBD"
 
 _REGISTRY: list[DatasetEntry] = [
     *_DLPFC_SLICE_ENTRIES,
@@ -518,27 +728,73 @@ _REGISTRY: list[DatasetEntry] = [
     _XENIUM_BREAST,
     _XENIUM_HUMAN_LYMPH_NODE,
     _MERFISH_MOUSE_BRAIN,
+    _SLIDESEQ_HIPPOCAMPUS,
+    _VISIUM_HD_CRC,
+    _XENIUM_LUNG_CANCER,
+    _XENIUM_OVARIAN_CANCER,
+    _VISIUM_MOUSE_BRAIN,
+    _ALLEN_MERFISH_BRAIN_SECTION,
 ]
 
 
-def list_datasets() -> list[dict[str, Any]]:
-    """Return metadata for every registered dataset."""
-    return [
-        {
-            "name": e.name,
-            "description": e.description,
-            "assay": e.assay,
-            "tissue": e.tissue,
-            "species": e.species,
-            "n_obs": e.n_obs,
-            "n_vars": e.n_vars,
-            "ground_truth": dict(e.ground_truth),
-            "license": e.license,
-            "paper_doi": e.paper_doi,
-            "is_h5ad_bundle": e.is_h5ad_bundle,
-        }
-        for e in _REGISTRY
-    ]
+def list_datasets(
+    *,
+    task: str | None = None,
+    assay: str | None = None,
+    tissue: str | None = None,
+    has_ground_truth: bool | None = None,
+) -> list[dict[str, Any]]:
+    """Return metadata for registered datasets (optionally filtered)."""
+    rows: list[dict[str, Any]] = []
+    for e in _REGISTRY:
+        if task is not None and e.analysis_task != task:
+            continue
+        if assay is not None and e.assay != assay:
+            continue
+        if tissue is not None and e.tissue != tissue:
+            continue
+        if has_ground_truth is True and not e.ground_truth:
+            continue
+        if has_ground_truth is False and e.ground_truth:
+            continue
+        rows.append(
+            {
+                "name": e.name,
+                "description": e.description,
+                "assay": e.assay,
+                "tissue": e.tissue,
+                "species": e.species,
+                "n_obs": e.n_obs,
+                "n_vars": e.n_vars,
+                "ground_truth": dict(e.ground_truth),
+                "license": e.license,
+                "paper_doi": e.paper_doi,
+                "is_h5ad_bundle": e.is_h5ad_bundle,
+                "analysis_task": e.analysis_task,
+                "ground_truth_kind": e.ground_truth_kind,
+                "label_key": e.label_key,
+                "study": e.study,
+            }
+        )
+    return rows
+
+
+def registry_summary() -> dict[str, Any]:
+    """Compact coverage snapshot for docs / CI / leaderboard headers."""
+    rows = list_datasets()
+    assays = sorted({row["assay"] for row in rows})
+    tissues = sorted({row["tissue"] for row in rows if row["tissue"]})
+    tasks = sorted({row["analysis_task"] for row in rows})
+    with_gt = sum(1 for row in rows if row["ground_truth"])
+    return {
+        "n_datasets": len(rows),
+        "n_with_ground_truth": with_gt,
+        "assays": assays,
+        "tissues": tissues,
+        "tasks": tasks,
+        "n_assays": len(assays),
+        "n_tissues": len(tissues),
+    }
 
 
 def get_dataset(name: str) -> DatasetEntry:
@@ -615,4 +871,5 @@ __all__ = [
     "DatasetEntry",
     "get_dataset",
     "list_datasets",
+    "registry_summary",
 ]

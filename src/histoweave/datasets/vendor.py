@@ -19,6 +19,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from ..data import SpatialTable
 from ..io._tenx import write_10x_h5
 from .synthetic import make_synthetic
 
@@ -35,6 +36,7 @@ def write_visium_fixture(
     n_genes: int = 24,
     n_domains: int = 3,
     seed: int = 0,
+    table: SpatialTable | None = None,
 ) -> Path:
     """Write a minimal Space Ranger output tree under ``out_dir`` and return its path.
 
@@ -48,8 +50,14 @@ def write_visium_fixture(
     out_dir = Path(out_dir)
     (out_dir / "spatial").mkdir(parents=True, exist_ok=True)
 
-    table = make_synthetic(n_cells=n_spots, n_genes=n_genes, n_domains=n_domains, seed=seed)
-    gene_names = list(table.var_names)
+    table = table or make_synthetic(
+        n_cells=n_spots,
+        n_genes=n_genes,
+        n_domains=n_domains,
+        seed=seed,
+    )
+    n_spots = table.n_obs
+    gene_names = [str(name) for name in table.var_names]
     barcodes = [f"{i:016d}-1" for i in range(n_spots)]
 
     write_10x_h5(
@@ -98,6 +106,7 @@ def write_xenium_fixture(
     n_domains: int = 3,
     seed: int = 0,
     with_controls: bool = True,
+    table: SpatialTable | None = None,
 ) -> Path:
     """Write a minimal Xenium output bundle under ``out_dir`` and return its path.
 
@@ -114,8 +123,15 @@ def write_xenium_fixture(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    table = make_synthetic(n_cells=n_cells, n_genes=n_genes, n_domains=n_domains, seed=seed)
-    gene_names = list(table.var_names)
+    table = table or make_synthetic(
+        n_cells=n_cells,
+        n_genes=n_genes,
+        n_domains=n_domains,
+        seed=seed,
+    )
+    n_cells = table.n_obs
+    n_genes = table.n_vars
+    gene_names = [str(name) for name in table.var_names]
     feature_ids = _gene_ids(gene_names)
     feature_types = ["Gene Expression"] * n_genes
     X = table.X
@@ -159,7 +175,5 @@ def write_xenium_fixture(
         "num_cells": n_cells,
         "instrument": "fixture",
     }
-    (out_dir / "experiment.xenium").write_text(
-        json.dumps(experiment, indent=2), encoding="utf-8"
-    )
+    (out_dir / "experiment.xenium").write_text(json.dumps(experiment, indent=2), encoding="utf-8")
     return out_dir

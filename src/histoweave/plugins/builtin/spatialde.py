@@ -68,7 +68,7 @@ class SpatialDESVG(Method):
     def run(self, data: SpatialTable) -> SpatialTable:
         return self._run_via_anndata(data)
 
-    def run_on_anndata(self, adata: AnnData) -> AnnData:  # type: ignore[valid-type]
+    def run_on_anndata(self, adata: AnnData) -> AnnData:
         try:
             import NaiveDE
             import SpatialDE
@@ -89,8 +89,9 @@ class SpatialDESVG(Method):
         if layer is not None and layer not in result.layers:
             raise KeyError(f"SpatialDE expression layer {layer!r} does not exist")
         matrix = result.X if layer is None else result.layers[layer]
-        if hasattr(matrix, "toarray"):
-            matrix = matrix.toarray()
+        toarray = getattr(matrix, "toarray", None)
+        if callable(toarray):
+            matrix = toarray()
         expression = np.asarray(matrix, dtype=float)
         validate_nonnegative_matrix(expression, method="SpatialDE")
 
@@ -131,10 +132,10 @@ class SpatialDESVG(Method):
         for column in ("pval", "qval"):
             if column not in ranked:
                 raise RuntimeError(f"SpatialDE output is missing required column {column!r}")
-            numeric = pd.to_numeric(ranked[column], errors="coerce")
+            numeric = pd.to_numeric(pd.Series(ranked[column]), errors="coerce")
             if numeric.isna().any() or ((numeric < 0) | (numeric > 1)).any():
                 raise RuntimeError(f"SpatialDE returned invalid {column} values")
-        qvals = pd.to_numeric(result.var["spatialde_qval"], errors="coerce")
+        qvals = pd.to_numeric(pd.Series(result.var["spatialde_qval"]), errors="coerce")
         result.var["spatialde_significant"] = (
             (qvals <= float(self.params["qval_threshold"])).fillna(False).to_numpy()
         )

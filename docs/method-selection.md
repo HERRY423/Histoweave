@@ -4,15 +4,39 @@ HistoWeave provides a common interface to many spatial-transcriptomics methods, 
 common interface does not make the methods interchangeable. Method selection should follow
 this order:
 
-1. define the biological target;
-2. check computational feasibility;
-3. choose a small candidate set;
-4. tune the spatial prior and domain count;
-5. validate the result against evidence that matches the target.
+1. define the biological target (**task contract**);
+2. check computational feasibility (scale ceiling, sparse path);
+3. choose a small candidate set (baselines + SOTA for the task);
+4. tune the **spatial-context policy** and domain count together;
+5. validate against evidence that matches the target;
+6. when uncertain, run a short multi-method ensemble and inspect disagreement regions.
 
 The analysis target is more important than the platform name. A Visium cortical-layer
 analysis and a Xenium cell-type analysis do not ask the same statistical question, even
 though both contain expression and coordinates.
+
+The primary benchmark therefore uses a phenomenon × observation-condition capability
+matrix rather than a platform leaderboard. Use its role/category-conditioned summaries
+to screen candidates, then use study-matched real data to validate the final choice.
+Preprocessing, direct inference, integration, and ingestion methods must not be collapsed
+into one global rank. See the [phenomenology benchmark](phenomenology-benchmark.md) for
+the frozen applicability contracts and failure semantics.
+
+
+!!! danger "Never use Leiden / self-clustering as spatial-domain ground truth"
+    Task contracts reject `self_supervised` labels for `spatial_domain` evaluation.
+    Cross-platform ARI tables that mix expert layers with expression-derived clusters
+    are not scientifically comparable.
+
+## Recommendation engine v2
+
+Use `MethodRecommender` with explicit `task` and `platform` priors. Inspect:
+
+- `beats_global_best_baseline` — if `False`, prefer the global default or an ensemble;
+- `selection_regret_vs_global_best` — expected metric loss vs always-pick-global-best;
+- `warnings` — narrow knowledge base, platform mismatch, cross-task neighbours.
+
+Configurations may appear as `method@sw0.8` (method + spatial-context policy).
 
 !!! danger "Do not use one spatial-weight default for every task"
     For recovery of contiguous tissue domains, start with moderate and strong spatial
@@ -64,12 +88,18 @@ map, and a spatially smooth domain map is not automatically a good cell-type cla
 
 ## What the new benchmarks establish
 
-Two local benchmark tracks provide the direct evidence used by this guide:
+Three benchmark tracks provide the direct evidence used by this guide:
 
 - `5x15_spatial_aware/`: five DLPFC Visium slices, five core methods, three spatial
   weights, three seeds, and expert cortical-layer labels;
 - `7x15_cross_platform/`: the same 15 configurations on five Visium slices plus MERFISH,
-  Slide-seqV2, and Xenium.
+  Slide-seqV2, and Xenium;
+- `benchmark_external_validation/`: five external validation datasets × 15 methods × 3
+  seeds, with **strict region ground truth only** (anatomical / pathology / manual —
+  never cell-type predictions), spanning Visium HD, Xenium, Xenium Prime, Visium v2, and
+  MERFISH across human colorectal/lung/ovarian cancer and mouse brain. This track is the
+  cleanest recommender-generalization test because every dataset carries real region
+  labels rather than proxy cell-type clusters.
 
 The 15 configurations are:
 
@@ -380,12 +410,15 @@ The benchmark LOOCV results justify caution:
 |---|---:|---:|---:|---:|---:|
 | Five DLPFC slices | 0.00 | 0.20 | 0.082 | 0.027 | 0.094 |
 | Eight cross-platform datasets | 0.00 | 0.125 | 0.113 | 0.078 | 0.117 |
+| Five external-validation datasets (strict region truth) | 0.80 | 0.80 | 0.0059 | 0.0059 | 0.2338 |
 
 The cross-platform recommender barely beat random selection and did not beat the global
 best baseline. Dataset features captured size, sparsity, expression, and geometry, but not
-the meaning of the evaluation labels. Until platform/objective metadata are represented
-and validated, use the recommender to produce a shortlist and retain manual semantic
-gating.
+the meaning of the evaluation labels. On the external landscape, accuracy improved and
+regret fell sharply, but selection regret still tied rather than beat the global-best
+baseline. Until platform/objective metadata are represented and validated on more than
+five external queries, use the recommender to produce a shortlist and retain manual
+semantic gating.
 
 ## Validation checklist
 
@@ -458,7 +491,7 @@ Use the strongest evidence available for each claim:
 
 | Evidence level | Meaning | Examples in this repository |
 |---|---|---|
-| Direct benchmark evidence | Same method/configuration and matching target | `5x15_spatial_aware/`, `7x15_cross_platform/` |
+| Direct benchmark evidence | Same method/configuration and matching target | `5x15_spatial_aware/`, `7x15_cross_platform/`, `benchmark_external_validation/` |
 | Project case-study evidence | Related target, narrower dataset or different protocol | `case_study_dlpfc_consistency/`, `variance_decomposition/` |
 | Registered production method | Stable wrapper contract, not necessarily ranked here | BANKSY, density methods, scalable K-means variants |
 | Experimental evidence | API-contract tests, novelty not validated | `weave_*` domain methods |

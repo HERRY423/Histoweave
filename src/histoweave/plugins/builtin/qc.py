@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 
 from ...data import SpatialTable
@@ -54,10 +56,10 @@ class BasicQC(Method):
             # feature id (e.g. ENSEMBL) and keep the symbol in a column, so fall back to
             # var_names only when no symbol column is present.
             prefix = self.params["mito_prefix"]
-            names = data.var_names
+            names: Any = data.var_names
             for col in ("feature_name", "gene_name", "symbol", "symbols"):
                 if col in data.var.columns:
-                    names = data.var[col]
+                    names = data.var[col].to_numpy()
                     break
             mito_mask = np.array([str(v).startswith(prefix) for v in names])
         mito_counts = np.asarray(X[:, mito_mask].sum(axis=1)).ravel()

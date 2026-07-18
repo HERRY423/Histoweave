@@ -3,7 +3,24 @@ this scaffold ships a deterministic synthetic generator for tests and tutorials.
 
 from __future__ import annotations
 
-from .real import DatasetEntry, get_dataset, list_datasets
+from .phenomenology import (
+    PHENOMENOLOGY_SCHEMA_VERSION,
+    ConditionSpec,
+    ObservationCondition,
+    PhenomenonSpec,
+    ScenarioManifest,
+    SpatialPhenomenon,
+    default_scenario_manifest,
+    make_phenomenology_scenario,
+    make_phenomenology_suite,
+)
+from .real import DatasetEntry, get_dataset, list_datasets, registry_summary
+from .scale_contract import (
+    SCALE_CONTRACTS,
+    ScaleContract,
+    registry_scale_table,
+    scale_contract_for_assay,
+)
 from .synthetic import (
     make_developmental_gradient,
     make_mixture_synthetic,
@@ -13,9 +30,23 @@ from .synthetic import (
 from .vendor import write_visium_fixture, write_xenium_fixture
 
 __all__ = [
+    "PHENOMENOLOGY_SCHEMA_VERSION",
+    "ConditionSpec",
+    "ObservationCondition",
+    "PhenomenonSpec",
+    "ScenarioManifest",
+    "SpatialPhenomenon",
+    "default_scenario_manifest",
+    "make_phenomenology_scenario",
+    "make_phenomenology_suite",
     "DatasetEntry",
     "get_dataset",
     "list_datasets",
+    "registry_summary",
+    "SCALE_CONTRACTS",
+    "ScaleContract",
+    "registry_scale_table",
+    "scale_contract_for_assay",
     "make_developmental_gradient",
     "make_mixture_synthetic",
     "make_synthetic",

@@ -13,6 +13,22 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
+import pytest
+
+from histoweave.plugins.registry import _REGISTRY, list_methods
+
+
+@pytest.fixture(autouse=True)
+def isolate_method_registry() -> None:
+    """Prevent tests that register temporary plugins from leaking across cases."""
+    list_methods()  # Ensure built-ins and entry-point plugins are loaded before snapshotting.
+    snapshot = dict(_REGISTRY)
+    try:
+        yield
+    finally:
+        _REGISTRY.clear()
+        _REGISTRY.update(snapshot)
+
 
 def pytest_sessionstart(session) -> None:
     """Remove the project-local basetemp before collection so stale dirs never

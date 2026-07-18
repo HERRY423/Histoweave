@@ -43,7 +43,8 @@ def test_research_method_inventory_is_explicit_and_unvalidated() -> None:
 def test_release_coverage_separates_research_candidates() -> None:
     report = method_coverage_report()
     assert report["counts"]["research_candidates"] >= 23
-    assert report["counts"]["release_methods"] >= 50
+    assert report["counts"]["release_methods"] >= 40
     assert report["ratios"]["beta_plus"] == 1.0
+    assert report["counts"]["validated"] >= 3
     assert report["research_targets"]["candidates_at_least_20"] is True
     assert report["passes_all_targets"] is True

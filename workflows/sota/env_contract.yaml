@@ -1,0 +1,52 @@
+# HistoWeave SOTA spatial-domain environment contract (P2)
+# Machine-readable twin of histoweave.benchmark.sota_pipeline.env_contract()
+
+protocol: histoweave.sota_dlpfc.v1
+task: spatial_domain
+ground_truth_kind: spatial_domain
+metric: ARI
+oracle_k: true
+slices: ["151673", "151674", "151507", "151669", "151670"]
+seeds: [42, 1, 2]
+timeout_seconds_env: HISTOWEAVE_SOTA_TIMEOUT
+default_timeout_seconds: 7200
+
+methods:
+  banksy_py:
+    runtime: python
+    package: histoweave-native
+    install: "pip install -e '.[dev]'"
+    isolated_env: false
+  spagcn:
+    runtime: python
+    package: "SpaGCN==1.2.7"
+    env_python: HISTOWEAVE_SPAGCN_PYTHON
+    isolated_env: true
+    notes: "Pin NumPy/Scanpy per SpaGCN docs; do not mix with GraphST env."
+  graphst:
+    runtime: python
+    package: "JinmiaoChenLab/GraphST"
+    env_python: HISTOWEAVE_GRAPHST_PYTHON
+    device_env: HISTOWEAVE_SOTA_DEVICE
+    isolated_env: true
+  stagate:
+    runtime: python
+    package: "QIFEIDKN/STAGATE_pyG"
+    env_python: HISTOWEAVE_STAGATE_PYTHON
+    device_env: HISTOWEAVE_SOTA_DEVICE
+    isolated_env: true
+  bayesspace:
+    runtime: r
+    package: "Bioconductor::BayesSpace"
+    env_r_lib: HISTOWEAVE_R_LIB
+    requires: ["Rscript", "zellkonverter"]
+    isolated_env: true
+
+outputs:
+  - sota_benchmark_long.csv
+  - sota_throughput.json
+  - sota_probe.json
+
+merge:
+  landscape: "python scripts/build_merged_landscape.py --sota-csv 5x15_spatial_aware/sota_benchmark_long.csv"
+  leaderboard: "python leaderboard/generate.py"

@@ -109,7 +109,12 @@ def test_ci_separates_quality_build_from_fresh_install_tests() -> None:
     assert "python -m build" in CI
     assert "python -m pip check" in CI
     assert 'python -m pip install -e ".[dev]"' in CI
-    assert "histoweave benchmark --min-score 0.90 --fail-on-error --out benchmark.json" in CI
+    # Capacity gate (oracle-K explicit) + non-oracle stats smoke are both required.
+    assert "--min-score 0.90" in CI
+    assert "--fail-on-error" in CI
+    assert "--allow-oracle-k" in CI
+    assert "--k-policy estimate" in CI
+    assert "benchmark.json" in CI
 
     with (ROOT / "pyproject.toml").open("rb") as handle:
         project = tomllib.load(handle)

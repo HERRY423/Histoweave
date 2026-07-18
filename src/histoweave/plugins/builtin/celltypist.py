@@ -83,7 +83,7 @@ class CellTypistAnnotation(Method):
     def run(self, data: SpatialTable) -> SpatialTable:
         return self._run_via_anndata(data)
 
-    def run_on_anndata(self, adata: AnnData) -> AnnData:  # type: ignore[valid-type]
+    def run_on_anndata(self, adata: AnnData) -> AnnData:
         try:
             import celltypist
         except ModuleNotFoundError as exc:

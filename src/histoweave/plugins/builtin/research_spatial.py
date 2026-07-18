@@ -60,9 +60,7 @@ def _neighbors(coordinates: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray]
         candidates = sorted(
             (
                 (float(distance), int(index))
-                for distance, index in zip(
-                    raw_distances[row], raw_indices[row], strict=True
-                )
+                for distance, index in zip(raw_distances[row], raw_indices[row], strict=True)
                 if int(index) != row
             ),
             key=lambda item: (item[0], item[1]),
@@ -100,7 +98,9 @@ def _local_mean(values: np.ndarray, indices: np.ndarray) -> np.ndarray:
 
 
 def _categorical(labels: np.ndarray) -> pd.Categorical:
-    return pd.Categorical([f"domain_{int(label)}" for label in labels])
+    from typing import cast
+
+    return cast(pd.Categorical, pd.Categorical([f"domain_{int(label)}" for label in labels]))
 
 
 def _domain_spec(
