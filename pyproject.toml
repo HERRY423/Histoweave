@@ -155,6 +155,7 @@ module = [
     "pydantic.*",
     "torch.*",
     "SpaGCN.*",
+    "GraphST.*",
     "scanpy.*",
     "harmonypy.*",
     "cell2location.*",

@@ -258,7 +258,7 @@ class GraphSTDomains(Method):
 
             # Official layout: class lives in GraphST.GraphST (not re-exported).
             try:
-                from GraphST.GraphST import GraphST as model_cls  # type: ignore[import-untyped]
+                from GraphST.GraphST import GraphST as model_cls
             except ImportError:  # pragma: no cover - alternate packaging
                 package = __import__("GraphST")
                 model_cls = getattr(package, "GraphST", None)
