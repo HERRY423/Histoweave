@@ -73,7 +73,8 @@ pip install -e ".[scanpy,cell2location,spatialde,deep-learning]"
 | experimental | Contract-stable only; research / baseline |
 | beta | Real upstream wrap + structural tests |
 | production | Pinned path, real-data smoke, ops diagnostics |
-| validated | Production + multi-dataset evidence in `VALIDATION_EVIDENCE` |
+| contract_validated | Production + multi-dataset *interface/mock/structural* gates (`kind: contract`) |
+| validated | Production + multi-dataset *scientific* concordance (`kind: scientific`) |
 
 ## Documentation
 

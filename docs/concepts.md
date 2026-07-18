@@ -32,7 +32,7 @@ class MyQC(Method):
         params=(ParamSpec("threshold", "float", 1.0, "..."),),
         wraps="scanpy",           # provenance for what's under the hood
         language="python",        # or "r" / "container"
-        maturity="beta",         # beta / production / validated
+        maturity="beta",         # experimental → beta → production → contract_validated → validated
         model_family="deep_learning",
         modalities=("expression", "image"),
     )
@@ -84,3 +84,33 @@ A `Task` bundles a method category, a dataset with ground truth, and a scoring f
 best-first leaderboard. Because a failing method scores worst rather than crashing the
 run, the harness is safe to run continuously in CI and to gate releases against
 performance regressions.
+
+## Digital-twin synthetic validation
+
+Real user uploads usually lack ground truth.  HistoWeave builds a **digital twin**: a
+synthetic sample that matches the real data on 13 target-free dimensions (sparsity,
+library-size distribution, Moran's I, Hopkins tendency, effective rank, …) while
+planting known domain labels.  Methods are benchmarked on the twin; the ARI ranking is
+returned as a **predicted ranking** for the real sample.  See [Digital-twin
+validation](digital-twin.md).
+
+## Spatial AutoML compiler
+
+The AutoML compiler combines `histoweave ask` (LLM pipeline compiler) with the landscape
+recommender: extract features → retrieve nearest reference datasets → auto-run top-3
+methods → multi-objective (Pareto) comparison → full HTML report.  See [Spatial AutoML
+compiler](spatial-automl.md).
+
+## Failure fingerprint atlas
+
+Beyond *where* a method fails (boundary mapping), HistoWeave classifies *how* it fails
+using contingency structure (ARI-related, label-permutation invariant): fragmentation,
+merge, noise micro-clusters, and structural collapse on hard data.  Each method gets a
+4-vector fingerprint.  See [Failure fingerprints](failure-fingerprints.md).
+
+## Active recommender calibration
+
+When the recommender does not beat the global-best baseline, HistoWeave proposes a
+prioritised **evidence-acquisition todo** of dataset×method pairs that maximise expected
+information gain — a concrete plan to reduce recommendation uncertainty.  See
+[Active calibration](active-calibration.md).

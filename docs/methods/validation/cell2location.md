@@ -2,7 +2,7 @@
 
 **Protocol:** `histoweave.method_validation.multidataset.v1`
 **Category:** `deconvolution`
-**Decision:** **VALIDATED**
+**Decision:** **contract_validated** (structural / mock multi-dataset gates — not scientific ARI)
 **Datasets (n=6):** synth_mixture_a, synth_mixture_b, synth_mixture_c, dlpfc_151507, dlpfc_151669, dlpfc_151673
 
 ## Gates

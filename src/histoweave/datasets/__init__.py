@@ -21,6 +21,13 @@ from .scale_contract import (
     registry_scale_table,
     scale_contract_for_assay,
 )
+from .digital_twin import (
+    DIGITAL_TWIN_SCHEMA_VERSION,
+    TWIN_MATCH_FEATURES,
+    DigitalTwinResult,
+    FeatureMatchReport,
+    make_digital_twin,
+)
 from .synthetic import (
     make_developmental_gradient,
     make_mixture_synthetic,
@@ -47,6 +54,11 @@ __all__ = [
     "ScaleContract",
     "registry_scale_table",
     "scale_contract_for_assay",
+    "DIGITAL_TWIN_SCHEMA_VERSION",
+    "TWIN_MATCH_FEATURES",
+    "DigitalTwinResult",
+    "FeatureMatchReport",
+    "make_digital_twin",
     "make_developmental_gradient",
     "make_mixture_synthetic",
     "make_synthetic",

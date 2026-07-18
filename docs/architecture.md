@@ -58,7 +58,7 @@ is evaluated and ranked. Results feed **leaderboards** and **in-workflow recomme
 The recommendation inference path is deliberately auditable:
 
     raw bundle
-      -> 16 target-free features
+      -> 13 target-free features
       -> reference-fit imputation and standardization
       -> k-nearest reference datasets
       -> similarity-weighted method score, uncertainty, support, and coverage
@@ -81,7 +81,7 @@ Vitessce (browser) and napari-spatialdata (desktop) — rather than rebuilt.
 | Core language | Python 3.11+ |
 | Data model / storage | SpatialData, OME-Zarr, AnnData/MuData, Zarr |
 | Out-of-core compute | Dask (+ optional GPU via RAPIDS) |
-| Workflow engine | Nextflow (nf-core conventions); Snakemake option |
+| Workflow engine | Nextflow (nf-core conventions) |
 | Containers | Docker / Apptainer |
 | R interoperability | Containerized R steps; light language bridges |
 | Packaging | PyPI + conda-forge / Bioconda |

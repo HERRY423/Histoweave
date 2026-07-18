@@ -89,15 +89,18 @@ def test_maturity_deinflation_and_validated_set():
     assert rows["marker_score"]["maturity"] == "experimental"
     assert rows["marker_deconv"]["maturity"] == "experimental"
     assert rows["spatial_autoencoder"]["maturity"] == "experimental"
-    # SOTA wrappers start as beta; multi-dataset evidence may elevate them.
-    for name in ("spagcn", "rctd", "graphst", "stagate", "spatialde"):
-        assert rows[name]["maturity"] in {"beta", "validated"}
-        if rows[name]["maturity"] == "validated":
-            assert name in VALIDATION_EVIDENCE
+    # SOTA wrappers: scientific evidence → validated; contract gates → contract_validated.
+    for name in ("spagcn", "graphst", "stagate"):
+        assert rows[name]["maturity"] == "validated"
+        assert name in VALIDATION_EVIDENCE
+        assert VALIDATION_EVIDENCE[name]["kind"] == "scientific"
+    for name in ("rctd", "spatialde"):
+        assert rows[name]["maturity"] == "contract_validated"
+        assert VALIDATION_EVIDENCE[name]["kind"] == "contract"
     for name in VALIDATED_METHODS:
         assert rows[name]["maturity"] == "validated"
         assert name in VALIDATION_EVIDENCE
-    assert len(VALIDATED_METHODS) >= 3
+    assert len(VALIDATED_METHODS) == 10
 
 
 def test_knn_indices_matches_brute_force_on_small_data():

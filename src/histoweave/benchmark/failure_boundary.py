@@ -641,6 +641,8 @@ class BoundaryStudyResult:
     runnable_by_task: dict[str, list[str]]
     excluded_by_task: dict[str, dict[str, str]]
     axes_meta: list[dict]
+    # Optional failure-mode fingerprints (how methods fail, not only where).
+    fingerprints: dict[str, Any] | None = None
 
     def cards_dataframe(self):
         import pandas as pd
@@ -662,6 +664,7 @@ class BoundaryStudyResult:
             "axes": self.axes_meta,
             "cards": [b.to_row() for b in self.boundaries],
             "curves": self.curves,
+            "fingerprints": self.fingerprints,
         }
 
 
@@ -674,6 +677,7 @@ def run_boundary_study(
     tau: float = DEFAULT_TAU,
     n_seeds: int = 5,
     progress: bool = True,
+    include_fingerprints: bool = True,
 ) -> BoundaryStudyResult:
     """Run the adversarial failure-boundary study and return a result bundle.
 
@@ -691,6 +695,10 @@ def run_boundary_study(
         Absolute acceptability threshold.
     n_seeds
         Number of replicate seeds (``range(n_seeds)``).
+    include_fingerprints
+        When *True* (default), also run the failure-fingerprint probe on domain
+        methods and attach a 4-mode atlas (fragmentation / merge / noise /
+        structural) describing *how* methods fail near their boundaries.
     """
     import histoweave.plugins.builtin  # noqa: F401  (registers builtin methods)
 
@@ -790,6 +798,32 @@ def run_boundary_study(
         for a in all_axes
     ]
 
+    fingerprints_payload: dict[str, Any] | None = None
+    if include_fingerprints and "domain_detection" in runnable_by_task:
+        try:
+            from .failure_fingerprint import run_failure_fingerprint_probe
+
+            domain_methods = runnable_by_task.get("domain_detection") or []
+            if methods is not None:
+                want = set(methods)
+                domain_methods = [m for m in domain_methods if m in want]
+            if domain_methods:
+                if progress:
+                    _LOGGER.info(
+                        "failure fingerprints: probing %d domain methods",
+                        len(domain_methods),
+                    )
+                atlas = run_failure_fingerprint_probe(
+                    domain_methods,
+                    seeds=tuple(range(min(3, n_seeds))),
+                    tau=tau,
+                    progress=progress,
+                )
+                fingerprints_payload = atlas.to_dict()
+        except Exception as exc:
+            _LOGGER.warning("failure fingerprint probe skipped: %s", exc)
+            fingerprints_payload = {"error": f"{type(exc).__name__}: {exc}"}
+
     return BoundaryStudyResult(
         tau=tau,
         seeds=seeds,
@@ -799,6 +833,7 @@ def run_boundary_study(
         runnable_by_task=runnable_by_task,
         excluded_by_task=excluded_by_task,
         axes_meta=axes_meta,
+        fingerprints=fingerprints_payload,
     )
 
 
@@ -888,9 +923,68 @@ def write_study_outputs(result: BoundaryStudyResult, out_dir) -> dict[str, str]:
     cards_md = out / "safe_operating_cards.md"
     write_cards_md(cards_md, result.boundaries, result.tau, result.excluded_by_task, result.seeds)
 
-    return {
+    paths = {
         "long_csv": str(long_path),
         "cards_csv": str(cards_csv),
         "cards_json": str(cards_json),
         "cards_md": str(cards_md),
     }
+
+    if result.fingerprints and "error" not in result.fingerprints:
+        try:
+            fp_json = out / "failure_fingerprints.json"
+            with open(fp_json, "w", encoding="utf-8") as fh:
+                json.dump(result.fingerprints, fh, indent=2, default=float)
+            _write_fingerprint_md_from_payload(out / "failure_fingerprints.md", result.fingerprints)
+            paths["fingerprints_json"] = str(fp_json)
+            paths["fingerprints_md"] = str(out / "failure_fingerprints.md")
+        except Exception as exc:
+            _LOGGER.warning("could not write fingerprint artifacts: %s", exc)
+
+    return paths
+
+
+def _write_fingerprint_md_from_payload(path, payload: dict[str, Any]) -> None:
+    from pathlib import Path
+
+    order = payload.get("fingerprint_order") or [
+        "fragmentation",
+        "merge",
+        "noise",
+        "structural",
+    ]
+    lines = [
+        "# Method failure fingerprint atlas",
+        "",
+        f"Protocol: `{payload.get('protocol', 'histoweave.failure_fingerprint.v1')}` · "
+        f"tau={payload.get('tau')}",
+        "",
+        "Each method has a 4-vector describing *how* it fails near its boundary:",
+        "fragmentation / merge / noise / structural.",
+        "",
+        "| Method | Frag | Merge | Noise | Structural | Dominant | n_fail |",
+        "|--------|-----:|------:|------:|-----------:|----------|-------:|",
+    ]
+    for fp in sorted(payload.get("fingerprints") or [], key=lambda r: r.get("method", "")):
+        v = fp.get("vector") or {}
+        lines.append(
+            f"| `{fp.get('method')}` | {float(v.get(order[0], 0)):.2f} | "
+            f"{float(v.get(order[1], 0)):.2f} | {float(v.get(order[2], 0)):.2f} | "
+            f"{float(v.get(order[3], 0)):.2f} | {fp.get('dominant_mode', '—')} | "
+            f"{fp.get('n_failure_evaluations', 0)}/{fp.get('n_evaluations', 0)} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Mode definitions",
+            "",
+            "- **Fragmentation**: one true domain split into ≥5 predicted fragments.",
+            "- **Merge**: one predicted cluster absorbs ≥3 true domains.",
+            "- **Noise**: micro-clusters each covering <5% of observations.",
+            "- **Structural**: recovers on easy data but collapses under high noise "
+            "or many domains.",
+            "",
+        ]
+    )
+    Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
+

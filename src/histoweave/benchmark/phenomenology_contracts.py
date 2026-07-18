@@ -12,12 +12,19 @@ from ..datasets.phenomenology import SpatialPhenomenon
 from ..plugins import MethodCategory, MethodReference, get_method
 from ..plugins.builtin.release_manifest import (
     BETA_METHODS,
+    CONTRACT_VALIDATED_METHODS,
     PRODUCTION_METHODS,
-    VALIDATED_METHODS,
+    SCIENTIFIC_VALIDATED_METHODS,
 )
 
 METHOD_MANIFEST_SCHEMA_VERSION = "1.0.0"
-PHENOMENOLOGY_METHODS = PRODUCTION_METHODS | BETA_METHODS | VALIDATED_METHODS | {"marker_deconv"}
+PHENOMENOLOGY_METHODS = (
+    PRODUCTION_METHODS
+    | BETA_METHODS
+    | set(SCIENTIFIC_VALIDATED_METHODS)
+    | set(CONTRACT_VALIDATED_METHODS)
+    | {"marker_deconv"}
+)
 
 
 class EvaluationRole(StrEnum):

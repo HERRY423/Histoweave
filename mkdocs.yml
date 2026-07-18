@@ -24,6 +24,10 @@ nav:
   - Quickstart: quickstart.md
   - 中文快速入门: zh/quickstart.md
   - Spatial pipeline compiler: compiler.md
+  - Digital-twin validation: digital-twin.md
+  - Spatial AutoML compiler: spatial-automl.md
+  - Failure fingerprint atlas: failure-fingerprints.md
+  - Active recommender calibration: active-calibration.md
   - Research method incubator: research-methods.md
   - Guides:
       - Phenomenology benchmark: phenomenology-benchmark.md

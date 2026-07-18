@@ -6,6 +6,55 @@ All notable changes to this project will be documented here. The format is based
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-07-18
+
+### Submission freeze
+
+- Version **0.1.0** (was `0.1.0b1`): package, `CITATION.cff`, and Git tag `v0.1.0` aligned.
+- **Validation ledger unified:** **10** scientifically `validated` methods + **3**
+  `contract_validated` multi-dataset packages = **13** evidence packages total.
+  Mock/interface gates no longer inflate the scientific `validated` count.
+- New maturity tier `contract_validated` (rank between production and validated).
+- Zenodo metadata (`.zenodo.json`) for DOI minting on GitHub Release.
+- Release notes: `RELEASE_NOTES_v0.1.0.md`.
+
+### Method failure fingerprint atlas
+
+- Added `histoweave.benchmark.failure_fingerprint` — classifies *how* methods fail
+  (fragmentation / merge / noise / structural) via contingency structure between planted
+  truth and predictions (label-permutation invariant).
+- Each method receives a 4-vector fingerprint describing degradation near its failure
+  boundary; CLI `histoweave failure-fingerprint` and optional attachment to
+  `benchmark-boundary` (disable with `--no-fingerprints`).
+- Docs: `docs/failure-fingerprints.md`.
+
+### Active-learning recommender calibration
+
+- When `beats_global_best_baseline=False`, `MethodRecommender.recommend()` attaches an
+  **evidence-acquisition todo**: dataset×method pairs ranked by expected information
+  gain (similarity × importance × novelty × decision relevance).
+- CLI: `histoweave calibrate-recommender`; also printed under `histoweave recommend`.
+- Docs: `docs/active-calibration.md`.
+
+### Digital-twin synthetic validation
+
+- Added `histoweave.datasets.make_digital_twin` — builds a synthetic twin that matches
+  a real sample on **13 target-free dimensions** (sparsity, library-size stats, Moran's I,
+  Hopkins tendency, effective rank, …) while planting known domain labels.
+- Added `histoweave.benchmark.run_digital_twin_validation` — benchmarks methods on the
+  twin and returns the ranking as a **predicted ranking** for unlabelled real data.
+- CLI: `histoweave digital-twin --in data.ttab --out-dir DIR` writes JSON artifacts and
+  `digital_twin_report.html`.
+- Docs: `docs/digital-twin.md`.
+
+### Spatial AutoML compiler
+
+- Added `histoweave.automl.run_spatial_automl` — combines the NL compiler (`histoweave ask`)
+  with the landscape recommender: feature extract → k-NN retrieval → auto-run top-3
+  methods → multi-objective **Pareto** ranking → full HTML report.
+- CLI: `histoweave automl "Find spatial domains …" --in data.ttab --knowledge-base KB.json`.
+- Docs: `docs/spatial-automl.md`.
+
 ### External validation landscape (5 datasets x 15 methods)
 
 - Added `benchmark_external_validation/`, a cross-study benchmark spanning Visium HD,

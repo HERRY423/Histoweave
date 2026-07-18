@@ -86,6 +86,9 @@ class Recommendation:
     selection_regret_vs_oracle_neighbours: float | None = None
     selection_regret_vs_global_best: float | None = None
     beats_global_best_baseline: bool | None = None
+    # Active-learning calibration (filled when global-best is not beaten).
+    evidence_todo: list[dict[str, Any]] = field(default_factory=list)
+    calibration: dict[str, Any] | None = None
     schema_version: int = 3
 
     def top(self, n: int = 3) -> list[MethodScore]:
@@ -95,7 +98,7 @@ class Recommendation:
         return self.ranked_methods[0] if self.ranked_methods else None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "task": self.task,
             "dataset_name": self.dataset_name,
@@ -116,7 +119,10 @@ class Recommendation:
                 "selection_regret_vs_global_best": self.selection_regret_vs_global_best,
                 "beats_global_best_baseline": self.beats_global_best_baseline,
             },
+            "evidence_todo": list(self.evidence_todo),
+            "calibration": self.calibration,
         }
+        return payload
 
     def summary(self) -> str:
         lines = [
@@ -301,7 +307,7 @@ class MethodRecommender:
             )
         ensemble = _ensemble_strategy(ranked, neighbours)
 
-        return Recommendation(
+        recommendation = Recommendation(
             task=query_task,
             dataset_name=dataset_name,
             ranked_methods=ranked,
@@ -320,6 +326,17 @@ class MethodRecommender:
             selection_regret_vs_global_best=diagnostics.get("selection_regret_vs_global_best"),
             beats_global_best_baseline=diagnostics.get("beats_global_best_baseline"),
         )
+        # Active-learning calibration: when personalisation fails to beat the
+        # global-best baseline, propose dataset×method pairs that maximise EIG.
+        try:
+            from .active_calibration import attach_calibration
+
+            attach_calibration(self, recommendation, top_n=10, always=False)
+        except Exception as exc:  # calibration is advisory — never fail recommend
+            recommendation.warnings.append(
+                f"Active calibration unavailable: {type(exc).__name__}: {exc}"
+            )
+        return recommendation
 
     # ------------------------------------------------------------------
     def _find_neighbours(

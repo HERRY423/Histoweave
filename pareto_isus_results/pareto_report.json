@@ -1,0 +1,691 @@
+{
+  "schema_version": 1,
+  "protocol": "histoweave.pareto.v1",
+  "objectives": [
+    "accuracy",
+    "speed",
+    "memory",
+    "robustness"
+  ],
+  "directions": {
+    "accuracy": "max",
+    "speed": "min",
+    "memory": "min",
+    "robustness": "min"
+  },
+  "eps_rel": 0.001,
+  "datasets": {
+    "151507": {
+      "dataset": "151507",
+      "objectives": [
+        "accuracy",
+        "speed",
+        "memory",
+        "robustness"
+      ],
+      "frontier": [
+        "agglomerative@sw0.0",
+        "agglomerative@sw0.3",
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "gaussian_mixture@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.3",
+        "kmeans@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "ranks": {
+        "kmeans@sw0.0": 0,
+        "agglomerative@sw0.0": 0,
+        "kmeans@sw0.3": 0,
+        "agglomerative@sw0.3": 0,
+        "kmeans@sw0.8": 0,
+        "gaussian_mixture@sw0.8": 0,
+        "agglomerative@sw0.8": 0,
+        "spectral@sw0.8": 0,
+        "birch@sw0.8": 0,
+        "gaussian_mixture@sw0.0": 1,
+        "birch@sw0.0": 1,
+        "gaussian_mixture@sw0.3": 1,
+        "spectral@sw0.3": 1,
+        "birch@sw0.3": 1,
+        "spectral@sw0.0": 2
+      },
+      "knee": "agglomerative@sw0.8",
+      "table": {
+        "kmeans@sw0.0": {
+          "accuracy": 0.18252147710380554,
+          "speed": 5.441466666666667,
+          "memory": 6.4692578125,
+          "robustness": 0.027960670400815485
+        },
+        "gaussian_mixture@sw0.0": {
+          "accuracy": 0.13082560581581548,
+          "speed": 5.7871999999999995,
+          "memory": 6.55806640625,
+          "robustness": 0.04805390684948675
+        },
+        "agglomerative@sw0.0": {
+          "accuracy": 0.07968841720401587,
+          "speed": 5.4298,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.0": {
+          "accuracy": 0.13830716377522523,
+          "speed": 10.7305,
+          "memory": 6.554599609375,
+          "robustness": 0.00035288816805342793
+        },
+        "birch@sw0.0": {
+          "accuracy": 0.045874087368512055,
+          "speed": 5.7781666666666665,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.3": {
+          "accuracy": 0.2401616476653766,
+          "speed": 6.199133333333333,
+          "memory": 6.4692578125,
+          "robustness": 0.0787019441673952
+        },
+        "gaussian_mixture@sw0.3": {
+          "accuracy": 0.22277446029210546,
+          "speed": 6.732833333333335,
+          "memory": 6.55806640625,
+          "robustness": 0.04494560467223638
+        },
+        "agglomerative@sw0.3": {
+          "accuracy": 0.21069571335220524,
+          "speed": 6.252733333333333,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.3": {
+          "accuracy": 0.20020453878111455,
+          "speed": 8.862233333333334,
+          "memory": 6.554599609375,
+          "robustness": 0.00039414262820397505
+        },
+        "birch@sw0.3": {
+          "accuracy": 0.1320529975079289,
+          "speed": 6.6572,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.8": {
+          "accuracy": 0.1976265212769467,
+          "speed": 6.288966666666667,
+          "memory": 6.4692578125,
+          "robustness": 0.03929280310229574
+        },
+        "gaussian_mixture@sw0.8": {
+          "accuracy": 0.26265344463682183,
+          "speed": 6.726,
+          "memory": 6.55806640625,
+          "robustness": 0.034121640360553956
+        },
+        "agglomerative@sw0.8": {
+          "accuracy": 0.21576135178991462,
+          "speed": 6.2685666666666675,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.8": {
+          "accuracy": 0.2338606355203309,
+          "speed": 6.8159,
+          "memory": 6.554599609375,
+          "robustness": 0.0
+        },
+        "birch@sw0.8": {
+          "accuracy": 0.2513527623493769,
+          "speed": 6.602133333333334,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        }
+      },
+      "n_configs": 15,
+      "n_frontier": 9,
+      "notes": []
+    },
+    "151669": {
+      "dataset": "151669",
+      "objectives": [
+        "accuracy",
+        "speed",
+        "memory",
+        "robustness"
+      ],
+      "frontier": [
+        "agglomerative@sw0.0",
+        "agglomerative@sw0.3",
+        "agglomerative@sw0.8",
+        "birch@sw0.0",
+        "birch@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "ranks": {
+        "kmeans@sw0.0": 0,
+        "agglomerative@sw0.0": 0,
+        "birch@sw0.0": 0,
+        "agglomerative@sw0.3": 0,
+        "kmeans@sw0.8": 0,
+        "agglomerative@sw0.8": 0,
+        "spectral@sw0.8": 0,
+        "birch@sw0.8": 0,
+        "gaussian_mixture@sw0.0": 1,
+        "spectral@sw0.0": 1,
+        "kmeans@sw0.3": 1,
+        "spectral@sw0.3": 1,
+        "birch@sw0.3": 1,
+        "gaussian_mixture@sw0.8": 1,
+        "gaussian_mixture@sw0.3": 2
+      },
+      "knee": "kmeans@sw0.8",
+      "table": {
+        "kmeans@sw0.0": {
+          "accuracy": 0.13562278672614472,
+          "speed": 7.095833333333334,
+          "memory": 6.4692578125,
+          "robustness": 0.01221424802181878
+        },
+        "gaussian_mixture@sw0.0": {
+          "accuracy": 0.09850967821303404,
+          "speed": 7.561166666666666,
+          "memory": 6.55806640625,
+          "robustness": 0.015780362438742507
+        },
+        "agglomerative@sw0.0": {
+          "accuracy": 0.044205061170462245,
+          "speed": 7.186933333333333,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.0": {
+          "accuracy": 0.11494031961580202,
+          "speed": 10.444733333333334,
+          "memory": 6.554599609375,
+          "robustness": 0.00028267077749616343
+        },
+        "birch@sw0.0": {
+          "accuracy": 0.030268636790949644,
+          "speed": 7.049666666666667,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.3": {
+          "accuracy": 0.1655564765742037,
+          "speed": 7.6778,
+          "memory": 6.4692578125,
+          "robustness": 0.01653394619728335
+        },
+        "gaussian_mixture@sw0.3": {
+          "accuracy": 0.13965703696921683,
+          "speed": 8.232966666666668,
+          "memory": 6.55806640625,
+          "robustness": 0.027818185090338038
+        },
+        "agglomerative@sw0.3": {
+          "accuracy": 0.14540742516528352,
+          "speed": 7.7178,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.3": {
+          "accuracy": 0.16789329493648572,
+          "speed": 10.104533333333334,
+          "memory": 6.554599609375,
+          "robustness": 0.0004679563166859191
+        },
+        "birch@sw0.3": {
+          "accuracy": 0.12966854906833353,
+          "speed": 7.976366666666666,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.8": {
+          "accuracy": 0.1808052372738942,
+          "speed": 7.6756,
+          "memory": 6.4692578125,
+          "robustness": 0.00441814056860837
+        },
+        "gaussian_mixture@sw0.8": {
+          "accuracy": 0.16915163227001595,
+          "speed": 8.1423,
+          "memory": 6.55806640625,
+          "robustness": 0.01418717938445857
+        },
+        "agglomerative@sw0.8": {
+          "accuracy": 0.1895454791432171,
+          "speed": 8.091466666666667,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.8": {
+          "accuracy": 0.1786623462974188,
+          "speed": 7.995766666666667,
+          "memory": 6.554599609375,
+          "robustness": 0.0
+        },
+        "birch@sw0.8": {
+          "accuracy": 0.18704536900314558,
+          "speed": 7.7988,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        }
+      },
+      "n_configs": 15,
+      "n_frontier": 8,
+      "notes": []
+    },
+    "151670": {
+      "dataset": "151670",
+      "objectives": [
+        "accuracy",
+        "speed",
+        "memory",
+        "robustness"
+      ],
+      "frontier": [
+        "agglomerative@sw0.0",
+        "agglomerative@sw0.3",
+        "agglomerative@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.3",
+        "kmeans@sw0.8",
+        "spectral@sw0.3"
+      ],
+      "ranks": {
+        "kmeans@sw0.0": 0,
+        "agglomerative@sw0.0": 0,
+        "kmeans@sw0.3": 0,
+        "agglomerative@sw0.3": 0,
+        "spectral@sw0.3": 0,
+        "kmeans@sw0.8": 0,
+        "agglomerative@sw0.8": 0,
+        "gaussian_mixture@sw0.0": 1,
+        "birch@sw0.0": 1,
+        "birch@sw0.3": 1,
+        "gaussian_mixture@sw0.8": 1,
+        "spectral@sw0.8": 1,
+        "birch@sw0.8": 1,
+        "spectral@sw0.0": 2,
+        "gaussian_mixture@sw0.3": 2
+      },
+      "knee": "kmeans@sw0.8",
+      "table": {
+        "kmeans@sw0.0": {
+          "accuracy": 0.262007775646567,
+          "speed": 6.893266666666666,
+          "memory": 6.4692578125,
+          "robustness": 0.09494669381712151
+        },
+        "gaussian_mixture@sw0.0": {
+          "accuracy": 0.0801675665947441,
+          "speed": 7.075399999999999,
+          "memory": 6.55806640625,
+          "robustness": 0.0525330425967379
+        },
+        "agglomerative@sw0.0": {
+          "accuracy": -0.07384442034784718,
+          "speed": 6.952633333333334,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.0": {
+          "accuracy": 0.10737939041986139,
+          "speed": 10.184933333333333,
+          "memory": 6.554599609375,
+          "robustness": 0.0017522490662798262
+        },
+        "birch@sw0.0": {
+          "accuracy": -0.08513723452602168,
+          "speed": 7.430066666666668,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.3": {
+          "accuracy": 0.22146459984255526,
+          "speed": 7.316233333333333,
+          "memory": 6.4692578125,
+          "robustness": 0.09397409468473758
+        },
+        "gaussian_mixture@sw0.3": {
+          "accuracy": 0.17780756463547612,
+          "speed": 7.5774,
+          "memory": 6.55806640625,
+          "robustness": 0.05946854331730331
+        },
+        "agglomerative@sw0.3": {
+          "accuracy": 0.280014239444171,
+          "speed": 7.2764999999999995,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.3": {
+          "accuracy": 0.346417381108651,
+          "speed": 9.678466666666667,
+          "memory": 6.554599609375,
+          "robustness": 0.0007589897467061291
+        },
+        "birch@sw0.3": {
+          "accuracy": 0.1876685778839524,
+          "speed": 7.5006666666666675,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.8": {
+          "accuracy": 0.1929795176481394,
+          "speed": 6.926266666666667,
+          "memory": 6.4692578125,
+          "robustness": 0.0010129714792677658
+        },
+        "gaussian_mixture@sw0.8": {
+          "accuracy": 0.24276469417135982,
+          "speed": 7.298233333333333,
+          "memory": 6.55806640625,
+          "robustness": 0.031648612851046726
+        },
+        "agglomerative@sw0.8": {
+          "accuracy": 0.1993220380186911,
+          "speed": 6.971433333333334,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.8": {
+          "accuracy": 0.2207146398145301,
+          "speed": 7.535166666666668,
+          "memory": 6.554599609375,
+          "robustness": 0.0
+        },
+        "birch@sw0.8": {
+          "accuracy": 0.18076285943729278,
+          "speed": 7.4507666666666665,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        }
+      },
+      "n_configs": 15,
+      "n_frontier": 7,
+      "notes": []
+    },
+    "151673": {
+      "dataset": "151673",
+      "objectives": [
+        "accuracy",
+        "speed",
+        "memory",
+        "robustness"
+      ],
+      "frontier": [
+        "agglomerative@sw0.0",
+        "agglomerative@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "ranks": {
+        "kmeans@sw0.0": 0,
+        "agglomerative@sw0.0": 0,
+        "kmeans@sw0.8": 0,
+        "agglomerative@sw0.8": 0,
+        "spectral@sw0.8": 0,
+        "gaussian_mixture@sw0.0": 1,
+        "spectral@sw0.0": 1,
+        "birch@sw0.0": 1,
+        "kmeans@sw0.3": 1,
+        "agglomerative@sw0.3": 1,
+        "spectral@sw0.3": 1,
+        "birch@sw0.3": 1,
+        "gaussian_mixture@sw0.8": 1,
+        "birch@sw0.8": 1,
+        "gaussian_mixture@sw0.3": 2
+      },
+      "knee": "agglomerative@sw0.8",
+      "table": {
+        "kmeans@sw0.0": {
+          "accuracy": 0.17420667399051626,
+          "speed": 7.376633333333334,
+          "memory": 6.4692578125,
+          "robustness": 0.01155939258527991
+        },
+        "gaussian_mixture@sw0.0": {
+          "accuracy": 0.16533020665223666,
+          "speed": 7.599833333333334,
+          "memory": 6.55806640625,
+          "robustness": 0.03345112229287672
+        },
+        "agglomerative@sw0.0": {
+          "accuracy": 0.0992594801230638,
+          "speed": 7.071866666666668,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.0": {
+          "accuracy": 0.16831588076971818,
+          "speed": 10.646633333333334,
+          "memory": 6.554599609375,
+          "robustness": 0.0
+        },
+        "birch@sw0.0": {
+          "accuracy": 0.08821344913490366,
+          "speed": 7.589300000000001,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.3": {
+          "accuracy": 0.2500715350135494,
+          "speed": 8.139833333333334,
+          "memory": 6.4692578125,
+          "robustness": 0.042805174403138885
+        },
+        "gaussian_mixture@sw0.3": {
+          "accuracy": 0.23505787396902336,
+          "speed": 8.892100000000001,
+          "memory": 6.55806640625,
+          "robustness": 0.06519475434391267
+        },
+        "agglomerative@sw0.3": {
+          "accuracy": 0.14793332881049076,
+          "speed": 8.2416,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.3": {
+          "accuracy": 0.2423138947172816,
+          "speed": 9.286133333333334,
+          "memory": 6.554599609375,
+          "robustness": 0.00034130507785185005
+        },
+        "birch@sw0.3": {
+          "accuracy": 0.17007462879487056,
+          "speed": 7.915,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.8": {
+          "accuracy": 0.2627784415201952,
+          "speed": 7.785266666666666,
+          "memory": 6.4692578125,
+          "robustness": 0.036892181362711274
+        },
+        "gaussian_mixture@sw0.8": {
+          "accuracy": 0.29897276692285363,
+          "speed": 8.351,
+          "memory": 6.55806640625,
+          "robustness": 0.038310371684470046
+        },
+        "agglomerative@sw0.8": {
+          "accuracy": 0.24560875008751212,
+          "speed": 7.825266666666667,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.8": {
+          "accuracy": 0.3018812441837427,
+          "speed": 8.124333333333333,
+          "memory": 6.554599609375,
+          "robustness": 0.0
+        },
+        "birch@sw0.8": {
+          "accuracy": 0.23496401745875697,
+          "speed": 7.949866666666666,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        }
+      },
+      "n_configs": 15,
+      "n_frontier": 5,
+      "notes": []
+    },
+    "151674": {
+      "dataset": "151674",
+      "objectives": [
+        "accuracy",
+        "speed",
+        "memory",
+        "robustness"
+      ],
+      "frontier": [
+        "agglomerative@sw0.0",
+        "agglomerative@sw0.8",
+        "birch@sw0.3",
+        "birch@sw0.8",
+        "kmeans@sw0.3"
+      ],
+      "ranks": {
+        "agglomerative@sw0.0": 0,
+        "kmeans@sw0.3": 0,
+        "birch@sw0.3": 0,
+        "agglomerative@sw0.8": 0,
+        "birch@sw0.8": 0,
+        "kmeans@sw0.0": 1,
+        "birch@sw0.0": 1,
+        "agglomerative@sw0.3": 1,
+        "kmeans@sw0.8": 1,
+        "gaussian_mixture@sw0.8": 1,
+        "spectral@sw0.8": 1,
+        "gaussian_mixture@sw0.0": 2,
+        "spectral@sw0.0": 2,
+        "gaussian_mixture@sw0.3": 2,
+        "spectral@sw0.3": 2
+      },
+      "knee": "kmeans@sw0.3",
+      "table": {
+        "kmeans@sw0.0": {
+          "accuracy": 0.20967256904797824,
+          "speed": 8.547899999999998,
+          "memory": 6.4692578125,
+          "robustness": 0.04891009815910902
+        },
+        "gaussian_mixture@sw0.0": {
+          "accuracy": 0.2082546041148925,
+          "speed": 8.147566666666668,
+          "memory": 6.55806640625,
+          "robustness": 0.009865952623392099
+        },
+        "agglomerative@sw0.0": {
+          "accuracy": 0.11884079288283696,
+          "speed": 7.445733333333333,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.0": {
+          "accuracy": 0.2177402139226832,
+          "speed": 10.040766666666668,
+          "memory": 6.554599609375,
+          "robustness": 0.0007410159091429391
+        },
+        "birch@sw0.0": {
+          "accuracy": 0.1180367852092173,
+          "speed": 7.667366666666666,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.3": {
+          "accuracy": 0.29812818287020243,
+          "speed": 7.612566666666667,
+          "memory": 6.4692578125,
+          "robustness": 0.007430396209064105
+        },
+        "gaussian_mixture@sw0.3": {
+          "accuracy": 0.2693488827455323,
+          "speed": 8.217233333333334,
+          "memory": 6.55806640625,
+          "robustness": 0.07533463384365216
+        },
+        "agglomerative@sw0.3": {
+          "accuracy": 0.2212556785500249,
+          "speed": 7.844166666666666,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.3": {
+          "accuracy": 0.1761931129593751,
+          "speed": 8.809199999999999,
+          "memory": 6.554599609375,
+          "robustness": 0.00023453613369067705
+        },
+        "birch@sw0.3": {
+          "accuracy": 0.2528450781106391,
+          "speed": 7.575333333333333,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        },
+        "kmeans@sw0.8": {
+          "accuracy": 0.2672779870189586,
+          "speed": 8.0707,
+          "memory": 6.4692578125,
+          "robustness": 0.07184082749228898
+        },
+        "gaussian_mixture@sw0.8": {
+          "accuracy": 0.29425002550692975,
+          "speed": 8.357466666666665,
+          "memory": 6.55806640625,
+          "robustness": 0.0123612756764932
+        },
+        "agglomerative@sw0.8": {
+          "accuracy": 0.30002254262180444,
+          "speed": 7.770133333333334,
+          "memory": 6.522724609375,
+          "robustness": 0.0
+        },
+        "spectral@sw0.8": {
+          "accuracy": 0.2802722777843898,
+          "speed": 7.847266666666666,
+          "memory": 6.554599609375,
+          "robustness": 4.296937411107926e-06
+        },
+        "birch@sw0.8": {
+          "accuracy": 0.27692088536037573,
+          "speed": 7.757533333333334,
+          "memory": 6.626298828125,
+          "robustness": 0.0
+        }
+      },
+      "n_configs": 15,
+      "n_frontier": 5,
+      "notes": []
+    }
+  },
+  "frontier_frequency": {
+    "agglomerative@sw0.0": 5,
+    "agglomerative@sw0.8": 5,
+    "kmeans@sw0.0": 4,
+    "kmeans@sw0.8": 4,
+    "agglomerative@sw0.3": 3,
+    "birch@sw0.8": 3,
+    "kmeans@sw0.3": 3,
+    "spectral@sw0.8": 3,
+    "birch@sw0.0": 1,
+    "birch@sw0.3": 1,
+    "gaussian_mixture@sw0.8": 1,
+    "spectral@sw0.3": 1
+  },
+  "n_datasets": 5,
+  "notes": [
+    "Pareto frontier = non-dominated configurations; no single method is asserted as universally best."
+  ]
+}

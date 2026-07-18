@@ -70,6 +70,13 @@ benchmarking, and reporting.
       members: true
       show_root_heading: true
 
+## Spatial AutoML ? `histoweave.automl`
+
+::: histoweave.automl
+    options:
+      members: true
+      show_root_heading: true
+
 ## Reporting ? `histoweave.report`
 
 ::: histoweave.report

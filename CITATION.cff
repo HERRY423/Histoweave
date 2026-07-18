@@ -6,18 +6,20 @@ authors:
   - name: "HistoWeave contributors"
     website: "https://github.com/histoweave-spatial/histoweave"
 version: 0.1.0
-date-released: 2026-07-12
+date-released: 2026-07-18
 license: BSD-3-Clause
 repository-code: "https://github.com/histoweave-spatial/histoweave"
 url: "https://histoweave-spatial.github.io/histoweave"
+# Zenodo mints a version DOI when the GitHub release is archived; paste it here.
+# doi: 10.5281/zenodo.XXXXXXX
 abstract: >
   HistoWeave is an open-source orchestration and evaluation platform for
-  reproducible spatial transcriptomics analysis. It unifies 26+ analysis
-  methods across 11 categories (from ingestion through segmentation to
-  cell-cell communication) behind a single plugin interface, benchmarks
-  them on structured reference datasets, and provides a data-driven
-  recommendation engine that suggests the best method for a new dataset
-  without requiring ground truth.
+  reproducible spatial transcriptomics analysis. It unifies 80+ analysis
+  methods across 11 categories behind a single plugin interface, with
+  10 scientifically validated and 3 contract-validated multi-dataset evidence
+  packages (13 total). It benchmarks methods on structured reference datasets
+  and provides a recommendation engine with explicit global-best baselines
+  and negative-result reporting.
 keywords:
   - spatial transcriptomics
   - bioinformatics

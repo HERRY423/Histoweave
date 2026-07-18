@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="910" height="354" viewBox="0 0 910 354" font-family="Liberation Sans, Arial, sans-serif">
+<rect width="910" height="354" fill="#FFFFFF"/>
+<text x="455.0" y="24" font-size="14" text-anchor="middle" font-weight="bold">Pareto frontier — dataset 151673 (5/15 non-dominated)</text>
+<rect x="92.0" y="50.0" width="230.0" height="230.0" fill="#FAF9F3" stroke="#000000" stroke-width="1"/>
+<text x="207.0" y="320.0" font-size="11" text-anchor="middle">speed (s) (min)</text>
+<text x="32.0" y="165.0" font-size="11" text-anchor="middle" transform="rotate(-90 32.0 165.0)">accuracy (ARI) (max)</text>
+<line x1="92.0" y1="280.0" x2="92.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="92.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">7.07</text>
+<line x1="207.0" y1="280.0" x2="207.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="207.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">8.86</text>
+<line x1="322.0" y1="280.0" x2="322.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="322.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">10.65</text>
+<line x1="88.0" y1="280.0" x2="92.0" y2="280.0" stroke="#000000" stroke-width="0.8"/>
+<text x="85.0" y="283.0" font-size="8.5" text-anchor="end" fill="#333333">0.088</text>
+<line x1="88.0" y1="165.0" x2="92.0" y2="165.0" stroke="#000000" stroke-width="0.8"/>
+<text x="85.0" y="168.0" font-size="8.5" text-anchor="end" fill="#333333">0.195</text>
+<line x1="88.0" y1="50.0" x2="92.0" y2="50.0" stroke="#000000" stroke-width="0.8"/>
+<text x="85.0" y="53.0" font-size="8.5" text-anchor="end" fill="#333333">0.302</text>
+<polyline points="92.0,268.1 111.6,187.4 137.9,92.1 140.5,110.6 159.7,50.0" fill="none" stroke="#FF9400" stroke-width="2" stroke-dasharray="4 3"/>
+<circle cx="111.6" cy="187.4" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.0 (speed=7.38, accuracy=0.174)</title></circle>
+<text x="119.6" y="179.4" font-size="8" fill="#111111">km@.0</text>
+<circle cx="126.0" cy="197.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.0 (speed=7.6, accuracy=0.165)</title></circle>
+<circle cx="92.0" cy="268.1" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.0 (speed=7.07, accuracy=0.0993)</title></circle>
+<text x="100.0" y="260.1" font-size="8" fill="#111111">agg@.0</text>
+<circle cx="322.0" cy="193.8" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.0 (speed=10.6, accuracy=0.168)</title></circle>
+<circle cx="125.3" cy="280.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.0 (speed=7.59, accuracy=0.0882)</title></circle>
+<circle cx="160.7" cy="105.8" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.3 (speed=8.14, accuracy=0.25)</title></circle>
+<circle cx="209.1" cy="121.9" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.3 (speed=8.89, accuracy=0.235)</title></circle>
+<circle cx="167.3" cy="215.7" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.3 (speed=8.24, accuracy=0.148)</title></circle>
+<circle cx="234.5" cy="114.1" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.3 (speed=9.29, accuracy=0.242)</title></circle>
+<circle cx="146.2" cy="191.9" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.3 (speed=7.92, accuracy=0.17)</title></circle>
+<circle cx="137.9" cy="92.1" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.8 (speed=7.79, accuracy=0.263)</title></circle>
+<text x="145.9" y="84.1" font-size="8" fill="#111111">km@.8</text>
+<circle cx="174.3" cy="53.1" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.8 (speed=8.35, accuracy=0.299)</title></circle>
+<circle cx="140.5" cy="110.6" r="6.0" fill="#0279EE" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.8 (speed=7.83, accuracy=0.246)</title></circle>
+<text x="149.5" y="101.6" font-size="8" fill="#111111">agg@.8</text>
+<circle cx="159.7" cy="50.0" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.8 (speed=8.12, accuracy=0.302)</title></circle>
+<text x="167.7" y="42.0" font-size="8" fill="#111111">spec@.8</text>
+<circle cx="148.5" cy="122.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.8 (speed=7.95, accuracy=0.235)</title></circle>
+<rect x="374.0" y="50.0" width="230.0" height="230.0" fill="#FAF9F3" stroke="#000000" stroke-width="1"/>
+<text x="489.0" y="320.0" font-size="11" text-anchor="middle">memory (GB) (min)</text>
+<text x="314.0" y="165.0" font-size="11" text-anchor="middle" transform="rotate(-90 314.0 165.0)">accuracy (ARI) (max)</text>
+<line x1="374.0" y1="280.0" x2="374.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="374.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">6.4693</text>
+<line x1="489.0" y1="280.0" x2="489.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="489.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">6.5478</text>
+<line x1="604.0" y1="280.0" x2="604.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="604.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">6.6263</text>
+<line x1="370.0" y1="280.0" x2="374.0" y2="280.0" stroke="#000000" stroke-width="0.8"/>
+<text x="367.0" y="283.0" font-size="8.5" text-anchor="end" fill="#333333">0.088</text>
+<line x1="370.0" y1="165.0" x2="374.0" y2="165.0" stroke="#000000" stroke-width="0.8"/>
+<text x="367.0" y="168.0" font-size="8.5" text-anchor="end" fill="#333333">0.195</text>
+<line x1="370.0" y1="50.0" x2="374.0" y2="50.0" stroke="#000000" stroke-width="0.8"/>
+<text x="367.0" y="53.0" font-size="8.5" text-anchor="end" fill="#333333">0.302</text>
+<polyline points="374.0,187.4 374.0,92.1 452.3,268.1 452.3,110.6 499.0,50.0" fill="none" stroke="#FF9400" stroke-width="2" stroke-dasharray="4 3"/>
+<circle cx="374.0" cy="187.4" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.0 (memory=6.47, accuracy=0.174)</title></circle>
+<text x="382.0" y="179.4" font-size="8" fill="#111111">km@.0</text>
+<circle cx="504.1" cy="197.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.0 (memory=6.56, accuracy=0.165)</title></circle>
+<circle cx="452.3" cy="268.1" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.0 (memory=6.52, accuracy=0.0993)</title></circle>
+<text x="460.3" y="260.1" font-size="8" fill="#111111">agg@.0</text>
+<circle cx="499.0" cy="193.8" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.0 (memory=6.55, accuracy=0.168)</title></circle>
+<circle cx="604.0" cy="280.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.0 (memory=6.63, accuracy=0.0882)</title></circle>
+<circle cx="374.0" cy="105.8" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.3 (memory=6.47, accuracy=0.25)</title></circle>
+<circle cx="504.1" cy="121.9" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.3 (memory=6.56, accuracy=0.235)</title></circle>
+<circle cx="452.3" cy="215.7" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.3 (memory=6.52, accuracy=0.148)</title></circle>
+<circle cx="499.0" cy="114.1" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.3 (memory=6.55, accuracy=0.242)</title></circle>
+<circle cx="604.0" cy="191.9" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.3 (memory=6.63, accuracy=0.17)</title></circle>
+<circle cx="374.0" cy="92.1" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.8 (memory=6.47, accuracy=0.263)</title></circle>
+<text x="382.0" y="84.1" font-size="8" fill="#111111">km@.8</text>
+<circle cx="504.1" cy="53.1" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.8 (memory=6.56, accuracy=0.299)</title></circle>
+<circle cx="452.3" cy="110.6" r="6.0" fill="#0279EE" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.8 (memory=6.52, accuracy=0.246)</title></circle>
+<text x="461.3" y="101.6" font-size="8" fill="#111111">agg@.8</text>
+<circle cx="499.0" cy="50.0" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.8 (memory=6.55, accuracy=0.302)</title></circle>
+<text x="507.0" y="42.0" font-size="8" fill="#111111">spec@.8</text>
+<circle cx="604.0" cy="122.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.8 (memory=6.63, accuracy=0.235)</title></circle>
+<rect x="656.0" y="50.0" width="230.0" height="230.0" fill="#FAF9F3" stroke="#000000" stroke-width="1"/>
+<text x="771.0" y="320.0" font-size="11" text-anchor="middle">CI width (ARI) (min)</text>
+<text x="596.0" y="165.0" font-size="11" text-anchor="middle" transform="rotate(-90 596.0 165.0)">accuracy (ARI) (max)</text>
+<line x1="656.0" y1="280.0" x2="656.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="656.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">0.0000</text>
+<line x1="771.0" y1="280.0" x2="771.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="771.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">0.0326</text>
+<line x1="886.0" y1="280.0" x2="886.0" y2="284.0" stroke="#000000" stroke-width="0.8"/>
+<text x="886.0" y="296.0" font-size="8.5" text-anchor="middle" fill="#333333">0.0652</text>
+<line x1="652.0" y1="280.0" x2="656.0" y2="280.0" stroke="#000000" stroke-width="0.8"/>
+<text x="649.0" y="283.0" font-size="8.5" text-anchor="end" fill="#333333">0.088</text>
+<line x1="652.0" y1="165.0" x2="656.0" y2="165.0" stroke="#000000" stroke-width="0.8"/>
+<text x="649.0" y="168.0" font-size="8.5" text-anchor="end" fill="#333333">0.195</text>
+<line x1="652.0" y1="50.0" x2="656.0" y2="50.0" stroke="#000000" stroke-width="0.8"/>
+<text x="649.0" y="53.0" font-size="8.5" text-anchor="end" fill="#333333">0.302</text>
+<polyline points="656.0,268.1 656.0,110.6 656.0,50.0 696.8,187.4 786.2,92.1" fill="none" stroke="#FF9400" stroke-width="2" stroke-dasharray="4 3"/>
+<circle cx="696.8" cy="187.4" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.0 (robustness=0.0116, accuracy=0.174)</title></circle>
+<text x="704.8" y="179.4" font-size="8" fill="#111111">km@.0</text>
+<circle cx="774.0" cy="197.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.0 (robustness=0.0335, accuracy=0.165)</title></circle>
+<circle cx="656.0" cy="268.1" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.0 (robustness=0, accuracy=0.0993)</title></circle>
+<text x="664.0" y="260.1" font-size="8" fill="#111111">agg@.0</text>
+<circle cx="656.0" cy="193.8" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.0 (robustness=0, accuracy=0.168)</title></circle>
+<circle cx="656.0" cy="280.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.0 (robustness=0, accuracy=0.0882)</title></circle>
+<circle cx="807.0" cy="105.8" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.3 (robustness=0.0428, accuracy=0.25)</title></circle>
+<circle cx="886.0" cy="121.9" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.3 (robustness=0.0652, accuracy=0.235)</title></circle>
+<circle cx="656.0" cy="215.7" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.3 (robustness=0, accuracy=0.148)</title></circle>
+<circle cx="657.2" cy="114.1" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.3 (robustness=0.000341, accuracy=0.242)</title></circle>
+<circle cx="656.0" cy="191.9" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.3 (robustness=0, accuracy=0.17)</title></circle>
+<circle cx="786.2" cy="92.1" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>kmeans@sw0.8 (robustness=0.0369, accuracy=0.263)</title></circle>
+<text x="794.2" y="84.1" font-size="8" fill="#111111">km@.8</text>
+<circle cx="791.2" cy="53.1" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>gaussian_mixture@sw0.8 (robustness=0.0383, accuracy=0.299)</title></circle>
+<circle cx="656.0" cy="110.6" r="6.0" fill="#0279EE" stroke="#000000" stroke-width="0.7"><title>agglomerative@sw0.8 (robustness=0, accuracy=0.246)</title></circle>
+<text x="665.0" y="101.6" font-size="8" fill="#111111">agg@.8</text>
+<circle cx="656.0" cy="50.0" r="5.0" fill="#FF9400" stroke="#000000" stroke-width="0.7"><title>spectral@sw0.8 (robustness=0, accuracy=0.302)</title></circle>
+<text x="664.0" y="42.0" font-size="8" fill="#111111">spec@.8</text>
+<circle cx="656.0" cy="122.0" r="3.0" fill="#ECE9E2" stroke="#000000" stroke-width="0.7"><title>birch@sw0.8 (robustness=0, accuracy=0.235)</title></circle>
+<circle cx="305" cy="344" r="5" fill="#FF9400" stroke="#000" stroke-width="0.7"/>
+<text x="315" y="348" font-size="10">frontier (non-dominated)</text>
+<circle cx="460" cy="344" r="6" fill="#0279EE" stroke="#000" stroke-width="0.7"/>
+<text x="470" y="348" font-size="10">knee</text>
+<circle cx="525" cy="344" r="3" fill="#ECE9E2" stroke="#000" stroke-width="0.7"/>
+<text x="533" y="348" font-size="10">dominated</text>
+</svg>

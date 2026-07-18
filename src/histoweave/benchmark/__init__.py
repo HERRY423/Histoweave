@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+from .active_calibration import (
+    CALIBRATION_SCHEMA_VERSION,
+    CalibrationPlan,
+    EvidenceTask,
+    attach_calibration,
+    propose_evidence_acquisition,
+)
 from .causal import (
     CausalEffect,
     CausalLandscapeResult,
@@ -9,6 +16,12 @@ from .causal import (
     run_causal_landscape,
 )
 from .complexity import ComplexityFit, fit_complexity
+from .digital_twin import (
+    VALIDATION_SCHEMA_VERSION,
+    DigitalTwinValidationResult,
+    run_digital_twin_validation,
+    write_digital_twin_artifacts,
+)
 from .donor_bootstrap import (
     DLPFC_SECTION_TO_DONOR,
     DonorBootstrapResult,
@@ -30,6 +43,17 @@ from .failure_boundary import (
     write_cards_md,
     write_study_outputs,
 )
+from .failure_fingerprint import (
+    FINGERPRINT_ORDER,
+    FINGERPRINT_SCHEMA_VERSION,
+    FailureFingerprint,
+    FailureFingerprintAtlas,
+    FailureModeProfile,
+    classify_domain_failure,
+    run_failure_fingerprint_probe,
+    structural_severity,
+    write_fingerprint_atlas,
+)
 from .features import (
     RECOMMENDATION_FEATURE_ORDER,
     extract_features,
@@ -50,6 +74,15 @@ from .harness import (
     get_task,
     run_benchmark,
     svg_task,
+)
+from .isus import (
+    ISUS_HIGH,
+    ISUS_LOW,
+    ISUSResult,
+    compute_isus,
+    compute_isus_from_table,
+    isus_band,
+    mi_discrete_continuous,
 )
 from .k_selection import (
     DualTrackKReport,
@@ -78,6 +111,25 @@ from .landscape_io import (
     write_landscape_json,
 )
 from .multiple_testing import fdr_adjust, pairwise_fdr_table, reject_nulls
+from .pareto import (
+    OBJECTIVE_DIRECTIONS,
+    OBJECTIVE_LABELS,
+    ObjectiveTable,
+    ParetoDatasetResult,
+    ParetoReport,
+    analyze_dataset,
+    build_report,
+    knee_point,
+    nondominated_sort,
+    pareto_frontier,
+    pareto_svg,
+)
+from .pareto_io import (
+    bootstrap_ci_width,
+    load_memory_gb,
+    objective_tables_from_landscape,
+    objective_tables_from_long_csv,
+)
 from .phenomenology_contracts import (
     EvaluationRole,
     FrozenMethodManifest,
@@ -190,6 +242,22 @@ __all__ = [
     "run_sweep",
     "write_cards_md",
     "write_study_outputs",
+    # failure fingerprint atlas
+    "FINGERPRINT_ORDER",
+    "FINGERPRINT_SCHEMA_VERSION",
+    "FailureFingerprint",
+    "FailureFingerprintAtlas",
+    "FailureModeProfile",
+    "classify_domain_failure",
+    "run_failure_fingerprint_probe",
+    "structural_severity",
+    "write_fingerprint_atlas",
+    # active recommender calibration
+    "CALIBRATION_SCHEMA_VERSION",
+    "CalibrationPlan",
+    "EvidenceTask",
+    "attach_calibration",
+    "propose_evidence_acquisition",
     # landscape IO / SOTA merge
     "attach_dataset_meta",
     "attach_features_from_tables",
@@ -209,6 +277,11 @@ __all__ = [
     "MethodRecommender",
     "MethodScore",
     "Recommendation",
+    # digital twin validation
+    "VALIDATION_SCHEMA_VERSION",
+    "DigitalTwinValidationResult",
+    "run_digital_twin_validation",
+    "write_digital_twin_artifacts",
     # task contracts
     "AnalysisTask",
     "GroundTruthKind",
@@ -283,4 +356,28 @@ __all__ = [
     "DonorBootstrapResult",
     "donor_for_slice",
     "donor_stratified_bootstrap_l3",
+    # multi-objective Pareto frontier
+    "OBJECTIVE_DIRECTIONS",
+    "OBJECTIVE_LABELS",
+    "ObjectiveTable",
+    "ParetoDatasetResult",
+    "ParetoReport",
+    "analyze_dataset",
+    "build_report",
+    "knee_point",
+    "nondominated_sort",
+    "pareto_frontier",
+    "pareto_svg",
+    "bootstrap_ci_width",
+    "load_memory_gb",
+    "objective_tables_from_landscape",
+    "objective_tables_from_long_csv",
+    # information-theoretic spatial utility score
+    "ISUS_HIGH",
+    "ISUS_LOW",
+    "ISUSResult",
+    "compute_isus",
+    "compute_isus_from_table",
+    "isus_band",
+    "mi_discrete_continuous",
 ]

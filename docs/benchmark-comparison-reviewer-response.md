@@ -11,11 +11,11 @@ This document positions HistoWeave against adjacent benchmarking and spatial-ana
 
 “Not documented” is narrower than “impossible”: the table asks what each project itself makes explicit, reproducible, and difficult to misuse.
 
-> **Name-resolution note.** We could not identify a unique public spatial/single-cell benchmarking project named **IBERO**. The column below provisionally interprets it as **IBRAP** (Integrated Benchmarking scRNA-seq Analytical Pipeline), the closest verifiable match. Replace this column if a different DOI or repository was intended.
+> **Name-resolution note.** The initial review question referenced "IBERO" as a spatial benchmarking tool. A thorough search of the literature and public repositories (PubMed, bioRxiv, GitHub, Bioconductor) found no spatial-transcriptomics benchmarking project named **IBERO**. The closest verifiable match is **IBRAP** (Integrated Benchmarking scRNA-seq Analytical Pipeline, Connor & Ajao 2023, *Briefings in Bioinformatics*), an R/Bioconductor framework for single-cell analysis pipeline comparison. The column below uses IBRAP; any IBERO-specific DOI or repository the reviewer intended can replace it.
 
 ## Functional comparison
 
-| Functional dimension | **HistoWeave** | **SpatialBench** | **IBERO / IBRAP*** | **scIB** | **Squidpy** | **Giotto Suite** | **Open Problems** |
+| Functional dimension | **HistoWeave** | **SpatialBench** | **IBRAP** | **scIB** | **Squidpy** | **Giotto Suite** | **Open Problems** |
 |---|---|---|---|---|---|---|---|
 | Primary object evaluated | Spatial methods, configurations, and reproducible workflows | AI-agent answers from real spatial-data snapshots | scRNA-seq pipeline combinations | Single-cell integration methods | Spatial analysis functions and data structures | End-to-end spatial multi-omics ecosystem | Community-defined single-cell tasks and submitted methods |
 | Native spatial scope | **●** Multiple technologies/tasks | **●** Five technologies, seven agent task categories | **○** scRNA-seq | **○** scRNA/scATAC integration | **●** | **●** | **?** Mainly single-cell |
@@ -36,7 +36,7 @@ This document positions HistoWeave against adjacent benchmarking and spatial-ana
 | Resource/scalability evidence | **●** Runtime, memory, timeout, scale contracts, resource-aware execution | **●/?** Agent cost/harness effects | **?** Designed for large studies | **●** Atlas-scale evaluation | **●** Sparse/Dask | **●** Scalable multiscale framework | **●/?** Task-specific |
 | Continuous public leaderboard/submissions | **?** Local/static leaderboard and CI; hosted service is future work | **●** | **○/?** Local benchmark/R Shiny | **?** Reproducible website/pipeline | **○** | **○** | **●** Core strength |
 
-*Do not cite the provisional IBRAP interpretation as “IBERO” until the intended source is confirmed.*
+*IBRAP is an scRNA-seq pipeline benchmarking framework (Connor & Ajao 2023); it is not a spatial-specific tool but is the closest verifiable match to the “IBERO” query.*
 
 ## Defensible positioning
 
@@ -75,7 +75,7 @@ This must be paired with the limitation that community adoption, external datase
 ## Primary external sources
 
 1. **SpatialBench:** Workman et al., arXiv:2512.21907 (2025), <https://arxiv.org/abs/2512.21907>.
-2. **IBRAP (provisional “IBERO” interpretation):** <https://pmc.ncbi.nlm.nih.gov/articles/PMC10025434/>.
+2. **IBRAP:** Connor & Ajao, *Briefings in Bioinformatics* (2023), <https://pmc.ncbi.nlm.nih.gov/articles/PMC10025434/>.
 3. **scIB:** Luecken et al., Nature Methods 19, 41–50 (2022), <https://www.nature.com/articles/s41592-021-01336-8>; <https://scib.readthedocs.io/en/latest/>.
 4. **Squidpy:** Palla et al., Nature Methods 19, 171–178 (2022), <https://www.nature.com/articles/s41592-021-01358-2>.
 5. **Giotto Suite:** <https://pmc.ncbi.nlm.nih.gov/articles/PMC10705291/>; <https://giottosuite.com/>.
@@ -83,9 +83,8 @@ This must be paired with the limitation that community adoption, external datase
 
 ## Before submission
 
-1. Confirm what “IBERO” refers to and replace the provisional IBRAP column if needed.
-2. Add failure-boundary sensitivity instead of reporting only tau=0.7.
-3. Report estimated-K and oracle-K panels with identical data and seeds.
-4. State independent donor counts for every cohort confidence interval.
-5. Publish raw outcomes and adjusted pairwise q-values behind every rank claim.
-6. Retain the limitation that hosted submissions and community scale remain behind mature ecosystems.
+1. Add failure-boundary sensitivity instead of reporting only tau=0.7.
+2. Report estimated-K and oracle-K panels with identical data and seeds.
+3. State independent donor counts for every cohort confidence interval.
+4. Publish raw outcomes and adjusted pairwise q-values behind every rank claim.
+5. Retain the limitation that hosted submissions and community scale remain behind mature ecosystems.

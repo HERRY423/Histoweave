@@ -1,0 +1,47 @@
+{
+  "n_slices": 5,
+  "spearman_rho_isus_vs_spatial_gain": -0.3,
+  "per_slice": [
+    {
+      "dataset": "151507",
+      "isus": 0.23822862711046525,
+      "i_d_e": 0.5782817873365199,
+      "i_d_s_given_e": 0.13776327628016516,
+      "band": "modest-spatial-signal",
+      "spatial_ari_gain": 0.12531461813888933
+    },
+    {
+      "dataset": "151669",
+      "isus": 0.4200039055602172,
+      "i_d_e": 0.4799265345736109,
+      "i_d_s_given_e": 0.2015710189028972,
+      "band": "spatial-critical",
+      "spatial_ari_gain": 0.0963327162942598
+    },
+    {
+      "dataset": "151670",
+      "isus": 0.30231452642217277,
+      "i_d_e": 0.4183953366324457,
+      "i_d_s_given_e": 0.1264869880512834,
+      "band": "spatial-critical",
+      "spatial_ari_gain": 0.19755128293267715
+    },
+    {
+      "dataset": "151673",
+      "isus": 0.07688279642691283,
+      "i_d_e": 0.7872696614216084,
+      "i_d_s_given_e": 0.0605274931121621,
+      "band": "expression-sufficient",
+      "spatial_ari_gain": 0.1297759059005244
+    },
+    {
+      "dataset": "151674",
+      "isus": 0.09655429390605089,
+      "i_d_e": 0.8239008695699886,
+      "i_d_s_given_e": 0.07955116670991158,
+      "band": "expression-sufficient",
+      "spatial_ari_gain": 0.11540978979321878
+    }
+  ],
+  "note": "ISUS measures the spatial fraction of domain information (validated by coordinate-shuffle control); thresholds are provisional heuristics, not validated predictors of a specific method's ARI gain."
+}

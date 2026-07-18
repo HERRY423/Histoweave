@@ -2,7 +2,7 @@
 
 **Protocol:** `histoweave.method_validation.sota_batch.v1`
 **Category:** `svg`
-**Decision:** **VALIDATED**
+**Decision:** **contract_validated** (mock multi-dataset SVG I/O gates — not scientific concordance)
 **Datasets (n=6):** synth_domain_a, synth_domain_b, synth_domain_c, dlpfc_151507, dlpfc_151669, dlpfc_151673
 
 ## Gates

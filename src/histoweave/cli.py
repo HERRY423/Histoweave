@@ -13,6 +13,11 @@ Commands
     histoweave recommend --in data.ttab --knowledge-base landscape.json
                       [--k-neighbours 3] [--top 3] [--json]
     histoweave ask "Find spatial domains" --in data.ttab [--model mock] [--yes]
+    histoweave digital-twin --in data.ttab [--out-dir DIR] [--methods kmeans,spectral]
+    histoweave automl "Find spatial domains for my Visium data"
+                   --in data.ttab --knowledge-base landscape.json [--out-dir DIR]
+    histoweave failure-fingerprint [--methods kmeans,spectral] [--out-dir DIR]
+    histoweave calibrate-recommender --in data.ttab --knowledge-base landscape.json
     histoweave sota [--dry-run] [--out-dir DIR]
     histoweave stats-review --landscape landscape.json [--out stats.json]
     histoweave discovery (run|cohort|bootstrap-ci|panel|if-package|if-analyze) [options]
@@ -33,7 +38,7 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import TextIO
+from typing import Any, TextIO
 
 from .logging import configure_logging, get_logger, log_event
 
@@ -233,6 +238,48 @@ def main(argv: list[str] | None = None) -> int:
         help="Directory to write boundary_long.csv + safe_operating_cards.{csv,json,md}.",
     )
     p_boundary.add_argument("--json", action="store_true", help="Emit the cards as JSON.")
+    p_boundary.add_argument(
+        "--no-fingerprints",
+        action="store_true",
+        help="Skip the failure-fingerprint atlas (how methods fail).",
+    )
+
+    p_fp = sub.add_parser(
+        "failure-fingerprint",
+        help=(
+            "Build a method failure fingerprint atlas: 4-mode vectors "
+            "(fragmentation / merge / noise / structural) from easy vs hard probes."
+        ),
+    )
+    p_fp.add_argument(
+        "--methods",
+        help="Comma-separated domain-detection methods. Default: all runnable.",
+    )
+    p_fp.add_argument("--seeds", type=int, default=3, help="Replicate seeds. Default: 3.")
+    p_fp.add_argument("--tau", type=float, default=0.7, help="Acceptability threshold.")
+    p_fp.add_argument(
+        "--out-dir",
+        default="failure_fingerprints",
+        help="Artifact directory. Default: failure_fingerprints.",
+    )
+    p_fp.add_argument("--json", action="store_true", help="Emit atlas JSON to stdout.")
+
+    p_cal = sub.add_parser(
+        "calibrate-recommender",
+        help=(
+            "When the recommender fails to beat global-best, propose dataset×method "
+            "pairs that maximise expected information gain (evidence-acquisition todo)."
+        ),
+    )
+    p_cal.add_argument("--in", dest="in_path", required=True, help="Input bundle.")
+    p_cal.add_argument(
+        "--knowledge-base", required=True, help="Landscape knowledge-base JSON."
+    )
+    p_cal.add_argument("--dataset-name", default="user_dataset")
+    p_cal.add_argument("--k-neighbours", type=int, default=3)
+    p_cal.add_argument("--top", type=int, default=10, help="Max evidence tasks to list.")
+    p_cal.add_argument("--json", action="store_true", help="Emit calibration plan JSON.")
+    p_cal.add_argument("--out", help="Persist calibration plan JSON.")
 
     p_scale = sub.add_parser("scale", help="Run an isolated computational scaling sweep.")
     p_scale.add_argument("--scales", default="1000,10000,100000,500000,1000000")
@@ -329,6 +376,94 @@ def main(argv: list[str] | None = None) -> int:
         "--gaps-file",
         default="docs/COMPILER_GAPS.md",
         help="Markdown audit log for approximated capabilities.",
+    )
+
+    p_twin = sub.add_parser(
+        "digital-twin",
+        help=(
+            "Build a feature-matched synthetic twin of a real sample, benchmark "
+            "methods on planted truth, and return the ranking as a prediction."
+        ),
+    )
+    p_twin.add_argument("--in", dest="in_path", required=True, help="Input bundle directory.")
+    p_twin.add_argument(
+        "--out-dir",
+        default="digital_twin_out",
+        help="Artifact directory (JSON + HTML report). Default: digital_twin_out.",
+    )
+    p_twin.add_argument("--dataset-name", default="user_dataset")
+    p_twin.add_argument(
+        "--methods",
+        help="Comma-separated domain-detection methods. Default: harness release defaults.",
+    )
+    p_twin.add_argument("--seed", type=int, default=0)
+    p_twin.add_argument("--n-domains", type=int, help="Planted domain count (default: estimated).")
+    p_twin.add_argument("--max-cells", type=int, default=1500)
+    p_twin.add_argument("--max-genes", type=int, default=500)
+    p_twin.add_argument("--n-trials", type=int, default=12, help="Twin match search budget.")
+    p_twin.add_argument(
+        "--k-policy",
+        choices=("oracle", "estimate", "fixed"),
+        default="oracle",
+        help="Domain-count policy on the twin (default: oracle — planted labels).",
+    )
+    p_twin.add_argument("--stats", action="store_true", help="Attach cell-bootstrap ARI CIs.")
+    p_twin.add_argument("--json", action="store_true", help="Emit full validation JSON.")
+    p_twin.add_argument(
+        "--no-report",
+        action="store_true",
+        help="Skip HTML report generation.",
+    )
+
+    p_automl = sub.add_parser(
+        "automl",
+        help=(
+            "Spatial AutoML compiler: extract features, retrieve landscape neighbours, "
+            "auto-run top-k methods, compare on a Pareto front, emit HTML report."
+        ),
+    )
+    p_automl.add_argument(
+        "question",
+        nargs="?",
+        default="Find spatial domains for my data.",
+        help='Natural-language request, e.g. "Find spatial domains for my Visium HCC data."',
+    )
+    p_automl.add_argument("--in", dest="in_path", required=True, help="Input bundle directory.")
+    p_automl.add_argument(
+        "--knowledge-base",
+        required=True,
+        help="Landscape knowledge-base JSON (from a prior landscape run).",
+    )
+    p_automl.add_argument(
+        "--out-dir",
+        default="automl_out",
+        help="Artifact directory (JSON + HTML). Default: automl_out.",
+    )
+    p_automl.add_argument("--dataset-name", default="user_dataset")
+    p_automl.add_argument("--top", type=int, default=3, help="Top-k methods to auto-run.")
+    p_automl.add_argument("--k-neighbours", type=int, default=3)
+    p_automl.add_argument(
+        "--methods",
+        help="Optional comma-separated method override (skips recommender top-k).",
+    )
+    p_automl.add_argument("--n-domains", type=int, help="Domain count override.")
+    p_automl.add_argument("--platform", help="Platform prior (visium, xenium, …).")
+    p_automl.add_argument("--seed", type=int, default=0)
+    p_automl.add_argument(
+        "--model",
+        default="mock",
+        help="Compiler model id for the advisory NL plan (default: mock).",
+    )
+    p_automl.add_argument(
+        "--no-compiler",
+        action="store_true",
+        help="Skip the natural-language compiler plan.",
+    )
+    p_automl.add_argument("--json", action="store_true", help="Emit full AutoML JSON.")
+    p_automl.add_argument(
+        "--no-report",
+        action="store_true",
+        help="Skip HTML report generation.",
     )
 
     p_ingest = sub.add_parser("ingest", help="Read vendor data (or the demo) into a bundle.")
@@ -434,6 +569,74 @@ def main(argv: list[str] | None = None) -> int:
     p_stats.add_argument("--alpha", type=float, default=0.05)
     p_stats.add_argument("--out", help="Write StatsReviewReport JSON.")
     p_stats.add_argument("--json", action="store_true", help="Print full report JSON.")
+
+    p_pareto = sub.add_parser(
+        "pareto",
+        help="Multi-objective Pareto frontier over accuracy/speed/memory/robustness.",
+    )
+    p_pareto.add_argument(
+        "--benchmark-long",
+        help="benchmark_long.csv with per-seed ari/seconds (preferred source; enables "
+        "the robustness axis).",
+    )
+    p_pareto.add_argument(
+        "--landscape",
+        help="Landscape JSON (accuracy + timings only; no robustness axis). Used when "
+        "--benchmark-long is absent.",
+    )
+    p_pareto.add_argument(
+        "--scaling-dir",
+        help="Directory with scaling_metrics.csv to attach the memory (GB) axis.",
+    )
+    p_pareto.add_argument(
+        "--dataset",
+        help="Restrict the text summary to a single dataset id (JSON still covers all).",
+    )
+    p_pareto.add_argument(
+        "--eps-rel",
+        type=float,
+        default=1e-3,
+        help="Relative per-axis tolerance for dominance ties (default 1e-3).",
+    )
+    p_pareto.add_argument(
+        "--n-boot",
+        type=int,
+        default=200,
+        help="Bootstrap resamples for the ARI CI-width robustness axis.",
+    )
+    p_pareto.add_argument("--seed", type=int, default=0)
+    p_pareto.add_argument("--out", help="Write ParetoReport JSON.")
+    p_pareto.add_argument(
+        "--svg",
+        help="Write a per-dataset Pareto SVG (requires --dataset, or writes the first).",
+    )
+    p_pareto.add_argument("--json", action="store_true", help="Print full report JSON.")
+
+    p_isus = sub.add_parser(
+        "isus",
+        help="Information-theoretic Spatial Utility Score: does this dataset need a "
+        "spatial method?",
+    )
+    p_isus.add_argument(
+        "--in",
+        dest="in_path",
+        help="Input bundle / dataset with expression, spatial coords and domain labels.",
+    )
+    p_isus.add_argument(
+        "--calibrate",
+        help="Benchmark directory (needs benchmark_long.csv + per-slice .h5ad in data/) "
+        "to correlate ISUS against the observed spatial ARI gain.",
+    )
+    p_isus.add_argument(
+        "--domain-key",
+        default="domain_truth",
+        help="obs column holding ground-truth domain labels (default: domain_truth).",
+    )
+    p_isus.add_argument("--n-pcs", type=int, default=20, help="Expression PCA components.")
+    p_isus.add_argument("--k", type=int, default=3, help="kNN neighbours for the MI estimator.")
+    p_isus.add_argument("--seed", type=int, default=0)
+    p_isus.add_argument("--out", help="Write ISUS result JSON.")
+    p_isus.add_argument("--json", action="store_true", help="Print full JSON.")
 
     p_disc = sub.add_parser(
         "discovery",
@@ -544,6 +747,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_benchmark(args)
     if args.command == "benchmark-boundary":
         return _cmd_benchmark_boundary(args)
+    if args.command == "failure-fingerprint":
+        return _cmd_failure_fingerprint(args)
+    if args.command == "calibrate-recommender":
+        return _cmd_calibrate_recommender(args)
     if args.command == "scale":
         return _cmd_scale(args)
     if args.command == "recommend":
@@ -552,6 +759,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_causal_landscape(args)
     if args.command == "ask":
         return _cmd_ask(args)
+    if args.command == "digital-twin":
+        return _cmd_digital_twin(args)
+    if args.command == "automl":
+        return _cmd_automl(args)
     if args.command == "ingest":
         return _cmd_ingest(args)
     if args.command == "step":
@@ -566,6 +777,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_sota(args)
     if args.command == "stats-review":
         return _cmd_stats_review(args)
+    if args.command == "pareto":
+        return _cmd_pareto(args)
+    if args.command == "isus":
+        return _cmd_isus(args)
     if args.command == "discovery":
         return _cmd_discovery(args)
 
@@ -724,6 +939,94 @@ def _cmd_ask(args) -> int:
         _emit(json.dumps(result, indent=2))
     else:
         _emit(f"Report written to {Path(args.out).resolve()}")
+    return 0
+
+
+def _cmd_digital_twin(args) -> int:
+    """Feature-matched twin + planted-truth benchmark → predicted ranking."""
+    from pathlib import Path
+
+    from .benchmark import run_digital_twin_validation
+    from .io import read_bundle
+
+    methods = None
+    if args.methods:
+        methods = [m.strip() for m in args.methods.split(",") if m.strip()]
+        if not methods:
+            _emit("error: --methods is empty", file=sys.stderr)
+            return 2
+    try:
+        data = read_bundle(args.in_path)
+        result = run_digital_twin_validation(
+            data,
+            methods=methods,
+            dataset_name=args.dataset_name,
+            seed=args.seed,
+            n_domains=args.n_domains,
+            max_cells=args.max_cells,
+            max_genes=args.max_genes,
+            n_trials=args.n_trials,
+            k_policy=args.k_policy,
+            stats=args.stats,
+            out_dir=args.out_dir,
+            write_report=not args.no_report,
+        )
+    except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    payload = result.to_dict()
+    if args.json:
+        _emit(json.dumps(payload, indent=2, allow_nan=False, default=str))
+    else:
+        _emit(result.summary())
+        _emit(f"Artifacts written to {Path(args.out_dir).resolve()}")
+    return 0
+
+
+def _cmd_automl(args) -> int:
+    """Spatial AutoML: recommend → run top-k → Pareto HTML report."""
+    from pathlib import Path
+
+    from .automl import run_spatial_automl
+    from .io import read_bundle
+
+    methods = None
+    if args.methods:
+        methods = [m.strip() for m in args.methods.split(",") if m.strip()]
+        if not methods:
+            _emit("error: --methods is empty", file=sys.stderr)
+            return 2
+    if args.top < 1:
+        _emit("error: --top must be at least 1", file=sys.stderr)
+        return 2
+    try:
+        data = read_bundle(args.in_path)
+        result = run_spatial_automl(
+            data,
+            args.question,
+            knowledge_base=args.knowledge_base,
+            dataset_name=args.dataset_name,
+            top_k=args.top,
+            k_neighbours=args.k_neighbours,
+            methods=methods,
+            n_domains=args.n_domains,
+            use_compiler=not args.no_compiler,
+            compiler_model=args.model,
+            seed=args.seed,
+            out_dir=args.out_dir,
+            write_report=not args.no_report,
+            platform=args.platform,
+        )
+    except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    if args.json:
+        _emit(json.dumps(result.to_dict(), indent=2, allow_nan=False, default=str))
+    else:
+        _emit(result.summary())
+        _emit(f"Artifacts written to {Path(args.out_dir).resolve()}")
     return 0
 
 
@@ -1104,6 +1407,7 @@ def _cmd_benchmark_boundary(args) -> int:
             tau=args.tau,
             n_seeds=args.seeds,
             progress=not args.json,
+            include_fingerprints=not args.no_fingerprints,
         )
     except (ValueError, RuntimeError, TypeError) as exc:
         _emit(f"error: {exc}", file=sys.stderr)
@@ -1196,8 +1500,104 @@ def _cmd_recommend(args) -> int:
         )
         _emit(f"Nearest evidence: {evidence}")
     _emit(f"Ensemble suggestion: {recommendation.ensemble_strategy}")
+    if recommendation.beats_global_best_baseline is False:
+        _emit(
+            "Baseline: does NOT beat global-best "
+            f"({recommendation.global_best_method}); "
+            "see evidence-acquisition todo below."
+        )
+        if recommendation.evidence_todo:
+            _emit("Evidence-acquisition todo (maximise expected information gain):")
+            for item in recommendation.evidence_todo[:10]:
+                _emit(
+                    f"  {item.get('priority', '?'):>2}. "
+                    f"{item.get('dataset')} × {item.get('method')}  "
+                    f"EIG={item.get('expected_information_gain')}  "
+                    f"— {item.get('reason')}"
+                )
+        else:
+            _emit(
+                "  (no missing cells near the query; expand the landscape "
+                "with new reference datasets)"
+            )
     if args.out:
         _emit(f"Recommendation written to {Path(args.out).resolve()}")
+    return 0
+
+
+def _cmd_failure_fingerprint(args) -> int:
+    """Probe easy/hard synthetic conditions and emit failure fingerprints."""
+    from pathlib import Path
+
+    from .benchmark import run_failure_fingerprint_probe, write_fingerprint_atlas
+
+    methods = None
+    if args.methods:
+        methods = [m.strip() for m in args.methods.split(",") if m.strip()]
+        if not methods:
+            _emit("error: --methods is empty", file=sys.stderr)
+            return 2
+    try:
+        atlas = run_failure_fingerprint_probe(
+            methods,
+            seeds=tuple(range(max(1, int(args.seeds)))),
+            tau=float(args.tau),
+            progress=not args.json,
+        )
+        paths = write_fingerprint_atlas(atlas, args.out_dir)
+    except (RuntimeError, TypeError, ValueError, OSError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    if args.json:
+        _emit(json.dumps(atlas.to_dict(), indent=2, allow_nan=False))
+    else:
+        _emit(atlas.summary())
+        _emit(f"Artifacts written to {Path(args.out_dir).resolve()}")
+        for name, path in paths.items():
+            _emit(f"  {name}: {path}")
+    return 0
+
+
+def _cmd_calibrate_recommender(args) -> int:
+    """Propose evidence-acquisition experiments for recommender calibration."""
+    from pathlib import Path
+
+    from .benchmark import MethodRecommender, propose_evidence_acquisition
+    from .io import read_bundle
+
+    if args.top < 1:
+        _emit("error: --top must be at least 1", file=sys.stderr)
+        return 2
+    try:
+        data = read_bundle(args.in_path)
+        recommender = MethodRecommender(
+            args.knowledge_base,
+            k_neighbours=args.k_neighbours,
+        )
+        # recommend() already attaches calibration; recompute with explicit top_n.
+        recommendation = recommender.recommend(
+            data,
+            dataset_name=args.dataset_name,
+        )
+        plan = propose_evidence_acquisition(
+            recommender,
+            recommendation,
+            top_n=args.top,
+        )
+    except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    payload = plan.to_dict()
+    if args.out:
+        _write_json_atomic(Path(args.out), payload)
+    if args.json:
+        _emit(json.dumps(payload, indent=2, allow_nan=False))
+        return 0
+    _emit(plan.summary())
+    if args.out:
+        _emit(f"Calibration plan written to {Path(args.out).resolve()}")
     return 0
 
 
@@ -1467,6 +1867,270 @@ def _cmd_stats_review(args) -> int:
             f"Pairwise FDR: {pair.get('n_significant', 0)}/{pair.get('n_tests', 0)} "
             f"significant at alpha={report.alpha}"
         )
+    return 0
+
+
+def _cmd_pareto(args) -> int:
+    """Multi-objective Pareto frontier over accuracy/speed/memory/robustness."""
+    from .benchmark.pareto import analyze_dataset, build_report, pareto_svg
+    from .benchmark.pareto_io import (
+        objective_tables_from_landscape,
+        objective_tables_from_long_csv,
+    )
+
+    try:
+        if args.benchmark_long:
+            tables = objective_tables_from_long_csv(
+                args.benchmark_long,
+                scaling_dir=args.scaling_dir,
+                n_boot=int(args.n_boot),
+                seed=int(args.seed),
+            )
+        elif args.landscape:
+            tables = objective_tables_from_landscape(
+                args.landscape, scaling_dir=args.scaling_dir
+            )
+        else:
+            _emit(
+                "error: provide --benchmark-long (preferred) or --landscape",
+                file=sys.stderr,
+            )
+            return 2
+    except (OSError, ValueError, json.JSONDecodeError, TypeError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    if not tables:
+        _emit("error: no datasets found in the provided source", file=sys.stderr)
+        return 2
+
+    report = build_report(tables, eps_rel=float(args.eps_rel))
+    payload = report.to_dict()
+
+    if args.out:
+        _write_json_atomic(Path(args.out), payload)
+        _emit(f"pareto report written to {Path(args.out).resolve()}")
+
+    if args.svg:
+        target = args.dataset or tables[0].dataset
+        chosen = next((t for t in tables if t.dataset == target), None)
+        if chosen is None:
+            _emit(f"error: dataset {target!r} not found for --svg", file=sys.stderr)
+            return 2
+        svg = pareto_svg(analyze_dataset(chosen, eps_rel=float(args.eps_rel)), report.directions)
+        Path(args.svg).write_text(svg, encoding="utf-8")
+        _emit(f"pareto SVG ({target}) written to {Path(args.svg).resolve()}")
+
+    if args.json:
+        _emit(json.dumps(payload, indent=2, allow_nan=False))
+        return 0
+
+    _emit(
+        f"Pareto frontier: {report.n_datasets} datasets  objectives={report.objectives}  "
+        f"(eps_rel={report.eps_rel})"
+    )
+    shown = [args.dataset] if args.dataset else list(report.datasets)
+    for ds in shown:
+        info = report.datasets.get(ds)
+        if info is None:
+            _emit(f"  {ds}: (not found)")
+            continue
+        _emit(
+            f"\nDataset {ds}: {info['n_frontier']}/{info['n_configs']} non-dominated  "
+            f"knee={info['knee']}"
+        )
+        for cfg in sorted(
+            info["frontier"],
+            key=lambda c: -(info["table"][c].get("accuracy") or 0.0),
+        ):
+            row = info["table"][cfg]
+            bits = []
+            for obj in info["objectives"]:
+                val = row.get(obj)
+                bits.append(f"{obj}={'NA' if val is None else f'{val:.4g}'}")
+            _emit(f"  {cfg:<24} " + "  ".join(bits))
+    if not args.dataset:
+        _emit("\nFrontier frequency (configs non-dominated across datasets):")
+        for cfg, count in list(report.frontier_frequency.items())[:12]:
+            _emit(f"  {cfg:<24} {count}/{report.n_datasets}")
+    return 0
+
+
+def _cmd_isus(args) -> int:
+    """Information-theoretic Spatial Utility Score for a dataset (or calibration)."""
+    from .benchmark.isus import compute_isus_from_table
+
+    if args.calibrate:
+        return _isus_calibrate(args)
+
+    if not args.in_path:
+        _emit("error: provide --in <bundle> (or --calibrate <dir>)", file=sys.stderr)
+        return 2
+
+    from .io import read_bundle
+
+    try:
+        data = read_bundle(args.in_path)
+        result = compute_isus_from_table(
+            data,
+            domain_key=args.domain_key,
+            n_pcs=int(args.n_pcs),
+            k=int(args.k),
+            seed=int(args.seed),
+        )
+    except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    payload = result.to_dict()
+    if args.out:
+        _write_json_atomic(Path(args.out), payload)
+        _emit(f"ISUS written to {Path(args.out).resolve()}")
+    if args.json:
+        _emit(json.dumps(payload, indent=2, allow_nan=False))
+        return 0
+
+    isus_str = "NA" if payload["isus"] is None else f"{payload['isus']:.3f}"
+    _emit(f"ISUS[{result.dataset}] = {isus_str}   band: {result.band}")
+    _emit(
+        f"  I(D;E)={result.i_d_e:.4f}  I(D;[S,E])={result.i_d_se:.4f}  "
+        f"I(D;S|E)={result.i_d_s_given_e:.4f}"
+    )
+    _emit(
+        f"  (n_obs={result.n_obs}, domains={result.n_domains}, n_pcs={result.n_pcs}, "
+        f"k={result.k}, estimator={result.estimator})"
+    )
+    _emit(
+        "  bands: <0.1 expression-sufficient | 0.1-0.3 modest | >0.3 spatial-critical "
+        "(provisional heuristics)"
+    )
+    for flag in result.flags:
+        _emit(f"  ! {flag}")
+    return 0
+
+
+def _isus_calibrate(args) -> int:
+    """Correlate ISUS against the observed spatial ARI gain over benchmark slices."""
+    import csv as _csv
+
+    import numpy as np
+
+    from .benchmark.isus import compute_isus
+
+    root = Path(args.calibrate)
+    long_csv = root / "benchmark_long.csv"
+    data_dir = root / "data"
+    if not long_csv.is_file():
+        _emit(f"error: {long_csv} not found", file=sys.stderr)
+        return 2
+    try:
+        import anndata as ad
+    except ImportError:
+        _emit("error: --calibrate requires anndata to read per-slice .h5ad", file=sys.stderr)
+        return 2
+
+    # Observed spatial benefit per dataset: mean over methods of best(sw>0) - sw0.0.
+    rows: dict[str, dict[str, list[float]]] = {}
+    with long_csv.open(encoding="utf-8") as handle:
+        for row in _csv.DictReader(handle):
+            ds = str(row["dataset"])
+            base = str(row.get("method") or row["config"].split("@", 1)[0])
+            cfg = str(row["config"])
+            try:
+                ari = float(row["ari"])
+            except (TypeError, ValueError):
+                continue
+            rows.setdefault(ds, {}).setdefault(f"{base}|{cfg}", []).append(ari)
+
+    def _spatial_gain(ds: str) -> float:
+        means = {k: float(np.mean(v)) for k, v in rows[ds].items()}
+        per_method: list[float] = []
+        bases = {k.split("|", 1)[0] for k in means}
+        for base in bases:
+            sw0 = means.get(f"{base}|{base}@sw0.0")
+            pos = [
+                means[k]
+                for k in means
+                if k.startswith(f"{base}|") and not k.endswith("@sw0.0")
+            ]
+            if sw0 is not None and pos:
+                per_method.append(max(pos) - sw0)
+        return float(np.mean(per_method)) if per_method else float("nan")
+
+    records: list[dict[str, Any]] = []
+    for ds in sorted(rows):
+        h5 = data_dir / f"{ds}.h5ad"
+        if not h5.is_file():
+            continue
+        adata = ad.read_h5ad(str(h5))
+        coords = adata.obsm.get("spatial")
+        if coords is None or args.domain_key not in adata.obs.columns:
+            continue
+        res = compute_isus(
+            adata.X,
+            np.asarray(coords),
+            np.asarray(adata.obs[args.domain_key]),
+            dataset=ds,
+            n_pcs=int(args.n_pcs),
+            k=int(args.k),
+            seed=int(args.seed),
+        )
+        records.append(
+            {
+                "dataset": ds,
+                "isus": res.isus,
+                "i_d_e": res.i_d_e,
+                "i_d_s_given_e": res.i_d_s_given_e,
+                "band": res.band,
+                "spatial_ari_gain": _spatial_gain(ds),
+            }
+        )
+
+    if len(records) < 2:
+        _emit(
+            "error: need >=2 slices with matching .h5ad in <dir>/data/ to calibrate",
+            file=sys.stderr,
+        )
+        return 2
+
+    isus_arr = np.array([r["isus"] for r in records], dtype=float)
+    gain_arr = np.array([r["spatial_ari_gain"] for r in records], dtype=float)
+    ok = ~np.isnan(isus_arr) & ~np.isnan(gain_arr)
+    rho = float("nan")
+    if ok.sum() >= 2 and np.unique(isus_arr[ok]).size > 1:
+        from scipy.stats import spearmanr
+
+        rho = float(spearmanr(isus_arr[ok], gain_arr[ok]).correlation)
+
+    summary = {
+        "n_slices": len(records),
+        "spearman_rho_isus_vs_spatial_gain": None if np.isnan(rho) else rho,
+        "per_slice": records,
+        "note": (
+            "ISUS measures the spatial fraction of domain information (validated by "
+            "coordinate-shuffle control); thresholds are provisional heuristics, not "
+            "validated predictors of a specific method's ARI gain."
+        ),
+    }
+    if args.out:
+        _write_json_atomic(Path(args.out), summary)
+        _emit(f"ISUS calibration written to {Path(args.out).resolve()}")
+    if args.json:
+        _emit(json.dumps(summary, indent=2, allow_nan=False))
+        return 0
+
+    _emit(f"ISUS calibration on {len(records)} slices:")
+    _emit(f"{'DATASET':<12} {'ISUS':<8} {'I(D;E)':<9} {'I(D;S|E)':<10} {'ARI_gain':<9} BAND")
+    _emit("-" * 62)
+    for r in records:
+        isus_v = "NA" if np.isnan(r["isus"]) else f"{r['isus']:.3f}"
+        gain_v = "NA" if np.isnan(r["spatial_ari_gain"]) else f"{r['spatial_ari_gain']:.3f}"
+        _emit(
+            f"{r['dataset']:<12} {isus_v:<8} {r['i_d_e']:<9.4f} "
+            f"{r['i_d_s_given_e']:<10.4f} {gain_v:<9} {r['band']}"
+        )
+    rho_str = "NA" if np.isnan(rho) else f"{rho:.3f}"
+    _emit(f"\nSpearman(ISUS, spatial ARI gain) = {rho_str}  (n={int(ok.sum())})")
     return 0
 
 

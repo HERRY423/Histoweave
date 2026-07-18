@@ -27,11 +27,22 @@ if TYPE_CHECKING:
 
 
 class MethodMaturity(StrEnum):
-    """Evidence-backed quality level for an analysis-method wrapper."""
+    """Evidence-backed quality level for an analysis-method wrapper.
+
+    Ladder (increasing evidence):
+    * **experimental** — stable contract only.
+    * **beta** — real upstream wrap + mock/integration path.
+    * **production** — pinned runtime, real-data ops tests.
+    * **contract_validated** — multi-dataset *interface/mock/structural* gates
+      (CI-safe; does **not** claim scientific concordance on real labels).
+    * **validated** — multi-dataset *scientific* concordance (e.g. ARI vs
+      independent ground truth on real tissue sections).
+    """
 
     EXPERIMENTAL = "experimental"
     BETA = "beta"
     PRODUCTION = "production"
+    CONTRACT_VALIDATED = "contract_validated"
     VALIDATED = "validated"
 
 
@@ -136,11 +147,21 @@ METHOD_MATURITY_POLICIES: dict[MethodMaturity, MaturityPolicy] = {
             "Resource bounds, persistence contract, and release ownership.",
         ),
     ),
+    MethodMaturity.CONTRACT_VALIDATED: MaturityPolicy(
+        rank=35,
+        requirements=(
+            "Meets production operational requirements.",
+            "Multi-dataset *contract* gates pass (I/O schema, fail-closed backends, "
+            "structural outputs) — mock or driver-absent paths allowed in CI.",
+            "Documented limitations state that scientific concordance is not claimed.",
+        ),
+    ),
     MethodMaturity.VALIDATED: MaturityPolicy(
         rank=40,
         requirements=(
             "Meets all production requirements.",
-            "Reference-concordance and multi-dataset benchmark thresholds pass.",
+            "Multi-dataset *scientific* concordance vs independent ground truth "
+            "(e.g. ARI on real tissue sections) passes documented thresholds.",
             "Scientific outputs have independent review and documented limitations.",
         ),
     ),

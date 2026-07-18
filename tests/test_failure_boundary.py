@@ -115,6 +115,7 @@ def test_run_boundary_study_small_slice(tmp_path):
         tau=DEFAULT_TAU,
         n_seeds=2,
         progress=False,
+        include_fingerprints=False,
     )
     cards = result.cards_dataframe()
     assert len(cards) == 2
@@ -153,6 +154,7 @@ def test_cli_benchmark_boundary_writes_cards(tmp_path):
             "--out",
             str(tmp_path),
             "--json",
+            "--no-fingerprints",
         ]
     )
     assert rc == 0

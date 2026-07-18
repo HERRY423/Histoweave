@@ -1,0 +1,30 @@
+{
+  "title": "HistoWeave: reproducible spatial transcriptomics orchestration and evaluation platform",
+  "description": "HistoWeave is an open-source orchestration and evaluation platform for reproducible spatial transcriptomics. Release v0.1.0 freezes the plugin registry with 10 scientifically validated and 3 contract-validated multi-dataset evidence packages (13 total), task contracts, honest recommendation baselines, and reproducible landscapes.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "bsd-3-clause",
+  "creators": [
+    {
+      "name": "HistoWeave contributors",
+      "affiliation": "HistoWeave open-source project"
+    }
+  ],
+  "keywords": [
+    "spatial transcriptomics",
+    "bioinformatics",
+    "reproducibility",
+    "benchmarking",
+    "method recommendation",
+    "scverse"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/histoweave-spatial/histoweave",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "version": "0.1.0",
+  "notes": "Canonical validation ledger: 10 scientific validated + 3 contract_validated = 13 multi-dataset evidence packages (see src/histoweave/plugins/builtin/release_manifest.py)."
+}

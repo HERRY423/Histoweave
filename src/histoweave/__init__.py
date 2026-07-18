@@ -16,8 +16,8 @@ Quick start
 
 from __future__ import annotations
 
-__version__ = "0.1.0b1"
-__version_info__ = (0, 1, 0, "beta", 1)
+__version__ = "0.1.0"
+__version_info__ = (0, 1, 0, "final", 0)
 
 from . import datasets
 from .data import Provenance, SpatialTable

@@ -86,6 +86,7 @@ def test_maturity_policy_is_ordered_queryable_and_string_compatible():
             MethodMaturity.EXPERIMENTAL,
             MethodMaturity.BETA,
             MethodMaturity.PRODUCTION,
+            MethodMaturity.CONTRACT_VALIDATED,
             MethodMaturity.VALIDATED,
         )
     ]
@@ -288,5 +289,8 @@ def test_new_wrappers_are_beta_or_validated_not_self_declared_production():
     names = {"cell2location", "liana_plus", "scanvi", "celltypist", "cellpose2", "sctransform"}
     specs = {item["name"]: item for item in list_methods() if item["name"] in names}
     assert set(specs) == names
-    assert all(item["maturity"] in {"beta", "validated"} for item in specs.values())
-    assert specs["cell2location"]["maturity"] == "validated"
+    assert all(
+        item["maturity"] in {"beta", "validated", "contract_validated"}
+        for item in specs.values()
+    )
+    assert specs["cell2location"]["maturity"] == "contract_validated"

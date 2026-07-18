@@ -1,13 +1,21 @@
 # Multi-dataset method validation protocol
 
 **Protocol ID:** `histoweave.method_validation.multidataset.v1`
-**Maturity target:** `MethodMaturity.VALIDATED`
+
+**Maturity targets:**
+
+| Gate kind | Maturity | Claim |
+|-----------|----------|-------|
+| Scientific multi-dataset concordance (real labels) | `validated` | Scientific recovery |
+| Interface / mock / fail-closed multi-dataset gates | `contract_validated` | Contract only |
+
+**Ledger freeze:** 10 scientific + 3 contract = **13** multi-dataset packages.
 
 ## Purpose
 
-Promote a registered method from production/beta to **validated** only when
-multi-dataset evidence is written, reproducible, and linked from
-`VALIDATION_EVIDENCE` in `src/histoweave/plugins/builtin/release_manifest.py`.
+Promote a registered method only when multi-dataset evidence is written,
+reproducible, and linked from `VALIDATION_EVIDENCE` with `kind: scientific` or
+`kind: contract` in `src/histoweave/plugins/builtin/release_manifest.py`.
 
 ## Dataset tiers
 

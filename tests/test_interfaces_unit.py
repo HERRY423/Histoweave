@@ -30,3 +30,4 @@ def test_param_spec_choices() -> None:
 def test_enums_are_stable() -> None:
     assert MethodCategory.DOMAIN_DETECTION.value == "domain_detection"
     assert MethodMaturity.VALIDATED.value == "validated"
+    assert MethodMaturity.CONTRACT_VALIDATED.value == "contract_validated"
