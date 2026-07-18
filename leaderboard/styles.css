@@ -209,6 +209,7 @@ body {
 }
 .chip.sklearn { background: var(--stone); color: #333; }
 .chip.spatial_aware { background: var(--accent-green); color: white; }
+.chip.sota { background: var(--accent-blue, #0279EE); color: white; }
 .chip.win { background: var(--accent-orange); color: white; }
 .chip.nan { background: #eee; color: #999; font-weight: 400; }
 

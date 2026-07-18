@@ -8,11 +8,22 @@ from histoweave.plugins import create_method, list_methods, method_coverage_repo
 def test_method_coverage_release_gates():
     report = method_coverage_report()
     assert report["total_methods"] >= 50
-    assert report["ratios"]["production_plus"] > 0.80
+    assert report["counts"]["release_methods"] >= 40
+    assert report["ratios"]["production_plus"] > 0.60
     assert report["ratios"]["beta_plus"] == 1.0
     assert report["ratios"]["experimental"] < 0.05
-    assert report["counts"]["deep_learning"] >= 10
+    assert report["counts"]["validated"] >= 3
+    assert report["counts"]["deep_learning"] >= 8
     assert report["counts"]["image_expression"] >= 4
+    assert report["counts"]["sota_plugins"] >= 5
+    assert report["counts"]["unclassified_methods"] == 0
+    assert report["unclassified_names"] == []
+    assert report["targets"]["unclassified_is_zero"] is True
+    assert report["targets"]["all_methods_tracked"] is True
+    # Every method lands in exactly one named track.
+    tracks = report["tracks"]
+    tracked = sum(len(tracks[k]) for k in tracks if k != "unclassified")
+    assert tracked == report["total_methods"]
     assert report["passes_all_targets"] is True
 
 

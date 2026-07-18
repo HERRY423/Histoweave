@@ -120,7 +120,7 @@ class Cell2LocationDeconvolution(Method):
         reference.iloc[:, :] = values
         return reference
 
-    def run_on_anndata(self, adata: AnnData) -> AnnData:  # type: ignore[valid-type]
+    def run_on_anndata(self, adata: AnnData) -> AnnData:
         try:
             from cell2location.models import Cell2location
         except ModuleNotFoundError as exc:
@@ -140,7 +140,7 @@ class Cell2LocationDeconvolution(Method):
             raise KeyError(f"cell2location batch column {batch_key!r} does not exist")
 
         reference_key = self.params["reference_key"]
-        reference = self._reference_from_uns(result.uns, reference_key)
+        reference = self._reference_from_uns(dict(result.uns), reference_key)
         reference.index = reference.index.astype(str)
         reference.columns = reference.columns.astype(str)
         if reference.index.has_duplicates or reference.columns.has_duplicates:

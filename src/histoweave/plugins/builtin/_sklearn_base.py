@@ -20,7 +20,7 @@ from __future__ import annotations
 import importlib
 import warnings
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -70,7 +70,7 @@ def _spatial_embedding(
 
 def _categorical_labels(labels: np.ndarray) -> pd.Categorical:
     """Convert integer cluster labels to categorical strings (noise = -1 → domain_-1)."""
-    return pd.Categorical([f"domain_{int(lab)}" for lab in labels])
+    return cast(pd.Categorical, pd.Categorical([f"domain_{int(lab)}" for lab in labels]))
 
 
 # ---------------------------------------------------------------------------
@@ -238,7 +238,7 @@ def register_sklearn_clusterer(
     static_kwargs = dict(static_kwargs or {})
     param_mapping = dict(param_mapping or {})
 
-    def _decorate(cls: type) -> type:  # type: ignore[type-arg]  # dynamic attribute injection
+    def _decorate(cls: type[Any]) -> type[Any]:
         # Build the full parameter list: method-specific params + common params.
         # Reverse order so method-specific params appear first in documentation.
         specific_names = {p.name for p in method_params}
@@ -259,16 +259,16 @@ def register_sklearn_clusterer(
         )
 
         # Attach configuration to the class (or its parent via direct assignment).
-        cls.spec = spec  # type: ignore[attr-defined]
-        cls._clusterer_import = clusterer_cls  # type: ignore[attr-defined]
-        cls._static_kwargs = static_kwargs  # type: ignore[attr-defined]
-        cls._param_mapping = param_mapping  # type: ignore[attr-defined]
+        cls.spec = spec
+        cls._clusterer_import = clusterer_cls
+        cls._static_kwargs = static_kwargs
+        cls._param_mapping = param_mapping
         if adapt_kwargs is not None:
-            cls._adapt_clusterer_kwargs = getattr(cls, adapt_kwargs)  # type: ignore[attr-defined]
+            cls._adapt_clusterer_kwargs = getattr(cls, adapt_kwargs)
         if post_fit_hook is not None:
-            cls._post_fit_hook = post_fit_hook  # type: ignore[attr-defined]
+            cls._post_fit_hook = post_fit_hook
 
-        return register(cls)  # type: ignore[arg-type]
+        return register(cls)
 
     return _decorate
 

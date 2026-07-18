@@ -3,7 +3,8 @@ from histoweave.plugins import list_methods
 
 
 def test_benchmark_produces_ranked_leaderboard():
-    result = run_benchmark(domain_detection_task())
+    # Accuracy floor uses oracle K (method capacity); default scientific path is estimate.
+    result = run_benchmark(domain_detection_task(), k_policy="oracle", allow_oracle_k=True)
     assert result.task == "domain_detection"
     assert result.leaderboard
     # Ranked best-first, ranks are 1..n.
@@ -17,7 +18,9 @@ def test_benchmark_best_method_is_reasonable():
     # This is the single, integration-level guard on recovery *accuracy*: it exercises
     # the full normalize -> PCA -> neighbourhood -> clustering -> ARI path end to end.
     # The per-method unit tests intentionally leave accuracy to this test to avoid overlap.
-    result = run_benchmark(domain_detection_task())
+    # Oracle K isolates method capacity from K-selection error (see test_k_selection /
+    # test_harness_stats_and_k for the non-oracle scientific protocol).
+    result = run_benchmark(domain_detection_task(), k_policy="oracle", allow_oracle_k=True)
     best = result.best()
     assert best is not None
     # On the default synthetic sample the best method lands at ARI ~0.99 regardless
@@ -31,7 +34,7 @@ def test_benchmark_best_method_is_reasonable():
 
 def test_benchmark_writes_scores_back_to_registry():
     """After a benchmark run, list_methods surfaces the scores for every method."""
-    result = run_benchmark(domain_detection_task())
+    result = run_benchmark(domain_detection_task(), k_policy="oracle", allow_oracle_k=True)
     methods = {m["name"]: m["benchmark"] for m in list_methods("domain_detection")}
     # Every method that appeared in the leaderboard should have a benchmark entry.
     for row in result.leaderboard:

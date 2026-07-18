@@ -1,0 +1,90 @@
+{
+  "protocol": "histoweave.external_validation.5x15.v1",
+  "task": "external_validation_domain_detection",
+  "metric": "ARI",
+  "higher_is_better": true,
+  "datasets": [
+    "visium_hd_crc",
+    "xenium_lung_cancer",
+    "xenium_ovarian_cancer",
+    "visium_mouse_brain",
+    "allen_merfish_brain_section"
+  ],
+  "methods": [
+    "agglomerative",
+    "birch",
+    "bisecting_kmeans",
+    "dbscan",
+    "gaussian_mixture",
+    "kmeans",
+    "mean_shift",
+    "minibatch_kmeans",
+    "optics",
+    "spectral",
+    "banksy_py",
+    "spatialde_kmeans",
+    "nnsvg_kmeans",
+    "harmony_kmeans",
+    "moran_spectral"
+  ],
+  "seeds": [
+    42,
+    1,
+    2
+  ],
+  "n_bootstrap": 100,
+  "bootstrap_fraction": 0.8,
+  "n_max_cells": 15000,
+  "dataset_meta": {
+    "visium_hd_crc": {
+      "platform": "Visium HD",
+      "tissue": "human colorectal cancer",
+      "organism": "human",
+      "n_obs": 15000,
+      "n_domains": 7,
+      "n_original": 15000,
+      "subsampled": false
+    },
+    "xenium_lung_cancer": {
+      "platform": "Xenium",
+      "tissue": "human lung adenocarcinoma",
+      "organism": "human",
+      "n_obs": 15000,
+      "n_domains": 5,
+      "n_original": 15000,
+      "subsampled": false
+    },
+    "xenium_ovarian_cancer": {
+      "platform": "Xenium Prime",
+      "tissue": "human ovarian cancer",
+      "organism": "human",
+      "n_obs": 15000,
+      "n_domains": 6,
+      "n_original": 15000,
+      "subsampled": false
+    },
+    "visium_mouse_brain": {
+      "platform": "Visium v2",
+      "tissue": "mouse brain",
+      "organism": "mouse",
+      "n_obs": 2688,
+      "n_domains": 15,
+      "n_original": 2688,
+      "subsampled": false
+    },
+    "allen_merfish_brain_section": {
+      "platform": "MERFISH",
+      "tissue": "mouse brain",
+      "organism": "mouse",
+      "n_obs": 15000,
+      "n_domains": 8,
+      "n_original": 15000,
+      "subsampled": false
+    }
+  },
+  "notes": [
+    "5 external validation datasets spanning 4 platforms, 2 organisms, 4 tissues, 4 independent studies; strict region ground truth.",
+    "Datasets above 15000 cells are stratified-subsampled per (dataset, seed) using a hash-derived sub_seed so every method sees the same slice.",
+    "Bootstrap: 100 \u00d7 80% cell resamples per cell, refit-free."
+  ]
+}

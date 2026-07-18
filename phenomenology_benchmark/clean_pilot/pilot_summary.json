@@ -1,0 +1,29 @@
+{
+  "interpretation": "Dependency-light software pilot only. Clean condition, one seed, and tiny fixtures do not support robustness, repeatability, or comparative biological claims.",
+  "method_manifest_hash": "ff782d381d4eee32f45c1110e0627497e84a7a6a7cfd8d8871dd5ca05672d6cf",
+  "metric_records": 743,
+  "run_records": 324,
+  "schema_version": "1.0.0",
+  "scope": {
+    "conditions": [
+      "clean"
+    ],
+    "methods": 54,
+    "n_genes": 64,
+    "n_obs": 60,
+    "phenomena": 6,
+    "seeds": [
+      1729
+    ],
+    "tiny": true,
+    "track": "locked"
+  },
+  "status_counts": {
+    "backend_unavailable": 45,
+    "budget_exceeded": 2,
+    "fixture_unavailable": 30,
+    "not_applicable": 14,
+    "ok": 228,
+    "oom": 5
+  }
+}

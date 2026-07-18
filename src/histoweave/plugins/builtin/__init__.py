@@ -34,6 +34,7 @@ def register_all() -> None:
         scanvi,
         sctransform,
         sklearn_clustering,
+        sota_domains,
         spatial_graph,
         spatial_svg,
         spatialde,

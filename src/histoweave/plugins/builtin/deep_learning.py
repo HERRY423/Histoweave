@@ -96,17 +96,20 @@ def _standardize(matrix: np.ndarray) -> np.ndarray:
 
 
 def _neighbor_mean(data: SpatialTable, matrix: np.ndarray, k: int) -> np.ndarray:
+    from ..._math import knn_indices
+
     coords = data.spatial
     if coords is None:
         raise ValueError("graph deep-learning models require obsm['spatial']")
     coords = np.asarray(coords, dtype=float)
     if data.n_obs < 2 or coords.shape[0] != data.n_obs or not np.isfinite(coords).all():
         raise ValueError("spatial coordinates must be finite and observation-aligned")
-    k = min(k, data.n_obs - 1)
-    distance = ((coords[:, None, :2] - coords[None, :, :2]) ** 2).sum(axis=2)
-    np.fill_diagonal(distance, np.inf)
-    neighbors = np.argpartition(distance, kth=k - 1, axis=1)[:, :k]
-    return matrix[neighbors].mean(axis=1)
+    # knn_indices includes self; drop it for a pure neighbourhood mean.
+    k_query = min(int(k) + 1, data.n_obs)
+    neighbors = knn_indices(coords[:, :2], k_query)
+    if neighbors.shape[1] <= 1:
+        return matrix.copy()
+    return matrix[neighbors[:, 1:]].mean(axis=1)
 
 
 def _image_features(data: SpatialTable, image_key: str, patch_size: int) -> np.ndarray:

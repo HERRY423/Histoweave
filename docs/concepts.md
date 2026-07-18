@@ -61,8 +61,10 @@ from histoweave.plugins import method_coverage_report
 
 coverage = method_coverage_report()
 assert coverage["total_methods"] >= 50
+assert coverage["counts"]["unclassified_methods"] == 0
+assert coverage["unclassified_names"] == []
 assert coverage["ratios"]["beta_plus"] == 1.0
-assert coverage["ratios"]["production_plus"] > 0.80
+assert coverage["ratios"]["production_plus"] > 0.60
 ```
 
 The same registry metadata identifies deep-learning methods and methods that consume

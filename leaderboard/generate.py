@@ -50,6 +50,16 @@ SKLEARN_METHODS = {
     "spectral",
 }
 
+SOTA_METHODS = {
+    "spagcn",
+    "graphst",
+    "stagate",
+    "bayesspace",
+    "banksy",
+    "banksy_py",
+    "rctd",
+}
+
 # One-line descriptions for the "Methods included" panel. Keep short.
 METHOD_DESCRIPTIONS = {
     "agglomerative": "Ward-linkage hierarchical clustering on the PCA + spatial embedding.",
@@ -63,11 +73,58 @@ METHOD_DESCRIPTIONS = {
     "optics": "Ordering points to identify clustering structure.",
     "spectral": "Normalised-cut spectral clustering on kNN affinity.",
     "banksy_py": "Python BANKSY: own + neighbourhood-mean expression, PCA + KMeans.",
+    "banksy": "Bioconductor BANKSY (official R implementation).",
+    "spagcn": "SpaGCN graph-convolutional spatial domains (official).",
+    "graphst": "GraphST contrastive graph representation + fixed-q clustering.",
+    "stagate": "STAGATE graph-attention autoencoder + fixed-q clustering.",
+    "bayesspace": "BayesSpace Bayesian spatial clustering (Bioconductor).",
     "harmony_kmeans": "Harmony-integrated PCA (spatial quadrants as pseudo-batches) + KMeans.",
     "moran_spectral": "Moran's I gene ranking → spectral clustering on the spatial graph.",
     "spatialde_kmeans": "SpatialDE-ranked HVGs → PCA + KMeans.",
     "nnsvg_kmeans": "nnSVG-ranked HVGs → PCA + KMeans.",
 }
+
+
+def _method_family(name: str, explicit: str | None = None) -> str:
+    if explicit:
+        return explicit
+    base = name.split("@", 1)[0]
+    if base in SKLEARN_METHODS or name in SKLEARN_METHODS:
+        return "sklearn"
+    if base in SOTA_METHODS or name in SOTA_METHODS:
+        return "sota"
+    return "spatial_aware"
+
+
+def _dataset_contract(dataset_id: str) -> dict:
+    """Attach task-contract fields from the HistoWeave dataset registry when known."""
+    try:
+        from histoweave.datasets import get_dataset, list_datasets
+    except Exception:
+        return {
+            "task": "spatial_domain",
+            "ground_truth_kind": "spatial_domain",
+            "study": None,
+        }
+    candidates = [dataset_id, f"dlpfc_{dataset_id}"]
+    available = {row["name"] for row in list_datasets()}
+    for name in candidates:
+        if name in available:
+            entry = get_dataset(name)
+            return {
+                "task": entry.analysis_task,
+                "ground_truth_kind": entry.ground_truth_kind,
+                "label_key": entry.label_key,
+                "study": entry.study,
+                "registry_name": entry.name,
+                "license": entry.license,
+            }
+    return {
+        "task": "spatial_domain",
+        "ground_truth_kind": "spatial_domain",
+        "study": None,
+    }
+
 
 # Fallback platform metadata for slices whose manifest is missing.
 DATASET_FALLBACK = {
@@ -90,6 +147,31 @@ DATASET_FALLBACK = {
     },
     "merfish_mouse_brain": {"platform": "MERFISH", "tissue": "mouse brain", "n_domains": 10},
     "xenium_breast_cancer": {"platform": "Xenium", "tissue": "human breast cancer", "n_domains": 5},
+    "visium_hd_crc": {
+        "platform": "Visium HD",
+        "tissue": "human colorectal cancer (FFPE)",
+        "n_domains": 7,
+    },
+    "xenium_lung_cancer": {
+        "platform": "Xenium",
+        "tissue": "human lung adenocarcinoma (FFPE)",
+        "n_domains": 5,
+    },
+    "xenium_ovarian_cancer": {
+        "platform": "Xenium Prime",
+        "tissue": "human ovarian cancer",
+        "n_domains": 6,
+    },
+    "visium_mouse_brain": {
+        "platform": "Visium v2",
+        "tissue": "mouse brain (coronal, H&E)",
+        "n_domains": 15,
+    },
+    "allen_merfish_brain_section": {
+        "platform": "MERFISH",
+        "tissue": "mouse whole-brain (single coronal section)",
+        "n_domains": 8,
+    },
 }
 
 
@@ -119,15 +201,17 @@ def _read_long_csv(path: Path) -> list[dict]:
                 except ValueError:
                     return None
 
+            method_name = (row.get("config") or row.get("method") or "").strip()
+            if not method_name:
+                continue
             rows.append(
                 {
                     "dataset": row["dataset"],
-                    "method": row["method"],
+                    "method": method_name,
                     "seed": int(row.get("seed") or 0),
                     "ari": _num("ari"),
                     "seconds": _num("seconds"),
-                    "family": row.get("family")
-                    or ("sklearn" if row["method"] in SKLEARN_METHODS else "spatial_aware"),
+                    "family": _method_family(method_name, row.get("family") or None),
                 }
             )
     return rows
@@ -157,6 +241,7 @@ def _n_obs_for(dataset: str) -> int | None:
         root / "datasets_cache" / "merfish" / f"{dataset}.h5ad",
         root / "datasets_cache" / "slideseqv2" / f"{dataset}.h5ad",
         root / "datasets_cache" / "xenium" / f"{dataset}.h5ad",
+        root / "benchmark_external_validation" / "bundles" / f"{dataset}.h5ad",
     ]
     for p in candidates:
         if not p.exists():
@@ -189,6 +274,7 @@ def _sparsity_for(dataset: str) -> float | None:
         root / "datasets_cache" / "dlpfc" / f"dlpfc_{dataset}.h5ad",
         root / "datasets_cache" / "merfish" / f"{dataset}.h5ad",
         root / "datasets_cache" / "xenium" / f"{dataset}.h5ad",
+        root / "benchmark_external_validation" / "bundles" / f"{dataset}.h5ad",
     ]
     for path in candidates:
         if not path.exists():
@@ -214,8 +300,10 @@ def build() -> dict:
     # -- collect records ------------------------------------------------------
     for candidate in [
         REPO_ROOT / "5x15_spatial_aware" / "benchmark_long.csv",
+        REPO_ROOT / "5x15_spatial_aware" / "sota_benchmark_long.csv",
         REPO_ROOT / "5x10_dlpfc_benchmark" / "benchmark_long.csv",
         REPO_ROOT / "benchmark_crossplatform" / "benchmark_long.csv",
+        REPO_ROOT / "benchmark_external_validation" / "benchmark_long.csv",
     ]:
         rows = _read_long_csv(candidate)
         if rows:
@@ -225,45 +313,65 @@ def build() -> dict:
     if not records:
         raise RuntimeError(
             "No benchmark_long.csv found. Expected one of "
-            "5x15_spatial_aware/, 5x10_dlpfc_benchmark/, benchmark_crossplatform/."
+            "5x15_spatial_aware/, 5x10_dlpfc_benchmark/, benchmark_crossplatform/, "
+            "benchmark_external_validation/."
         )
 
     # -- distinct datasets + methods ------------------------------------------
     ds_ids = sorted({r["dataset"] for r in records})
     method_names = sorted({r["method"] for r in records})
 
-    # -- dataset metadata -----------------------------------------------------
-    manifest = _read_manifest(REPO_ROOT / "benchmark_crossplatform" / "dataset_manifest.json")
+    # -- dataset metadata + task contracts ------------------------------------
+    manifest: dict[str, dict] = {}
+    for manifest_path in (
+        REPO_ROOT / "benchmark_crossplatform" / "dataset_manifest.json",
+        REPO_ROOT / "benchmark_external_validation" / "dataset_manifest.json",
+    ):
+        manifest.update(_read_manifest(manifest_path))
     datasets = []
     for did in ds_ids:
         meta = manifest.get(did) or DATASET_FALLBACK.get(did) or {}
+        contract = _dataset_contract(did)
+        # Refuse to advertise self-supervised labels as spatial-domain GT.
+        if contract.get("ground_truth_kind") in {"self_supervised", "leiden", "louvain"}:
+            contract["task"] = "cell_type"
+            contract["excluded_from_domain_leaderboard"] = True
         datasets.append(
             {
                 "id": did,
-                "platform": meta.get("platform", "unknown"),
+                "platform": meta.get("platform") or contract.get("platform") or "unknown",
                 "tissue": meta.get("tissue", "unknown"),
                 "n_obs": meta.get("n_obs") or _n_obs_for(did),
                 "n_domains": meta.get("n_domains"),
                 "sparsity": meta.get("sparsity") or _sparsity_for(did),
+                "task": contract.get("task"),
+                "ground_truth_kind": contract.get("ground_truth_kind"),
+                "study": contract.get("study"),
+                "registry_name": contract.get("registry_name"),
+                "license": contract.get("license"),
             }
         )
 
     # -- method metadata ------------------------------------------------------
     methods = []
     for m in method_names:
-        family = "sklearn" if m in SKLEARN_METHODS else "spatial_aware"
+        base = m.split("@", 1)[0]
+        family = _method_family(m)
         methods.append(
             {
                 "name": m,
+                "base_method": base,
                 "family": family,
-                "summary": METHOD_DESCRIPTIONS.get(m, ""),
+                "summary": METHOD_DESCRIPTIONS.get(m) or METHOD_DESCRIPTIONS.get(base, ""),
             }
         )
 
     # -- final feed -----------------------------------------------------------
     return {
-        "protocol": "histoweave.leaderboard.v1",
+        "protocol": "histoweave.leaderboard.v2",
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
+        "task_default": "spatial_domain",
+        "submission_schema": "histoweave.external_submission.v1",
         "datasets": datasets,
         "methods": methods,
         "records": records,

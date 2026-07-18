@@ -1,0 +1,125 @@
+{
+  "conditions": [
+    "clean"
+  ],
+  "design_unit_count_per_track": 324,
+  "method_count": 54,
+  "method_manifest_hash": "ff782d381d4eee32f45c1110e0627497e84a7a6a7cfd8d8871dd5ca05672d6cf",
+  "methods": [
+    "agglomerative",
+    "arcsinh_transform",
+    "banksy",
+    "banksy_py",
+    "basic_qc",
+    "birch",
+    "bisecting_kmeans",
+    "cell2location",
+    "cellpose2",
+    "celltypist",
+    "clr_per_cell",
+    "combat",
+    "cosmx_reader",
+    "dbscan",
+    "denoising_spatial_autoencoder",
+    "gaussian_mixture",
+    "gearys_c",
+    "gene_complexity_qc",
+    "graph_expression_autoencoder",
+    "harmony",
+    "image_expression_attention",
+    "image_expression_autoencoder",
+    "image_expression_contrastive",
+    "kmeans",
+    "liana_plus",
+    "library_size_qc",
+    "library_size_scale",
+    "log1p_cp10k",
+    "marker_deconv",
+    "marker_score",
+    "mean_shift",
+    "merfish_reader",
+    "merscope_reader",
+    "minibatch_kmeans",
+    "mitochondrial_qc",
+    "morans_i",
+    "multimodal_graph_fusion",
+    "nnsvg",
+    "optics",
+    "r_lognorm",
+    "scanvi",
+    "sctransform",
+    "slideseq_reader",
+    "spatial_autoencoder",
+    "spatial_graph",
+    "spatial_variance_ratio",
+    "spatialde",
+    "spectral",
+    "sqrt_transform",
+    "stereoseq_reader",
+    "tfidf_l2",
+    "variational_spatial_autoencoder",
+    "visium_reader",
+    "xenium_reader"
+  ],
+  "phenomena": [
+    "compartment",
+    "gradient",
+    "hotspot",
+    "boundary",
+    "mixture",
+    "branching"
+  ],
+  "run_record_count": 324,
+  "scenario_count": 6,
+  "scenarios": [
+    {
+      "condition": "clean",
+      "manifest_hash": "1b93479c92bcab7a73d61775df26582703c2b6bb274561748514db7fc7f693fa",
+      "phenomenon": "compartment",
+      "replicate": 0,
+      "seed": 1729
+    },
+    {
+      "condition": "clean",
+      "manifest_hash": "4233882ddd718eae41ef54abfd651980c6873e13946605077309c5e8e04e31bd",
+      "phenomenon": "mixture",
+      "replicate": 0,
+      "seed": 1729
+    },
+    {
+      "condition": "clean",
+      "manifest_hash": "458bfa61881dfcdc4911dc579c2c4ee9c1d07a2c2cf3897bc0874bc55623a4b6",
+      "phenomenon": "gradient",
+      "replicate": 0,
+      "seed": 1729
+    },
+    {
+      "condition": "clean",
+      "manifest_hash": "460191a9444a3a89edc187fc901aa8f4c37f3b3fbc55439a878e9faf94d3dbf8",
+      "phenomenon": "boundary",
+      "replicate": 0,
+      "seed": 1729
+    },
+    {
+      "condition": "clean",
+      "manifest_hash": "5d914a1856cdb71896717a549a402d52f2b4c3d60edff35e9e76533b2650e4bd",
+      "phenomenon": "hotspot",
+      "replicate": 0,
+      "seed": 1729
+    },
+    {
+      "condition": "clean",
+      "manifest_hash": "9b528fb978225baff5a08ca4e3318741c933e34f4b4aeb89c2d7dbaf1a1f4ffd",
+      "phenomenon": "branching",
+      "replicate": 0,
+      "seed": 1729
+    }
+  ],
+  "schema_version": "1.0.0",
+  "seeds": [
+    1729
+  ],
+  "tracks": [
+    "locked"
+  ]
+}

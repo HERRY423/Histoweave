@@ -58,6 +58,9 @@ class BenchmarkResult:
     task: str
     metric: str
     leaderboard: list[dict]
+    # Optional statistical review (cell-bootstrap CIs, FDR notes). Single-dataset
+    # leaderboards cannot support multi-dataset rank permutation; only ARI CIs.
+    stats: dict | None = None
 
     def best(self) -> dict | None:
         return self.leaderboard[0] if self.leaderboard else None
@@ -68,28 +71,80 @@ def run_benchmark(
     methods: list[str] | None = None,
     *,
     method_params: dict[str, dict] | None = None,
+    stats: bool = False,
+    n_boot: int = 200,
+    seed: int = 0,
+    k_policy: str = "estimate",
+    allow_oracle_k: bool = False,
 ) -> BenchmarkResult:
     """Evaluate every registered method for ``task.category`` and rank them.
 
     Returns a :class:`BenchmarkResult` whose leaderboard is sorted best-first. In a
     real deployment the scores are written back into each method's ``MethodSpec.benchmark``
     so the registry can surface recommendations.
+
+    When ``stats=True`` and the task is domain detection, each successful row
+    also receives a cell-bootstrap ARI CI (refit-free).
+
+    For domain detection, ``k_policy`` controls how ``n_domains`` is supplied
+    (default ``estimate`` — no ground-truth leak).  Explicit per-method
+    ``method_params[name]['n_domains']`` always wins.
     """
-    method_params = method_params or {}
-    candidates = methods or [
-        item["name"]
-        for item in list_methods(task.category)
-        if item["language"] != "container"
-    ]
+    method_params = {k: dict(v) for k, v in (method_params or {}).items()}
+    candidates = methods or _default_benchmark_candidates(task.category)
 
     # Apply any shared preparation (e.g. normalization) once.
     prepared = task.dataset.copy()
     for step in task.prep:
         prepared = create_method(step.category, step.method, **step.params).run(prepared)
 
+    # Non-oracle K for domain methods that declare n_domains and lack an override.
+    estimated_k: int | None = None
+    k_meta: dict[str, Any] = {"k_policy": k_policy}
+    if task.name == "domain_detection":
+        from .k_selection import estimate_n_domains, oracle_n_domains
+
+        if k_policy == "oracle":
+            if not allow_oracle_k:
+                raise ValueError(
+                    "k_policy='oracle' requires allow_oracle_k=True (oracle-K leak is opt-in only)"
+                )
+            estimated_k = oracle_n_domains(task.dataset)
+            k_meta["n_domains_used"] = estimated_k
+            k_meta["source"] = "oracle"
+        elif k_policy == "estimate":
+            selection = estimate_n_domains(task.dataset, random_state=seed)
+            estimated_k = selection.k
+            k_meta.update(
+                {
+                    "n_domains_used": estimated_k,
+                    "source": "estimate",
+                    "estimator": selection.method,
+                    "oracle_k": selection.oracle_k,
+                }
+            )
+        # Strip generative K from uns so methods cannot silently read it.
+        if "n_domains" in prepared.uns and k_policy != "oracle":
+            prepared.uns = dict(prepared.uns)
+            prepared.uns.pop("n_domains", None)
+
     rows = []
+    # Keep predictions for optional bootstrap.
+    predictions: dict[str, Any] = {}
     for name in candidates:
-        params = method_params.get(name, {})
+        params = dict(method_params.get(name, {}))
+        if (
+            estimated_k is not None
+            and "n_domains" not in params
+            and task.name == "domain_detection"
+        ):
+            # Only inject when the method declares the param.
+            try:
+                probe = create_method(task.category, name)
+                if "n_domains" in probe.params:
+                    params["n_domains"] = estimated_k
+            except Exception:
+                pass
         entry: dict = {"method": name}
         try:
             method = create_method(task.category, name, **params)
@@ -98,6 +153,8 @@ def run_benchmark(
             entry["seconds"] = round(time.perf_counter() - t0, 4)
             entry["score"] = round(float(task.score(result, task.dataset)), 4)
             entry["version"] = method.spec.version
+            if stats and task.name == "domain_detection" and "domain" in result.obs.columns:
+                predictions[name] = result
         except Exception as exc:  # a failing method scores worst, doesn't crash the run
             entry["seconds"] = None
             entry["score"] = float("-inf") if task.higher_is_better else float("inf")
@@ -112,18 +169,77 @@ def run_benchmark(
     # registry surfaces them (``histoweave list-methods``, recommendations).
     for row in rows:
         try:
-            cls = get_method(task.category, row["method"])
-            bench = dict(cls.spec.benchmark)
+            method_cls = get_method(task.category, row["method"])
+            bench = dict(method_cls.spec.benchmark)
             bench[task.name] = {
                 "score": row.get("score"),
                 "rank": row["rank"],
                 "seconds": row.get("seconds"),
             }
-            cls.spec = replace(cls.spec, benchmark=bench)
+            method_cls.spec = replace(method_cls.spec, benchmark=bench)
         except Exception:
             pass  # method was unregistered mid-run or spec is pinned; skip
 
-    return BenchmarkResult(task=task.name, metric="score", leaderboard=rows)
+    stats_payload: dict | None = None
+    if stats and predictions:
+        from .stats_review import bootstrap_ari
+
+        truth_key = "domain_truth"
+        if truth_key not in task.dataset.obs.columns:
+            truth_key = next(
+                (c for c in task.dataset.obs.columns if "truth" in c.lower()),
+                "domain_truth",
+            )
+        cis: dict[str, dict] = {}
+        for name, result in predictions.items():
+            try:
+                pred = result.obs["domain"].to_numpy()
+                truth = task.dataset.obs.loc[result.obs_names, truth_key].to_numpy()
+                boot = bootstrap_ari(truth, pred, n_boot=n_boot, seed=seed)
+                cis[name] = boot.to_dict()
+                for row in rows:
+                    if row["method"] == name:
+                        row["ari_ci_low"] = round(boot.ci_low, 4)
+                        row["ari_ci_high"] = round(boot.ci_high, 4)
+            except Exception:
+                continue
+        stats_payload = {
+            "protocol": "histoweave.benchmark_stats.v1",
+            "scope": "single_dataset_cell_bootstrap",
+            "n_boot": n_boot,
+            "bootstrap_ari": cis,
+            "k_selection": k_meta if task.name == "domain_detection" else None,
+            "notes": [
+                "Single-dataset leaderboard: rank permutation / FDR require "
+                "a multi-dataset landscape (see review_landscape)."
+            ],
+        }
+    elif task.name == "domain_detection":
+        stats_payload = {
+            "protocol": "histoweave.benchmark_stats.v1",
+            "scope": "k_selection_only",
+            "k_selection": k_meta,
+        }
+
+    return BenchmarkResult(task=task.name, metric="score", leaderboard=rows, stats=stats_payload)
+
+
+def _default_benchmark_candidates(category: MethodCategory | str) -> list[str]:
+    """Methods safe for the default synthetic smoke harness.
+
+    Optional SOTA backends (SpaGCN/GraphST/…) and research-incubator candidates
+    are opt-in via ``methods=[...]`` so a missing optional dependency does not
+    poison the leaderboard with ``-inf`` scores under ``--fail-on-error``.
+    """
+    names: list[str] = []
+    for item in list_methods(category):
+        if item["language"] == "container":
+            continue
+        meta = item.get("metadata") or {}
+        if meta.get("track") in {"sota", "research"}:
+            continue
+        names.append(item["name"])
+    return names
 
 
 # ---------------------------------------------------------------------------

@@ -66,16 +66,64 @@ class MoransISVG(Method):
 
         data.var[self.params["key_added"]] = morans_i
 
-        # Flag the top n SVG genes in uns for the report.
+        # Approximate two-sided p-values under a normal null for Moran's I,
+        # then control FDR with Benjamini–Hochberg (shared multiple-testing layer).
+        from ...benchmark.multiple_testing import fdr_adjust
+
+        z_scores, p_values = _morans_i_pvalues(morans_i, n_obs=data.n_obs, k=k)
+        data.var[f"{self.params['key_added']}_z"] = z_scores
+        data.var[f"{self.params['key_added']}_pval"] = p_values
+        data.var[f"{self.params['key_added']}_padj"] = fdr_adjust(p_values, method="bh")
+
+        # Flag the top n SVG genes in uns for the report (rank by statistic,
+        # but also surface FDR-significant counts for honest reporting).
         top_k = min(self.params["n_top"], data.n_vars)
         top_idx = np.argsort(morans_i)[::-1][:top_k]
+        padj = data.var[f"{self.params['key_added']}_padj"].to_numpy()
+        n_sig = int(np.sum(np.isfinite(padj) & (padj <= 0.05)))
         data.uns["svg"] = {
             "method": "morans_i",
+            "fdr_method": "bh",
+            "fdr_alpha": 0.05,
+            "n_significant_fdr": n_sig,
             "top_genes": [
-                {"gene": str(data.var_names[i]), "morans_i": float(morans_i[i])} for i in top_idx
+                {
+                    "gene": str(data.var_names[i]),
+                    "morans_i": float(morans_i[i]),
+                    "pval": float(p_values[i]),
+                    "padj": float(padj[i]) if np.isfinite(padj[i]) else None,
+                }
+                for i in top_idx
             ],
         }
         return self.finalize(data, step="svg")
+
+
+def _morans_i_pvalues(
+    morans_i: np.ndarray,
+    *,
+    n_obs: int,
+    k: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Approximate two-sided p-values for Moran's I under a normal null.
+
+    Uses ``E[I] = -1/(n-1)`` and a conservative k-NN variance scale
+    ``Var ≈ 2/(n·k)``.  Exact randomisation p-values are available offline;
+    this path is fast enough for gene-wise FDR control inside the plugin.
+    """
+    from math import erfc, sqrt
+
+    values = np.asarray(morans_i, dtype=float)
+    n = float(max(n_obs, 2))
+    expected = -1.0 / (n - 1.0)
+    se = float(np.sqrt(max(1e-12, 2.0 / (n * max(int(k), 1)))))
+    z_scores = (values - expected) / se
+    # 2 * (1 - Φ(|z|)) via complementary error function.
+    p_values = np.array(
+        [erfc(abs(float(z)) / sqrt(2.0)) for z in z_scores],
+        dtype=float,
+    )
+    return z_scores, p_values
 
 
 def _build_spatial_weight_matrix(coords: np.ndarray, k: int) -> tuple[np.ndarray, float]:

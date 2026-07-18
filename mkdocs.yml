@@ -22,17 +22,57 @@ nav:
   - Home: index.md
   - API Reference: api.md
   - Quickstart: quickstart.md
+  - 中文快速入门: zh/quickstart.md
   - Spatial pipeline compiler: compiler.md
   - Research method incubator: research-methods.md
   - Guides:
+      - Phenomenology benchmark: phenomenology-benchmark.md
+      - Benchmark comparison & reviewer response: benchmark-comparison-reviewer-response.md
       - Method selection: method-selection.md
+      - Method guide:
+          - Overview: methods/index.md
+          - Complete catalog: methods/catalog.md
+          - Multi-dataset validation:
+              - Index: methods/validation/index.md
+              - agglomerative: methods/validation/agglomerative.md
+              - birch: methods/validation/birch.md
+              - minibatch_kmeans: methods/validation/minibatch_kmeans.md
+              - banksy: methods/validation/banksy.md
+              - cell2location: methods/validation/cell2location.md
+              - spagcn: methods/validation/spagcn.md
+              - graphst: methods/validation/graphst.md
+              - stagate: methods/validation/stagate.md
+              - rctd: methods/validation/rctd.md
+              - spatialde: methods/validation/spatialde.md
+          - banksy_py: methods/banksy_py.md
+          - spectral: methods/spectral.md
+          - gaussian_mixture: methods/gaussian_mixture.md
+          - spagcn: methods/spagcn.md
+          - cell2location: methods/cell2location.md
+          - Categories:
+              - domain detection: methods/categories/domain_detection.md
+              - svg: methods/categories/svg.md
+              - deconvolution: methods/categories/deconvolution.md
+              - annotation: methods/categories/annotation.md
+              - qc: methods/categories/qc.md
+              - normalization: methods/categories/normalization.md
+              - ingestion: methods/categories/ingestion.md
+              - integration: methods/categories/integration.md
+              - neighborhood: methods/categories/neighborhood.md
+              - segmentation: methods/categories/segmentation.md
+              - ccc: methods/categories/ccc.md
       - FAQ: faq.md
       - Troubleshooting: troubleshooting.md
+      - Contributing: contributing.md
+      - Code of Conduct: code-of-conduct.md
   - Tutorials:
       - Real Visium (DLPFC): tutorials/01_real_visium_dlpfc.md
       - Custom plugin development: tutorials/02_custom_plugin_development.md
       - Batch-effect correction: tutorials/03_batch_effect_correction.md
       - Xenium & MERFISH (imaging): tutorials/04_xenium_merfish.md
+      - Large imaging (10⁵ cells): tutorials/05_large_imaging_scale.md
+  - SOTA reproduction: sota-reproduction.md
+  - Statistical review: statistical-review.md
   - Architecture: architecture.md
   - Method lifecycle: method-lifecycle.md
   - Concepts: concepts.md

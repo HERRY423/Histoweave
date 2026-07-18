@@ -24,6 +24,21 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
 
 Matrix: TypeAlias = np.ndarray | spmatrix
 
+
+def _matrix_copy(value: Any) -> Matrix:
+    """Copy dense/sparse matrices without relying on AnnData's broad union types."""
+    if value is None:
+        raise TypeError("cannot copy a missing matrix")
+    copy_fn = getattr(value, "copy", None)
+    if callable(copy_fn):
+        return cast(Matrix, copy_fn())
+    return np.asarray(value).copy()
+
+
+def _axis_array_copy(value: Any) -> np.ndarray:
+    return np.asarray(value).copy()
+
+
 SPATIAL_KEY = "spatial"
 
 # OME-Zarr / SpatialData enforces alphanumeric + underscore/dot/hyphen key names.
@@ -214,7 +229,15 @@ class SpatialTable:
         from anndata import AnnData
         from spatialdata import SpatialData as SD
 
-        adata = AnnData(X=X, obs=obs, var=var, obsm=obsm, layers=layers, uns=uns)
+        # AnnData stubs type obsm/layers more narrowly than runtime accepts.
+        adata = AnnData(
+            X=X,
+            obs=obs,
+            var=var,
+            obsm=cast(Any, obsm),
+            layers=cast(Any, layers),
+            uns=uns,
+        )
         self._sdata: SpatialDataClass = SD(tables={"table": adata})
         self._images = images
         self._shapes = shapes
@@ -236,7 +259,7 @@ class SpatialTable:
 
     @property
     def obs(self) -> pd.DataFrame:
-        return self._table.obs
+        return cast(pd.DataFrame, self._table.obs)
 
     @obs.setter
     def obs(self, value: pd.DataFrame) -> None:
@@ -246,7 +269,7 @@ class SpatialTable:
 
     @property
     def var(self) -> pd.DataFrame:
-        return self._table.var
+        return cast(pd.DataFrame, self._table.var)
 
     @var.setter
     def var(self, value: pd.DataFrame) -> None:
@@ -279,17 +302,20 @@ class SpatialTable:
 
     @layers.setter
     def layers(self, value: dict[str, Matrix]) -> None:
+        coerced: dict[str, Matrix] = {}
         for name, layer in value.items():
-            layer = _coerce_matrix(layer)
-            if layer.shape != self.shape:
+            matrix = _coerce_matrix(layer)
+            if matrix.shape != self.shape:
                 raise ValueError(
-                    f"layer {name!r} has shape {layer.shape}, expected {self.shape} to match X"
+                    f"layer {name!r} has shape {matrix.shape}, expected {self.shape} to match X"
                 )
-        self._table.layers = {k: _coerce_matrix(v) for k, v in value.items()}
+            coerced[name] = matrix
+        self._table.layers = cast(Any, coerced)
 
     @property
     def uns(self) -> dict[str, Any]:
-        return self._table.uns
+        # AnnData types uns as a MutableMapping; expose a plain dict view.
+        return cast(dict[str, Any], self._table.uns)
 
     @uns.setter
     def uns(self, value: dict[str, Any]) -> None:
@@ -336,7 +362,8 @@ class SpatialTable:
     @property
     def spatial(self) -> np.ndarray | None:
         """Convenience accessor for the canonical spatial coordinates."""
-        return self._table.obsm.get(SPATIAL_KEY)
+        value = dict(self._table.obsm).get(SPATIAL_KEY)
+        return None if value is None else np.asarray(value)
 
     # -- provenance ------------------------------------------------------------
     def record(self, prov: Provenance) -> None:
@@ -349,14 +376,18 @@ class SpatialTable:
 
     def copy(self) -> SpatialTable:
         return SpatialTable(
-            X=self._table.X.copy(),
+            X=_matrix_copy(self._table.X),
             obs=self.obs.copy(),
             var=self.var.copy(),
-            obsm={k: v.copy() for k, v in self._table.obsm.items()},
-            layers={k: v.copy() for k, v in self._table.layers.items() if k is not None},
+            obsm={str(k): _axis_array_copy(v) for k, v in dict(self._table.obsm).items()},
+            layers={
+                str(k): _matrix_copy(v)
+                for k, v in dict(self._table.layers).items()
+                if k is not None
+            },
             images=copy.deepcopy(self._images),
             shapes=copy.deepcopy(self._shapes),
-            uns=copy.deepcopy(self._table.uns),
+            uns=copy.deepcopy(dict(self._table.uns)),
         )
 
     # -- subsetting ------------------------------------------------------------
@@ -370,15 +401,21 @@ class SpatialTable:
         mask = np.asarray(mask, dtype=bool)
         if mask.ndim != 1 or mask.shape[0] != self.n_obs:
             raise ValueError("mask must be one-dimensional with length n_obs")
+        obsm = {str(k): np.asarray(v)[mask] for k, v in dict(self._table.obsm).items()}
+        layers = {
+            str(k): cast(Matrix, np.asarray(v)[mask] if not hasattr(v, "tocsr") else v[mask])
+            for k, v in dict(self._table.layers).items()
+            if k is not None
+        }
         return SpatialTable(
-            X=self.X[mask],
+            X=cast(Matrix, self.X[mask]),
             obs=self.obs.loc[mask].copy(),
             var=self.var.copy(),
-            obsm={k: v[mask] for k, v in self._table.obsm.items()},
-            layers={k: v[mask] for k, v in self._table.layers.items() if k is not None},
+            obsm=obsm,
+            layers=layers,
             images=copy.deepcopy(self._images),
             shapes=copy.deepcopy(self._shapes),
-            uns=copy.deepcopy(self.uns),
+            uns=copy.deepcopy(dict(self.uns)),
         )
 
     # -- AnnData bridge --------------------------------------------------------
@@ -408,24 +445,30 @@ class SpatialTable:
             if isinstance(var[col].dtype, pd.CategoricalDtype):
                 var[col] = var[col].astype("string")
 
+        layers = {
+            str(k): _matrix_copy(v) for k, v in dict(self._table.layers).items() if k is not None
+        }
         return AnnData(
             X=self.X,
             obs=obs,
             var=var,
-            obsm=dict(self._table.obsm),
-            layers={k: v.copy() for k, v in self._table.layers.items() if k is not None},
-            uns=_sanitize_uns_for_h5ad(self.uns),
+            obsm=cast(Any, {str(k): np.asarray(v) for k, v in dict(self._table.obsm).items()}),
+            layers=cast(Any, layers),
+            uns=_sanitize_uns_for_h5ad(dict(self.uns)),
         )
 
     @classmethod
     def from_anndata(cls, adata: AnnData) -> SpatialTable:
         """Build a table without densifying sparse AnnData matrices."""
+        if adata.X is None:
+            raise ValueError("AnnData.X is required to build a SpatialTable")
+        layers = {str(k): _matrix_copy(v) for k, v in dict(adata.layers).items() if k is not None}
         return cls(
-            X=adata.X.copy(),
-            obs=adata.obs.copy(),
-            var=adata.var.copy(),
-            obsm={k: np.asarray(v) for k, v in adata.obsm.items()},
-            layers={k: v.copy() for k, v in adata.layers.items() if k is not None},
+            X=_matrix_copy(adata.X),
+            obs=cast(pd.DataFrame, adata.obs).copy(),
+            var=cast(pd.DataFrame, adata.var).copy(),
+            obsm={str(k): np.asarray(v) for k, v in dict(adata.obsm).items()},
+            layers=layers,
             uns=dict(adata.uns),
         )
 
@@ -546,8 +589,8 @@ class SpatialTable:
         return st
 
     def __repr__(self) -> str:
-        obsm_keys = ", ".join(self._table.obsm) or "-"
-        layer_keys = ", ".join(k for k in self._table.layers if k is not None) or "-"
+        obsm_keys = ", ".join(str(k) for k in dict(self._table.obsm)) or "-"
+        layer_keys = ", ".join(str(k) for k in dict(self._table.layers) if k is not None) or "-"
         spatial_keys = ", ".join([*self._images, *self._shapes]) or "-"
         return (
             f"SpatialTable(n_obs={self.n_obs}, n_vars={self.n_vars}, "

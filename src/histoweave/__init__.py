@@ -1,9 +1,10 @@
-"""HistoWeave — an open-source orchestration & evaluation platform for spatial transcriptomics.
+"""HistoWeave — orchestration & evaluation for reproducible spatial transcriptomics.
 
-HistoWeave is *not* a new method zoo. It is the connective tissue the field lacks: a
-unified data substrate, scalable/reproducible pipelines, a plugin interface that wraps
-existing R & Python methods behind stable APIs, and a continuous benchmarking harness
-that turns method proliferation into guided method selection.
+HistoWeave is *not* a new method zoo. It quantifies and reduces
+**method × spatial-context selection uncertainty**: a unified data substrate,
+containerized pipelines, typed plugins over existing R/Python methods, task-bound
+benchmarks, and a recommendation engine that reports when strong defaults beat
+personalisation.
 
 Quick start
 -----------

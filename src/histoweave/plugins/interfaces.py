@@ -318,7 +318,7 @@ class Method(abc.ABC):
     # AnnData bridge (optional hook)
     # ------------------------------------------------------------------
 
-    def run_on_anndata(self, adata: AnnData) -> AnnData:  # type: ignore[valid-type]  # TYPE_CHECKING
+    def run_on_anndata(self, adata: AnnData) -> AnnData:
         """Optional hook: transform an :class:`anndata.AnnData` in place-or-copy.
 
         Implementing this method allows the plugin author to write against the

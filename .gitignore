@@ -80,3 +80,15 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Failure-boundary mapping generated artifacts (keep source scripts trackable)
+/failure_boundary_mapping/figures/
+/failure_boundary_mapping/results/
+/failure_boundary_mapping/*.csv
+/failure_boundary_mapping/*.json
+
+# Local raw/intermediate research data (recreate via checked-in preparers)
+/research/cross_tissue_niches/.patch_probe
+/research/cross_tissue_niches/Puck_200115_08_count_location.RData
+/research/cross_tissue_niches/slideseq_raw/intermediate/
+/tmp_perf.json

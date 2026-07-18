@@ -1,0 +1,47 @@
+{
+  "visium_hd_crc": {
+    "platform": "Visium HD",
+    "tissue": "human colorectal cancer",
+    "organism": "human",
+    "n_obs": 15000,
+    "n_domains": 7,
+    "n_original": 15000,
+    "subsampled": false
+  },
+  "xenium_lung_cancer": {
+    "platform": "Xenium",
+    "tissue": "human lung adenocarcinoma",
+    "organism": "human",
+    "n_obs": 15000,
+    "n_domains": 5,
+    "n_original": 15000,
+    "subsampled": false
+  },
+  "xenium_ovarian_cancer": {
+    "platform": "Xenium Prime",
+    "tissue": "human ovarian cancer",
+    "organism": "human",
+    "n_obs": 15000,
+    "n_domains": 6,
+    "n_original": 15000,
+    "subsampled": false
+  },
+  "visium_mouse_brain": {
+    "platform": "Visium v2",
+    "tissue": "mouse brain",
+    "organism": "mouse",
+    "n_obs": 2688,
+    "n_domains": 15,
+    "n_original": 2688,
+    "subsampled": false
+  },
+  "allen_merfish_brain_section": {
+    "platform": "MERFISH",
+    "tissue": "mouse brain",
+    "organism": "mouse",
+    "n_obs": 15000,
+    "n_domains": 8,
+    "n_original": 15000,
+    "subsampled": false
+  }
+}

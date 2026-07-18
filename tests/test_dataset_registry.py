@@ -183,8 +183,8 @@ class TestAllDatasetsPresent:
 
     def test_all_expected_datasets_registered(self):
         datasets = list_datasets()
-        # 12 DLPFC slices + mouse_brain + 2 xenium + merfish = 16
-        assert len(datasets) >= 16, f"expected >=16 datasets, got {len(datasets)}"
+        # Existing registry plus five cross-study external-validation datasets.
+        assert len(datasets) >= 21, f"expected >=21 datasets, got {len(datasets)}"
         names = {d["name"] for d in datasets}
         for expected in (
             "dlpfc_151507",
@@ -193,14 +193,20 @@ class TestAllDatasetsPresent:
             "xenium_breast_cancer",
             "xenium_human_lymph_node",
             "merfish_mouse_brain",
+            "slideseqv2_hippocampus",
+            "visium_hd_crc",
+            "xenium_lung_cancer",
+            "xenium_ovarian_cancer",
+            "visium_mouse_brain",
+            "allen_merfish_brain_section",
         ):
             assert expected in names, f"{expected} missing from registry"
 
     def test_all_assays_represented(self):
         datasets = list_datasets()
         assays = {d["assay"] for d in datasets}
-        assert assays == {"visium", "xenium", "merfish"}
-        assert len(assays) == 3
+        assert {"visium", "visium_hd", "xenium", "merfish", "slideseq"} <= assays
+        assert len(assays) >= 5
 
     def test_both_species_represented(self):
         datasets = list_datasets()

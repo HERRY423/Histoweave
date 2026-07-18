@@ -102,9 +102,7 @@ def build_vitessce_view_config(
     embedding = pd.DataFrame(
         {"obs_id": obs_ids, "e0": sampled_coords[:, 0], "e1": sampled_coords[:, 1]}
     )
-    spots = pd.DataFrame(
-        {"obs_id": obs_ids, "x": sampled_coords[:, 0], "y": sampled_coords[:, 1]}
-    )
+    spots = pd.DataFrame({"obs_id": obs_ids, "x": sampled_coords[:, 0], "y": sampled_coords[:, 1]})
 
     preferred_labels = ["domain", "cell_type", "domain_truth"]
     label_columns = [column for column in preferred_labels if column in data.obs.columns]
@@ -141,7 +139,12 @@ def build_vitessce_view_config(
     if not selected_genes:
         selected_genes = [str(gene) for gene in data.var.index[:top_genes]]
 
-    gene_indices = [int(data.var.index.get_loc(gene)) for gene in selected_genes]
+    gene_indices: list[int] = []
+    for gene in selected_genes:
+        loc = data.var.index.get_loc(gene)
+        if not isinstance(loc, (int, np.integer)):
+            raise TypeError(f"gene {gene!r} does not resolve to a unique integer location")
+        gene_indices.append(int(loc))
     matrix = data.X[sampled_indices][:, gene_indices]
     if hasattr(matrix, "toarray"):
         matrix = matrix.toarray()
@@ -291,9 +294,7 @@ def build_vitessce_view_config(
             f"Provenance: {len(data.provenance)} steps."
         ),
         "initStrategy": "auto",
-        "datasets": [
-            {"uid": "histoweave", "name": f"{assay} — spatial", "files": files}
-        ],
+        "datasets": [{"uid": "histoweave", "name": f"{assay} — spatial", "files": files}],
         "coordinationSpace": coordination_space,
         "layout": layout,
     }

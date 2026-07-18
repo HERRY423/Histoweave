@@ -284,8 +284,9 @@ def test_sctransform_is_real_r_container_wrapper_and_validates_before_io(monkeyp
         method.run(data)
 
 
-def test_new_wrappers_are_beta_not_self_declared_production():
+def test_new_wrappers_are_beta_or_validated_not_self_declared_production():
     names = {"cell2location", "liana_plus", "scanvi", "celltypist", "cellpose2", "sctransform"}
     specs = {item["name"]: item for item in list_methods() if item["name"] in names}
     assert set(specs) == names
-    assert all(item["maturity"] == "beta" for item in specs.values())
+    assert all(item["maturity"] in {"beta", "validated"} for item in specs.values())
+    assert specs["cell2location"]["maturity"] == "validated"

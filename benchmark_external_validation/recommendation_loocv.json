@@ -1,0 +1,156 @@
+{
+  "protocol": "histoweave.external_validation.recommender_loocv.v1",
+  "rows": [
+    {
+      "held_out_dataset": "visium_hd_crc",
+      "training_datasets": [
+        "xenium_lung_cancer",
+        "xenium_ovarian_cancer",
+        "visium_mouse_brain",
+        "allen_merfish_brain_section"
+      ],
+      "oracle_methods": [
+        "spectral"
+      ],
+      "oracle_score": 0.6759144939316668,
+      "recommended_methods": [
+        "spectral",
+        "banksy_py",
+        "bisecting_kmeans"
+      ],
+      "recommended_method": "spectral",
+      "recommended_score": 0.6759144939316668,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_baseline": "spectral",
+      "global_best_score": 0.6759144939316668,
+      "global_best_regret": 0.0,
+      "random_expected_score": 0.27033082250113116,
+      "random_expected_regret": 0.40558367143053564
+    },
+    {
+      "held_out_dataset": "xenium_lung_cancer",
+      "training_datasets": [
+        "visium_hd_crc",
+        "xenium_ovarian_cancer",
+        "visium_mouse_brain",
+        "allen_merfish_brain_section"
+      ],
+      "oracle_methods": [
+        "mean_shift"
+      ],
+      "oracle_score": 0.1830105819804441,
+      "recommended_methods": [
+        "spectral",
+        "birch",
+        "banksy_py"
+      ],
+      "recommended_method": "spectral",
+      "recommended_score": 0.1534059176636474,
+      "top1_hit": false,
+      "top3_hit": false,
+      "selection_regret": 0.029604664316796703,
+      "global_best_baseline": "spectral",
+      "global_best_score": 0.1534059176636474,
+      "global_best_regret": 0.029604664316796703,
+      "random_expected_score": 0.058411392018817204,
+      "random_expected_regret": 0.12459918996162689
+    },
+    {
+      "held_out_dataset": "xenium_ovarian_cancer",
+      "training_datasets": [
+        "visium_hd_crc",
+        "xenium_lung_cancer",
+        "visium_mouse_brain",
+        "allen_merfish_brain_section"
+      ],
+      "oracle_methods": [
+        "spectral"
+      ],
+      "oracle_score": 0.4628050032409441,
+      "recommended_methods": [
+        "spectral",
+        "birch",
+        "banksy_py"
+      ],
+      "recommended_method": "spectral",
+      "recommended_score": 0.4628050032409441,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_baseline": "spectral",
+      "global_best_score": 0.4628050032409441,
+      "global_best_regret": 0.0,
+      "random_expected_score": 0.15865042883925154,
+      "random_expected_regret": 0.3041545744016926
+    },
+    {
+      "held_out_dataset": "visium_mouse_brain",
+      "training_datasets": [
+        "visium_hd_crc",
+        "xenium_lung_cancer",
+        "xenium_ovarian_cancer",
+        "allen_merfish_brain_section"
+      ],
+      "oracle_methods": [
+        "spectral"
+      ],
+      "oracle_score": 0.6268160581881485,
+      "recommended_methods": [
+        "spectral",
+        "birch",
+        "banksy_py"
+      ],
+      "recommended_method": "spectral",
+      "recommended_score": 0.6268160581881485,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_baseline": "spectral",
+      "global_best_score": 0.6268160581881485,
+      "global_best_regret": 0.0,
+      "random_expected_score": 0.3935521693346019,
+      "random_expected_regret": 0.23326388885354654
+    },
+    {
+      "held_out_dataset": "allen_merfish_brain_section",
+      "training_datasets": [
+        "visium_hd_crc",
+        "xenium_lung_cancer",
+        "xenium_ovarian_cancer",
+        "visium_mouse_brain"
+      ],
+      "oracle_methods": [
+        "spectral"
+      ],
+      "oracle_score": 0.2821907033991168,
+      "recommended_methods": [
+        "spectral",
+        "harmony_kmeans",
+        "minibatch_kmeans"
+      ],
+      "recommended_method": "spectral",
+      "recommended_score": 0.2821907033991168,
+      "top1_hit": true,
+      "top3_hit": true,
+      "selection_regret": 0.0,
+      "global_best_baseline": "spectral",
+      "global_best_score": 0.2821907033991168,
+      "global_best_regret": 0.0,
+      "random_expected_score": 0.18071815484857684,
+      "random_expected_regret": 0.10147254855053994
+    }
+  ],
+  "summary": {
+    "n_queries": 5,
+    "top1_accuracy": 0.8,
+    "top3_accuracy": 0.8,
+    "mean_selection_regret": 0.005920932863359341,
+    "median_selection_regret": 0.0,
+    "global_best_mean_regret": 0.005920932863359341,
+    "random_expected_mean_regret": 0.2338147746395883,
+    "regret_reduction_vs_global_best": 0.0,
+    "regret_reduction_vs_random": 0.9746768232568446
+  }
+}

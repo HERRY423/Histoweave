@@ -1,18 +1,16 @@
-"""Performance-landscape analysis for spatial domain detection.
+"""Performance-landscape analysis for spatial analysis tasks.
 
-The central experiment behind HistoWeave's "method selection" thesis: run every
-registered domain-detection method on a suite of datasets that systematically
-vary along biologically meaningful axes, then project datasets into a common
-feature space to reveal *where* each method excels.
+HistoWeave uses landscapes to *quantify method × spatial-context selection
+uncertainty*, not to claim a single universal best method.  Each landscape is
+bound to a :class:`~histoweave.benchmark.task_contract.TaskContract` so domain
+recovery and cell-type recovery are never silently mixed.
 
 Outputs
 -------
-* **Performance matrix** — datasets × methods, entry = ARI.
-* **Feature embedding** — datasets in 2‑D (PCA on the feature vectors).
-* **Method niches** — for each method, a convex hull or centroid in feature
-  space where that method is the top performer (or within 95 % of the best).
-* **Landscape report** — an HTML page with the landscape scatter and per-method
-  performance profiles.
+* **Performance matrix** — datasets × methods (or method@policy), entry = metric.
+* **Feature embedding** — datasets in 2‑D (PCA on target-free feature vectors).
+* **Method niches** — regions of feature space where each configuration wins.
+* **Dataset metadata** — platform / task / ground-truth kind for recommendation priors.
 """
 
 from __future__ import annotations
@@ -57,14 +55,14 @@ class LandscapeResult:
     timings: dict[str, dict[str, float | None]]
 
     # Metadata
-    feature_order: list[str] = field(
-        default_factory=lambda: list(RECOMMENDATION_FEATURE_ORDER)
-    )
+    feature_order: list[str] = field(default_factory=lambda: list(RECOMMENDATION_FEATURE_ORDER))
     method_count: int = 0
     dataset_count: int = 0
-    task: str = "domain_detection"
+    task: str = "spatial_domain"
     metric: str = "score"
     higher_is_better: bool = True
+    # Per-dataset priors used by MethodRecommender v2 (platform, task, gt kind).
+    dataset_meta: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def performance_matrix(self) -> np.ndarray:
         """Return (n_datasets × n_methods) array of ARI scores."""
@@ -97,20 +95,25 @@ class LandscapeResult:
 
         # Niche size (how many datasets each method dominates)
         niche_sizes = {m: len(v) for m, v in self.niches.items()}
-        lines.append("Niche sizes: " + ", ".join(
-            f"{m}={n}" for m, n in sorted(niche_sizes.items(), key=lambda kv: -kv[1])
-        ))
+        lines.append(
+            "Niche sizes: "
+            + ", ".join(f"{m}={n}" for m, n in sorted(niche_sizes.items(), key=lambda kv: -kv[1]))
+        )
 
         # Mean ARI per method
         means = {}
         for m in self.method_order():
-            scores = [self.performance[ds][m] for ds in self.dataset_order()
-                      if not np.isnan(self.performance[ds].get(m, np.nan))]
+            scores = [
+                self.performance[ds][m]
+                for ds in self.dataset_order()
+                if not np.isnan(self.performance[ds].get(m, np.nan))
+            ]
             if scores:
                 means[m] = float(np.mean(scores))
-        lines.append("Mean ARI: " + ", ".join(
-            f"{m}={means[m]:.3f}" for m in sorted(means, key=lambda k: -means[k])
-        ))
+        lines.append(
+            "Mean ARI: "
+            + ", ".join(f"{m}={means[m]:.3f}" for m in sorted(means, key=lambda k: -means[k]))
+        )
 
         return "\n".join(lines)
 
@@ -120,21 +123,57 @@ def run_landscape(
     *,
     methods: list[str] | None = None,
     n_domains_override: int | None = None,
+    k_policy: str = "estimate",
+    allow_oracle_k: bool = False,
+    k_estimator: str = "silhouette",
+    random_state: int = 0,
 ) -> LandscapeResult:
     """Run every domain-detection method on every dataset and build the landscape.
 
     This is the primary entry point for the **domain detection** task.  For other
     tasks use :func:`run_task_landscape`.  For all tasks at once, use
     :func:`run_multi_landscape`.
+
+    K (``n_domains``) policy
+    ------------------------
+    Historically this injected the true domain count (oracle K).  That is
+    unrealistic and is no longer the default.  Pass ``k_policy='oracle'`` with
+    ``allow_oracle_k=True`` only for controlled ablations, or
+    ``n_domains_override`` for a fixed K.
     """
-    return run_task_landscape(
+    from .k_selection import make_domain_k_factory
+
+    if n_domains_override is not None:
+        policy = "fixed"
+        fixed_k = int(n_domains_override)
+        oracle_ok = True
+    else:
+        policy = k_policy
+        fixed_k = None
+        oracle_ok = allow_oracle_k
+
+    factory = make_domain_k_factory(
+        policy=policy,  # type: ignore[arg-type]
+        fixed_k=fixed_k,
+        estimator=k_estimator,  # type: ignore[arg-type]
+        allow_oracle_k=oracle_ok,
+        random_state=random_state,
+    )
+    result = run_task_landscape(
         datasets,
         category=MethodCategory.DOMAIN_DETECTION,
         methods=methods,
-        extra_params_factory=lambda data: (
-            {"n_domains": n_domains_override or int(data.obs["domain_truth"].nunique())}
-        ),
+        extra_params_factory=factory,
     )
+    # Record the K policy on every dataset meta row for auditability.
+    for name in result.performance:
+        meta = dict(result.dataset_meta.get(name, {}))
+        meta["k_policy"] = policy if n_domains_override is None else "fixed"
+        meta["k_estimator"] = k_estimator if policy in {"estimate", "dual"} else None
+        if n_domains_override is not None:
+            meta["n_domains_used"] = int(n_domains_override)
+        result.dataset_meta[name] = meta
+    return result
 
 
 def run_task_landscape(
@@ -143,6 +182,8 @@ def run_task_landscape(
     category: MethodCategory | str,
     methods: list[str] | None = None,
     extra_params_factory: Callable[[SpatialTable], dict[str, Any]] | None = None,
+    dataset_meta: dict[str, dict[str, Any]] | None = None,
+    task: str | None = None,
 ) -> LandscapeResult:
     """Run every method registered for *category* on every dataset.
 
@@ -160,6 +201,12 @@ def run_task_landscape(
         Optional callable ``(data) -> dict[str, Any]`` that returns extra
         keyword arguments to pass to ``create_method()`` (e.g. ``n_domains``
         for domain-detection methods).
+    dataset_meta
+        Optional per-dataset priors (platform / task / ground_truth_kind).
+        When omitted, HistoWeave tries the real-data registry via
+        :func:`histoweave.benchmark.landscape_io.meta_from_registry`.
+    task
+        Analysis task name stored on the landscape (defaults from *category*).
     """
     if methods is None:
         methods = [m["name"] for m in list_methods(category)]
@@ -182,9 +229,7 @@ def run_task_landscape(
         features[ds_name] = feature_vector(feats, order=RECOMMENDATION_FEATURE_ORDER)
 
         # Pre-normalize once (log1p_cp10k) so every method gets the same input.
-        normalized = create_method(
-            MethodCategory.NORMALIZATION, "log1p_cp10k"
-        ).run(data.copy())
+        normalized = create_method(MethodCategory.NORMALIZATION, "log1p_cp10k").run(data.copy())
 
         extra = extra_params_factory(data) if extra_params_factory else {}
 
@@ -199,12 +244,12 @@ def run_task_landscape(
                     if key in method_param_names.get(method_name, set()):
                         params[key] = val
                 result = create_method(
-                    category, method_name, **params,
+                    category,
+                    method_name,
+                    **params,
                 ).run(normalized.copy())
                 elapsed = time.perf_counter() - t0
-                perf_row[method_name] = float(
-                    _score_result(result, data, category)
-                )
+                perf_row[method_name] = float(_score_result(result, data, category))
                 time_row[method_name] = round(elapsed, 4)
             except Exception:
                 perf_row[method_name] = float("nan")
@@ -219,6 +264,18 @@ def run_task_landscape(
     # Determine best method per dataset and method niches.
     best_method, niches = _compute_niches(performance)
 
+    cat_value = str(getattr(category, "value", category))
+    task_value = task or ("spatial_domain" if cat_value == "domain_detection" else cat_value)
+    if dataset_meta is None:
+        try:
+            from .landscape_io import meta_from_registry
+
+            dataset_meta = meta_from_registry(performance.keys())
+            for row in dataset_meta.values():
+                row.setdefault("task", task_value)
+        except Exception:
+            dataset_meta = {}
+
     return LandscapeResult(
         performance=performance,
         features=features,
@@ -228,8 +285,9 @@ def run_task_landscape(
         timings=timings,
         method_count=len(methods),
         dataset_count=len(datasets),
-        task=str(getattr(category, "value", category)),
+        task=task_value,
         feature_order=list(RECOMMENDATION_FEATURE_ORDER),
+        dataset_meta=dict(dataset_meta),
     )
 
 
@@ -241,14 +299,23 @@ def _embed_datasets(
 ) -> dict[str, tuple[float, float]]:
     """Embed datasets into 2‑D via PCA on standardised feature vectors."""
     ds_names = sorted(features)
-    X = np.array([features[n] for n in ds_names])
+    if not ds_names:
+        return {}
+    X = np.array([features[n] for n in ds_names], dtype=float)
 
-    # Impute NaN columns with column median.
+    # Impute NaN columns with column median (0 when a column is entirely missing).
     for j in range(X.shape[1]):
         col = X[:, j]
         mask = np.isnan(col)
         if mask.any():
-            col[mask] = np.nanmedian(col)
+            finite = col[~mask]
+            fill = float(np.median(finite)) if finite.size else 0.0
+            col[mask] = fill
+            X[:, j] = col
+
+    # All-missing / constant features → zero embedding (CSV-only landscapes).
+    if not np.isfinite(X).all() or np.allclose(X, X[0]):
+        return {name: (0.0, 0.0) for name in ds_names}
 
     # Standardise.
     mean = X.mean(axis=0, keepdims=True)
@@ -258,13 +325,19 @@ def _embed_datasets(
 
     # PCA to 2‑D.
     if Xs.shape[0] >= 2:
-        U, S, Vt = np.linalg.svd(Xs, full_matrices=False)
-        coords_2d = U[:, :2] * S[:2]
+        try:
+            U, S, _Vt = np.linalg.svd(Xs, full_matrices=False)
+            n_comp = min(2, U.shape[1], S.shape[0])
+            coords_2d = np.zeros((len(ds_names), 2))
+            coords_2d[:, :n_comp] = U[:, :n_comp] * S[:n_comp]
+        except np.linalg.LinAlgError:
+            coords_2d = np.zeros((len(ds_names), 2))
     else:
         coords_2d = np.zeros((len(ds_names), 2))
 
-    return {name: (float(coords_2d[i, 0]), float(coords_2d[i, 1]))
-            for i, name in enumerate(ds_names)}
+    return {
+        name: (float(coords_2d[i, 0]), float(coords_2d[i, 1])) for i, name in enumerate(ds_names)
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -414,8 +487,16 @@ def _compute_niches(
 # Landscape SVG visualization
 # ---------------------------------------------------------------------------
 _METHOD_COLORS = [
-    "#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2",
-    "#EECA3B", "#B279A2", "#FF9DA6", "#9D755D", "#BAB0AC",
+    "#4C78A8",
+    "#F58518",
+    "#54A24B",
+    "#E45756",
+    "#72B7B2",
+    "#EECA3B",
+    "#B279A2",
+    "#FF9DA6",
+    "#9D755D",
+    "#BAB0AC",
 ]
 
 
@@ -480,7 +561,7 @@ def landscape_svg(result: LandscapeResult, width: int = 620, height: int = 460) 
         points += (
             f'<text x="{sx(xs[i]):.1f}" y="{sy(ys[i]) - sizes[i] - 3:.1f}" '
             f'text-anchor="middle" font-size="9" fill="currentColor">'
-            f'{html.escape(labels[i].replace("_", " "))}</text>'
+            f"{html.escape(labels[i].replace('_', ' '))}</text>"
         )
 
     # Legend
@@ -503,9 +584,9 @@ def landscape_svg(result: LandscapeResult, width: int = 620, height: int = 460) 
         f'width="{width + 20}" height="{height}" '
         f'font-family="system-ui, sans-serif">'
         f'<text x="{pad}" y="22" font-size="13" font-weight="600" fill="currentColor">'
-        f'{html.escape(title)}</text>'
+        f"{html.escape(title)}</text>"
         f'<text x="{pad}" y="38" font-size="10" fill="#666">'
-        f'Point size ∝ winner ARI.  Colour = best method.  '
-        f'Distance = dataset similarity.</text>'
-        f'{points}{legend_markup}</svg>'
+        f"Point size ∝ winner ARI.  Colour = best method.  "
+        f"Distance = dataset similarity.</text>"
+        f"{points}{legend_markup}</svg>"
     )

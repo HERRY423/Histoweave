@@ -27,8 +27,7 @@ def run(
         sc = importlib.import_module("scanpy")
     except ImportError as exc:
         raise ImportError(
-            "SpaGCN backend is missing; install SpaGCN==1.2.7 in its isolated "
-            "benchmark environment"
+            "SpaGCN backend is missing; install SpaGCN==1.2.7 in its isolated benchmark environment"
         ) from exc
 
     adata = make_adata(X_counts, spatial, gene_names, n_genes=3000)
@@ -36,6 +35,9 @@ def run(
     spg.prefilter_specialgenes(adata)
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
+    # SpaGCN<=1.2.7 uses matrix.A (removed in SciPy 1.14+).
+    if hasattr(adata.X, "toarray"):
+        adata.X = np.asarray(adata.X.toarray(), dtype=np.float32)
 
     coords = np.asarray(spatial, dtype=float)
     adj = spg.calculate_adj_matrix(x=coords[:, 0], y=coords[:, 1], histology=False)

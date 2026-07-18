@@ -117,7 +117,7 @@ def test_missing_method_score_uses_method_specific_weight_and_roundtrips(tmp_pat
 
     path = recommender.save_knowledge_base(tmp_path / "knowledge.json")
     raw = json.loads(path.read_text(encoding="utf-8"))
-    assert raw["schema_version"] == 2
+    assert raw["schema_version"] == 3
     assert raw["performance"]["small_clean"]["beta"] is None
     loaded = MethodRecommender(path, k_neighbours=3).recommend(datasets["small_clean"])
     assert loaded.to_dict()["ranked_methods"] == recommendation.to_dict()["ranked_methods"]
@@ -145,10 +145,11 @@ def test_recommend_cli_json_and_output_file(tmp_path, capsys):
     )
     assert rc == 0
     payload = json.loads(capsys.readouterr().out)
-    assert payload["schema_version"] == 1
+    assert payload["schema_version"] == 3
     assert payload["dataset_name"] == "held_out"
     assert payload["feature_order"] == RECOMMENDATION_FEATURE_ORDER
     assert payload["neighbours"][0]["name"] == "small_clean"
+    assert "baselines" in payload
     assert json.loads(output.read_text(encoding="utf-8")) == payload
 
 
