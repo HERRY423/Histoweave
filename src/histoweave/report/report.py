@@ -8,6 +8,7 @@ expression heatmaps.  Vitessce loads from CDN so there is no Python dependency.
 from __future__ import annotations
 
 import json
+import logging
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -96,6 +97,10 @@ def _build_context(data: SpatialTable) -> dict:
         vitessce_json = json.dumps(vc, allow_nan=False, default=str)
     except Exception:
         # Never let a Vitessce serialisation error crash the report.
+        logging.getLogger(__name__).warning(
+            "Vitessce view config serialisation failed — falling back to empty config",
+            exc_info=True,
+        )
         vitessce_json = "{}"
 
     return {
@@ -172,6 +177,10 @@ def _uncertainty_context(data: SpatialTable) -> dict | None:
             np.asarray(coords, dtype=float), cleaned, k=min(6, data.n_obs - 1)
         )
     except Exception:
+        logging.getLogger(__name__).warning(
+            "Boundary uncertainty computation failed — skipping uncertainty block",
+            exc_info=True,
+        )
         return None
 
     block: dict = {

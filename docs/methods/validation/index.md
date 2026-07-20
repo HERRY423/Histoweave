@@ -42,6 +42,44 @@ Contract-validated methods wrap real upstream libraries and pass multi-dataset
 **not** claimed as scientifically concordant until real multi-dataset label metrics
 pass the scientific gate.
 
+## SOTA ARI tracks (do not mix)
+
+Published wrapper maturity reports historically used **oracle-K**
+(`n_domains = domain_truth.nunique()`). Blind analyses must use
+`k_policy=estimate`. Numbers from different tracks are **not** interchangeable.
+
+| Method | Track | Mean ARI | Source |
+|--------|-------|---------:|--------|
+| SpaGCN | oracle-K | ≈0.317 | [spagcn.md](spagcn.md) / `5x15_spatial_aware/sota_benchmark_long.csv` |
+| STAGATE | oracle-K (max_obs=1000) | ≈0.285 | [stagate.md](stagate.md) |
+| GraphST | oracle-K | ≈0.12 | [graphst.md](graphst.md) |
+| SpaGCN | estimate·silhouette | ≈0.237 | [non_oracle_k_sota](../../../non_oracle_k_sota/) |
+| STAGATE | estimate·silhouette | ≈0.219 | same |
+| SpaGCN | oracle−estimate drop (mean) | ≈0.062 | protocol endpoint `oracle_k_leakage` |
+| SpaGCN | oracle−estimate drop (151673) | ≈0.232 | same |
+
+Re-run endpoint: `python scripts/run_protocol_endpoints.py` (loads
+`non_oracle_k_sota/benchmark_long.csv` when present).
+
+## Reference artefacts (frozen result archives)
+
+These directories are **reference artefacts** for the decision protocol and
+SOTA audits. They are not method wrappers; cite them with their protocol
+string and do not silently mix tracks.
+
+| Directory | Protocol / role | Primary files |
+|-----------|-----------------|---------------|
+| [`non_oracle_k_sota/`](../../../non_oracle_k_sota/) | `histoweave.non_oracle_k_sota.v1` + endpoint `histoweave.oracle_k_leakage.v1` | `benchmark_long.csv`, `dual_track_k.json`, `summary.json`, `figures/non_oracle_k_ari_recovery.svg`, `report_non_oracle_k_sota.md` |
+| [`pareto_isus_results/`](../../../pareto_isus_results/) | Pareto multi-objective report + post-hoc ISUS calibration (not a predictor) | `pareto_report.json`, `isus_calibration.json`, `isus_calibration_table.csv`, figures |
+| [`protocol_endpoints_results/`](../../../protocol_endpoints_results/) | Falsifiable endpoints 1–5 bundle | `protocol_endpoints_summary.json`, study/selective/pareto/sota/oracle_k JSON |
+| [`independent_personalisation_results/`](../../../independent_personalisation_results/) | Study-level gated personalisation | `independent_personalisation_summary.json` |
+
+### How to cite a number from a reference artefact
+
+1. Name the **protocol string** and **track** (`oracle` vs `estimate:…`).
+2. Prefer machine-readable JSON/CSV over prose README approximations.
+3. If regenerating, bump the protocol version when semantics change.
+
 ## Batch narrative
 
 See `research/method_validation/results/VALIDATION_BATCH_REPORT.md` and the
@@ -51,4 +89,6 @@ See `research/method_validation/results/VALIDATION_BATCH_REPORT.md` and the
 
 - [Method guide index](../index.md)
 - [Method lifecycle](../../method-lifecycle.md)
+- [Decision protocol](../../decision-protocol.md)
+- [Roadmap](../../../ROADMAP.md)
 - [Release manifest](https://github.com/histoweave-spatial/histoweave/blob/main/src/histoweave/plugins/builtin/release_manifest.py)

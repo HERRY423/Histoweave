@@ -38,18 +38,32 @@ Domain methods historically received `n_domains = domain_truth.nunique()` — an
 
 | Policy | Behaviour |
 |--------|-----------|
-| `estimate` (**default**) | Silhouette / BIC-GMM / gap on expression geometry |
+| `estimate` (**default**) | Blind K via `ensemble` (expression + spatial criteria when coordinates exist) |
 | `fixed` | Caller-supplied K (`n_domains_override`) |
 | `oracle` | True domain count — **requires** `allow_oracle_k=True` |
+
+Blind estimators (no ground-truth labels):
+
+| Estimator | Geometry | Role |
+|-----------|----------|------|
+| `ensemble` (**default**) | mixed | Majority vote; reduces single-criterion blindness |
+| `spatial_silhouette` | neighbourhood-smoothed PCA | Spatial-aware silhouette |
+| `spatial_coherence` | expression PCA + spatial kNN score | Max spatial label contiguity |
+| `calinski_harabasz` / `davies_bouldin` | expression PCA | Classic variance-ratio indices |
+| `silhouette` / `bic_gmm` / `gap` | expression PCA | Legacy expression-only path |
 
 ```python
 from histoweave.benchmark import estimate_n_domains, run_landscape
 
-sel = estimate_n_domains(data, method="silhouette")
-k_hat, curve = sel.k, sel.scores
+# Default ensemble uses coordinates when present (non-oracle blind path):
+sel = estimate_n_domains(data)  # method="ensemble"
+k_hat, votes = sel.k, sel.component_votes
 
-# Scientific default — no ground-truth K:
-run_landscape(datasets, k_policy="estimate")
+# Expression-only ablation still available:
+sel_expr = estimate_n_domains(data, method="silhouette", geometry="expression")
+
+# Scientific default landscape — no ground-truth K:
+run_landscape(datasets, k_policy="estimate")  # k_estimator="ensemble"
 
 # Controlled ablation only:
 run_landscape(datasets, k_policy="oracle", allow_oracle_k=True)
@@ -57,6 +71,22 @@ run_landscape(datasets, k_policy="oracle", allow_oracle_k=True)
 
 `TaskContract.allow_oracle_k=True` additionally requires `notes` documenting the
 oracle ablation so contracts cannot silently publish leaked-K leaderboards.
+
+### Protocol endpoint: Oracle-K leakage
+
+Dual-track SOTA cells (`non_oracle_k_sota/benchmark_long.csv`) feed endpoint 5:
+
+```python
+import logging
+
+from histoweave.benchmark import oracle_k_leakage_impact
+
+report = oracle_k_leakage_impact("non_oracle_k_sota/benchmark_long.csv")
+logging.getLogger(__name__).info(report["mean_ari_drop_across_methods"])  # mean ARI(oracle) − ARI(estimate)
+```
+
+Re-run with the full bundle: `python scripts/run_protocol_endpoints.py`.
+See [validation index](methods/validation/index.md) for track tables.
 
 ## Multiple testing / FDR
 

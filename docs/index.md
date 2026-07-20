@@ -20,12 +20,17 @@ orchestration, and evaluation layer on top of them, not a competing method zoo.
 - **Method × spatial-context policy** often dominates preprocessing choices.
 - Spatial-domain recovery and cell-type recovery are **different tasks** and must not
   share ground-truth semantics (Leiden-as-domain-GT is rejected by task contracts).
+- RNA, protein, and chromatin domain partitions are **same-family but non-transferable**
+  for method ranking; H&E→expression (**virtual ST**) is a separate task scored on
+  measured expression (see [multimodal & virtual ST](multimodal-virtual-st.md)).
 - Recommendations report **regret vs global-best** and emit warnings when the knowledge
   base is too narrow — negative results are product features.
 
 ## Where to go next
 
 - **[Quickstart](quickstart.md)** — run the pipeline and generate a report in five minutes.
+- **[Core decision protocol](decision-protocol.md)** — evidence-governed method sets.
+- **[Multimodal tasks & virtual ST](multimodal-virtual-st.md)** — cross-modal rules + H&E→ST.
 - **[Method selection](method-selection.md)** — task-aware guidance for analysts.
 - **[Architecture](architecture.md)** — the six-layer stack and why each layer exists.
 - **[Concepts](concepts.md)** — the data model, plugins, provenance, and benchmarking.

@@ -24,6 +24,10 @@ python research/discovery_xenium_lymph/run_discovery_ln.py
 # GC-enriched component deep-dive (DLPFC largest-component protocol)
 python research/discovery_xenium_lymph/analyze_gc_components.py
 
+# D3 KCNN4/ORAI3: literature-linked Ca²⁺ biology + abutting proxy cell types
+python research/discovery_xenium_lymph/analyze_ca2_niche_neighborhood.py
+# → KCNN4_ORAI3_NEIGHBORHOOD.md
+
 # One-shot: swap official → rediscovery → panel/AUROC compare → GC dive
 python research/discovery_xenium_lymph/swap_and_rerun.py
 

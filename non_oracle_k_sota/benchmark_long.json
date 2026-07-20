@@ -1,0 +1,1922 @@
+[
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 7,
+    "oracle_k": 7,
+    "k_match": true,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": null,
+    "ari": 0.41801215319980684,
+    "seconds": 40.77,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": {
+      "dataset": "151673",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.4701553884984457,
+          "3": 0.3405813690021423,
+          "4": 0.341306785518844,
+          "5": 0.38110333938739394,
+          "6": 0.33628366671000665,
+          "7": 0.33535797945660606,
+          "8": 0.33272470167307133,
+          "9": 0.3302898888139408,
+          "10": 0.33374794825917997,
+          "11": 0.30063703855155766,
+          "12": 0.2632320811154122
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 7,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.1860371541566483,
+    "seconds": 15.634,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": {
+      "dataset": "151673",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.4173312978004099,
+          "3": 0.2993852784701966,
+          "4": 0.3702790724785398,
+          "5": 0.3308805526571973,
+          "6": 0.333305406896787,
+          "7": 0.32589597263717135,
+          "8": 0.32606729938561557,
+          "9": 0.3057769179810766,
+          "10": 0.2996255862260058,
+          "11": 0.3114857499437314,
+          "12": 0.31361764756337407
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 7,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.1860371541566483,
+    "seconds": 14.354,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": {
+      "dataset": "151673",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.40955755690500667,
+          "4": 0.5490590068719992,
+          "5": 0.41644024421648546,
+          "6": 0.447482915904849,
+          "7": 0.4255349552623438,
+          "8": 0.4137289783798506,
+          "9": 0.2748564821116606,
+          "10": 0.24810266099251885,
+          "11": 0.30433212422761446,
+          "12": 0.30777513684762187
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 12: 1})",
+        "oracle_k": 7,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 12,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 4, 6] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.1860371541566483,
+    "seconds": 15.47,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 7,
+    "oracle_k": 7,
+    "k_match": true,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": null,
+    "ari": 0.21208223325482137,
+    "seconds": 47.801,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": {
+      "dataset": "151673",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.4701553884984457,
+          "3": 0.3405813690021423,
+          "4": 0.341306785518844,
+          "5": 0.38110333938739394,
+          "6": 0.33628366671000665,
+          "7": 0.33535797945660606,
+          "8": 0.33272470167307133,
+          "9": 0.3302898888139408,
+          "10": 0.33374794825917997,
+          "11": 0.30063703855155766,
+          "12": 0.2632320811154122
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 7,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.13642634409962298,
+    "seconds": 45.361,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": {
+      "dataset": "151673",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.4173312978004099,
+          "3": 0.2993852784701966,
+          "4": 0.3702790724785398,
+          "5": 0.3308805526571973,
+          "6": 0.333305406896787,
+          "7": 0.32589597263717135,
+          "8": 0.32606729938561557,
+          "9": 0.3057769179810766,
+          "10": 0.2996255862260058,
+          "11": 0.3114857499437314,
+          "12": 0.31361764756337407
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 7,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.13642634409962298,
+    "seconds": 44.262,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151673",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3611,
+    "selection": {
+      "dataset": "151673",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.40955755690500667,
+          "4": 0.5490590068719992,
+          "5": 0.41644024421648546,
+          "6": 0.447482915904849,
+          "7": 0.4255349552623438,
+          "8": 0.4137289783798506,
+          "9": 0.2748564821116606,
+          "10": 0.24810266099251885,
+          "11": 0.30433212422761446,
+          "12": 0.30777513684762187
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 12: 1})",
+        "oracle_k": 7,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 12,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 4, 6] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.13642634409962298,
+    "seconds": 44.893,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 7,
+    "oracle_k": 7,
+    "k_match": true,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": null,
+    "ari": 0.2734157281960006,
+    "seconds": 11.073,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": {
+      "dataset": "151674",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.477636856159928,
+          "3": 0.3551049963359039,
+          "4": 0.37434872749910275,
+          "5": 0.3751488537291996,
+          "6": 0.3400020252086654,
+          "7": 0.33814461719777744,
+          "8": 0.33658912781738104,
+          "9": 0.33841314902362807,
+          "10": 0.3030765724395748,
+          "11": 0.3084311993793848,
+          "12": 0.300817562797152
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 7,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.1993507702863373,
+    "seconds": 15.562,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": {
+      "dataset": "151674",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.43372974516675483,
+          "3": 0.31880138782535633,
+          "4": 0.35741654129818207,
+          "5": 0.33847284985218584,
+          "6": 0.301118781070002,
+          "7": 0.30413194803182875,
+          "8": 0.2724097051897796,
+          "9": 0.27693988562660654,
+          "10": 0.28862672367185616,
+          "11": 0.2831037548714638,
+          "12": 0.2850114253896786
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 7,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.1993507702863373,
+    "seconds": 15.656,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": {
+      "dataset": "151674",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.4806987350852156,
+          "4": 0.5952428857168539,
+          "5": 0.5053655869800484,
+          "6": 0.3868463996617878,
+          "7": 0.38684034818464835,
+          "8": 0.23987545103365,
+          "9": 0.24666450300001844,
+          "10": 0.3068568546189655,
+          "11": 0.2769773463127851,
+          "12": 0.2732573623352474
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 12: 1})",
+        "oracle_k": 7,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 12,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 4, 5] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.1993507702863373,
+    "seconds": 15.479,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 7,
+    "oracle_k": 7,
+    "k_match": true,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": null,
+    "ari": 0.21310793227208522,
+    "seconds": 44.249,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": {
+      "dataset": "151674",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.477636856159928,
+          "3": 0.3551049963359039,
+          "4": 0.37434872749910275,
+          "5": 0.3751488537291996,
+          "6": 0.3400020252086654,
+          "7": 0.33814461719777744,
+          "8": 0.33658912781738104,
+          "9": 0.33841314902362807,
+          "10": 0.3030765724395748,
+          "11": 0.3084311993793848,
+          "12": 0.300817562797152
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 7,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.20751693122060053,
+    "seconds": 45.806,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": {
+      "dataset": "151674",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.43372974516675483,
+          "3": 0.31880138782535633,
+          "4": 0.35741654129818207,
+          "5": 0.33847284985218584,
+          "6": 0.301118781070002,
+          "7": 0.30413194803182875,
+          "8": 0.2724097051897796,
+          "9": 0.27693988562660654,
+          "10": 0.28862672367185616,
+          "11": 0.2831037548714638,
+          "12": 0.2850114253896786
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 7,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.20751693122060053,
+    "seconds": 46.403,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151674",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 3635,
+    "selection": {
+      "dataset": "151674",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.4806987350852156,
+          "4": 0.5952428857168539,
+          "5": 0.5053655869800484,
+          "6": 0.3868463996617878,
+          "7": 0.38684034818464835,
+          "8": 0.23987545103365,
+          "9": 0.24666450300001844,
+          "10": 0.3068568546189655,
+          "11": 0.2769773463127851,
+          "12": 0.2732573623352474
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 12: 1})",
+        "oracle_k": 7,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 12,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 4, 5] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.20751693122060053,
+    "seconds": 46.88,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 7,
+    "oracle_k": 7,
+    "k_match": true,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": null,
+    "ari": 0.384601763764735,
+    "seconds": 11.135,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 3,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": {
+      "dataset": "151507",
+      "oracle_k": 7,
+      "estimated_k": 3,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 3,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.4406272823849362,
+          "3": 0.4413874845172675,
+          "4": 0.3590406623165797,
+          "5": 0.3603474628331429,
+          "6": 0.3019025197594463,
+          "7": 0.3006270069634542,
+          "8": 0.30196305546951946,
+          "9": 0.2988024046711392,
+          "10": 0.23686958659166968,
+          "11": 0.24706869834288736,
+          "12": 0.2521673856341692
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 7,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.24793044576326267,
+    "seconds": 20.721,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": {
+      "dataset": "151507",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.35028893822123075,
+          "3": 0.3353796628997753,
+          "4": 0.31373035022521856,
+          "5": 0.3269264976829246,
+          "6": 0.3323546439407416,
+          "7": 0.25260893627671177,
+          "8": 0.2535785282798882,
+          "9": 0.2884189906795024,
+          "10": 0.2939618464576254,
+          "11": 0.27625424362447987,
+          "12": 0.29090607290947124
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 7,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.217186059353856,
+    "seconds": 17.392,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": {
+      "dataset": "151507",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7555265701399947,
+          "3": 0.5262609041600179,
+          "4": 0.5368309500004674,
+          "5": 0.5543062853997384,
+          "6": 0.5849468467901241,
+          "7": 0.22132943436086797,
+          "8": 0.21951668234930688,
+          "9": 0.446396039770497,
+          "10": 0.45321909942284044,
+          "11": 0.34990686710553287,
+          "12": 0.45438612325270833
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={3: 1, 12: 1, 2: 3})",
+        "oracle_k": 7,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 3,
+          "bic_gmm": 12,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 6, 5] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.217186059353856,
+    "seconds": 18.593,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 7,
+    "oracle_k": 7,
+    "k_match": true,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": null,
+    "ari": 0.3826337508634985,
+    "seconds": 55.766,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 3,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": {
+      "dataset": "151507",
+      "oracle_k": 7,
+      "estimated_k": 3,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 3,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.4406272823849362,
+          "3": 0.4413874845172675,
+          "4": 0.3590406623165797,
+          "5": 0.3603474628331429,
+          "6": 0.3019025197594463,
+          "7": 0.3006270069634542,
+          "8": 0.30196305546951946,
+          "9": 0.2988024046711392,
+          "10": 0.23686958659166968,
+          "11": 0.24706869834288736,
+          "12": 0.2521673856341692
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 7,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.2438570876141873,
+    "seconds": 52.994,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": {
+      "dataset": "151507",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.35028893822123075,
+          "3": 0.3353796628997753,
+          "4": 0.31373035022521856,
+          "5": 0.3269264976829246,
+          "6": 0.3323546439407416,
+          "7": 0.25260893627671177,
+          "8": 0.2535785282798882,
+          "9": 0.2884189906795024,
+          "10": 0.2939618464576254,
+          "11": 0.27625424362447987,
+          "12": 0.29090607290947124
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 7,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.21705197287930283,
+    "seconds": 56.65,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151507",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 7,
+    "k_match": false,
+    "n_domains_truth": 7,
+    "n_obs": 4221,
+    "selection": {
+      "dataset": "151507",
+      "oracle_k": 7,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7555265701399947,
+          "3": 0.5262609041600179,
+          "4": 0.5368309500004674,
+          "5": 0.5543062853997384,
+          "6": 0.5849468467901241,
+          "7": 0.22132943436086797,
+          "8": 0.21951668234930688,
+          "9": 0.446396039770497,
+          "10": 0.45321909942284044,
+          "11": 0.34990686710553287,
+          "12": 0.45438612325270833
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={3: 1, 12: 1, 2: 3})",
+        "oracle_k": 7,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 3,
+          "bic_gmm": 12,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 6, 5] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.21705197287930283,
+    "seconds": 51.577,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 8,
+    "oracle_k": 8,
+    "k_match": true,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": null,
+    "ari": 0.20679059555240845,
+    "seconds": 14.76,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 8,
+    "k_match": false,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": {
+      "dataset": "151669",
+      "oracle_k": 8,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.5204958307127893,
+          "3": 0.4378482335546314,
+          "4": 0.38016926784776467,
+          "5": 0.3807214778239625,
+          "6": 0.30807730776546777,
+          "7": 0.3141290721625468,
+          "8": 0.3204257530556252,
+          "9": 0.31966014894935063,
+          "10": 0.3206586218732592,
+          "11": 0.2849824565450972,
+          "12": 0.293299321007433
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 8,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.13684226138060407,
+    "seconds": 14.318,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 8,
+    "k_match": false,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": {
+      "dataset": "151669",
+      "oracle_k": 8,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.46344798428444317,
+          "3": 0.36574129794254884,
+          "4": 0.30701599759358494,
+          "5": 0.3002980731493845,
+          "6": 0.25379912626762213,
+          "7": 0.301157847532903,
+          "8": 0.3002428942164196,
+          "9": 0.25845496410367874,
+          "10": 0.2600897256690104,
+          "11": 0.2721462615917704,
+          "12": 0.2586557384276754
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 8,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.13684226138060407,
+    "seconds": 15.101,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 8,
+    "k_match": false,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": {
+      "dataset": "151669",
+      "oracle_k": 8,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.5771454517606459,
+          "4": 0.4428634073381914,
+          "5": 0.41359630102422196,
+          "6": 0.2561080249961973,
+          "7": 0.40595086958234716,
+          "8": 0.36293463880283594,
+          "9": 0.2577922989502318,
+          "10": 0.2579203589597719,
+          "11": 0.2670827621893869,
+          "12": 0.24567953400404302
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 7: 1})",
+        "oracle_k": 8,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 7,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 3, 4] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.13684226138060407,
+    "seconds": 14.573,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 8,
+    "oracle_k": 8,
+    "k_match": true,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": null,
+    "ari": 0.14587702628917906,
+    "seconds": 44.387,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 8,
+    "k_match": false,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": {
+      "dataset": "151669",
+      "oracle_k": 8,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.5204958307127893,
+          "3": 0.4378482335546314,
+          "4": 0.38016926784776467,
+          "5": 0.3807214778239625,
+          "6": 0.30807730776546777,
+          "7": 0.3141290721625468,
+          "8": 0.3204257530556252,
+          "9": 0.31966014894935063,
+          "10": 0.3206586218732592,
+          "11": 0.2849824565450972,
+          "12": 0.293299321007433
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 8,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.11595236462586625,
+    "seconds": 44.534,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 8,
+    "k_match": false,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": {
+      "dataset": "151669",
+      "oracle_k": 8,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.46344798428444317,
+          "3": 0.36574129794254884,
+          "4": 0.30701599759358494,
+          "5": 0.3002980731493845,
+          "6": 0.25379912626762213,
+          "7": 0.301157847532903,
+          "8": 0.3002428942164196,
+          "9": 0.25845496410367874,
+          "10": 0.2600897256690104,
+          "11": 0.2721462615917704,
+          "12": 0.2586557384276754
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 8,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.11595236462586625,
+    "seconds": 44.489,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151669",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 8,
+    "k_match": false,
+    "n_domains_truth": 8,
+    "n_obs": 3645,
+    "selection": {
+      "dataset": "151669",
+      "oracle_k": 8,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.5771454517606459,
+          "4": 0.4428634073381914,
+          "5": 0.41359630102422196,
+          "6": 0.2561080249961973,
+          "7": 0.40595086958234716,
+          "8": 0.36293463880283594,
+          "9": 0.2577922989502318,
+          "10": 0.2579203589597719,
+          "11": 0.2670827621893869,
+          "12": 0.24567953400404302
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 7: 1})",
+        "oracle_k": 8,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 7,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 3, 4] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.11595236462586625,
+    "seconds": 39.463,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 5,
+    "oracle_k": 5,
+    "k_match": true,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": null,
+    "ari": 0.2126642847549074,
+    "seconds": 10.53,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 5,
+    "k_match": false,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": {
+      "dataset": "151670",
+      "oracle_k": 5,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.49845853903815585,
+          "3": 0.4138688093398778,
+          "4": 0.36924751983988624,
+          "5": 0.3123351931078759,
+          "6": 0.29916700863156237,
+          "7": 0.3287131250147927,
+          "8": 0.31895922426312057,
+          "9": 0.29997981709643873,
+          "10": 0.27838599708691025,
+          "11": 0.25996176657453035,
+          "12": 0.25647499401491813
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 5,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.41563945459155865,
+    "seconds": 16.429,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 5,
+    "k_match": false,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": {
+      "dataset": "151670",
+      "oracle_k": 5,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.4695549437739472,
+          "3": 0.34651615817717063,
+          "4": 0.2724183188524161,
+          "5": 0.27736339650267594,
+          "6": 0.28206541433793686,
+          "7": 0.2861307597432196,
+          "8": 0.2630725416209384,
+          "9": 0.274497567169258,
+          "10": 0.27828372836716436,
+          "11": 0.2838328308574146,
+          "12": 0.24985100095343696
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 5,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.41563945459155865,
+    "seconds": 15.107,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "spagcn",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 5,
+    "k_match": false,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": {
+      "dataset": "151670",
+      "oracle_k": 5,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.5145606476844025,
+          "4": 0.38290025324226845,
+          "5": 0.37759593829422505,
+          "6": 0.3686092579456889,
+          "7": 0.36786157701114136,
+          "8": 0.23357684157425487,
+          "9": 0.3442845887783412,
+          "10": 0.34597026496314676,
+          "11": 0.3439976742508368,
+          "12": 0.2581637625638145
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 11: 1})",
+        "oracle_k": 5,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 11,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 3, 4] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.41563945459155865,
+    "seconds": 15.747,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "oracle",
+    "estimator": null,
+    "mode": "oracle",
+    "k_used": 5,
+    "oracle_k": 5,
+    "k_match": true,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": null,
+    "ari": 0.2072763696669319,
+    "seconds": 38.203,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "silhouette",
+    "mode": "estimate:silhouette",
+    "k_used": 2,
+    "oracle_k": 5,
+    "k_match": false,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": {
+      "dataset": "151670",
+      "oracle_k": 5,
+      "estimated_k": 2,
+      "estimator": "silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "silhouette",
+        "scores": {
+          "2": 0.49845853903815585,
+          "3": 0.4138688093398778,
+          "4": 0.36924751983988624,
+          "5": 0.3123351931078759,
+          "6": 0.29916700863156237,
+          "7": 0.3287131250147927,
+          "8": 0.31895922426312057,
+          "9": 0.29997981709643873,
+          "10": 0.27838599708691025,
+          "11": 0.25996176657453035,
+          "12": 0.25647499401491813
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max mean silhouette on embedding+k-means",
+        "oracle_k": 5,
+        "geometry": "expression",
+        "spatial_used": false,
+        "component_votes": {},
+        "flags": [
+          "Expression-only geometry: coordinates were not used for this estimator. Prefer method='ensemble' or 'spatial_silhouette' for blind spatial domain K."
+        ]
+      }
+    },
+    "ari": 0.39098491288802784,
+    "seconds": 44.695,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "spatial_silhouette",
+    "mode": "estimate:spatial_silhouette",
+    "k_used": 2,
+    "oracle_k": 5,
+    "k_match": false,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": {
+      "dataset": "151670",
+      "oracle_k": 5,
+      "estimated_k": 2,
+      "estimator": "spatial_silhouette",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "spatial_silhouette",
+        "scores": {
+          "2": 0.4695549437739472,
+          "3": 0.34651615817717063,
+          "4": 0.2724183188524161,
+          "5": 0.27736339650267594,
+          "6": 0.28206541433793686,
+          "7": 0.2861307597432196,
+          "8": 0.2630725416209384,
+          "9": 0.274497567169258,
+          "10": 0.27828372836716436,
+          "11": 0.2838328308574146,
+          "12": 0.24985100095343696
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "max silhouette on spatially-smoothed expression PCA",
+        "oracle_k": 5,
+        "geometry": "spatial_smooth",
+        "spatial_used": true,
+        "component_votes": {},
+        "flags": []
+      }
+    },
+    "ari": 0.39098491288802784,
+    "seconds": 36.319,
+    "status": "success",
+    "error": null
+  },
+  {
+    "protocol": "histoweave.non_oracle_k_sota.v1",
+    "dataset": "151670",
+    "method": "stagate",
+    "seed": 42,
+    "k_policy": "estimate",
+    "estimator": "ensemble",
+    "mode": "estimate:ensemble",
+    "k_used": 2,
+    "oracle_k": 5,
+    "k_match": false,
+    "n_domains_truth": 5,
+    "n_obs": 3484,
+    "selection": {
+      "dataset": "151670",
+      "oracle_k": 5,
+      "estimated_k": 2,
+      "estimator": "ensemble",
+      "k_match": false,
+      "selection": {
+        "k": 2,
+        "method": "ensemble",
+        "scores": {
+          "2": 0.7557251908396947,
+          "3": 0.5145606476844025,
+          "4": 0.38290025324226845,
+          "5": 0.37759593829422505,
+          "6": 0.3686092579456889,
+          "7": 0.36786157701114136,
+          "8": 0.23357684157425487,
+          "9": 0.3442845887783412,
+          "10": 0.34597026496314676,
+          "11": 0.3439976742508368,
+          "12": 0.2581637625638145
+        },
+        "k_range": [
+          2,
+          12
+        ],
+        "n_obs": 2500,
+        "n_pcs": 15,
+        "notes": "ensemble weighted score-average over 5 estimators; consensus k=2 (member modes={2: 4, 11: 1})",
+        "oracle_k": 5,
+        "geometry": "ensemble",
+        "spatial_used": true,
+        "component_votes": {
+          "silhouette": 2,
+          "bic_gmm": 11,
+          "calinski_harabasz": 2,
+          "spatial_silhouette": 2,
+          "spatial_coherence": 2
+        },
+        "flags": [
+          "ensemble: weighted average of min-max-normalised score curves over silhouette, bic_gmm, calinski_harabasz, spatial_silhouette, spatial_coherence (spatial members up-weighted).",
+          "ensemble spatial refinement among top-3 aggregate K=[2, 3, 4] \u2192 k=2 by spatial_coherence."
+        ]
+      }
+    },
+    "ari": 0.39098491288802784,
+    "seconds": 35.97,
+    "status": "success",
+    "error": null
+  }
+]

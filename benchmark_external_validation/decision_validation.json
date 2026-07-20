@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "protocol": "external_holdout",
+  "source_protocol": "histoweave.external_validation.recommender_loocv.v1",
+  "source_artifact": "recommendation_loocv.json",
+  "task": "spatial_domain",
+  "n_queries": 5,
+  "beats_global_best": false,
+  "conclusion": "The personalised candidate generator ties, rather than beats, the global-best comparator on mean regret.",
+  "metrics": {
+    "top1_accuracy": 0.8,
+    "top3_accuracy": 0.8,
+    "mean_selection_regret": 0.005920932863359341,
+    "global_best_mean_regret": 0.005920932863359341,
+    "regret_reduction_vs_global_best": 0.0,
+    "random_expected_mean_regret": 0.2338147746395883
+  },
+  "scope": {
+    "ground_truth": "strict anatomical, pathology, or manual spatial-region labels",
+    "platforms": [
+      "Visium HD",
+      "Xenium",
+      "Visium",
+      "MERFISH"
+    ],
+    "unit": "held-out dataset"
+  },
+  "limitations": [
+    "Only five held-out datasets were available.",
+    "The result does not justify personalised deployment.",
+    "The result is retained as a negative scientific control for the decision gate."
+  ]
+}

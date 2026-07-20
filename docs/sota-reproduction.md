@@ -57,11 +57,21 @@ Each `(method, slice, seed)` is an independent process with `errorStrategy
 |------|-----|
 | Fail closed on missing backend | No toy substitute under a SOTA name |
 | `status` column required | Leaderboard / landscape can filter |
-| Oracle `n_domains` documented | Comparability with published DLPFC setups |
+| **`k_policy` documented per cell** | Oracle-K vs estimate tracks are not interchangeable |
 | Task = `spatial_domain` only | Expert cortical layers, never Leiden |
 
-Environment contract (YAML twin): [`workflows/sota/env_contract.yaml`](https://github.com/HERRY423/Histoweave/blob/main/workflows/sota/env_contract.yaml).
+Historical SOTA grids used **oracle-K** for comparability with papers. New
+scientific defaults use `k_policy=estimate`. Dual-track archive:
 
+```bash
+python non_oracle_k_sota/run_non_oracle_k_sota.py
+# endpoint: oracle_k_leakage_impact → protocol_endpoints_results/oracle_k_leakage.json
+python scripts/run_protocol_endpoints.py --skip-dlpfc-expand
+```
+
+See [validation index](methods/validation/index.md) for the track table.
+
+Environment contract (YAML twin): [`workflows/sota/env_contract.yaml`](https://github.com/HERRY423/Histoweave/blob/main/workflows/sota/env_contract.yaml).
 ## Throughput report
 
 `sota_throughput.json` records per-method success counts, mean ARI, and mean

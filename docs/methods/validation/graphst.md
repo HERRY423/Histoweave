@@ -74,7 +74,7 @@
 
 ## Limitations (independent review)
 
-- ARI vs manual DLPFC layers with oracle domain count.
+- ARI vs manual DLPFC layers with **oracle-K** domain count (track must be labeled).
 - Epochs may be reduced vs paper defaults for wall-clock feasibility.
 - Subsampling (if any) is disclosed in run_meta.max_obs.
 

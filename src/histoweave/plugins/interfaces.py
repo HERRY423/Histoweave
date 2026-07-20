@@ -182,6 +182,8 @@ class MethodCategory(StrEnum):
     NEIGHBORHOOD = "neighborhood"
     CELL_CELL_COMMUNICATION = "ccc"
     INTEGRATION = "integration"
+    # H&E / histology → predicted spatial transcriptomics (virtual ST).
+    VIRTUAL_ST = "virtual_st"
 
 
 @dataclass(frozen=True)
@@ -268,7 +270,15 @@ class MethodSpec:
         if not isinstance(self.implementation, MethodImplementation):
             object.__setattr__(self, "implementation", MethodImplementation(self.implementation))
         modalities = tuple(dict.fromkeys(str(item).lower() for item in self.modalities))
-        allowed_modalities = {"expression", "image", "spatial", "labels", "shapes"}
+        allowed_modalities = {
+            "expression",
+            "image",
+            "spatial",
+            "labels",
+            "shapes",
+            "protein",
+            "chromatin",
+        }
         unknown = set(modalities) - allowed_modalities
         if not modalities or unknown:
             raise ValueError(

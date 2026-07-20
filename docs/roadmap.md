@@ -1,13 +1,12 @@
 # Roadmap
 
-HistoWeave is being developed in phases from the current pre-alpha scaffold toward a
-stable, benchmarked spatial-transcriptomics platform.
+The canonical roadmap lives at the repository root:
 
-The canonical roadmap is maintained at the repository root so it remains visible to
-contributors and package-index visitors:
+**[ROADMAP.md](../ROADMAP.md)**
 
-[Read the complete HistoWeave roadmap](https://github.com/histoweave-spatial/histoweave/blob/main/ROADMAP.md)
+Near-term priorities (v0.1.x → v0.2.0):
 
-Near-term priorities are sparse real-data execution, validated method wrappers,
-continuous benchmark datasets, interactive reporting, and production-grade release
-automation.
+1. Decision-protocol CI (adversarial evidence corpus, selective regret figure).
+2. Statistical honesty: dual-track non-oracle K, oracle-K leakage endpoint, post-hoc ISUS.
+3. Reference artefact registration and protocol-bound SOTA number tables.
+4. PyPI / Zenodo release ops on a clean main tag.

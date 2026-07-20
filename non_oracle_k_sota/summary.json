@@ -1,0 +1,119 @@
+{
+  "protocol": "histoweave.non_oracle_k_sota.v1",
+  "n_cells": 40,
+  "n_success": 40,
+  "by_mode": {
+    "spagcn|oracle": {
+      "method": "spagcn",
+      "mode": "oracle",
+      "n": 5,
+      "mean_ari": 0.2990969050935717,
+      "std_ari": 0.09759929888977704,
+      "mean_k_used": 6.8,
+      "k_match_rate": 1.0
+    },
+    "spagcn|estimate:silhouette": {
+      "method": "spagcn",
+      "mode": "estimate:silhouette",
+      "n": 5,
+      "mean_ari": 0.2371600172356822,
+      "std_ari": 0.10732852616337746,
+      "mean_k_used": 2.2,
+      "k_match_rate": 0.0
+    },
+    "spagcn|estimate:spatial_silhouette": {
+      "method": "spagcn",
+      "mode": "estimate:spatial_silhouette",
+      "n": 5,
+      "mean_ari": 0.23101113995380085,
+      "std_ari": 0.10743784658730632,
+      "mean_k_used": 2.0,
+      "k_match_rate": 0.0
+    },
+    "spagcn|estimate:ensemble": {
+      "method": "spagcn",
+      "mode": "estimate:ensemble",
+      "n": 5,
+      "mean_ari": 0.23101113995380085,
+      "std_ari": 0.10743784658730632,
+      "mean_k_used": 2.0,
+      "k_match_rate": 0.0
+    },
+    "stagate|oracle": {
+      "method": "stagate",
+      "mode": "oracle",
+      "n": 5,
+      "mean_ari": 0.23219546246930323,
+      "std_ari": 0.08870229425459415,
+      "mean_k_used": 6.8,
+      "k_match_rate": 1.0
+    },
+    "stagate|estimate:silhouette": {
+      "method": "stagate",
+      "mode": "estimate:silhouette",
+      "n": 5,
+      "mean_ari": 0.21894752808966098,
+      "std_ari": 0.10927689139612472,
+      "mean_k_used": 2.2,
+      "k_match_rate": 0.0
+    },
+    "stagate|estimate:spatial_silhouette": {
+      "method": "stagate",
+      "mode": "estimate:spatial_silhouette",
+      "n": 5,
+      "mean_ari": 0.2135865051426841,
+      "std_ari": 0.10840336723490336,
+      "mean_k_used": 2.0,
+      "k_match_rate": 0.0
+    },
+    "stagate|estimate:ensemble": {
+      "method": "stagate",
+      "mode": "estimate:ensemble",
+      "n": 5,
+      "mean_ari": 0.2135865051426841,
+      "std_ari": 0.10840336723490336,
+      "mean_k_used": 2.0,
+      "k_match_rate": 0.0
+    }
+  },
+  "recovery": {
+    "spagcn": {
+      "oracle_mean_ari": 0.2990969050935717,
+      "silhouette_mean_ari": 0.2371600172356822,
+      "spatial_silhouette_mean_ari": 0.23101113995380085,
+      "ensemble_mean_ari": 0.23101113995380085,
+      "ari_drop_silhouette_vs_oracle": 0.06193688785788948,
+      "ari_recovered_by_spatial_silhouette": -0.006148877281881349,
+      "ari_recovered_by_ensemble": -0.006148877281881349,
+      "fraction_of_drop_recovered_ensemble": 0.0,
+      "fraction_of_drop_recovered_spatial_silhouette": 0.0
+    },
+    "stagate": {
+      "oracle_mean_ari": 0.23219546246930323,
+      "silhouette_mean_ari": 0.21894752808966098,
+      "spatial_silhouette_mean_ari": 0.2135865051426841,
+      "ensemble_mean_ari": 0.2135865051426841,
+      "ari_drop_silhouette_vs_oracle": 0.013247934379642251,
+      "ari_recovered_by_spatial_silhouette": -0.005361022946976879,
+      "ari_recovered_by_ensemble": -0.005361022946976879,
+      "fraction_of_drop_recovered_ensemble": 0.0,
+      "fraction_of_drop_recovered_spatial_silhouette": 0.0
+    }
+  },
+  "dual_track_k_match_rate": {
+    "silhouette": 0.0,
+    "spatial_silhouette": 0.0,
+    "ensemble": 0.0
+  },
+  "slices": [
+    "151673",
+    "151674",
+    "151507",
+    "151669",
+    "151670"
+  ],
+  "methods": [
+    "spagcn",
+    "stagate"
+  ]
+}

@@ -4,6 +4,11 @@
 **Category:** `domain_detection`
 **Decision:** **VALIDATED**
 **Datasets (n=5):** 151507, 151669, 151670, 151673, 151674
+**Primary track for maturity gate:** **oracle-K** (historical SOTA grid)
+
+> **Track warning.** Maturity promotion used oracle `n_domains`. For blind /
+> scientific defaults use `k_policy=estimate` and the dual-track archive
+> `non_oracle_k_sota/` (endpoint `histoweave.oracle_k_leakage.v1`).
 
 ## Gates
 
@@ -16,12 +21,22 @@
 
 ## Metrics
 
-### sota_csv
+### Track comparison (do not average across tracks)
+
+| Track | Mean ARI | Mean K used | Source |
+|-------|---------:|------------:|--------|
+| **oracle-K** (3 seeds × 5 slices) | **0.317** | true layers | `sota_benchmark_long.csv` below |
+| **estimate · silhouette** (seed 42) | **0.237** | ≈2.2 | `non_oracle_k_sota/benchmark_long.csv` |
+| Oracle − estimate mean drop | **0.062** | — | protocol endpoint `oracle_k_leakage` |
+| Max slice drop (151673) | **0.232** | 7 → 2 | same |
+
+### sota_csv (oracle-K track)
 
 ```json
 {
   "mean_ari": 0.3171446309976544,
   "std_ari": 0.09873356261670699,
+  "k_policy": "oracle",
   "per_dataset": {
     "151507": 0.3834553663668036,
     "151669": 0.19925228348214896,
@@ -31,7 +46,7 @@
   },
   "n_datasets": 5,
   "n_runs": 15,
-  "source": "5x15_spatial_aware\\sota_benchmark_long.csv",
+  "source": "5x15_spatial_aware/sota_benchmark_long.csv",
   "protocol": "histoweave.sota_dlpfc.v1",
   "backend": "official SpaGCN"
 }
@@ -71,21 +86,26 @@
 
 ## Sources
 
-- `5x15_spatial_aware/sota_benchmark_long.csv`
+- `5x15_spatial_aware/sota_benchmark_long.csv` (oracle-K track)
+- `non_oracle_k_sota/benchmark_long.csv` (estimate track + dual-track K)
 - `research/method_validation/run_sota_batch_multidataset.py`
+- `non_oracle_k_sota/run_non_oracle_k_sota.py`
 
 ## Notes
 
-- SOTA DLPFC grid mean ARI=0.317 across 5 slices / 15 runs.
-- Live SpaGCN smoke success=3/3 mean_ari=0.23142095349374428
+- Oracle-K SOTA DLPFC grid mean ARI=0.317 across 5 slices / 15 runs.
+- Estimate-track mean ARI≈0.237 (seed 42); dual-track K match rate = 0/5.
+- Live SpaGCN smoke success=3/3 mean_ari=0.23142095349374428 (reduced n_obs).
 
 ## Limitations (independent review)
 
-- Primary multi-slice ARI from official SpaGCN SOTA grid (5 DLPFC × 3 seeds).
+- Primary multi-slice ARI for maturity used oracle domain count.
 - Live smoke uses reduced epochs/HVG subsample for runtime.
+- Non-oracle K estimators currently collapse toward K≈2 on DLPFC layers.
 
 ## Claim bounds
 
 1. Validation promotes **wrapper maturity**, not universal SOTA.
-2. Metrics are protocol-bound (oracle *k*, spatial weight, mock backend as disclosed).
+2. Metrics are protocol-bound (`k_policy`, spatial weight, mock backend as disclosed).
 3. Re-run compile after any benchmark CSV regeneration.
+4. Do not quote oracle-K ARI as the blind-analysis performance of SpaGCN.

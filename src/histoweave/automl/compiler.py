@@ -1,4 +1,4 @@
-"""Automated spatial AutoML compiler.
+"""Execution adapter for the evidence-governed spatial decision protocol.
 
 Pipeline
 --------
@@ -22,11 +22,13 @@ from uuid import uuid4
 
 import numpy as np
 
+from ..benchmark.decision import DecisionAction, build_decision_card
 from ..benchmark.features import (
     RECOMMENDATION_FEATURE_ORDER,
     extract_features,
     feature_vector,
 )
+from ..benchmark.pareto import Direction, ObjectivePoints, nondominated_sort
 from ..benchmark.recommend import MethodRecommender, Recommendation
 from ..data import SpatialTable
 from ..plugins import MethodCategory, create_method
@@ -65,7 +67,7 @@ class ParetoPoint:
     """One point on the multi-objective front."""
 
     method: str
-    objectives: dict[str, float]  # all maximised after sign flip for runtime
+    objectives: dict[str, float]  # quality/recommendation max; speed is seconds min
     is_pareto: bool
     pareto_rank: int  # 1 = non-dominated front
     scalarised_score: float
@@ -105,6 +107,7 @@ class AutoMLResult:
     warnings: list[str] = field(default_factory=list)
     schema_version: int = AUTOML_SCHEMA_VERSION
     label_columns: dict[str, str] = field(default_factory=dict)
+    decision_card: dict[str, Any] | None = None
 
     def best_method(self) -> str | None:
         return self.ranked_methods[0] if self.ranked_methods else None
@@ -127,6 +130,7 @@ class AutoMLResult:
             "compiled_plan": self.compiled_plan,
             "warnings": list(self.warnings),
             "label_columns": dict(self.label_columns),
+            "decision_card": self.decision_card,
         }
 
     def summary(self) -> str:
@@ -174,6 +178,7 @@ def run_spatial_automl(
     out_dir: str | Path | None = None,
     write_report: bool = True,
     platform: str | None = None,
+    validation: dict[str, Any] | None = None,
 ) -> AutoMLResult:
     """Run the full spatial AutoML compiler loop.
 
@@ -225,9 +230,17 @@ def run_spatial_automl(
         platform=platform,
     )
     warnings.extend(rec.warnings)
+    pre_decision = build_decision_card(rec, validation=validation)
 
     if methods is None:
-        selected = [m.method for m in rec.top(top_k)]
+        if pre_decision.action is DecisionAction.GLOBAL_DEFAULT:
+            selected = list(pre_decision.primary_set)
+        elif pre_decision.action is DecisionAction.ABSTAIN:
+            selected = []
+        else:
+            # EVIDENCE_REQUIRED executes a comparison panel, not a claimed winner.
+            selected = list(pre_decision.primary_set or pre_decision.comparison_set)
+            selected = selected[:top_k]
         # Strip @policy suffixes for execution when present.
         selected = [_base_method(name) for name in selected]
         # Deduplicate while preserving order.
@@ -242,8 +255,7 @@ def run_spatial_automl(
         selected = list(methods)
 
     if not selected:
-        warnings.append("No methods selected; falling back to kmeans.")
-        selected = ["kmeans"]
+        warnings.append("No admissible methods selected; method execution was skipped.")
 
     rec_score_map = { _base_method(m.method): m.score for m in rec.ranked_methods }
     rec_rank_map = {
@@ -292,6 +304,11 @@ def run_spatial_automl(
 
     pareto = compute_pareto_front(runs)
     ranked = [p.method for p in sorted(pareto, key=lambda p: (p.pareto_rank, -p.scalarised_score))]
+    decision_card = build_decision_card(
+        rec,
+        pareto=_pareto_payload_from_points(dataset_name, pareto),
+        validation=validation,
+    )
 
     feats = extract_features(data, include_domain=False)
     order = list(RECOMMENDATION_FEATURE_ORDER)
@@ -305,13 +322,14 @@ def run_spatial_automl(
         recommendation=rec.to_dict(),
         neighbours=list(rec.neighbours),
         feature_order=order,
-        feature_vector=[float(x) if _finite(x) else None for x in vec],  # type: ignore[misc]
+        feature_vector=[float(x) if _finite(x) else None for x in vec],
         method_runs=runs,
         pareto=pareto,
         ranked_methods=ranked,
         compiled_plan=compiled_plan,
         warnings=warnings,
         label_columns=label_columns,
+        decision_card=decision_card.to_dict(),
     )
 
     if out_dir is not None:
@@ -320,12 +338,11 @@ def run_spatial_automl(
 
 
 def compute_pareto_front(runs: list[MethodRunResult]) -> list[ParetoPoint]:
-    """Multi-objective ranking: maximise quality proxies, minimise runtime.
+    """Adapt post-run proxies to the canonical benchmark Pareto semantics.
 
-    Objectives (all oriented so higher is better):
-    - ``quality`` — composite of spatial coherence, silhouette, consensus
-    - ``speed`` — ``1 / (1 + seconds)``
-    - ``recommendation`` — landscape recommendation score (when available)
+    ``quality`` and ``recommendation`` are maximised; ``speed`` stores seconds
+    and is minimised. Front membership delegates to the canonical
+    :func:`histoweave.benchmark.pareto.nondominated_sort` implementation.
     """
     successful = [r for r in runs if r.success and r.quality_score is not None]
     if not successful:
@@ -340,32 +357,49 @@ def compute_pareto_front(runs: list[MethodRunResult]) -> list[ParetoPoint]:
             for r in runs
         ]
 
-    objectives: dict[str, dict[str, float]] = {}
+    objectives: ObjectivePoints = {}
     for r in successful:
         seconds = float(r.seconds) if r.seconds is not None else 1e6
         rec = float(r.recommendation_score) if r.recommendation_score is not None else 0.0
         objectives[r.method] = {
             "quality": float(r.quality_score or 0.0),
-            "speed": 1.0 / (1.0 + max(seconds, 0.0)),
+            "speed": max(seconds, 0.0),
             "recommendation": rec,
         }
 
     names = list(objectives)
-    obj_keys = ("quality", "speed", "recommendation")
-    mats = np.array([[objectives[n][k] for k in obj_keys] for n in names])
-    # Non-dominated sorting (higher is better on each objective).
-    ranks = _non_dominated_ranks(mats)
+    directions: dict[str, Direction] = {
+        "quality": "max",
+        "speed": "min",
+        "recommendation": "max",
+    }
+    ranks = nondominated_sort(objectives, directions)
+    # Scalarisation is retained only as a deterministic within-front display
+    # order. It is not the scientific decision product.
+    utilities = np.array(
+        [
+            [
+                float(objectives[name]["quality"] or 0.0),
+                1.0 / (1.0 + float(objectives[name]["speed"] or 0.0)),
+                float(objectives[name]["recommendation"] or 0.0),
+            ]
+            for name in names
+        ]
+    )
     points: list[ParetoPoint] = []
     for i, name in enumerate(names):
-        # Scalarisation: equal weights on z-scored objectives.
-        z = (mats[i] - mats.mean(axis=0)) / (mats.std(axis=0) + 1e-8)
+        z = (utilities[i] - utilities.mean(axis=0)) / (utilities.std(axis=0) + 1e-8)
         scalar = float(z.mean())
         points.append(
             ParetoPoint(
                 method=name,
-                objectives=dict(objectives[name]),
-                is_pareto=bool(ranks[i] == 1),
-                pareto_rank=int(ranks[i]),
+                objectives={
+                    key: float(value)
+                    for key, value in objectives[name].items()
+                    if value is not None
+                },
+                is_pareto=bool(ranks[name] == 0),
+                pareto_rank=int(ranks[name] + 1),
                 scalarised_score=scalar,
             )
         )
@@ -386,6 +420,22 @@ def compute_pareto_front(runs: list[MethodRunResult]) -> list[ParetoPoint]:
     return points
 
 
+def _pareto_payload_from_points(dataset_name: str, points: list[ParetoPoint]) -> dict[str, Any]:
+    successful = [point for point in points if point.pareto_rank < 99]
+    return {
+        "dataset": dataset_name,
+        "objectives": ["quality", "speed", "recommendation"],
+        "directions": {"quality": "max", "speed": "min", "recommendation": "max"},
+        "frontier": [point.method for point in successful if point.is_pareto],
+        "ranks": {point.method: point.pareto_rank - 1 for point in successful},
+        "table": {point.method: dict(point.objectives) for point in successful},
+        "notes": [
+            "Quality is an unsupervised post-run proxy; Pareto membership does not establish "
+            "biological validity."
+        ],
+    }
+
+
 def write_automl_artifacts(
     result: AutoMLResult,
     data: SpatialTable | None,
@@ -402,6 +452,8 @@ def write_automl_artifacts(
         root / "pareto_front.json",
         {"ranked_methods": result.ranked_methods, "pareto": [p.to_dict() for p in result.pareto]},
     )
+    if result.decision_card is not None:
+        paths["decision"] = _write_json(root / "decision_card.json", result.decision_card)
     if write_report:
         from .report import build_automl_report
 
@@ -627,82 +679,6 @@ def _attach_quality(runs: list[MethodRunResult]) -> None:
             # ARI can be slightly negative.
             parts.append(float(np.clip((r.consensus_agreement + 1.0) / 2.0, 0.0, 1.0)))
         r.quality_score = float(np.mean(parts)) if parts else 0.0
-
-
-def _non_dominated_ranks(
-    objectives: np.ndarray,
-    *,
-    sig_digits: int = 4,
-) -> np.ndarray:
-    """Non-dominated sorting ranks (1 = Pareto front). Higher objective is better.
-
-    Parameters
-    ----------
-    sig_digits
-        Significant digits to retain before dominance comparison.  Raw objective
-        values can differ by machine-epsilon-level noise (e.g. two methods with
-        identical quality but runtimes differing by <1e-12 s); rounding to
-        *sig_digits* makes the front numerically stable without changing
-        the biological interpretation.
-    """
-    n = objectives.shape[0]
-    ranks = np.zeros(n, dtype=int)
-    remaining = set(range(n))
-    current_rank = 1
-    while remaining:
-        front: list[int] = []
-        for i in remaining:
-            dominated = False
-            for j in remaining:
-                if i == j:
-                    continue
-                if _dominates(objectives[j], objectives[i], sig_digits=sig_digits):
-                    dominated = True
-                    break
-            if not dominated:
-                front.append(i)
-        if not front:
-            # Numerical stalemate — assign remaining together.
-            for i in remaining:
-                ranks[i] = current_rank
-            break
-        for i in front:
-            ranks[i] = current_rank
-            remaining.discard(i)
-        current_rank += 1
-    return ranks
-
-
-def _dominates(a: np.ndarray, b: np.ndarray, *, sig_digits: int = 4) -> bool:
-    """Return True if *a* Pareto-dominates *b* (all ``≥``, one ``>``).
-
-    Objective values are rounded to *sig_digits* significant digits before
-    comparison so that machine-epsilon noise (e.g. runtimes within
-    femtoseconds) does not create spurious dominance edges.  Four digits
-    means 0.1234 and 0.12345 are treated as equal — well below any
-    biological or operational threshold.
-    """
-    a_rounded = _round_significant(a, sig_digits)
-    b_rounded = _round_significant(b, sig_digits)
-    return bool(np.all(a_rounded >= b_rounded) and np.any(a_rounded > b_rounded))
-
-
-def _round_significant(values: np.ndarray, digits: int) -> np.ndarray:
-    """Round *values* to *digits* significant decimal digits element-wise."""
-    out = np.empty_like(values, dtype=float)
-    for idx in range(values.size):
-        v = float(values.flat[idx])
-        if v == 0.0 or not np.isfinite(v):
-            out.flat[idx] = v
-            continue
-        try:
-            scale = int(np.floor(np.log10(abs(v))))
-        except (ValueError, OverflowError):
-            out.flat[idx] = v
-            continue
-        factor = 10.0 ** (digits - 1 - scale)
-        out.flat[idx] = float(np.round(v * factor) / factor)
-    return out
 
 
 def _finite(value: Any) -> bool:

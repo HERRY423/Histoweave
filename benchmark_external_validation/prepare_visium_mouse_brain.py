@@ -71,13 +71,20 @@ def _load_squidpy_visium_hne():
     import squidpy as sq
 
     a = sq.datasets.visium_hne_adata()
+    # Preserve registered H&E under uns['spatial'] before any raw swap.
+    spatial_images = a.uns.get("spatial")
     # squidpy ships a.raw with the raw counts.
     if a.raw is not None:
         raw = a.raw.to_adata()
         raw.obs = a.obs.copy()
         raw.obsm = dict(a.obsm)
         raw.uns = dict(a.uns)
+        if spatial_images is not None and "spatial" not in raw.uns:
+            raw.uns["spatial"] = spatial_images
         a = raw
+    # Ensure H&E survives even when raw.uns overwrote spatial without images.
+    if spatial_images is not None:
+        a.uns["spatial"] = spatial_images
     a.var_names_make_unique()
     return a
 

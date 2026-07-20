@@ -37,7 +37,10 @@ from .task_contract import (
     AnalysisTask,
     classify_platform,
     default_spatial_context_policy,
+    is_domain_partition_task,
+    normalize_task,
     split_method_policy,
+    tasks_admissible,
 )
 
 
@@ -111,6 +114,7 @@ class Recommendation:
             "warnings": self.warnings,
             "ensemble_suggestion": self.ensemble_strategy,
             "baselines": {
+                "evidence_scope": "retrieved_reference_neighbours_in_sample_proxy",
                 "global_best_method": self.global_best_method,
                 "global_best_score": self.global_best_score,
                 "selection_regret_vs_oracle_neighbours": (
@@ -118,6 +122,7 @@ class Recommendation:
                 ),
                 "selection_regret_vs_global_best": self.selection_regret_vs_global_best,
                 "beats_global_best_baseline": self.beats_global_best_baseline,
+                "reference_proxy_beats_global_best": self.beats_global_best_baseline,
             },
             "evidence_todo": list(self.evidence_todo),
             "calibration": self.calibration,
@@ -144,7 +149,8 @@ class Recommendation:
             )
             lines.append(
                 f"  Global-best baseline: {self.global_best_method} "
-                f"(score={self.global_best_score}); beats baseline: {flag}"
+                f"(score={self.global_best_score}); reference-neighbour proxy "
+                f"beats baseline: {flag}"
             )
         if self.ensemble_strategy:
             lines.append(f"  Ensemble suggestion: {self.ensemble_strategy}")
@@ -194,9 +200,7 @@ class MethodRecommender:
         self._task_prior_weight = float(task_prior_weight)
         raw_task = str(getattr(knowledge_base, "task", "spatial_domain"))
         # Accept legacy task names from older knowledge bases.
-        if raw_task in {"domain_detection", "domain"}:
-            raw_task = AnalysisTask.SPATIAL_DOMAIN.value
-        self._task = raw_task
+        self._task = normalize_task(raw_task) or AnalysisTask.SPATIAL_DOMAIN.value
 
         source_order = list(self._kb.feature_order or RECOMMENDATION_FEATURE_ORDER)
         keep = [
@@ -267,9 +271,9 @@ class MethodRecommender:
             ``high``, or ``sw0.0``-style keys).  Used to re-rank matching
             ``method@policy`` configurations.
         """
-        query_task = str(task) if task is not None else self._task
-        if query_task in {"domain_detection", "domain"}:
-            query_task = AnalysisTask.SPATIAL_DOMAIN.value
+        query_task = (
+            normalize_task(task) if task is not None else normalize_task(self._task)
+        ) or AnalysisTask.SPATIAL_DOMAIN.value
         query_platform = classify_platform(
             platform
             or data.uns.get("platform")
@@ -281,6 +285,40 @@ class MethodRecommender:
         # Query features permanently exclude domain labels (no target leakage).
         feats = extract_features(data, include_domain=False)
         vec = feature_vector(feats, order=self._feature_order)
+        return self.recommend_from_features(
+            vec,
+            dataset_name=dataset_name,
+            task=query_task,
+            platform=query_platform,
+            spatial_context_policy=policy,
+        )
+
+    def recommend_from_features(
+        self,
+        feature_vec: np.ndarray | list[float],
+        *,
+        dataset_name: str = "user_dataset",
+        task: str | AnalysisTask | None = None,
+        platform: str | None = None,
+        spatial_context_policy: str | None = None,
+    ) -> Recommendation:
+        """Rank methods from a precomputed target-free feature vector.
+
+        Used for retrospective leave-one-study-out validation when the query
+        table is unavailable but its landscape feature row is known.
+        """
+        query_task = (
+            normalize_task(task) if task is not None else normalize_task(self._task)
+        ) or AnalysisTask.SPATIAL_DOMAIN.value
+        query_platform = classify_platform(platform)
+        policy = spatial_context_policy or default_spatial_context_policy(query_task)
+
+        vec = np.asarray(feature_vec, dtype=float).ravel()
+        if vec.size != len(self._feature_order):
+            raise ValueError(
+                f"feature vector length {vec.size} does not match "
+                f"target-free order length {len(self._feature_order)}"
+            )
         vec_2d = vec.reshape(1, -1)
         vec_std = _transform_feature_space(vec_2d, self._impute, self._mean, self._std)
 
@@ -326,8 +364,6 @@ class MethodRecommender:
             selection_regret_vs_global_best=diagnostics.get("selection_regret_vs_global_best"),
             beats_global_best_baseline=diagnostics.get("beats_global_best_baseline"),
         )
-        # Active-learning calibration: when personalisation fails to beat the
-        # global-best baseline, propose dataset×method pairs that maximise EIG.
         try:
             from .active_calibration import attach_calibration
 
@@ -358,28 +394,51 @@ class MethodRecommender:
         for i, name in enumerate(self._ref_names):
             meta = self._dataset_meta.get(name, {})
             ref_platform = classify_platform(meta.get("platform") or meta.get("assay"))
-            ref_task = str(meta.get("task") or self._task)
-            if ref_task in {"domain_detection", "domain"}:
-                ref_task = AnalysisTask.SPATIAL_DOMAIN.value
-            boost = 1.0
-            if query_platform and ref_platform and query_platform == ref_platform:
+            ref_task = normalize_task(meta.get("task") or self._task) or self._task
+            ground_truth_kind = str(meta.get("ground_truth_kind") or "").lower()
+            invalid_truth = ground_truth_kind in {"self_supervised", "leiden", "louvain"}
+            # Domain-partition recovery (RNA / protein / chromatin) rejects proxy GT.
+            if is_domain_partition_task(query_task):
+                invalid_truth = invalid_truth or ground_truth_kind == "cluster_proxy"
+            if query_task == AnalysisTask.VIRTUAL_ST.value:
+                # Virtual ST may only use measured-expression or undeclared GT refs.
+                invalid_truth = invalid_truth or ground_truth_kind in {
+                    "spatial_domain",
+                    "spatial_protein_domain",
+                    "spatial_chromatin_domain",
+                    "cluster_proxy",
+                    "cell_type",
+                }
+
+            # Task and ground-truth semantics are admissibility contracts, not
+            # soft priors. Cross-modal domain evidence (e.g. protein → RNA) is
+            # never soft-weighted into a ranking score.
+            task_ok = tasks_admissible(query_task, ref_task)
+            admissible = bool(task_ok and not invalid_truth)
+            boost = 1.0 if admissible else 0.0
+            if admissible and query_platform and ref_platform and query_platform == ref_platform:
                 boost *= self._platform_prior_weight
-            if query_task and ref_task and query_task == ref_task:
+            if admissible and task_ok:
                 boost *= self._task_prior_weight
-            # Penalise cross-task neighbours hard: domain ↔ cell_type transfer is unsafe.
-            if query_task and ref_task and query_task != ref_task:
-                boost *= 0.25
+            # Preserve an explicit zero boost for excluded rows in the audit trace.
+            if not admissible:
+                boost = 0.0
             adjusted[i] = min(1.0, float(similarities[i]) * boost)
             meta_rows.append(
                 {
                     "platform": ref_platform,
                     "task": ref_task,
                     "ground_truth_kind": meta.get("ground_truth_kind"),
+                    "admissible": admissible,
                     "prior_boost": round(boost, 4),
                 }
             )
 
-        top_k = np.argsort(adjusted, kind="stable")[::-1][: min(self._k, len(self._ref_names))]
+        admissible_indices = np.flatnonzero(adjusted > 0.0)
+        ordered = admissible_indices[
+            np.argsort(adjusted[admissible_indices], kind="stable")[::-1]
+        ]
+        top_k = ordered[: min(self._k, len(ordered))]
 
         neighbours: list[dict[str, Any]] = []
         for idx in top_k:
@@ -450,7 +509,7 @@ class MethodRecommender:
                     score += prior_boost
             elif preferred_tokens and policy is None:
                 # Bare method names inherit the task default policy softly.
-                if query_task == AnalysisTask.SPATIAL_DOMAIN.value and "high" in preferred_tokens:
+                if is_domain_partition_task(query_task) and "high" in preferred_tokens:
                     prior_boost = 0.005
                     score += prior_boost
 
@@ -518,6 +577,7 @@ class MethodRecommender:
         ranked: list[MethodScore],
         neighbours: list[dict[str, Any]],
     ) -> dict[str, Any]:
+        """Compare candidates on retrieved references; this is not held-out evidence."""
         if not ranked or not neighbours:
             return {}
         higher = bool(getattr(self._kb, "higher_is_better", True))

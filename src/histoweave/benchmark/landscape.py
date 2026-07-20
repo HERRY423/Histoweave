@@ -125,7 +125,7 @@ def run_landscape(
     n_domains_override: int | None = None,
     k_policy: str = "estimate",
     allow_oracle_k: bool = False,
-    k_estimator: str = "silhouette",
+    k_estimator: str = "ensemble",
     random_state: int = 0,
 ) -> LandscapeResult:
     """Run every domain-detection method on every dataset and build the landscape.

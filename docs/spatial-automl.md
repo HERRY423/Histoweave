@@ -1,11 +1,14 @@
-# Spatial AutoML compiler
+# Spatial AutoML execution adapter
 
-The spatial AutoML compiler joins two existing HistoWeave capabilities:
+This is a product-facing execution adapter for the
+[evidence-governed decision protocol](decision-protocol.md), not a separate
+method-selection claim. It joins:
 
 1. **`histoweave ask`** — natural-language → validated pipeline plan (LLM compiler).
-2. **Landscape recommender** — target-free features + k-NN over a performance knowledge base.
+2. **Decision protocol** — compatible-evidence retrieval, fallback/abstention,
+   and canonical set-valued comparison.
 
-into a single automated loop that **selects, runs, compares, and reports** methods.
+into a loop that **audits, runs an allowed comparison panel, and reports** methods.
 
 ## User story
 
@@ -26,19 +29,24 @@ histoweave automl \
 
 ```
 1. Extract target-free features from the user sample
-2. Retrieve nearest reference datasets (landscape k-NN + platform/task priors)
-3. Auto-run recommended top-3 domain methods (after log1p_cp10k prep)
-4. Compare with proxy quality metrics (no GT required):
+2. Hard-filter incompatible task and ground-truth evidence
+3. Build a DecisionCard: fallback, comparison panel, or abstention
+4. Execute only the allowed panel (after log1p_cp10k prep)
+5. Compare with proxy quality metrics (no GT required):
      • spatial coherence (kNN label agreement)
      • expression silhouette
      • cross-method consensus ARI
      • runtime
-5. Rank on a Pareto front (quality × speed × recommendation score)
-6. Emit automl_report.html with all three results
+6. Use the canonical Pareto implementation (quality × seconds × reference proxy)
+7. Emit decision_card.json and automl_report.html
 ```
 
 An advisory compiler plan is attached by default (`--model mock` offline).
 Pass `--no-compiler` to skip the NL plan.
+
+Spatial coherence, silhouette, and consensus are post-run diagnostics; none is
+ground truth. An `evidence_required` action runs a panel to acquire evidence and
+must not be reported as an automatically validated winner.
 
 ## CLI options
 

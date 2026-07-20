@@ -117,7 +117,8 @@ def propose_evidence_acquisition(
         raise ValueError("top_n must be at least 1")
 
     beats = recommendation.beats_global_best_baseline
-    chosen = recommendation.best().method if recommendation.best() else None
+    best = recommendation.best()
+    chosen = best.method if best is not None else None
     global_best = recommendation.global_best_method
     regret = recommendation.selection_regret_vs_global_best
 

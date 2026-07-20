@@ -106,7 +106,18 @@ def _read_visium_native(path: str) -> SpatialTable:
     if scalefactors is not None:
         uns["spatial"] = {"scalefactors": scalefactors}
 
-    return _finalize(mat.X, obs, var, coords, uns, "visium_reader", str(root))
+    table = _finalize(mat.X, obs, var, coords, uns, "visium_reader", str(root))
+    # Attach registered H&E when Space Ranger wrote tissue_*_image.png.
+    try:
+        from ..datasets.histology import attach_histology_images, load_visium_spatial_folder_images
+
+        images = load_visium_spatial_folder_images(root / "spatial", prefer="lowres")
+        if images:
+            table = attach_histology_images(table, images)
+    except Exception:
+        # Image loading is best-effort; expression + coordinates remain valid.
+        pass
+    return table
 
 
 def _read_xenium_native(path: str, *, gene_expression_only: bool = True) -> SpatialTable:

@@ -43,6 +43,10 @@
 | Domain GT | cortical layers | pathology polygons (LN / GC aggregate / adipose) |
 | Molecular panels | ENC1/HOPX vs MBP | B-follicle / T-zone / GC programs |
 | Pipeline | identical architecture | identical architecture |
+| **Headline niche** | **D1** L6 myelin cryptic niche (IF-ready) | **D3** rank-3 Ca²⁺ program (`KCNN4`/`ORAI3`/…) vs same LN domain |
+| **Neighbourhood** | — | External kNN **T_like enriched**; GC_like rare; multi-lineage interior — see [`KCNN4_ORAI3_NEIGHBORHOOD.md`](KCNN4_ORAI3_NEIGHBORHOOD.md) |
+
+Full dual-tissue narrative: [`../discovery_uncertainty_niches/BIOLOGICAL_STORY.md`](../discovery_uncertainty_niches/BIOLOGICAL_STORY.md).
 
 ## Provenance note
 

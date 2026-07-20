@@ -85,32 +85,58 @@ best-first leaderboard. Because a failing method scores worst rather than crashi
 run, the harness is safe to run continuously in CI and to gate releases against
 performance regressions.
 
-## Digital-twin synthetic validation
+## Evidence-governed decisions
+
+`histoweave.decide()` is the only high-level method-selection entry point. It
+converts benchmark evidence into a versioned `DecisionCard` after hard task and
+ground-truth checks, a global-default comparison, grouped held-out validation,
+and an optional matched Pareto intersection. Its result is a method set,
+fallback, evidence request, or abstention—not an asserted universal winner.
+
+See [Evidence-governed decision protocol](decision-protocol.md).
+
+## Multimodal tasks and virtual ST
+
+Analysis tasks are expanded beyond RNA spatial domains:
+
+* `spatial_protein_domain` / `spatial_chromatin_domain` — domain partitions on other
+  molecular modalities (exact-match evidence only; never soft-mixed with RNA domains).
+* `virtual_st` — predict spatial expression from registered H&E; score with
+  mean gene Pearson against **measured** expression.
+
+Cross-modal compatibility is an executable gate (`tasks_admissible`,
+`cross_modal_relation`). Real H&E paths include
+`load_visium_hne_paired()` and Space Ranger `tissue_*_image.png` ingestion.
+See [Multimodal tasks & virtual ST](multimodal-virtual-st.md) and
+[Tutorial 6](tutorials/06_virtual_st_he.md).
+
+## Digital-twin synthetic validation (supporting diagnostic)
 
 Real user uploads usually lack ground truth.  HistoWeave builds a **digital twin**: a
 synthetic sample that matches the real data on 13 target-free dimensions (sparsity,
 library-size distribution, Moran's I, Hopkins tendency, effective rank, …) while
-planting known domain labels.  Methods are benchmarked on the twin; the ARI ranking is
-returned as a **predicted ranking** for the real sample.  See [Digital-twin
+planting known domain labels. Methods are benchmarked on the twin; the result is
+an experimental synthetic proxy, not validated ranking transfer to the real sample. See [Digital-twin
 validation](digital-twin.md).
 
-## Spatial AutoML compiler
+## Spatial AutoML execution adapter
 
 The AutoML compiler combines `histoweave ask` (LLM pipeline compiler) with the landscape
-recommender: extract features → retrieve nearest reference datasets → auto-run top-3
-methods → multi-objective (Pareto) comparison → full HTML report.  See [Spatial AutoML
-compiler](spatial-automl.md).
+evidence layer: extract features → admit compatible references → fallback/compare/abstain
+→ execute an allowed panel → canonical multi-objective comparison → HTML report. It emits
+the same `decision_card.json`; it is an execution adapter, not a parallel scientific
+selector. See [Spatial AutoML compiler](spatial-automl.md).
 
-## Failure fingerprint atlas
+## Failure fingerprint atlas (synthetic stress-test evidence)
 
 Beyond *where* a method fails (boundary mapping), HistoWeave classifies *how* it fails
 using contingency structure (ARI-related, label-permutation invariant): fragmentation,
 merge, noise micro-clusters, and structural collapse on hard data.  Each method gets a
 4-vector fingerprint.  See [Failure fingerprints](failure-fingerprints.md).
 
-## Active recommender calibration
+## Active evidence acquisition heuristic
 
-When the recommender does not beat the global-best baseline, HistoWeave proposes a
-prioritised **evidence-acquisition todo** of dataset×method pairs that maximise expected
-information gain — a concrete plan to reduce recommendation uncertainty.  See
+When the reference-neighbour proxy does not beat the global-best baseline, HistoWeave
+proposes a prioritised **evidence-acquisition todo** of dataset×method pairs. Its score is
+a practical priority heuristic, not calibrated expected information gain. See
 [Active calibration](active-calibration.md).

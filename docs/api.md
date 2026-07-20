@@ -12,6 +12,13 @@ benchmarking, and reporting.
       members: true
       show_root_heading: true
 
+## Core decision protocol — `histoweave.decision`
+
+::: histoweave.decision
+    options:
+      members: true
+      show_root_heading: true
+
 ## Data model ? `histoweave.data`
 
 ::: histoweave.data.model

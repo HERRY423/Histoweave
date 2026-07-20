@@ -116,6 +116,8 @@ def test_benchmark_can_persist_and_enforce_threshold(tmp_path, capsys):
             "--min-score",
             "0.9",
             "--fail-on-error",
+            "--k-policy", "oracle",
+            "--allow-oracle-k",
         ]
     ) == 0
     capsys.readouterr()

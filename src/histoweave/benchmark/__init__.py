@@ -16,6 +16,19 @@ from .causal import (
     run_causal_landscape,
 )
 from .complexity import ComplexityFit, fit_complexity
+from .decision import (
+    CLAIM_BOUNDARY,
+    CORE_RESEARCH_QUESTION,
+    DECISION_SCHEMA_VERSION,
+    DecisionAction,
+    DecisionCard,
+    DecisionEngine,
+    DecisionPolicy,
+    EvidenceCheck,
+    EvidenceStatus,
+    build_decision_card,
+    load_decision_evidence,
+)
 from .digital_twin import (
     VALIDATION_SCHEMA_VERSION,
     DigitalTwinValidationResult,
@@ -74,15 +87,26 @@ from .harness import (
     get_task,
     run_benchmark,
     svg_task,
+    virtual_st_task,
 )
 from .isus import (
     ISUS_HIGH,
     ISUS_LOW,
+    ISUS_Z_CRITICAL,
+    ExpectedSpatialGain,
+    ISUSGainCalibration,
+    ISUSPredictorAssessment,
     ISUSResult,
+    assess_isus_predictor,
+    attach_gain_prediction,
     compute_isus,
     compute_isus_from_table,
+    extract_spatial_ari_gains_from_long,
+    fit_isus_gain_calibration,
     isus_band,
+    isus_band_from_permutation,
     mi_discrete_continuous,
+    predict_expected_spatial_ari_gain,
 )
 from .k_selection import (
     DualTrackKReport,
@@ -129,6 +153,23 @@ from .pareto_io import (
     load_memory_gb,
     objective_tables_from_landscape,
     objective_tables_from_long_csv,
+)
+from .independent_personalisation import (
+    aggregate_units_to_landscape,
+    cross_lab_reproducibility_report,
+    evaluate_personalisation_policies,
+    summarise_policies,
+    synthetic_lab_units,
+    write_independent_personalisation_bundle,
+)
+from .protocol_endpoints import (
+    leave_one_study_out,
+    oracle_k_leakage_impact,
+    pareto_stability_from_long_csv,
+    selective_regret_coverage,
+    sota_unified_resource_compare,
+    summarise_study_grouped,
+    write_protocol_bundle,
 )
 from .phenomenology_contracts import (
     EvaluationRole,
@@ -187,13 +228,23 @@ from .stats_review import (
     review_landscape,
 )
 from .task_contract import (
+    DOMAIN_PARTITION_TASKS,
     AnalysisTask,
+    CrossModalRelation,
     DatasetBenchmarkRecord,
     GroundTruthKind,
     TaskContract,
     assert_labels_usable,
     classify_platform,
+    coerce_analysis_task,
+    cross_modal_relation,
+    default_metric_for_task,
     default_spatial_context_policy,
+    evidence_compatibility_report,
+    ground_truth_admissible,
+    is_domain_partition_task,
+    normalize_task,
+    tasks_admissible,
 )
 from .uncertainty import (
     BoundaryUncertaintyResult,
@@ -210,6 +261,7 @@ __all__ = [
     "domain_detection_task",
     "deconvolution_task",
     "svg_task",
+    "virtual_st_task",
     "get_task",
     # Figure 3 experiment
     "FIGURE3_DATASETS",
@@ -228,6 +280,18 @@ __all__ = [
     "CausalLandscapeResult",
     "run_causal_landscape",
     "causal_graph_svg",
+    # evidence-governed decision protocol
+    "CLAIM_BOUNDARY",
+    "CORE_RESEARCH_QUESTION",
+    "DECISION_SCHEMA_VERSION",
+    "DecisionAction",
+    "DecisionCard",
+    "DecisionEngine",
+    "DecisionPolicy",
+    "EvidenceCheck",
+    "EvidenceStatus",
+    "build_decision_card",
+    "load_decision_evidence",
     # failure boundary mapping
     "DEFAULT_TAU",
     "Boundary",
@@ -273,6 +337,20 @@ __all__ = [
     "probe_backend",
     "run_sota_benchmark",
     "write_sota_artifacts",
+    # protocol endpoints (study-grouped / selective / Pareto stability / SOTA resource)
+    "leave_one_study_out",
+    "oracle_k_leakage_impact",
+    "pareto_stability_from_long_csv",
+    "selective_regret_coverage",
+    "sota_unified_resource_compare",
+    "summarise_study_grouped",
+    "write_protocol_bundle",
+    "aggregate_units_to_landscape",
+    "cross_lab_reproducibility_report",
+    "evaluate_personalisation_policies",
+    "summarise_policies",
+    "synthetic_lab_units",
+    "write_independent_personalisation_bundle",
     # recommend
     "MethodRecommender",
     "MethodScore",
@@ -285,11 +363,21 @@ __all__ = [
     # task contracts
     "AnalysisTask",
     "GroundTruthKind",
+    "CrossModalRelation",
+    "DOMAIN_PARTITION_TASKS",
     "TaskContract",
     "DatasetBenchmarkRecord",
     "assert_labels_usable",
     "classify_platform",
+    "coerce_analysis_task",
+    "cross_modal_relation",
+    "default_metric_for_task",
     "default_spatial_context_policy",
+    "evidence_compatibility_report",
+    "ground_truth_admissible",
+    "is_domain_partition_task",
+    "normalize_task",
+    "tasks_admissible",
     # features
     "RECOMMENDATION_FEATURE_ORDER",
     "extract_features",
@@ -375,9 +463,19 @@ __all__ = [
     # information-theoretic spatial utility score
     "ISUS_HIGH",
     "ISUS_LOW",
+    "ISUS_Z_CRITICAL",
+    "ExpectedSpatialGain",
+    "ISUSGainCalibration",
+    "ISUSPredictorAssessment",
     "ISUSResult",
+    "assess_isus_predictor",
+    "attach_gain_prediction",
     "compute_isus",
     "compute_isus_from_table",
+    "extract_spatial_ari_gains_from_long",
+    "fit_isus_gain_calibration",
     "isus_band",
+    "isus_band_from_permutation",
     "mi_discrete_continuous",
+    "predict_expected_spatial_ari_gain",
 ]

@@ -368,11 +368,19 @@ class SpatialTable:
     # -- provenance ------------------------------------------------------------
     def record(self, prov: Provenance) -> None:
         """Append a provenance entry describing how this object was transformed."""
-        self.uns.setdefault("provenance", []).append(prov.to_dict())
+        chain = self.uns.get("provenance", [])
+        # AnnData h5ad round-trips may restore empty provenance as ndarray.
+        if not isinstance(chain, list):
+            chain = list(chain) if getattr(chain, "dtype", None) == object else []
+        chain.append(prov.to_dict())
+        self.uns["provenance"] = chain
 
     @property
     def provenance(self) -> list[dict[str, Any]]:
-        return self.uns.get("provenance", [])
+        chain = self.uns.get("provenance", [])
+        if not isinstance(chain, list):
+            return list(chain) if getattr(chain, "dtype", None) == object else []
+        return chain
 
     def copy(self) -> SpatialTable:
         return SpatialTable(

@@ -149,46 +149,44 @@ for row in result.leaderboard:
     _LOGGER.info("%s %s %s", row["rank"], row["method"], row["score"])
 ```
 
-## 7. Recommend methods — HistoWeave's killer feature
+## 7. Build an evidence-governed decision card
 
-Recommend the best method for new data **without requiring ground truth**. The engine
-extracts 16 target-free spatial, expression, and geometry features; finds the nearest
-reference datasets in the benchmark landscape; and ranks methods by similarity-weighted
-performance.
+HistoWeave does not promise the best method for an unlabelled query. It first uses
+target-free spatial, expression, and geometry features to generate candidates, then
+applies task, baseline, grouped held-out, and optional Pareto gates. The output may
+be a method set, a global fallback, a request for more evidence, or abstention.
 
 ```bash
 # Build the knowledge base once (or download a pre-built one)
 histoweave benchmark --out landscape.json
 
-# Recommend for a new sample
-histoweave recommend --in new_sample.ttab --knowledge-base landscape.json
+# Decide for a new sample (task is mandatory)
+histoweave decide --in new_sample.ttab --knowledge-base landscape.json \
+  --task spatial_domain --dataset-name new_sample --out decision_card.json
 ```
 
 ```text
-Recommendation: new_sample [domain_detection]
-RANK  METHOD              SCORE    UNCERTAINTY  SUPPORT
-----------------------------------------------------------
-1     spectral            0.832    0.047        3/3
-2     gaussian_mixture    0.815    0.053        2/3
-3     kmeans              0.791    0.062        2/3
-
-Nearest evidence: dense_regular (similarity=0.851), small_clean (0.783)
-Ensemble suggestion: Run spectral and gaussian_mixture; retain consensus regions,
-flag disagreements for review.
+Decision card for 'new_sample' [spatial_domain]
+  action: evidence_required
+  primary set: none
+  comparison set: spectral, gaussian_mixture, kmeans
+  heldout_validation: not_evaluated
+  claim boundary: comparative prioritisation, not biological validity
 ```
 
 Machine-readable output for workflow integration:
 
 ```bash
-histoweave recommend --in sample.ttab --knowledge-base landscape.json \
-    --json --out recommendation.json
+histoweave decide --in sample.ttab --knowledge-base landscape.json \
+    --task spatial_domain --json --out decision_card.json
 ```
 
-The JSON includes feature vectors, nearest reference datasets, weighted scores,
-uncertainty estimates, support/coverage statistics, and ensemble strategy.
+The JSON includes candidate-generation evidence plus explicit evidence roles,
+checks, fallback/abstention action, required controls, and claim boundaries.
 
 Domain labels and cell-type annotations on the query data are **never used** for
-retrieval — the recommendation is genuinely target-free.
+retrieval — candidate generation is target-free. ISUS, when requested with a
+trusted label column, is post-hoc and cannot change that pre-execution claim.
 
 ## 8. Use advanced methods
 

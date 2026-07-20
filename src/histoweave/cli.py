@@ -10,6 +10,7 @@ Commands
     histoweave list-methods [--category qc] [--assay xenium] [--json]
     histoweave run --demo [--out report.html] [--manifest manifest.json]
     histoweave benchmark [--task domain_detection] [--json]
+    histoweave decide --in data.ttab --knowledge-base landscape.json --task spatial_domain
     histoweave recommend --in data.ttab --knowledge-base landscape.json
                       [--k-neighbours 3] [--top 3] [--json]
     histoweave ask "Find spatial domains" --in data.ttab [--model mock] [--yes]
@@ -36,6 +37,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import math
 import sys
 from pathlib import Path
 from typing import Any, TextIO
@@ -306,6 +308,42 @@ def main(argv: list[str] | None = None) -> int:
     p_recommend.add_argument("--top", type=int, default=3)
     p_recommend.add_argument("--json", action="store_true", help="Emit JSON.")
     p_recommend.add_argument("--out", help="Persist recommendation JSON.")
+
+    p_decide = sub.add_parser(
+        "decide",
+        help="Return an evidence-governed method set, fallback, or abstention.",
+    )
+    p_decide.add_argument("--in", dest="in_path", required=True, help="Input bundle.")
+    p_decide.add_argument(
+        "--knowledge-base", required=True, help="Versioned landscape knowledge-base JSON."
+    )
+    p_decide.add_argument(
+        "--task",
+        required=True,
+        choices=("spatial_domain", "cell_type", "svg", "deconvolution"),
+        help="Explicit analysis target; task semantics are a hard evidence contract.",
+    )
+    p_decide.add_argument("--dataset-name", default="user_dataset")
+    p_decide.add_argument("--platform", help="Optional assay platform prior.")
+    p_decide.add_argument("--k-neighbours", type=int, default=3)
+    p_decide.add_argument(
+        "--pareto-report",
+        help="Optional matched Pareto JSON; a different dataset is ignored.",
+    )
+    p_decide.add_argument(
+        "--isus-domain-key",
+        help="Optional trusted domain-label column for post-hoc ISUS only.",
+    )
+    p_decide.add_argument(
+        "--failure-atlas",
+        help="Optional failure_fingerprints.json synthetic stress-test evidence.",
+    )
+    p_decide.add_argument(
+        "--validation",
+        help="Optional grouped held-out validation JSON required for personalisation.",
+    )
+    p_decide.add_argument("--json", action="store_true", help="Emit the decision card as JSON.")
+    p_decide.add_argument("--out", help="Persist decision-card JSON.")
 
     p_causal = sub.add_parser(
         "causal-landscape",
@@ -614,8 +652,8 @@ def main(argv: list[str] | None = None) -> int:
 
     p_isus = sub.add_parser(
         "isus",
-        help="Information-theoretic Spatial Utility Score: does this dataset need a "
-        "spatial method?",
+        help="Post-hoc Information-theoretic Spatial Utility Score (label-conditioned "
+        "descriptor; not a pre-execution predictor of method gain).",
     )
     p_isus.add_argument(
         "--in",
@@ -625,7 +663,7 @@ def main(argv: list[str] | None = None) -> int:
     p_isus.add_argument(
         "--calibrate",
         help="Benchmark directory (needs benchmark_long.csv + per-slice .h5ad in data/) "
-        "to correlate ISUS against the observed spatial ARI gain.",
+        "to audit ISUS as a (failed/underpowered) predictor of spatial ARI gain.",
     )
     p_isus.add_argument(
         "--domain-key",
@@ -635,6 +673,25 @@ def main(argv: list[str] | None = None) -> int:
     p_isus.add_argument("--n-pcs", type=int, default=20, help="Expression PCA components.")
     p_isus.add_argument("--k", type=int, default=3, help="kNN neighbours for the MI estimator.")
     p_isus.add_argument("--seed", type=int, default=0)
+    p_isus.add_argument(
+        "--n-null",
+        type=int,
+        default=0,
+        help="Coordinate-shuffle null draws for p-value/Z-score type-I control "
+        "(0=skip; e.g. 99). When >0, primary band uses permutation evidence instead of "
+        "the subjective 0.1/0.3 absolute cut-offs.",
+    )
+    p_isus.add_argument(
+        "--alpha",
+        type=float,
+        default=0.05,
+        help="Significance level for the coordinate-shuffle null (default 0.05).",
+    )
+    p_isus.add_argument(
+        "--gain-calibration",
+        help="Optional ISUS→spatial-ARI-gain calibration JSON (from a prior "
+        "`histoweave isus --calibrate` run) to attach expected downstream gain.",
+    )
     p_isus.add_argument("--out", help="Write ISUS result JSON.")
     p_isus.add_argument("--json", action="store_true", help="Print full JSON.")
 
@@ -755,6 +812,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_scale(args)
     if args.command == "recommend":
         return _cmd_recommend(args)
+    if args.command == "decide":
+        return _cmd_decide(args)
     if args.command == "causal-landscape":
         return _cmd_causal_landscape(args)
     if args.command == "ask":
@@ -1454,6 +1513,49 @@ def _num(x) -> str:
     return f"{float(x):.3g}"
 
 
+def _cmd_decide(args) -> int:
+    """Build an auditable method set, fallback, or abstention."""
+    from .benchmark.decision import DecisionEngine, load_decision_evidence
+    from .io import read_bundle
+
+    try:
+        data = read_bundle(args.in_path)
+        pareto = (
+            load_decision_evidence(args.pareto_report) if args.pareto_report else None
+        )
+        failure_atlas = (
+            load_decision_evidence(args.failure_atlas) if args.failure_atlas else None
+        )
+        validation = load_decision_evidence(args.validation) if args.validation else None
+        card = DecisionEngine(
+            args.knowledge_base,
+            k_neighbours=args.k_neighbours,
+            failure_atlas=failure_atlas,
+        ).decide(
+            data,
+            dataset_name=args.dataset_name,
+            task=args.task,
+            platform=args.platform,
+            pareto=pareto,
+            isus_domain_key=args.isus_domain_key,
+            validation=validation,
+        )
+    except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        _emit(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    payload = card.to_dict()
+    if args.out:
+        _write_json_atomic(Path(args.out), payload)
+    if args.json:
+        _emit(json.dumps(payload, indent=2, allow_nan=False))
+    else:
+        _emit(card.summary())
+        if args.out:
+            _emit(f"Decision card written to {Path(args.out).resolve()}")
+    return 0
+
+
 def _cmd_recommend(args) -> int:
     """Run target-free feature extraction, k-NN retrieval, and method ranking."""
     from .benchmark import MethodRecommender
@@ -1502,7 +1604,7 @@ def _cmd_recommend(args) -> int:
     _emit(f"Ensemble suggestion: {recommendation.ensemble_strategy}")
     if recommendation.beats_global_best_baseline is False:
         _emit(
-            "Baseline: does NOT beat global-best "
+            "Reference-neighbour proxy: does NOT beat global-best "
             f"({recommendation.global_best_method}); "
             "see evidence-acquisition todo below."
         )
@@ -1956,9 +2058,69 @@ def _cmd_pareto(args) -> int:
     return 0
 
 
+def _load_isus_gain_calibration(path: str | Path):
+    """Reconstruct an ISUSGainCalibration from a calibrate JSON artifact."""
+    from .benchmark.isus import (
+        ISUSGainCalibration,
+        ISUSPredictorAssessment,
+        fit_isus_gain_calibration,
+    )
+
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    # Prefer re-fitting from per_slice if present (stable across schema tweaks).
+    per_slice = payload.get("per_slice") or payload.get("gain_calibration", {}).get(
+        "per_slice"
+    )
+    if isinstance(per_slice, list) and per_slice:
+        records = []
+        for row in per_slice:
+            if not isinstance(row, dict):
+                continue
+            if "isus" in row and (
+                "spatial_ari_gain" in row or "spatial_ARI_gain" in row
+            ):
+                records.append(
+                    {
+                        "dataset": row.get("dataset", ""),
+                        "isus": row.get("isus"),
+                        "spatial_ari_gain": row.get(
+                            "spatial_ari_gain", row.get("spatial_ARI_gain")
+                        ),
+                    }
+                )
+        if len(records) >= 2:
+            return fit_isus_gain_calibration(records)
+
+    gain = payload.get("gain_calibration") if isinstance(payload, dict) else None
+    if not isinstance(gain, dict):
+        gain = payload if isinstance(payload, dict) else {}
+    pred = gain.get("predictor") or {}
+    assessment = ISUSPredictorAssessment(
+        n_slices=int(pred.get("n_slices") or gain.get("n_slices") or 0),
+        spearman_rho=pred.get("spearman_rho_isus_vs_spatial_gain"),
+        spearman_pvalue=pred.get("spearman_pvalue"),
+        predictor_status=str(pred.get("predictor_status") or "undefined"),
+        failure_reasons=list(pred.get("failure_reasons") or []),
+        statistical_gaps=list(pred.get("statistical_gaps") or []),
+        min_slices_recommended=int(pred.get("min_slices_recommended") or 8),
+    )
+    return ISUSGainCalibration(
+        n_slices=int(gain.get("n_slices") or 0),
+        slope=gain.get("slope"),
+        intercept=gain.get("intercept"),
+        residual_std=gain.get("residual_std"),
+        loo_rmse=gain.get("loo_rmse"),
+        r_squared=gain.get("r_squared"),
+        reliability=str(gain.get("reliability") or "undefined"),
+        predictor=assessment,
+        per_slice=list(gain.get("per_slice") or []),
+        empirical_points=list(gain.get("empirical_points") or []),
+    )
+
+
 def _cmd_isus(args) -> int:
     """Information-theoretic Spatial Utility Score for a dataset (or calibration)."""
-    from .benchmark.isus import compute_isus_from_table
+    from .benchmark.isus import attach_gain_prediction, compute_isus_from_table
 
     if args.calibrate:
         return _isus_calibrate(args)
@@ -1977,7 +2139,12 @@ def _cmd_isus(args) -> int:
             n_pcs=int(args.n_pcs),
             k=int(args.k),
             seed=int(args.seed),
+            n_null=int(args.n_null),
+            alpha=float(args.alpha),
         )
+        if getattr(args, "gain_calibration", None):
+            calib = _load_isus_gain_calibration(args.gain_calibration)
+            result = attach_gain_prediction(result, calib)
     except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
         _emit(f"error: {exc}", file=sys.stderr)
         return 2
@@ -1991,7 +2158,10 @@ def _cmd_isus(args) -> int:
         return 0
 
     isus_str = "NA" if payload["isus"] is None else f"{payload['isus']:.3f}"
-    _emit(f"ISUS[{result.dataset}] = {isus_str}   band: {result.band}")
+    _emit(
+        f"ISUS[{result.dataset}] = {isus_str}   band: {result.band} "
+        f"(source={result.band_source})"
+    )
     _emit(
         f"  I(D;E)={result.i_d_e:.4f}  I(D;[S,E])={result.i_d_se:.4f}  "
         f"I(D;S|E)={result.i_d_s_given_e:.4f}"
@@ -2000,22 +2170,80 @@ def _cmd_isus(args) -> int:
         f"  (n_obs={result.n_obs}, domains={result.n_domains}, n_pcs={result.n_pcs}, "
         f"k={result.k}, estimator={result.estimator})"
     )
-    _emit(
-        "  bands: <0.1 expression-sufficient | 0.1-0.3 modest | >0.3 spatial-critical "
-        "(provisional heuristics)"
-    )
+    if result.n_null > 0:
+        p_isus = "NA" if result.p_value_isus is None else f"{result.p_value_isus:.4g}"
+        p_cond = (
+            "NA"
+            if result.p_value_i_d_s_given_e is None
+            else f"{result.p_value_i_d_s_given_e:.4g}"
+        )
+        z_isus = (
+            "NA"
+            if result.z_score_isus is None
+            else (
+                "inf"
+                if math.isinf(result.z_score_isus)
+                else f"{result.z_score_isus:.3g}"
+            )
+        )
+        z_cond = (
+            "NA"
+            if result.z_score_i_d_s_given_e is None
+            else (
+                "inf"
+                if math.isinf(result.z_score_i_d_s_given_e)
+                else f"{result.z_score_i_d_s_given_e:.3g}"
+            )
+        )
+        sig = "NA" if result.significant is None else str(result.significant)
+        _emit(
+            f"  null={result.null_control} n_null={result.n_null}  "
+            f"p_ISUS={p_isus} (Z={z_isus})  p_I(D;S|E)={p_cond} (Z={z_cond})  "
+            f"significant={sig}"
+        )
+        thr_s = (
+            "NA"
+            if result.threshold_significant_isus is None
+            else f"{result.threshold_significant_isus:.3g}"
+        )
+        thr_c = (
+            "NA"
+            if result.threshold_critical_isus is None
+            else f"{result.threshold_critical_isus:.3g}"
+        )
+        _emit(
+            f"  null-derived thresholds: significant≈{thr_s}  critical≈{thr_c}  "
+            f"(heuristic band={result.band_heuristic})"
+        )
+    else:
+        _emit(
+            "  bands (heuristic only, n_null=0): <0.1 expression-sufficient | "
+            "0.1-0.3 modest | >0.3 spatial-critical"
+        )
+    if result.expected_spatial_ari_gain is not None:
+        lo = result.expected_spatial_ari_gain_low
+        hi = result.expected_spatial_ari_gain_high
+        lo_s = "NA" if lo is None else f"{lo:.3f}"
+        hi_s = "NA" if hi is None else f"{hi:.3f}"
+        _emit(
+            f"  expected spatial ARI gain≈{result.expected_spatial_ari_gain:.3f} "
+            f"[{lo_s}, {hi_s}]  reliability={result.gain_prediction_reliability} "
+            f"({result.gain_prediction_source})"
+        )
     for flag in result.flags:
         _emit(f"  ! {flag}")
     return 0
 
 
 def _isus_calibrate(args) -> int:
-    """Correlate ISUS against the observed spatial ARI gain over benchmark slices."""
-    import csv as _csv
-
+    """Bind ISUS to benchmark_long spatial ARI gain and audit predictor reliability."""
     import numpy as np
 
-    from .benchmark.isus import compute_isus
+    from .benchmark.isus import (
+        compute_isus,
+        extract_spatial_ari_gains_from_long,
+        fit_isus_gain_calibration,
+    )
 
     root = Path(args.calibrate)
     long_csv = root / "benchmark_long.csv"
@@ -2029,38 +2257,22 @@ def _isus_calibrate(args) -> int:
         _emit("error: --calibrate requires anndata to read per-slice .h5ad", file=sys.stderr)
         return 2
 
-    # Observed spatial benefit per dataset: mean over methods of best(sw>0) - sw0.0.
-    rows: dict[str, dict[str, list[float]]] = {}
-    with long_csv.open(encoding="utf-8") as handle:
-        for row in _csv.DictReader(handle):
-            ds = str(row["dataset"])
-            base = str(row.get("method") or row["config"].split("@", 1)[0])
-            cfg = str(row["config"])
-            try:
-                ari = float(row["ari"])
-            except (TypeError, ValueError):
-                continue
-            rows.setdefault(ds, {}).setdefault(f"{base}|{cfg}", []).append(ari)
-
-    def _spatial_gain(ds: str) -> float:
-        means = {k: float(np.mean(v)) for k, v in rows[ds].items()}
-        per_method: list[float] = []
-        bases = {k.split("|", 1)[0] for k in means}
-        for base in bases:
-            sw0 = means.get(f"{base}|{base}@sw0.0")
-            pos = [
-                means[k]
-                for k in means
-                if k.startswith(f"{base}|") and not k.endswith("@sw0.0")
-            ]
-            if sw0 is not None and pos:
-                per_method.append(max(pos) - sw0)
-        return float(np.mean(per_method)) if per_method else float("nan")
+    gains = extract_spatial_ari_gains_from_long(long_csv)
+    if len(gains) < 2:
+        _emit(
+            "error: need >=2 datasets with sw0.0 and spatial configs in benchmark_long.csv",
+            file=sys.stderr,
+        )
+        return 2
 
     records: list[dict[str, Any]] = []
-    for ds in sorted(rows):
+    n_null = int(getattr(args, "n_null", 0) or 0)
+    alpha = float(getattr(args, "alpha", 0.05))
+    for ds in sorted(gains):
         h5 = data_dir / f"{ds}.h5ad"
         if not h5.is_file():
+            # Still keep the gain row so calibration can be refit later if ISUS
+            # values are supplied externally; skip when computing from h5ad.
             continue
         adata = ad.read_h5ad(str(h5))
         coords = adata.obsm.get("spatial")
@@ -2074,17 +2286,26 @@ def _isus_calibrate(args) -> int:
             n_pcs=int(args.n_pcs),
             k=int(args.k),
             seed=int(args.seed),
+            n_null=n_null,
+            alpha=alpha,
         )
-        records.append(
-            {
-                "dataset": ds,
-                "isus": res.isus,
-                "i_d_e": res.i_d_e,
-                "i_d_s_given_e": res.i_d_s_given_e,
-                "band": res.band,
-                "spatial_ari_gain": _spatial_gain(ds),
-            }
-        )
+        rec: dict[str, Any] = {
+            "dataset": ds,
+            "isus": res.isus,
+            "i_d_e": res.i_d_e,
+            "i_d_s_given_e": res.i_d_s_given_e,
+            "band": res.band,
+            "band_source": res.band_source,
+            "band_heuristic": res.band_heuristic,
+            "spatial_ari_gain": gains[ds],
+            "z_score_isus": res.z_score_isus,
+            "z_score_i_d_s_given_e": res.z_score_i_d_s_given_e,
+            "p_value_isus": res.p_value_isus,
+            "p_value_i_d_s_given_e": res.p_value_i_d_s_given_e,
+            "significant": res.significant,
+            "n_null": res.n_null,
+        }
+        records.append(rec)
 
     if len(records) < 2:
         _emit(
@@ -2093,23 +2314,25 @@ def _isus_calibrate(args) -> int:
         )
         return 2
 
-    isus_arr = np.array([r["isus"] for r in records], dtype=float)
-    gain_arr = np.array([r["spatial_ari_gain"] for r in records], dtype=float)
-    ok = ~np.isnan(isus_arr) & ~np.isnan(gain_arr)
-    rho = float("nan")
-    if ok.sum() >= 2 and np.unique(isus_arr[ok]).size > 1:
-        from scipy.stats import spearmanr
-
-        rho = float(spearmanr(isus_arr[ok], gain_arr[ok]).correlation)
-
+    gain_calibration = fit_isus_gain_calibration(records, alpha=alpha)
+    assessment = gain_calibration.predictor
     summary = {
         "n_slices": len(records),
-        "spearman_rho_isus_vs_spatial_gain": None if np.isnan(rho) else rho,
+        "spearman_rho_isus_vs_spatial_gain": assessment.spearman_rho,
+        "spearman_pvalue": assessment.spearman_pvalue,
+        "predictor_status": assessment.predictor_status,
+        "predictor_failure_reasons": assessment.failure_reasons,
+        "statistical_gaps": assessment.statistical_gaps,
+        "min_slices_recommended": assessment.min_slices_recommended,
+        "gain_calibration": gain_calibration.to_dict(),
         "per_slice": records,
+        "null_control": "coordinate_shuffle" if n_null > 0 else None,
+        "n_null_per_slice": n_null if n_null > 0 else None,
         "note": (
-            "ISUS measures the spatial fraction of domain information (validated by "
-            "coordinate-shuffle control); thresholds are provisional heuristics, not "
-            "validated predictors of a specific method's ARI gain."
+            "ISUS is post-hoc and label-conditioned. Coordinate-shuffle nulls give "
+            "p-values/Z-scores for residual spatial MI; gain_calibration binds ISUS "
+            "to observed mean spatial ARI gain from benchmark_long.csv "
+            "(best sw>0 minus sw0.0). Low reliability maps are exploratory only."
         ),
     }
     if args.out:
@@ -2123,14 +2346,43 @@ def _isus_calibrate(args) -> int:
     _emit(f"{'DATASET':<12} {'ISUS':<8} {'I(D;E)':<9} {'I(D;S|E)':<10} {'ARI_gain':<9} BAND")
     _emit("-" * 62)
     for r in records:
-        isus_v = "NA" if np.isnan(r["isus"]) else f"{r['isus']:.3f}"
-        gain_v = "NA" if np.isnan(r["spatial_ari_gain"]) else f"{r['spatial_ari_gain']:.3f}"
+        isus_raw = r["isus"]
+        isus_v = (
+            "NA"
+            if isus_raw is None or (isinstance(isus_raw, float) and np.isnan(isus_raw))
+            else f"{float(isus_raw):.3f}"
+        )
+        gain_raw = r["spatial_ari_gain"]
+        gain_v = (
+            "NA"
+            if gain_raw is None or (isinstance(gain_raw, float) and np.isnan(gain_raw))
+            else f"{float(gain_raw):.3f}"
+        )
         _emit(
             f"{r['dataset']:<12} {isus_v:<8} {r['i_d_e']:<9.4f} "
             f"{r['i_d_s_given_e']:<10.4f} {gain_v:<9} {r['band']}"
         )
-    rho_str = "NA" if np.isnan(rho) else f"{rho:.3f}"
-    _emit(f"\nSpearman(ISUS, spatial ARI gain) = {rho_str}  (n={int(ok.sum())})")
+    rho = assessment.spearman_rho
+    pval = assessment.spearman_pvalue
+    rho_str = "NA" if rho is None else f"{rho:.3f}"
+    p_str = "NA" if pval is None else f"{pval:.4g}"
+    _emit(
+        f"\nSpearman(ISUS, spatial ARI gain) = {rho_str}  p={p_str}  "
+        f"(n={assessment.n_slices})"
+    )
+    _emit(f"predictor_status = {assessment.predictor_status}")
+    slope = gain_calibration.slope
+    intercept = gain_calibration.intercept
+    if slope is not None and intercept is not None:
+        _emit(
+            f"gain map: spatial_ari_gain ≈ {intercept:.4f} + {slope:.4f} * ISUS  "
+            f"(R²={gain_calibration.r_squared}, LOO RMSE={gain_calibration.loo_rmse}, "
+            f"reliability={gain_calibration.reliability})"
+        )
+    for reason in assessment.failure_reasons:
+        _emit(f"  failure: {reason}")
+    for gap in assessment.statistical_gaps:
+        _emit(f"  gap: {gap}")
     return 0
 
 

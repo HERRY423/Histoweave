@@ -100,7 +100,11 @@ def test_compute_pareto_front_marks_non_dominated():
     ]
     points = compute_pareto_front(runs)
     by_name = {p.method: p for p in points}
-    assert by_name["quality"].is_pareto or by_name["fast"].is_pareto
+    assert by_name["quality"].is_pareto
+    assert by_name["fast"].is_pareto
+    assert by_name["quality"].pareto_rank == 1
+    assert by_name["fast"].pareto_rank == 1
+    assert by_name["fast"].objectives["speed"] == 0.1
     assert by_name["fail"].pareto_rank == 99
 
 
@@ -131,6 +135,9 @@ def test_run_spatial_automl_end_to_end(tmp_path: Path):
     text = report.read_text(encoding="utf-8")
     assert "AutoML" in text or "Pareto" in text
     assert result.neighbours
+    assert result.decision_card is not None
+    assert result.decision_card["action"] in {"global_default", "evidence_required"}
+    assert (tmp_path / "automl" / "decision_card.json").is_file()
 
 
 def test_automl_cli(tmp_path: Path):

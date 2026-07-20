@@ -98,6 +98,11 @@ def write_bundle(
         _write_bundle_contents(table, temporary, allow_lossy_shapes=allow_lossy_shapes)
         _commit_directory(temporary, root, overwrite=overwrite)
     except Exception:
+        log_event(
+            _logger, 40, "bundle_write_error",
+            "bundle write failed — cleaning up temporary directory",
+            path=str(temporary),
+        )
         if temporary.exists():
             shutil.rmtree(temporary, ignore_errors=True)
         raise
@@ -430,6 +435,11 @@ def _commit_directory(temporary: Path, root: Path, *, overwrite: bool) -> None:
     try:
         _replace_with_retry(temporary, root)
     except Exception:
+        log_event(
+            _logger, 40, "bundle_atomic_commit_error",
+            "atomic commit failed — restoring backup",
+            path=str(root),
+        )
         _replace_with_retry(backup, root)
         raise
     else:

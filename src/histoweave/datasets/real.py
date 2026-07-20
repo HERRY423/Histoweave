@@ -42,6 +42,7 @@ from pathlib import Path
 from typing import Any, cast
 from urllib.request import urlretrieve
 
+import numpy as np
 import pandas as pd
 
 from ..data import SpatialTable
@@ -160,14 +161,21 @@ class DatasetEntry:
 
     def task_contract(self) -> Any:
         """Return a validated :class:`~histoweave.benchmark.task_contract.TaskContract`."""
-        from ..benchmark.task_contract import AnalysisTask, GroundTruthKind, TaskContract
+        from ..benchmark.task_contract import (
+            AnalysisTask,
+            GroundTruthKind,
+            TaskContract,
+            default_metric_for_task,
+        )
 
         if self.ground_truth_kind == "none" or not self.ground_truth:
             raise ValueError(f"{self.name}: no scorable ground truth; cannot build a TaskContract")
+        task = AnalysisTask(self.analysis_task)
         contract = TaskContract(
-            task=AnalysisTask(self.analysis_task),
+            task=task,
             ground_truth_kind=GroundTruthKind(self.ground_truth_kind),
             label_key=self.label_key,
+            metric=default_metric_for_task(task),
             platform=self.assay,
             study=self.study or self.name,
         )
@@ -297,6 +305,17 @@ def _load_h5ad_bundle(artefact: Path) -> SpatialTable:
 
     if adata.X is None:
         raise ValueError(f"h5ad bundle {artefact} is missing X")
+
+    # Prefer Visium H&E (or other registered histology) when the bundle carries it.
+    from .histology import extract_images_from_anndata_uns
+
+    layers = {
+        str(k): v
+        for k, v in dict(getattr(adata, "layers", {}) or {}).items()
+        if k is not None and str(k) not in {"", "None"}
+    }
+    images = extract_images_from_anndata_uns(dict(adata.uns), prefer="lowres")
+    uns = _sanitize_uns(dict(adata.uns))
     return SpatialTable(
         X=adata.X,
         obs=obs,
@@ -304,8 +323,31 @@ def _load_h5ad_bundle(artefact: Path) -> SpatialTable:
         obsm={
             "spatial": np.asarray(adata.obsm["spatial"], dtype=float),
         },
-        uns=dict(adata.uns),
+        layers=layers,
+        images=images,
+        uns=uns,
     )
+
+
+def _sanitize_uns(uns: dict[str, Any]) -> dict[str, Any]:
+    """Normalise AnnData round-trip quirks that break SpatialTable provenance."""
+    cleaned: dict[str, Any] = {}
+    for key, value in uns.items():
+        if key is None or str(key) in {"", "None"}:
+            continue
+        if key == "provenance":
+            # h5ad may restore empty list provenance as a 0-d/1-d ndarray.
+            if value is None:
+                cleaned[key] = []
+            elif isinstance(value, np.ndarray):
+                cleaned[key] = value.tolist() if value.dtype == object else []
+            elif isinstance(value, list):
+                cleaned[key] = list(value)
+            else:
+                cleaned[key] = []
+            continue
+        cleaned[str(key)] = value
+    return cleaned
 
 
 # ---------------------------------------------------------------------------
@@ -695,6 +737,30 @@ _VISIUM_MOUSE_BRAIN = DatasetEntry(
     study="10x_Visium_Mouse_Brain_Squidpy",
 )
 
+# Paired H&E + expression for virtual_st (same slide; GT is measured expression).
+# Artefact is built by scripts/prepare_visium_hne_virtual_st.py (keeps lowres image).
+_VISIUM_MOUSE_BRAIN_HNE = DatasetEntry(
+    name="visium_mouse_brain_hne",
+    description=(
+        "10x Visium adult mouse brain with registered H&E — virtual_st ready "
+        "(measured expression + lowres histology)"
+    ),
+    url="local://datasets_cache/visium/visium_mouse_brain_hne.h5ad",
+    sha256="81a7489fcfd060e03d005513ca0c6034977d9248f7fde4dc199e0fe4d9f88da6",
+    assay="visium",
+    tissue="brain",
+    species="mouse",
+    n_obs=2688,
+    n_vars=500,
+    ground_truth={"measured_expression": "X"},
+    license="10x Genomics EULA",
+    is_h5ad_bundle=True,
+    analysis_task="virtual_st",
+    ground_truth_kind="measured_expression",
+    label_key="X",
+    study="10x_Visium_Mouse_Brain_Squidpy",
+)
+
 _ALLEN_MERFISH_BRAIN_SECTION = DatasetEntry(
     name="allen_merfish_brain_section",
     description="Allen Brain Cell Atlas MERFISH mouse section - CCF anatomical labels",
@@ -733,6 +799,7 @@ _REGISTRY: list[DatasetEntry] = [
     _XENIUM_LUNG_CANCER,
     _XENIUM_OVARIAN_CANCER,
     _VISIUM_MOUSE_BRAIN,
+    _VISIUM_MOUSE_BRAIN_HNE,
     _ALLEN_MERFISH_BRAIN_SECTION,
 ]
 

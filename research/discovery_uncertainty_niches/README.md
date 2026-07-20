@@ -2,6 +2,26 @@
 
 Use HistoWeave as a **discovery instrument**, not only a benchmark harness.
 
+## Headline biological story
+
+→ **[BIOLOGICAL_STORY.md](BIOLOGICAL_STORY.md)** — two discoveries other tools cannot surface:
+
+1. **D1** — Intra-Layer-6 myelin-concentrated cryptic niche (Visium DLPFC; IF-ready, spatial-null PASS).
+2. **D3** — Intra-LN Ca²⁺-signaling cryptic niche (Xenium experiment; same-domain hard DE).
+
+→ **[FUNCTIONAL_VALIDATION.md](FUNCTIONAL_VALIDATION.md)** — **F2 dual-axis** maps for D1/D2/D3
+(disease mechanisms + spatial-organisation redefinition). Not wet-lab causation.
+
+→ **[FUNCTIONAL_EXPERIMENTS.md](FUNCTIONAL_EXPERIMENTS.md)** — **F3/F4** pre-registered
+**perturbation (CRISPR/drug)**, **lineage tracing**, and **orthogonal platform** experiments.
+
+```bash
+python research/discovery_uncertainty_niches/compose_biological_story.py
+python research/discovery_uncertainty_niches/run_functional_validation.py
+python research/discovery_uncertainty_niches/prepare_functional_experiment_package.py
+python research/discovery_uncertainty_niches/analyze_functional_return.py --dry-run
+```
+
 ## Scientific goal
 
 Identify candidate **tissue niches** (contiguous spatial regions) and **cell-state

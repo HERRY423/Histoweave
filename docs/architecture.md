@@ -1,6 +1,7 @@
 # Architecture
 
-HistoWeave is a **six-layer stack**. Each layer has a stable interface so that components
+HistoWeave is a **six-layer implementation stack governed by one decision plane**.
+Each layer has a stable interface so that components
 (methods, executors, viewers) are swappable and the volatile frontier never destabilizes
 the core. Data flows *up* the stack (raw vendor output → canonical objects → orchestrated
 methods → evaluated results → visual reports); control and provenance flow *down* (a
@@ -50,24 +51,30 @@ Python methods are wrapped natively; R/Bioconductor methods are wrapped as conta
 steps — so the R↔Python divide is an implementation detail, not a user problem. A
 machine-readable **registry** records each plugin's metadata and benchmark standing.
 
-## 5 · Benchmarking & evaluation (`histoweave.benchmark`)
-HistoWeave's core differentiator. Following the Open Problems model, each task pairs
-reference data with a ground-truth proxy and quantitative metrics; every registered method
-is evaluated and ranked. Results feed **leaderboards** and **in-workflow recommendations**.
+## 5 · Evidence and decision plane (`histoweave.benchmark` + `histoweave.decision`)
 
-The recommendation inference path is deliberately auditable:
+This is the submission-facing core. Benchmark modules produce typed evidence;
+`histoweave.decision` controls what that evidence may justify. Task and
+ground-truth semantics are hard admissibility gates. Candidate generation,
+Pareto tables, failure fingerprints, ISUS, and grouped held-out validation retain
+different declared evidence roles in the final `DecisionCard`.
+
+The decision path is deliberately auditable:
 
     raw bundle
       -> 13 target-free features
       -> reference-fit imputation and standardization
-      -> k-nearest reference datasets
-      -> similarity-weighted method score, uncertainty, support, and coverage
-      -> ranked candidates plus a non-executed ensemble suggestion
+      -> hard task / ground-truth admissibility filter
+      -> k-nearest compatible reference datasets
+      -> reference-neighbour candidate proxy + global-default comparison
+      -> grouped held-out validation gate
+      -> matched non-dominated method set, global fallback, evidence request, or abstention
 
 The knowledge-base schema stores task, metric, feature order, per-dataset performance,
-method versions/timings, and missing evaluations. Ground-truth domain or cell-type labels
-are excluded from the retrieval space. A benchmark catalogue must be validated with
-dataset- or study-grouped held-out evaluation before it supports a generalization claim.
+method versions/timings, and missing evaluations. Ground-truth labels are excluded
+from retrieval but their semantics remain mandatory evidence metadata. A catalogue
+must pass dataset- or study-grouped held-out evaluation before the protocol permits
+`personalised_set`; fit on retrieved reference neighbours is only a proxy.
 
 ## 6 · Visualization & reporting (`histoweave.report`)
 Every pipeline emits a **self-contained, versioned HTML report** (QC, spatial maps,

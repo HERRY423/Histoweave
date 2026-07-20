@@ -53,12 +53,20 @@ results/
 pipeline_trace.tsv
 
 # Repository-local data and scratch artifacts
+/data/
 /datasets_cache/
 /tmp/
 /*.patch
 *.orig
 *.rej
 *.bak
+
+# Local experiment result dumps (scripts remain trackable)
+/independent_personalisation_results/
+/protocol_endpoints_results/
+/non_oracle_k_sota/**/checkpoints/
+/non_oracle_k_sota/**/*.log
+/non_oracle_k_sota/run.log
 
 # Generated benchmark and case-study artifacts (keep source scripts trackable)
 /5x15_spatial_aware/checkpoints/

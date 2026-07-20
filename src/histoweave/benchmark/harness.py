@@ -16,6 +16,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
+
 from .._math import adjusted_rand_index
 from ..data import SpatialTable
 from ..plugins import MethodCategory, create_method, get_method, list_methods
@@ -113,14 +115,22 @@ def run_benchmark(
             k_meta["n_domains_used"] = estimated_k
             k_meta["source"] = "oracle"
         elif k_policy == "estimate":
-            selection = estimate_n_domains(task.dataset, random_state=seed)
+            selection = estimate_n_domains(
+                task.dataset,
+                method="ensemble",
+                random_state=seed,
+            )
             estimated_k = selection.k
             k_meta.update(
                 {
                     "n_domains_used": estimated_k,
                     "source": "estimate",
                     "estimator": selection.method,
+                    "geometry": selection.geometry,
+                    "spatial_used": selection.spatial_used,
+                    "component_votes": dict(selection.component_votes),
                     "oracle_k": selection.oracle_k,
+                    "flags": list(selection.flags),
                 }
             )
         # Strip generative K from uns so methods cannot silently read it.
@@ -306,6 +316,100 @@ def deconvolution_task(
 # ---------------------------------------------------------------------------
 # SVG detection task
 # ---------------------------------------------------------------------------
+def virtual_st_task(
+    dataset: SpatialTable | None = None,
+    *,
+    image_key: str = "image",
+    measured_layer: str | None = None,
+) -> Task:
+    """H&E → spatial transcriptomics prediction scored by mean gene Pearson.
+
+    Methods under :class:`~histoweave.plugins.interfaces.MethodCategory.VIRTUAL_ST`
+    write predicted expression to ``layers['virtual_st']``.  The score is the
+    mean per-gene Pearson correlation against the measured matrix (``X`` or
+    ``measured_layer``), matching the primary virtual-ST literature metric.
+    """
+    from ..plugins.builtin.virtual_st import mean_gene_pearson
+
+    if dataset is None:
+        dataset = _make_virtual_st_synthetic(seed=0, image_key=image_key)
+
+    def pearson_score(result: SpatialTable, ref: SpatialTable) -> float:
+        if "virtual_st" not in result.layers:
+            raise KeyError("virtual_st methods must write layers['virtual_st']")
+        predicted = np.asarray(result.layers["virtual_st"], dtype=float)
+        if measured_layer is None or measured_layer in {"X", "x", "expression"}:
+            measured = ref.X
+        else:
+            measured = ref.layers[measured_layer]
+        measured_arr = np.asarray(
+            measured.todense() if hasattr(measured, "todense") else measured, dtype=float
+        )
+        # Align to observations that survived any prep.
+        if predicted.shape[0] != measured_arr.shape[0]:
+            measured_arr = measured_arr[: predicted.shape[0]]
+        n_genes = min(predicted.shape[1], measured_arr.shape[1])
+        return mean_gene_pearson(predicted[:, :n_genes], measured_arr[:, :n_genes])
+
+    return Task(
+        name="virtual_st",
+        category=MethodCategory.VIRTUAL_ST,
+        dataset=dataset,
+        score=pearson_score,
+        output_key="virtual_st",
+        higher_is_better=True,
+        prep=[],
+    )
+
+
+def _make_virtual_st_synthetic(
+    *,
+    seed: int = 0,
+    n_obs: int = 48,
+    n_genes: int = 16,
+    image_key: str = "image",
+) -> SpatialTable:
+    """Paired H&E + expression toy dataset for virtual_st CI."""
+    from ..data import SpatialTable
+
+    rng = np.random.default_rng(seed)
+    # Grid coordinates.
+    side = int(np.ceil(np.sqrt(n_obs)))
+    ys, xs = np.divmod(np.arange(n_obs), side)
+    coords = np.column_stack((xs.astype(float), ys.astype(float)))
+    # Synthetic H&E: smooth spatial colour fields + noise.
+    yy, xx = np.mgrid[0:64, 0:64]
+    image = np.stack(
+        (
+            0.4 + 0.4 * np.sin(xx / 8.0) + 0.1 * rng.random((64, 64)),
+            0.4 + 0.4 * np.cos(yy / 7.0) + 0.1 * rng.random((64, 64)),
+            0.3 + 0.2 * rng.random((64, 64)),
+        ),
+        axis=-1,
+    )
+    # Expression partially driven by local morphology colour.
+    unit = coords / np.maximum(coords.max(axis=0), 1.0)
+    morph = np.column_stack(
+        (
+            np.sin(unit[:, 0] * np.pi),
+            np.cos(unit[:, 1] * np.pi),
+            unit[:, 0] * unit[:, 1],
+        )
+    )
+    loadings = rng.normal(0.0, 1.0, size=(morph.shape[1], n_genes))
+    expression = np.clip(np.exp(morph @ loadings + rng.normal(0.0, 0.15, size=(n_obs, n_genes))), 0.0, None)
+    obs = __import__("pandas").DataFrame(index=[f"spot_{i}" for i in range(n_obs)])
+    var = __import__("pandas").DataFrame(index=[f"g{i}" for i in range(n_genes)])
+    return SpatialTable(
+        X=expression,
+        obs=obs,
+        var=var,
+        obsm={"spatial": coords},
+        images={image_key: image},
+        uns={"platform": "histology", "analysis_task": "virtual_st"},
+    )
+
+
 def svg_task(
     dataset: SpatialTable | None = None,
     k: int = 10,
@@ -362,12 +466,14 @@ def svg_task(
 def get_task(name: str, **kwargs) -> Task:
     """Look up a benchmark task factory by name.
 
-    ``name`` is one of ``"domain_detection"``, ``"deconvolution"``, ``"svg"``.
+    ``name`` is one of ``"domain_detection"``, ``"deconvolution"``, ``"svg"``,
+    ``"virtual_st"``.
     """
     factories: dict[str, Any] = {
         "domain_detection": domain_detection_task,
         "deconvolution": deconvolution_task,
         "svg": svg_task,
+        "virtual_st": virtual_st_task,
     }
     if name not in factories:
         raise KeyError(f"Unknown task {name!r}. Available: {sorted(factories)}")

@@ -1,0 +1,16 @@
+dataset,oracle_k,estimated_k,estimator,k_match,seed_for_estimation
+151673,7,2,silhouette,False,42
+151673,7,2,spatial_silhouette,False,42
+151673,7,2,ensemble,False,42
+151674,7,2,silhouette,False,42
+151674,7,2,spatial_silhouette,False,42
+151674,7,2,ensemble,False,42
+151507,7,3,silhouette,False,42
+151507,7,2,spatial_silhouette,False,42
+151507,7,2,ensemble,False,42
+151669,8,2,silhouette,False,42
+151669,8,2,spatial_silhouette,False,42
+151669,8,2,ensemble,False,42
+151670,5,2,silhouette,False,42
+151670,5,2,spatial_silhouette,False,42
+151670,5,2,ensemble,False,42

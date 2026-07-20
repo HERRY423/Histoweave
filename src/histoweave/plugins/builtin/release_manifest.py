@@ -259,6 +259,10 @@ BETA_METHODS = {
     "image_expression_autoencoder",
     "image_expression_contrastive",
     "multimodal_graph_fusion",
+    # Virtual ST (H&E → expression) reference methods
+    "virtual_st_morphology",
+    "virtual_st_scellst",
+    "virtual_st_storm",
 }
 BETA_METHODS -= set(MULTI_DATASET_EVIDENCE_METHODS)
 
@@ -317,6 +321,8 @@ DEEP_LEARNING_METHODS = {
     "spatial_autoencoder",
     "stagate",
     "variational_spatial_autoencoder",
+    "virtual_st_scellst",
+    "virtual_st_storm",
 }
 
 MACHINE_LEARNING_METHODS = {
@@ -327,6 +333,7 @@ MACHINE_LEARNING_METHODS = {
     "celltypist",
     "dbscan",
     "gaussian_mixture",
+    "virtual_st_morphology",
     "harmony",
     "kmeans",
     "mean_shift",
@@ -338,6 +345,9 @@ MACHINE_LEARNING_METHODS = {
 MODALITY_OVERRIDES = {
     "cellpose2": ("image",),
     "scanvi": ("expression", "labels"),
+    "virtual_st_morphology": ("image", "spatial", "expression"),
+    "virtual_st_scellst": ("image", "spatial", "expression"),
+    "virtual_st_storm": ("image", "spatial", "expression"),
 }
 
 

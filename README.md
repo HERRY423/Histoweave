@@ -1,16 +1,24 @@
 # HistoWeave
 
-**Open-source orchestration & evaluation for reproducible spatial transcriptomics.**
+**Executable evidence contracts for task-constrained method decisions in spatial
+transcriptomics.**
 
-HistoWeave is the connective tissue the spatial field still lacks: a unified
-**distribution, orchestration, and evaluation layer** on top of scverse and
-Bioconductor. It does **not** claim a universal best method. Instead it:
+HistoWeave answers one question: given an explicit analysis task and incomplete
+benchmark evidence, **which method set is justified, and when should the workflow
+fall back or abstain?**
 
-1. wraps field-standard and baseline methods behind one plugin contract;
-2. benchmarks them under **task contracts** (spatial-domain vs cell-type, never mixed);
-3. quantifies **method × spatial-context selection uncertainty**;
-4. recommends configurations with explicit baselines, priors, and failure warnings;
-5. produces interactive reports for multi-method review (Vitessce).
+Its core contribution is an evidence-governed decision protocol that:
+
+1. rejects cross-task, circular, proxy-ground-truth, and silent oracle evidence;
+2. treats nearest-neighbour recommendation as a candidate-generation proxy, not proof;
+3. returns a matched non-dominated method set only after fixed baseline and grouped
+   held-out validation gates; and
+4. emits `global_default`, `evidence_required`, or `abstain` when those gates fail.
+
+Method wrappers, workflows, reports, Pareto analysis, ISUS, failure fingerprints,
+digital twins, and AutoML are supporting infrastructure or evidence producers—not
+parallel headline claims. See the [decision protocol](docs/decision-protocol.md)
+and [vs Squidpy / SpatialData](docs/vs-squidpy-spatialdata.md).
 
 ---
 
@@ -21,8 +29,21 @@ Bioconductor. It does **not** claim a universal best method. Instead it:
 | **60-second demo** | `pip install "histoweave-spatial[scanpy]"` → `histoweave run --demo --out report.html` |
 | **30-min workshop** | Open [`examples/workshop_30min.ipynb`](examples/workshop_30min.ipynb) (install → report → method compare) |
 | **中文快速入门** | [`docs/zh/quickstart.md`](docs/zh/quickstart.md) |
-| **Validation wall** | [`docs/methods/validation/`](docs/methods/validation/index.md) — **10 scientific** + **3 contract** multi-dataset packages (**13** total) |
-| **Real SOTA ARI** | SpaGCN ≈0.32 · STAGATE ≈0.29 · GraphST ≈0.12 on the same DLPFC protocol |
+| **Validation wall** | [`docs/methods/validation/`](docs/methods/validation/index.md) — **10 scientific** + **3 contract** packages + reference artefacts |
+| **SOTA ARI (protocol-bound)** | Always check `k_policy` — Oracle-K and estimate tracks differ (see table below) |
+
+**SOTA DLPFC numbers (must not be mixed across tracks)**
+
+| Method | Track | Mean ARI | Protocol / source |
+|--------|-------|---------:|-------------------|
+| SpaGCN | **oracle-K** (historical SOTA grid) | ≈0.32 | `5x15_spatial_aware/sota_benchmark_long.csv`, `k_policy` implicit oracle |
+| STAGATE | **oracle-K** (subsample max_obs=1000) | ≈0.29 | validation report `stagate.md` |
+| GraphST | **oracle-K** | ≈0.12 | same SOTA protocol family |
+| SpaGCN | **estimate · silhouette** | ≈0.24 | `non_oracle_k_sota/` dual-track (seed 42) |
+| STAGATE | **estimate · silhouette** | ≈0.22 | same |
+| SpaGCN | max slice drop oracle→estimate | **0.23** on 151673 | protocol endpoint `oracle_k_leakage` |
+
+Scientific default for new work is `k_policy=estimate`. Oracle-K is opt-in ablation only.
 
 ```bash
 pip install "histoweave-spatial[scanpy]"
@@ -32,10 +53,10 @@ histoweave run --demo --out report.html
 
 **Why teams adopt HistoWeave**
 
-- **One contract** for baselines and SOTA (SpaGCN / GraphST / STAGATE / RCTD / …)
-- **Task contracts** block silent errors (no Leiden-as-domain-GT)
+- **One executable evidence contract** for baselines and SOTA
+- **Hard semantic gates** block cross-task and Leiden-as-domain-GT evidence
 - **Fail-closed** optional backends — no toy substitute when SpaGCN is missing
-- **Honest recommenders** report when they fail to beat a global-best baseline
+- **Set-valued decisions** fall back or abstain instead of forcing a winner
 - **Report-first** onboarding: every first run ends in a shareable HTML artifact
 
 **Choose your path**
@@ -54,9 +75,9 @@ histoweave run --demo --out report.html
 **v0.1.0** — submission freeze. Plugin registry with maturity tiers
 (`experimental` → `beta` → `production` → `contract_validated` → `validated`):
 **10 scientifically validated** methods and **3 contract-validated** multi-dataset
-packages (**13** evidence packages total). First-class SOTA domain plugins
-(SpaGCN / GraphST / STAGATE / BayesSpace / RCTD), task-bound recommendation engine
-v2, Vitessce reporting, Nextflow + containers. Optional heavy backends fail closed.
+packages (**13** evidence packages total). The submission-facing core is the
+evidence-governed `decide()` protocol; SOTA wrappers, candidate generation,
+Vitessce reporting, Nextflow, and containers support that protocol.
 See [docs/roadmap.md](docs/roadmap.md).
 
 ## Community
@@ -70,10 +91,11 @@ See [docs/roadmap.md](docs/roadmap.md).
 
 | We claim | We do **not** claim |
 |----------|---------------------|
-| Method choice and spatial-context policy jointly dominate many analysis outcomes | One recommender always picks the single best method |
-| Multi-method disagreement maps prioritise hard boundaries for review | Cross-platform ARI is comparable when ground-truth semantics differ |
-| Task-separated landscapes reduce silent scientific errors | Leiden/self-clustering is valid domain ground truth |
-| Negative recommender results (fails to beat global-best) are useful diagnostics | Top-1 accuracy on a 5-slice DLPFC LOOCV is a generalisation proof |
+| Evidence semantics can be machine-checked before aggregation | Pareto sorting or kNN retrieval is itself a new algorithm |
+| Cross-task, circular, and proxy-domain evidence is rejected | Soft down-weighting makes incompatible evidence valid |
+| A decision may be a non-dominated set, global fallback, or abstention | A local ranking proves one method is biologically correct |
+| Negative held-out results define when personalisation is unsupported | Reference-neighbour fit is independent generalisation evidence |
+| ISUS describes label-conditioned spatial information post hoc | ISUS predicts method gain for an unlabelled query |
 
 ## Install
 
@@ -108,15 +130,50 @@ ts.build_report(result, "report.html")  # Self-contained HTML with Vitessce
 histoweave run --demo --out report.html
 ```
 
-## Digital-twin validation & Spatial AutoML
+## Core decision protocol
 
-When your sample has **no ground truth**, HistoWeave can still rank methods:
+```bash
+histoweave decide \
+  --in my_sample.ttab \
+  --knowledge-base landscape.json \
+  --task spatial_domain \
+  --dataset-name my_sample \
+  --validation benchmark_external_validation/decision_validation.json \
+  --pareto-report pareto.json \
+  --out decision_card.json --json
+```
+
+```python
+import histoweave as hw
+
+card = hw.decide(
+    data,
+    knowledge_base="landscape.json",
+    dataset_name="my_sample",
+    task="spatial_domain",
+    validation=grouped_holdout_summary,
+    pareto=pareto_report,
+)
+print(card.action, card.primary_set, card.comparison_set)
+```
+
+The output is a versioned `DecisionCard`, not just a ranking. It records evidence
+roles, contract checks, fixed controls, claim boundaries, and one of four actions:
+`personalised_set`, `global_default`, `evidence_required`, or `abstain`.
+Personalisation requires grouped held-out evidence; a favourable score on the
+retrieved reference neighbours is only a proxy. Full specification:
+[evidence-governed decision protocol](docs/decision-protocol.md).
+
+## Experimental execution adapters (supporting infrastructure)
+
+When a sample has **no ground truth**, these adapters can generate a comparison
+panel and post-run diagnostics. They do not validate the winning biology:
 
 ```bash
 # 1) Feature-matched synthetic twin → predicted ranking from planted-truth ARI
 histoweave digital-twin --in my_sample.ttab --out-dir digital_twin_out
 
-# 2) Full AutoML: recommend → run top-3 → Pareto HTML report
+# 2) Execution adapter: decision card → comparison panel → Pareto HTML report
 histoweave automl "Find spatial domains for my Visium liver cancer data." \
   --in my_sample.ttab \
   --knowledge-base figure3_results/landscape.json \
@@ -125,7 +182,7 @@ histoweave automl "Find spatial domains for my Visium liver cancer data." \
 
 See [digital-twin.md](docs/digital-twin.md) and [spatial-automl.md](docs/spatial-automl.md).
 
-## Failure fingerprints & recommender calibration
+## Synthetic stress tests and evidence acquisition (supporting diagnostics)
 
 ```bash
 # How each method fails (4-mode fingerprint: frag / merge / noise / structural)
@@ -136,7 +193,7 @@ histoweave calibrate-recommender --in sample.ttab \
   --knowledge-base figure3_results/landscape.json --out calibration.json
 ```
 
-## Method recommendation v2
+## Reference-neighbour candidate generator (not the decision product)
 
 ```bash
 # Landscape knowledge base (task = spatial_domain)
@@ -162,21 +219,24 @@ print(rec.summary())
 # Inspect rec.beats_global_best_baseline and rec.warnings before acting.
 ```
 
-The engine extracts target-free features, applies **task + platform priors**, ranks
-`method` or `method@policy` configurations, and reports regret against a
-**global-best baseline**.  If personalisation does not beat that baseline, the
-API says so.
+The engine extracts target-free features, hard-filters incompatible task/label
+semantics, applies a platform prior, and ranks `method` or `method@policy`
+configurations. Its global-best comparison is computed on retrieved reference
+neighbours, so it is a **proxy diagnostic rather than independent validation**.
+Use `histoweave decide` for an actionable, fail-closed decision.
 
-## Pareto frontier — trade-offs, not a single winner
+## Set-valued output layer: canonical Pareto analysis
 
 "Which method is best?" is the wrong question when methods differ on axes that
-cannot be collapsed into one number.  The Pareto recommender scores every
+cannot be collapsed into one number. The Pareto layer records every
 configuration on up to **four objectives** — accuracy (ARI, maximise), speed
 (seconds, minimise), memory (GB, minimise) and robustness (bootstrap ARI
 CI-width, minimise) — and reports the **non-dominated frontier**: the set of
 configs that no other config beats on *every* axis.  Nothing on the frontier is
 strictly worse than anything else; picking among them is a value judgement the
-tool makes explicit rather than hiding behind a mean.
+tool makes explicit rather than hiding behind a mean. Pareto sorting is an
+established operator; the contribution is enforcing matched evidence and using
+the set within an explicit fallback/abstention protocol.
 
 ```bash
 # Per-seed ARI + timings (enables the robustness axis); memory from the
@@ -213,11 +273,12 @@ On the bundled DLPFC slices the frontier is genuinely multi-config (5–9 of 15
 per slice), and `agglomerative@sw0.0`/`agglomerative@sw0.8` sit on it for all
 five slices, which single-winner reporting would hide.
 
-## ISUS — should this dataset use a spatial method at all?
+## Label-conditioned spatial information audit (post hoc only)
 
-The recommender picks *which* method; the **Information-theoretic Spatial
-Utility Score (ISUS)** answers the prior question — *whether* spatial
-coordinates help this dataset at all — before any method is run:
+The **Information-theoretic Spatial Utility Score (ISUS)** describes how much
+trusted domain labels depend on coordinates beyond expression. Because it
+requires those labels, it cannot decide whether an unlabelled query should use
+a spatial method before methods are run:
 
 ```
 ISUS = I(D; S | E) / I(D; E)
@@ -233,28 +294,53 @@ already provides.  Both terms use the Ross (2014) kNN estimator on NumPy/SciPy
 # From a bundle / dataset with expression + spatial coords + domain labels
 histoweave isus --in my_sample --domain-key domain_truth --out isus.json
 
-# Calibrate ISUS against observed spatial ARI gain over a benchmark dir
+# Permutation null: p-value + Z-score; primary band uses null evidence (not 0.1/0.3)
+histoweave isus --in my_sample --domain-key domain_truth --n-null 99 --out isus.json
+
+# Bind ISUS to observed spatial ARI gain from benchmark_long.csv (gain map + audit)
 histoweave isus --calibrate 5x15_spatial_aware --out isus_calibration.json
+
+# Attach a previously fitted gain map to a new labelled sample
+histoweave isus --in my_sample --gain-calibration isus_calibration.json --out isus.json
 ```
 
 ```python
-from histoweave.benchmark import compute_isus_from_table, isus_band
-res = compute_isus_from_table(data, domain_key="domain_truth")
-print(res.isus, res.band)      # e.g. 0.077 "expression-sufficient"
+from histoweave.benchmark import (
+    assess_isus_predictor,
+    attach_gain_prediction,
+    compute_isus_from_table,
+    extract_spatial_ari_gains_from_long,
+    fit_isus_gain_calibration,
+)
+
+res = compute_isus_from_table(data, domain_key="domain_truth", n_null=99)
+print(res.isus, res.band, res.p_value_i_d_s_given_e, res.z_score_i_d_s_given_e)
+# band_source == "permutation_z" when n_null>0; band_heuristic still reports 0.1/0.3
+
+gains = extract_spatial_ari_gains_from_long("5x15_spatial_aware/benchmark_long.csv")
+calib = fit_isus_gain_calibration(per_slice_records)  # each row: isus + spatial_ari_gain
+print(calib.slope, calib.reliability, calib.loo_rmse)
+res = attach_gain_prediction(res, calib)
+print(res.expected_spatial_ari_gain, res.gain_prediction_reliability)
 ```
 
-**Interpretation bands (provisional heuristics, not a validated predictor).**
-`ISUS < 0.1` — expression alone is largely sufficient; `0.1–0.3` — modest
-spatial signal; `> 0.3` — spatial structure is a large fraction of the domain
-information.  A coordinate-shuffle control collapses ISUS to ~0, confirming it
-measures *genuine spatial structure* rather than an artifact.  **However**, on
-the 5×15 DLPFC benchmark ISUS does **not** correlate with the ARI improvement
-that spatial-weighting actually delivers (Spearman ρ ≈ −0.30, n = 5, not
-significant): every DLPFC layer is spatially contiguous, so the numerator is
-high across the board, while realised ARI gain is driven by expression
-separability and the specific smoothing mechanism.  Treat ISUS as a validated
-*descriptor* of spatial information content, and the bands as a starting point
-to calibrate on your own data — not as a promise about a given method's gain.
+**Bands and thresholds.** With ``n_null=0``, bands still use the legacy absolute
+cut-offs (`ISUS_LOW=0.1`, `ISUS_HIGH=0.3`) and are flagged as subjective. With
+``n_null>0``, the **primary** band comes from the coordinate-shuffle null:
+not significant → `not_above_null`; significant with Z < 3 →
+`modest-spatial-signal`; Z ≥ 3 → `spatial-critical`. Dataset-specific absolute
+thresholds (`threshold_significant_isus`, `threshold_critical_isus`) are the
+null quantile / mean+3σ on the ISUS scale for that sample; the 0.1/0.3 values
+remain only under `band_heuristic`.
+
+**Downstream gain map.** ``--calibrate`` fits
+`spatial_ari_gain ≈ intercept + slope * ISUS` against `benchmark_long.csv`
+(per dataset: mean over methods of best `sw>0` ARI minus `sw0.0`), with LOO
+RMSE intervals and an explicit reliability flag from the Spearman audit. On the
+5×15 DLPFC benchmark the map is **unsupported/low-reliability** (ρ ≈ −0.30,
+n = 5): ISUS does not track realised spatial-weighting ARI gain. Treat expected
+gain as an exploratory post-hoc binding, never as a pre-execution gate for an
+unlabelled query.
 
 ## Task contracts (hard rules)
 

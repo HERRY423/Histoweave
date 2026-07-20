@@ -38,6 +38,7 @@ def register_all() -> None:
         spatial_graph,
         spatial_svg,
         spatialde,
+        virtual_st,
     )
     from .release_manifest import apply_builtin_release_manifest
 

@@ -22,7 +22,7 @@ real sample (which has no ground truth).
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -323,8 +323,9 @@ def _select_genes(data: SpatialTable, n_genes: int, rng: np.random.Generator) ->
     X = data.X
     try:
         if hasattr(X, "tocsc"):
-            mean = np.asarray(X.mean(axis=0)).ravel()
-            mean_sq = np.asarray(X.power(2).mean(axis=0)).ravel()
+            X_sparse = cast(Any, X)
+            mean = np.asarray(X_sparse.mean(axis=0)).ravel()
+            mean_sq = np.asarray(X_sparse.power(2).mean(axis=0)).ravel()
             var = np.maximum(mean_sq - mean * mean, 0.0)
         else:
             var = np.asarray(X, dtype=float).var(axis=0)
@@ -470,7 +471,10 @@ def _calibrate_expression(
     if target_lib_cv > 0 and current_cv > 1e-8:
         # Multiplicative residual to push CV.
         sigma = float(np.clip(target_lib_cv / max(current_cv, 0.1) * 0.25, 0.05, 0.8))
-        mult = rng.lognormal(mean=-0.5 * sigma**2, sigma=sigma, size=n_cells)
+        mult = np.asarray(
+            rng.lognormal(mean=-0.5 * sigma**2, sigma=sigma, size=n_cells),
+            dtype=float,
+        )
         # Renormalise so mean library is preserved.
         mult *= (n_cells / mult.sum()) * (target_lib_mean / (float((lib * mult).mean()) + 1e-8))
         X = X * mult[:, None]

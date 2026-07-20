@@ -22,6 +22,9 @@ nav:
   - Home: index.md
   - API Reference: api.md
   - Quickstart: quickstart.md
+  - Core decision protocol: decision-protocol.md
+  - Multimodal tasks & virtual ST: multimodal-virtual-st.md
+  - Vs Squidpy / SpatialData: vs-squidpy-spatialdata.md
   - 中文快速入门: zh/quickstart.md
   - Spatial pipeline compiler: compiler.md
   - Digital-twin validation: digital-twin.md
@@ -65,6 +68,7 @@ nav:
               - neighborhood: methods/categories/neighborhood.md
               - segmentation: methods/categories/segmentation.md
               - ccc: methods/categories/ccc.md
+              - virtual_st: methods/categories/virtual_st.md
       - FAQ: faq.md
       - Troubleshooting: troubleshooting.md
       - Contributing: contributing.md
@@ -75,6 +79,7 @@ nav:
       - Batch-effect correction: tutorials/03_batch_effect_correction.md
       - Xenium & MERFISH (imaging): tutorials/04_xenium_merfish.md
       - Large imaging (10⁵ cells): tutorials/05_large_imaging_scale.md
+      - Virtual ST from real H&E: tutorials/06_virtual_st_he.md
   - SOTA reproduction: sota-reproduction.md
   - Statistical review: statistical-review.md
   - Architecture: architecture.md

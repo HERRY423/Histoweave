@@ -14,6 +14,18 @@ from .phenomenology import (
     make_phenomenology_scenario,
     make_phenomenology_suite,
 )
+from .histology import (
+    IMAGE_KEY,
+    IMAGE_HIRES_KEY,
+    IMAGE_LOWRES_KEY,
+    attach_histology_images,
+    ensure_histology,
+    extract_images_from_anndata_uns,
+    load_visium_hne_paired,
+    load_visium_spatial_folder_images,
+    prepare_virtual_st_table,
+    spatial_table_from_visium_hne,
+)
 from .real import DatasetEntry, get_dataset, list_datasets, registry_summary
 from .scale_contract import (
     SCALE_CONTRACTS,
@@ -50,6 +62,16 @@ __all__ = [
     "get_dataset",
     "list_datasets",
     "registry_summary",
+    "IMAGE_KEY",
+    "IMAGE_HIRES_KEY",
+    "IMAGE_LOWRES_KEY",
+    "attach_histology_images",
+    "ensure_histology",
+    "extract_images_from_anndata_uns",
+    "load_visium_hne_paired",
+    "load_visium_spatial_folder_images",
+    "prepare_virtual_st_table",
+    "spatial_table_from_visium_hne",
     "SCALE_CONTRACTS",
     "ScaleContract",
     "registry_scale_table",

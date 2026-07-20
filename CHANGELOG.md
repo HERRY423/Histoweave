@@ -6,6 +6,68 @@ All notable changes to this project will be documented here. The format is based
 
 ## [Unreleased]
 
+### Biological discovery story (uncertainty niches)
+
+- Composed dual-tissue narrative from DLPFC cryptic niches + Xenium lymph deep-dives:
+  `research/discovery_uncertainty_niches/BIOLOGICAL_STORY.md`.
+- Headline findings: **D1** intra-L6 myelin niche (spatial-null PASS, IF-ready);
+  **D3** Xenium LN Ca²⁺-signaling niche (same-domain hard DE).
+- Composer: `compose_biological_story.py` → `results/biological_story/` metrics + figures.
+- Claim ladder / project status updated to freeze honest IF-pending language.
+
+### Functional validation of cryptic states (F2)
+
+- Pre-registered disease + organisation modules (`functional_modules.py`) scored on
+  frozen DE tables via hypergeometric tests.
+- **D1 / D2 / D3 all reach F2 dual-axis** (disease mechanism + spatial redefinition):
+  L6 myelin microcompartment, L3 plasticity microcompartment, LN Ca²⁺ micro-niche.
+- Runner + report: `run_functional_validation.py` → `FUNCTIONAL_VALIDATION.md` and
+  `results/functional_validation/`.
+- Known artifact risks (SCGB/SAA) and D3 GC-counter non-enrichment statistics documented.
+
+### D3 KCNN4/ORAI3 neighbourhood + literature
+
+- Deep dive for the Xenium LN cryptic niche (rank3 n=31): literature integration of
+  KCNN4 (KCa3.1) / ORAI3 (CRAC) in T/B activation Ca²⁺ signalling, plus kNN
+  abutting proxy cell types vs size-matched LN null.
+- Result: multi-lineage niche interior; external **T_like enriched**, GC_like rare —
+  supports parenchymal T-contact activation zone over missed GC.
+- Script/report: `analyze_ca2_niche_neighborhood.py`,
+  `research/discovery_xenium_lymph/KCNN4_ORAI3_NEIGHBORHOOD.md`.
+
+### F3/F4 functional experiments (perturbation / lineage / orthogonal)
+
+- Pre-registered experiment registry (`functional_experiments.py`): CRISPR, drug,
+  demyelination models, lineage reporters, MERFISH/Xenium/CODEX/multiome.
+- Package builder + return analyzer:
+  `prepare_functional_experiment_package.py`, `analyze_functional_return.py`.
+- Narrative: `FUNCTIONAL_EXPERIMENTS.md`; lab hand-off under
+  `results/functional_experiments/`.
+
+### Multimodal AnalysisTask + virtual ST
+
+- Extended `AnalysisTask` with `SPATIAL_PROTEIN_DOMAIN`, `SPATIAL_CHROMATIN_DOMAIN`,
+  and `VIRTUAL_ST` (H&E → predicted spatial transcriptomics).
+- Added `GroundTruthKind.SPATIAL_PROTEIN_DOMAIN`, `SPATIAL_CHROMATIN_DOMAIN`, and
+  `MEASURED_EXPRESSION` with hard per-task GT contracts.
+- Defined executable cross-modal evidence rules: exact task match only is
+  admissible; same-family domain partitions (RNA/protein/chromatin) are auditable
+  as `SAME_FAMILY` but never soft-weighted into rankings; virtual ST is isolated
+  from domain-partition evidence (`tasks_admissible`, `cross_modal_relation`,
+  `evidence_compatibility_report`).
+- Integrated virtual ST as a first-class analysis category (`MethodCategory.VIRTUAL_ST`)
+  with three methods inspired by 2026 H&E→ST literature: `virtual_st_morphology`,
+  `virtual_st_scellst` (sCellST-style), `virtual_st_storm` (STORM-style hierarchical
+  fusion). Harness task `virtual_st` scores mean gene Pearson correlation.
+- Real H&E data path: `histoweave.datasets.load_visium_hne_paired` (10x Visium mouse
+  brain H&E via squidpy/local cache), `ensure_histology` /
+  `prepare_virtual_st_table`, Visium native reader attaches `tissue_*_image.png`,
+  registry entry `visium_mouse_brain_hne`, prepare script
+  `scripts/prepare_visium_hne_virtual_st.py`.
+- Docs: `docs/multimodal-virtual-st.md`, tutorial
+  `docs/tutorials/06_virtual_st_he.md`, category page
+  `docs/methods/categories/virtual_st.md`.
+
 ## [0.1.0] — 2026-07-18
 
 ### Submission freeze
