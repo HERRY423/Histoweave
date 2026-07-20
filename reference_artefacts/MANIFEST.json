@@ -1,6 +1,6 @@
 {
   "schema": "histoweave.reference_artefacts.manifest.v1",
-  "generated_utc": "2026-07-20T15:43:42Z",
+  "generated_utc": "2026-07-20T15:58:05Z",
   "policy": {
     "track_summaries": true,
     "ignore_raw_h5ad": true,
@@ -19,10 +19,13 @@
     "non_oracle_k_sota/benchmark_long.csv",
     "pareto_isus_results/pareto_report.json",
     "pareto_isus_results/isus_calibration.json",
-    "benchmark_external_validation/decision_validation.json"
+    "benchmark_external_validation/decision_validation.json",
+    "parallel_experiment_table/parallel_experiment_summary.csv",
+    "parallel_experiment_table/parallel_experiment_table.csv",
+    "parallel_experiment_table/report_parallel_experiment.md"
   ],
-  "n_files": 105,
-  "total_bytes": 2004197,
+  "n_files": 115,
+  "total_bytes": 2408982,
   "files": [
     {
       "path": "independent_personalisation_results/cross_lab_reproducibility.json",
@@ -758,6 +761,76 @@
       "sha256": "655fc64c7ac977cd02e954f364705abbf4119eb61ade2f23f76f36ded52eee0d",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
+    },
+    {
+      "path": "parallel_experiment_table/build_parallel_table.py",
+      "bytes": 23611,
+      "sha256": "4b942ce9a96f19b90dad1a3b16eab1d28b61638dc717175a384c6bfad111a277",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/figures/parallel_heatmap.png",
+      "bytes": 269018,
+      "sha256": "8aaaedc4c9c5decbc25913795d872d148d486572b69313bdafe98cf7d17fbe6b",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/figures/parallel_heatmap.svg",
+      "bytes": 65542,
+      "sha256": "af8374daa4a1492067915de5d2dad4411fab357a3bf19da9f24f69dfcb634bb3",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/make_heatmap.py",
+      "bytes": 4563,
+      "sha256": "b730874be6b8ed9fa5b293e2319d9c084a44435dd846bbfb6d4ff9c795830e9b",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/method_meta.json",
+      "bytes": 5232,
+      "sha256": "969e1036cb5743a1bc859c25131774078e641724755aefa2f31725980c59981d",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/parallel_experiment_matrix.csv",
+      "bytes": 1727,
+      "sha256": "50bfd7c23f59b536b6df48889ca9811ad52c22bea56201056256742e6e4f6ed3",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/parallel_experiment_summary.csv",
+      "bytes": 3221,
+      "sha256": "049534e711428cb89e5cd8d9d0844bf744e24f9cd563a8c65f977877444cc9d4",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": true
+    },
+    {
+      "path": "parallel_experiment_table/parallel_experiment_table.csv",
+      "bytes": 14150,
+      "sha256": "7435e220c1ce44358fd87f9bfdf4dbed379f99abf8eddb5b50a2e3b7ea9bc3aa",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": true
+    },
+    {
+      "path": "parallel_experiment_table/README.md",
+      "bytes": 3685,
+      "sha256": "29c8664b166315a689b48e9d6ccc71df19c697b63a75b51a5093f16e7ff82384",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": false
+    },
+    {
+      "path": "parallel_experiment_table/report_parallel_experiment.md",
+      "bytes": 14036,
+      "sha256": "dbf4d760d8a01b5fe1fa26607cbbf78b0d775bd6d3a4f3fa6ecafbbfd7fb03ea",
+      "protocol_family": "histoweave.parallel_experiment_table.v1",
+      "required": true
     }
   ]
 }

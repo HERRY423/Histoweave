@@ -20,6 +20,8 @@ REQUIRED = [
     "non_oracle_k_sota/summary.json",
     "pareto_isus_results/pareto_report.json",
     "benchmark_external_validation/decision_validation.json",
+    "parallel_experiment_table/parallel_experiment_summary.csv",
+    "parallel_experiment_table/report_parallel_experiment.md",
 ]
 
 

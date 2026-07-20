@@ -1,0 +1,204 @@
+{
+  "order": [
+    "agglomerative",
+    "birch",
+    "bisecting_kmeans",
+    "dbscan",
+    "gaussian_mixture",
+    "kmeans",
+    "mean_shift",
+    "minibatch_kmeans",
+    "optics",
+    "spectral",
+    "agglomerative@sw0.0",
+    "agglomerative@sw0.3",
+    "agglomerative@sw0.8",
+    "birch@sw0.0",
+    "birch@sw0.3",
+    "birch@sw0.8",
+    "gaussian_mixture@sw0.0",
+    "gaussian_mixture@sw0.3",
+    "gaussian_mixture@sw0.8",
+    "kmeans@sw0.0",
+    "kmeans@sw0.3",
+    "kmeans@sw0.8",
+    "spectral@sw0.0",
+    "spectral@sw0.3",
+    "spectral@sw0.8",
+    "spagcn (oracle-K)",
+    "stagate (oracle-K)",
+    "spagcn (est-K:ensemble)",
+    "spagcn (est-K:silhouette)",
+    "spagcn (est-K:spatial_sil)",
+    "stagate (est-K:ensemble)",
+    "stagate (est-K:silhouette)",
+    "stagate (est-K:spatial_sil)"
+  ],
+  "meta": {
+    "agglomerative": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "birch": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "bisecting_kmeans": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "dbscan": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "gaussian_mixture": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "kmeans": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "mean_shift": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "minibatch_kmeans": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "optics": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "spectral": {
+      "family": "sklearn",
+      "benchmark": "5x10_dlpfc",
+      "k_policy": "oracle"
+    },
+    "spagcn (est-K:ensemble)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "estimate"
+    },
+    "spagcn (est-K:silhouette)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "estimate"
+    },
+    "spagcn (est-K:spatial_sil)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "estimate"
+    },
+    "spagcn (oracle-K)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "oracle"
+    },
+    "stagate (est-K:ensemble)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "estimate"
+    },
+    "stagate (est-K:silhouette)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "estimate"
+    },
+    "stagate (est-K:spatial_sil)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "estimate"
+    },
+    "stagate (oracle-K)": {
+      "family": "sota",
+      "benchmark": "non_oracle_k_sota",
+      "k_policy": "oracle"
+    },
+    "agglomerative@sw0.0": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "agglomerative@sw0.3": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "agglomerative@sw0.8": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "birch@sw0.0": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "birch@sw0.3": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "birch@sw0.8": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "gaussian_mixture@sw0.0": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "gaussian_mixture@sw0.3": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "gaussian_mixture@sw0.8": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "kmeans@sw0.0": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "kmeans@sw0.3": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "kmeans@sw0.8": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "spectral@sw0.0": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "spectral@sw0.3": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    },
+    "spectral@sw0.8": {
+      "family": "spatial_aware",
+      "benchmark": "5x15_spatial_aware",
+      "k_policy": "oracle"
+    }
+  }
+}

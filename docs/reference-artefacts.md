@@ -19,6 +19,7 @@ what is in-repo, what is ignored, and how to regenerate either class.
 | Non-oracle K dual-track tables | `non_oracle_k_sota/{summary,benchmark_long,dual_track_k}.*` | **Yes** | &lt; 100 KB | clone **or** `non_oracle_k_sota/run_non_oracle_k_sota.py` |
 | Pareto / ISUS frozen report | `pareto_isus_results/*` | **Yes** | figures + JSON | clone **or** `histoweave pareto` / `histoweave isus --calibrate` |
 | External negative holdout | `benchmark_external_validation/decision_validation.json` | **Yes** | &lt; 2 KB | clone (canonical negative control) |
+| Parallel same-task table | `parallel_experiment_table/*` | **Yes** | summaries + heatmap | clone **or** `python parallel_experiment_table/build_parallel_table.py` |
 | Per-seed cell dumps | `non_oracle_k_sota/cells/` | No | variable | regenerate with dual-track runner |
 | Run logs | `**/*.log` | No | variable | local only |
 | Raw expression / images | `*.h5ad`, `/data/`, `datasets_cache/` | No | 10 MB–GB | public portals + preparer scripts (below) |
@@ -68,6 +69,25 @@ See [`pareto_isus_results/README.md`](../pareto_isus_results/README.md).
 is intentionally **negative** (`beats_global_best: false`) and is used by the
 [intercept case study](case-study-intercepted-recommendation.md).
 
+### 6. Parallel experiment table (same task, same data)
+
+| File | Role |
+|------|------|
+| [`parallel_experiment_summary.csv`](../parallel_experiment_table/parallel_experiment_summary.csv) | Ranked mean ARI over 5 DLPFC slices (33 configs) |
+| [`parallel_experiment_table.csv`](../parallel_experiment_table/parallel_experiment_table.csv) | Long table: slice × method_config |
+| [`parallel_experiment_matrix.csv`](../parallel_experiment_table/parallel_experiment_matrix.csv) | Wide matrix for heatmaps |
+| [`report_parallel_experiment.md`](../parallel_experiment_table/report_parallel_experiment.md) | Narrative + caveats (seed / K-policy) |
+| [`figures/parallel_heatmap.svg`](../parallel_experiment_table/figures/parallel_heatmap.svg) | Family-grouped heatmap |
+
+Protocol: `histoweave.parallel_experiment_table.v1`  
+Aligns `5x10_dlpfc_benchmark`, `5x15_spatial_aware`, and `non_oracle_k_sota` on
+the shared 5-slice DLPFC spatial-domain panel. Rebuild:
+
+```bash
+python parallel_experiment_table/build_parallel_table.py
+python parallel_experiment_table/make_heatmap.py   # optional
+```
+
 ---
 
 ## Large inputs (not in git)
@@ -94,6 +114,9 @@ python scripts/run_protocol_endpoints.py
 
 # Dual-track non-oracle K (writes non_oracle_k_sota/ summaries)
 python non_oracle_k_sota/run_non_oracle_k_sota.py
+
+# Same-task same-data parallel table (aligns three DLPFC benchmarks)
+python parallel_experiment_table/build_parallel_table.py
 
 # Refresh MANIFEST hashes after intentional re-runs
 python scripts/build_reference_artefact_manifest.py

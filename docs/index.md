@@ -32,6 +32,7 @@ orchestration, and evaluation layer on top of them, not a competing method zoo.
 - **[Core decision protocol](decision-protocol.md)** — evidence-governed method sets.
 - **[Case study: intercept bad recommendations](case-study-intercepted-recommendation.md)** — dry-lab vignette (`evidence_required` / `global_default` / `abstain`).
 - **[Reference artefacts](reference-artefacts.md)** — which evaluation summaries are in git vs local-only.
+- **[Parallel experiment table](parallel-experiment-table.md)** — same-task same-data sklearn / spatial-aware / SOTA matrix.
 - **[Multimodal tasks & virtual ST](multimodal-virtual-st.md)** — cross-modal rules + H&E→ST.
 - **[Method selection](method-selection.md)** — task-aware guidance for analysts.
 - **[Architecture](architecture.md)** — the six-layer stack and why each layer exists.

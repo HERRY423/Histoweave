@@ -1,0 +1,166 @@
+dataset,method_config,family,benchmark,k_policy,seeds,mean_ari,std_ari,n_seeds,mean_seconds
+151507,agglomerative,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2107,0.0,3,3.33
+151507,birch,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1321,0.0,3,3.39
+151507,bisecting_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2504,0.0037,3,3.17
+151507,dbscan,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0,0.0,3,3.21
+151507,gaussian_mixture,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2228,0.0232,3,3.47
+151507,kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2402,0.0447,3,3.24
+151507,mean_shift,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0117,0.0,3,12.83
+151507,minibatch_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2372,0.0469,3,3.1
+151507,optics,sklearn,5x10_dlpfc,oracle,"42,1,2",-0.0004,0.0,3,5.51
+151507,spectral,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2002,0.0002,3,4.73
+151507,spagcn (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.2172,0.0,1,18.59
+151507,spagcn (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.2479,0.0,1,20.72
+151507,spagcn (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.2172,0.0,1,17.39
+151507,spagcn (oracle-K),sota,non_oracle_k_sota,oracle,42,0.3846,0.0,1,11.14
+151507,stagate (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.2171,0.0,1,51.58
+151507,stagate (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.2439,0.0,1,52.99
+151507,stagate (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.2171,0.0,1,56.65
+151507,stagate (oracle-K),sota,non_oracle_k_sota,oracle,42,0.3826,0.0,1,55.77
+151507,agglomerative@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0797,0.0,3,5.43
+151507,agglomerative@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2107,0.0,3,6.25
+151507,agglomerative@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2158,0.0,3,6.27
+151507,birch@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0459,0.0,3,5.78
+151507,birch@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1321,0.0,3,6.66
+151507,birch@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2514,0.0,3,6.6
+151507,gaussian_mixture@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1308,0.0241,3,5.79
+151507,gaussian_mixture@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2228,0.0232,3,6.73
+151507,gaussian_mixture@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2627,0.0185,3,6.73
+151507,kmeans@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1825,0.0152,3,5.44
+151507,kmeans@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2402,0.0447,3,6.2
+151507,kmeans@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1976,0.0227,3,6.29
+151507,spectral@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1383,0.0002,3,10.73
+151507,spectral@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2002,0.0002,3,8.86
+151507,spectral@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2339,0.0,3,6.82
+151669,agglomerative,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1454,0.0,3,3.74
+151669,birch,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1297,0.0,3,4.19
+151669,bisecting_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1829,0.0017,3,3.58
+151669,dbscan,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0,0.0,3,3.95
+151669,gaussian_mixture,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1397,0.0142,3,4.18
+151669,kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1656,0.0095,3,3.79
+151669,mean_shift,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0102,0.0,3,10.59
+151669,minibatch_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1722,0.0071,3,3.71
+151669,optics,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0002,0.0,3,5.51
+151669,spectral,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1679,0.0003,3,5.16
+151669,spagcn (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.1368,0.0,1,14.57
+151669,spagcn (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.1368,0.0,1,14.32
+151669,spagcn (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.1368,0.0,1,15.1
+151669,spagcn (oracle-K),sota,non_oracle_k_sota,oracle,42,0.2068,0.0,1,14.76
+151669,stagate (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.116,0.0,1,39.46
+151669,stagate (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.116,0.0,1,44.53
+151669,stagate (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.116,0.0,1,44.49
+151669,stagate (oracle-K),sota,non_oracle_k_sota,oracle,42,0.1459,0.0,1,44.39
+151669,agglomerative@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0442,0.0,3,7.19
+151669,agglomerative@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1454,0.0,3,7.72
+151669,agglomerative@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1895,0.0,3,8.09
+151669,birch@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0303,0.0,3,7.05
+151669,birch@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1297,0.0,3,7.98
+151669,birch@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.187,0.0,3,7.8
+151669,gaussian_mixture@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0985,0.0079,3,7.56
+151669,gaussian_mixture@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1397,0.0142,3,8.23
+151669,gaussian_mixture@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1692,0.0071,3,8.14
+151669,kmeans@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1356,0.0061,3,7.1
+151669,kmeans@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1656,0.0095,3,7.68
+151669,kmeans@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1808,0.0022,3,7.68
+151669,spectral@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1149,0.0002,3,10.44
+151669,spectral@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1679,0.0003,3,10.1
+151669,spectral@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1787,0.0,3,8.0
+151670,agglomerative,sklearn,5x10_dlpfc,oracle,"42,1,2",0.28,0.0,3,3.4
+151670,birch,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1877,0.0,3,3.55
+151670,bisecting_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1932,0.0343,3,3.27
+151670,dbscan,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0,0.0,3,3.3
+151670,gaussian_mixture,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1778,0.0298,3,3.45
+151670,kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2215,0.0509,3,3.39
+151670,mean_shift,sklearn,5x10_dlpfc,oracle,"42,1,2",-0.0206,0.0,3,9.93
+151670,minibatch_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2112,0.0742,3,3.27
+151670,optics,sklearn,5x10_dlpfc,oracle,"42,1,2",-0.0052,0.0,3,5.3
+151670,spectral,sklearn,5x10_dlpfc,oracle,"42,1,2",0.3464,0.0004,3,4.65
+151670,spagcn (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.4156,0.0,1,15.75
+151670,spagcn (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.4156,0.0,1,16.43
+151670,spagcn (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.4156,0.0,1,15.11
+151670,spagcn (oracle-K),sota,non_oracle_k_sota,oracle,42,0.2127,0.0,1,10.53
+151670,stagate (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.391,0.0,1,35.97
+151670,stagate (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.391,0.0,1,44.7
+151670,stagate (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.391,0.0,1,36.32
+151670,stagate (oracle-K),sota,non_oracle_k_sota,oracle,42,0.2073,0.0,1,38.2
+151670,agglomerative@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",-0.0738,0.0,3,6.95
+151670,agglomerative@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.28,0.0,3,7.28
+151670,agglomerative@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1993,0.0,3,6.97
+151670,birch@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",-0.0851,0.0,3,7.43
+151670,birch@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1877,0.0,3,7.5
+151670,birch@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1808,0.0,3,7.45
+151670,gaussian_mixture@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0802,0.027,3,7.08
+151670,gaussian_mixture@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1778,0.0298,3,7.58
+151670,gaussian_mixture@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2428,0.0162,3,7.3
+151670,kmeans@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.262,0.0548,3,6.89
+151670,kmeans@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2215,0.0509,3,7.32
+151670,kmeans@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.193,0.0006,3,6.93
+151670,spectral@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1074,0.001,3,10.18
+151670,spectral@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.3464,0.0004,3,9.68
+151670,spectral@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2207,0.0,3,7.54
+151673,agglomerative,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1479,0.0,3,3.74
+151673,birch,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1701,0.0,3,3.92
+151673,bisecting_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2164,0.001,3,3.64
+151673,dbscan,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0,0.0,3,3.51
+151673,gaussian_mixture,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2351,0.0363,3,3.98
+151673,kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2501,0.0247,3,3.76
+151673,mean_shift,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0133,0.0,3,11.06
+151673,minibatch_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2294,0.0135,3,3.54
+151673,optics,sklearn,5x10_dlpfc,oracle,"42,1,2",-0.0012,0.0,3,5.54
+151673,spectral,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2423,0.0002,3,4.61
+151673,spagcn (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.186,0.0,1,15.47
+151673,spagcn (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.186,0.0,1,15.63
+151673,spagcn (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.186,0.0,1,14.35
+151673,spagcn (oracle-K),sota,non_oracle_k_sota,oracle,42,0.418,0.0,1,40.77
+151673,stagate (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.1364,0.0,1,44.89
+151673,stagate (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.1364,0.0,1,45.36
+151673,stagate (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.1364,0.0,1,44.26
+151673,stagate (oracle-K),sota,non_oracle_k_sota,oracle,42,0.2121,0.0,1,47.8
+151673,agglomerative@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0993,0.0,3,7.07
+151673,agglomerative@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1479,0.0,3,8.24
+151673,agglomerative@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2456,0.0,3,7.83
+151673,birch@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.0882,0.0,3,7.59
+151673,birch@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1701,0.0,3,7.91
+151673,birch@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.235,0.0,3,7.95
+151673,gaussian_mixture@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1653,0.018,3,7.6
+151673,gaussian_mixture@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2351,0.0363,3,8.89
+151673,gaussian_mixture@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.299,0.0217,3,8.35
+151673,kmeans@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1742,0.0058,3,7.38
+151673,kmeans@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2501,0.0247,3,8.14
+151673,kmeans@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2628,0.0185,3,7.79
+151673,spectral@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1683,0.0,3,10.65
+151673,spectral@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2423,0.0002,3,9.29
+151673,spectral@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.3019,0.0,3,8.12
+151674,agglomerative,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2213,0.0,3,3.71
+151674,birch,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2528,0.0,3,3.85
+151674,bisecting_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2961,0.0023,3,3.55
+151674,dbscan,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0,0.0,3,3.73
+151674,gaussian_mixture,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2693,0.0377,3,3.92
+151674,kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2981,0.0043,3,3.72
+151674,mean_shift,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0062,0.0,3,11.11
+151674,minibatch_kmeans,sklearn,5x10_dlpfc,oracle,"42,1,2",0.2646,0.039,3,3.71
+151674,optics,sklearn,5x10_dlpfc,oracle,"42,1,2",0.0001,0.0,3,5.59
+151674,spectral,sklearn,5x10_dlpfc,oracle,"42,1,2",0.1762,0.0001,3,4.18
+151674,spagcn (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.1994,0.0,1,15.48
+151674,spagcn (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.1994,0.0,1,15.56
+151674,spagcn (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.1994,0.0,1,15.66
+151674,spagcn (oracle-K),sota,non_oracle_k_sota,oracle,42,0.2734,0.0,1,11.07
+151674,stagate (est-K:ensemble),sota,non_oracle_k_sota,estimate,42,0.2075,0.0,1,46.88
+151674,stagate (est-K:silhouette),sota,non_oracle_k_sota,estimate,42,0.2075,0.0,1,45.81
+151674,stagate (est-K:spatial_sil),sota,non_oracle_k_sota,estimate,42,0.2075,0.0,1,46.4
+151674,stagate (oracle-K),sota,non_oracle_k_sota,oracle,42,0.2131,0.0,1,44.25
+151674,agglomerative@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1188,0.0,3,7.45
+151674,agglomerative@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2213,0.0,3,7.84
+151674,agglomerative@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.3,0.0,3,7.77
+151674,birch@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.118,0.0,3,7.67
+151674,birch@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2528,0.0,3,7.58
+151674,birch@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2769,0.0,3,7.76
+151674,gaussian_mixture@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2083,0.0052,3,8.15
+151674,gaussian_mixture@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2693,0.0377,3,8.22
+151674,gaussian_mixture@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2943,0.0065,3,8.36
+151674,kmeans@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2097,0.0272,3,8.55
+151674,kmeans@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2981,0.0043,3,7.61
+151674,kmeans@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2673,0.0415,3,8.07
+151674,spectral@sw0.0,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2177,0.0004,3,10.04
+151674,spectral@sw0.3,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.1762,0.0001,3,8.81
+151674,spectral@sw0.8,spatial_aware,5x15_spatial_aware,oracle,"42,1,2",0.2803,0.0,3,7.85

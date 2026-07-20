@@ -33,6 +33,7 @@ ARTEFACT_ROOTS: dict[str, str] = {
     "non_oracle_k_sota": "histoweave.non_oracle_k_sota.v1",
     "pareto_isus_results": "histoweave.pareto_isus.reference",
     "benchmark_external_validation": "histoweave.external_validation.recommender_loocv.v1",
+    "parallel_experiment_table": "histoweave.parallel_experiment_table.v1",
 }
 
 # Extensions allowed inside artefact roots for the manifest
@@ -55,6 +56,9 @@ _REQUIRED: tuple[str, ...] = (
     "pareto_isus_results/pareto_report.json",
     "pareto_isus_results/isus_calibration.json",
     "benchmark_external_validation/decision_validation.json",
+    "parallel_experiment_table/parallel_experiment_summary.csv",
+    "parallel_experiment_table/parallel_experiment_table.csv",
+    "parallel_experiment_table/report_parallel_experiment.md",
 )
 
 

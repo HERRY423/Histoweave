@@ -43,6 +43,12 @@ and [vs Squidpy / SpatialData](docs/vs-squidpy-spatialdata.md).
 | STAGATE | **estimate · silhouette** | ≈0.22 | same |
 | SpaGCN | max slice drop oracle→estimate | **0.23** on 151673 | protocol endpoint `oracle_k_leakage` |
 
+**Same-task same-data parallel table** (33 configs × 5 DLPFC slices; sklearn /
+spatial-aware / SpaGCN+STAGATE aligned):
+[`parallel_experiment_table/`](parallel_experiment_table/) —
+see `report_parallel_experiment.md` (protocol
+`histoweave.parallel_experiment_table.v1`).
+
 Scientific default for new work is `k_policy=estimate`. Oracle-K is opt-in ablation only.
 
 ```bash
@@ -163,6 +169,15 @@ roles, contract checks, fixed controls, claim boundaries, and one of four action
 Personalisation requires grouped held-out evidence; a favourable score on the
 retrieved reference neighbours is only a proxy. Full specification:
 [evidence-governed decision protocol](docs/decision-protocol.md).
+
+**Dry-lab case study (no wet lab):** four unjustified promotions are intercepted
+(`evidence_required` / `global_default` / `abstain` / cross-task hard-filter) —
+
+```bash
+python examples/case_study_intercepted_recommendation.py
+```
+
+See [docs/case-study-intercepted-recommendation.md](docs/case-study-intercepted-recommendation.md).
 
 ## Experimental execution adapters (supporting infrastructure)
 

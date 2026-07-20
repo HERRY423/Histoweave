@@ -79,6 +79,7 @@ and [Reference artefacts](../../reference-artefacts.md).
 | [`protocol_endpoints_results/`](../../../protocol_endpoints_results/) | Falsifiable endpoints 1–5 bundle | **yes** | `protocol_endpoints_summary.json`, study/selective/pareto/sota/oracle_k JSON |
 | [`independent_personalisation_results/`](../../../independent_personalisation_results/) | Study-level gated personalisation | **yes** | `independent_personalisation_summary.json`, report, cross-lab JSON |
 | [`benchmark_external_validation/decision_validation.json`](../../../benchmark_external_validation/decision_validation.json) | Negative external holdout control | **yes** | `beats_global_best: false` |
+| [`parallel_experiment_table/`](../../../parallel_experiment_table/) | Same-task same-data side-by-side (sklearn / spatial-aware / SOTA) | **yes** | `parallel_experiment_summary.csv`, report, heatmap |
 
 ### How to cite a number from a reference artefact
 
