@@ -1,0 +1,393 @@
+{
+  "protocol": "histoweave.cross_lab_reproducibility.v1",
+  "n_independent_units": 17,
+  "independence_classes": {
+    "external_study": 11,
+    "biological_donor": 3,
+    "cross_platform_study": 3
+  },
+  "regret_ci": {
+    "global": {
+      "policy": "global",
+      "n": 17,
+      "n_boot": 2000,
+      "level": 0.95,
+      "mean": 0.016199984076815492,
+      "ci_low": 0.006364987612743846,
+      "ci_high": 0.028344167973469128,
+      "std": 0.02349883988744065
+    },
+    "knn": {
+      "policy": "knn",
+      "n": 17,
+      "n_boot": 2000,
+      "level": 0.95,
+      "mean": 0.016816073623454542,
+      "ci_low": 0.005551410194994499,
+      "ci_high": 0.029835613127055797,
+      "std": 0.02605905812105191
+    },
+    "gated": {
+      "policy": "gated",
+      "n": 17,
+      "n_boot": 2000,
+      "level": 0.95,
+      "mean": 0.020195692236994165,
+      "ci_low": 0.009304245839494353,
+      "ci_high": 0.03285721476483205,
+      "std": 0.025332331924523523
+    }
+  },
+  "gated_minus_global": {
+    "n": 17,
+    "n_boot": 2000,
+    "level": 0.95,
+    "mean_delta": 0.003995708160178672,
+    "ci_low": 0.0,
+    "ci_high": 0.011651862206240995,
+    "prob_delta_le_0": 0.1145,
+    "interpretation": "mean_delta \u2264 0 indicates gated personalisation is non-inferior (or superior) to always-global on mean regret"
+  },
+  "rank_concordance": {
+    "n_units": 17,
+    "n_methods": 7,
+    "methods": [
+      "agglomerative",
+      "birch",
+      "bisecting_kmeans",
+      "gaussian_mixture",
+      "kmeans",
+      "minibatch_kmeans",
+      "spectral"
+    ],
+    "mean_rank": {
+      "agglomerative": 4.352941176470588,
+      "birch": 4.9411764705882355,
+      "bisecting_kmeans": 4.352941176470588,
+      "gaussian_mixture": 4.411764705882353,
+      "kmeans": 3.4705882352941178,
+      "minibatch_kmeans": 4.647058823529412,
+      "spectral": 2.0
+    },
+    "kendall_w": 0.21425040604477086,
+    "notes": [
+      "Kendall's W near 1 \u21d2 method ranks are stable across independent units.",
+      "Low W \u21d2 personalisation / local evidence is more valuable than a single global rank."
+    ]
+  },
+  "stats_review": {
+    "schema_version": 1,
+    "protocol": "histoweave.stats_review.v1",
+    "n_datasets": 17,
+    "n_methods": 7,
+    "n_boot": 500,
+    "n_perm": 1000,
+    "fdr_method": "bh",
+    "alpha": 0.05,
+    "higher_is_better": 1,
+    "methods": [
+      "agglomerative",
+      "birch",
+      "bisecting_kmeans",
+      "gaussian_mixture",
+      "kmeans",
+      "minibatch_kmeans",
+      "spectral"
+    ],
+    "rank_summary": [
+      {
+        "method": "spectral",
+        "mean_score": 0.3206237321131845,
+        "mean_rank": 1.022,
+        "rank_ci_low": 1.0,
+        "rank_ci_high": 1.0,
+        "p_best": 0.9743589743589743,
+        "rank_stability": 1.0
+      },
+      {
+        "method": "agglomerative",
+        "mean_score": 0.2585766566782759,
+        "mean_rank": 3.614,
+        "rank_ci_low": 2.0,
+        "rank_ci_high": 7.0,
+        "p_best": 0.0019723865877712033,
+        "rank_stability": 0.5
+      },
+      {
+        "method": "bisecting_kmeans",
+        "mean_score": 0.25075106565788363,
+        "mean_rank": 3.764,
+        "rank_ci_low": 2.0,
+        "rank_ci_high": 6.524999999999977,
+        "p_best": 0.013806706114398421,
+        "rank_stability": 0.5
+      },
+      {
+        "method": "birch",
+        "mean_score": 0.25726154053067546,
+        "mean_rank": 3.914,
+        "rank_ci_low": 2.0,
+        "rank_ci_high": 7.0,
+        "p_best": 0.0019723865877712033,
+        "rank_stability": 0.33333333333333337
+      },
+      {
+        "method": "kmeans",
+        "mean_score": 0.245474349694777,
+        "mean_rank": 4.842,
+        "rank_ci_low": 2.0,
+        "rank_ci_high": 7.0,
+        "p_best": 0.0019723865877712033,
+        "rank_stability": 0.6666666666666667
+      },
+      {
+        "method": "minibatch_kmeans",
+        "mean_score": 0.24034633906203462,
+        "mean_rank": 5.384,
+        "rank_ci_low": 2.0,
+        "rank_ci_high": 7.0,
+        "p_best": 0.0039447731755424065,
+        "rank_stability": 0.5
+      },
+      {
+        "method": "gaussian_mixture",
+        "mean_score": 0.24029350608624162,
+        "mean_rank": 5.46,
+        "rank_ci_low": 3.0,
+        "rank_ci_high": 7.0,
+        "p_best": 0.0019723865877712033,
+        "rank_stability": 0.6666666666666667
+      }
+    ],
+    "pairwise": {
+      "pairs": [
+        {
+          "method_a": "agglomerative",
+          "method_b": "birch",
+          "p_raw": 0.978021978021978,
+          "p_adj": 0.9780219780219779,
+          "significant": 0
+        },
+        {
+          "method_a": "agglomerative",
+          "method_b": "bisecting_kmeans",
+          "p_raw": 0.7702297702297702,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "agglomerative",
+          "method_b": "gaussian_mixture",
+          "p_raw": 0.5584415584415584,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "agglomerative",
+          "method_b": "kmeans",
+          "p_raw": 0.5864135864135864,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "agglomerative",
+          "method_b": "minibatch_kmeans",
+          "p_raw": 0.41058941058941056,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "agglomerative",
+          "method_b": "spectral",
+          "p_raw": 0.005994005994005994,
+          "p_adj": 0.03671328671328671,
+          "significant": 1
+        },
+        {
+          "method_a": "birch",
+          "method_b": "bisecting_kmeans",
+          "p_raw": 0.6483516483516484,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "birch",
+          "method_b": "gaussian_mixture",
+          "p_raw": 0.5114885114885115,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "birch",
+          "method_b": "kmeans",
+          "p_raw": 0.6253746253746254,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "birch",
+          "method_b": "minibatch_kmeans",
+          "p_raw": 0.5094905094905094,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "birch",
+          "method_b": "spectral",
+          "p_raw": 0.000999000999000999,
+          "p_adj": 0.02097902097902098,
+          "significant": 1
+        },
+        {
+          "method_a": "bisecting_kmeans",
+          "method_b": "gaussian_mixture",
+          "p_raw": 0.5104895104895105,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "bisecting_kmeans",
+          "method_b": "kmeans",
+          "p_raw": 0.7682317682317682,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "bisecting_kmeans",
+          "method_b": "minibatch_kmeans",
+          "p_raw": 0.33966033966033965,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "bisecting_kmeans",
+          "method_b": "spectral",
+          "p_raw": 0.008991008991008992,
+          "p_adj": 0.03776223776223776,
+          "significant": 1
+        },
+        {
+          "method_a": "gaussian_mixture",
+          "method_b": "kmeans",
+          "p_raw": 0.6693306693306693,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "gaussian_mixture",
+          "method_b": "minibatch_kmeans",
+          "p_raw": 0.7612387612387612,
+          "p_adj": 0.8087412587412587,
+          "significant": 0
+        },
+        {
+          "method_a": "gaussian_mixture",
+          "method_b": "spectral",
+          "p_raw": 0.002997002997002997,
+          "p_adj": 0.03146853146853147,
+          "significant": 1
+        },
+        {
+          "method_a": "kmeans",
+          "method_b": "minibatch_kmeans",
+          "p_raw": 0.24775224775224775,
+          "p_adj": 0.7432567432567432,
+          "significant": 0
+        },
+        {
+          "method_a": "kmeans",
+          "method_b": "spectral",
+          "p_raw": 0.012987012987012988,
+          "p_adj": 0.04545454545454546,
+          "significant": 1
+        },
+        {
+          "method_a": "minibatch_kmeans",
+          "method_b": "spectral",
+          "p_raw": 0.006993006993006993,
+          "p_adj": 0.03671328671328671,
+          "significant": 1
+        }
+      ],
+      "n_tests": 21,
+      "n_significant": 6,
+      "method": "bh",
+      "alpha": 0.05
+    },
+    "bayesian_rank_posterior": {
+      "agglomerative": [
+        0.0019723865877712033,
+        0.29980276134122286,
+        0.2781065088757396,
+        0.13214990138067062,
+        0.11242603550295859,
+        0.13609467455621302,
+        0.03944773175542406
+      ],
+      "birch": [
+        0.0019723865877712033,
+        0.2978303747534517,
+        0.2504930966469428,
+        0.10256410256410256,
+        0.09072978303747535,
+        0.09270216962524655,
+        0.16370808678500987
+      ],
+      "bisecting_kmeans": [
+        0.013806706114398421,
+        0.27613412228796846,
+        0.17357001972386588,
+        0.21104536489151873,
+        0.14398422090729784,
+        0.15384615384615385,
+        0.027613412228796843
+      ],
+      "gaussian_mixture": [
+        0.0019723865877712033,
+        0.021696252465483234,
+        0.07692307692307693,
+        0.14398422090729784,
+        0.2583826429980276,
+        0.1834319526627219,
+        0.3136094674556213
+      ],
+      "kmeans": [
+        0.0019723865877712033,
+        0.03550295857988166,
+        0.08678500986193294,
+        0.3116370808678501,
+        0.23274161735700197,
+        0.23274161735700197,
+        0.09861932938856016
+      ],
+      "minibatch_kmeans": [
+        0.0039447731755424065,
+        0.0611439842209073,
+        0.1242603550295858,
+        0.09664694280078895,
+        0.15976331360946747,
+        0.1992110453648915,
+        0.35502958579881655
+      ],
+      "spectral": [
+        0.9743589743589743,
+        0.007889546351084813,
+        0.009861932938856016,
+        0.0019723865877712033,
+        0.0019723865877712033,
+        0.0019723865877712033,
+        0.0019723865877712033
+      ]
+    },
+    "notes": [
+      "Ranks from dataset-bootstrap of mean scores (not cell-bootstrap).",
+      "Bayesian rank posterior uses Dirichlet(1,\u2026,1) prior over rank bins.",
+      "Pairwise tests are paired sign-flip permutations across datasets.",
+      "Multiple comparisons controlled by bh at alpha=0.05."
+    ]
+  },
+  "notes": [
+    "Bootstrap resamples independent study/donor/lab units, not cells.",
+    "Pairwise FDR is across methods over independent units (stats_review)."
+  ]
+}

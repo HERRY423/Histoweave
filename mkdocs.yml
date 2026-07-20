@@ -23,6 +23,8 @@ nav:
   - API Reference: api.md
   - Quickstart: quickstart.md
   - Core decision protocol: decision-protocol.md
+  - Case study (intercept recommendations): case-study-intercepted-recommendation.md
+  - Reference artefacts (availability): reference-artefacts.md
   - Multimodal tasks & virtual ST: multimodal-virtual-st.md
   - Vs Squidpy / SpatialData: vs-squidpy-spatialdata.md
   - 中文快速入门: zh/quickstart.md

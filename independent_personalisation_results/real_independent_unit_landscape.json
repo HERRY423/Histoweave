@@ -1,0 +1,722 @@
+{
+  "n_real_units": 17,
+  "real_unit_ids": [
+    "allen_merfish_brain_section",
+    "dlpfc_donor_Br5292",
+    "dlpfc_donor_Br5595",
+    "dlpfc_donor_Br8100",
+    "platform_merfish",
+    "platform_slideseqv2",
+    "platform_xenium",
+    "slideseq_puck_200115_08",
+    "squidpy_four_i",
+    "squidpy_imc",
+    "squidpy_mibitof",
+    "squidpy_seqfish",
+    "visium_hd_crc",
+    "visium_mouse_brain",
+    "xenium_human_lymph_node",
+    "xenium_lung_cancer",
+    "xenium_ovarian_cancer"
+  ],
+  "performance": {
+    "dlpfc_donor_Br5292": {
+      "agglomerative": 0.34079379436262935,
+      "birch": 0.2681702343168948,
+      "bisecting_kmeans": 0.3668430842094185,
+      "gaussian_mixture": 0.3923480653357618,
+      "kmeans": 0.3444854432061913,
+      "minibatch_kmeans": 0.2968734643878147,
+      "spectral": 0.37287606920884886
+    },
+    "dlpfc_donor_Br5595": {
+      "agglomerative": 0.3530259703090173,
+      "birch": 0.3315477547292866,
+      "bisecting_kmeans": 0.37830927670273884,
+      "gaussian_mixture": 0.3478743814254798,
+      "kmeans": 0.38094812106031284,
+      "minibatch_kmeans": 0.36961448172136113,
+      "spectral": 0.4524797778016233
+    },
+    "dlpfc_donor_Br8100": {
+      "agglomerative": 0.29359091967417156,
+      "birch": 0.28662981592462516,
+      "bisecting_kmeans": 0.30506607800721197,
+      "gaussian_mixture": 0.3654384272063379,
+      "kmeans": 0.3453066513176768,
+      "minibatch_kmeans": 0.3288968815425303,
+      "spectral": 0.2977728449215914
+    },
+    "visium_hd_crc": {
+      "agglomerative": 0.36191532279386235,
+      "birch": 0.5984641087478529,
+      "bisecting_kmeans": 0.3350662080864302,
+      "gaussian_mixture": 0.3424991661944387,
+      "kmeans": 0.2862655766976037,
+      "minibatch_kmeans": 0.25535441802430964,
+      "spectral": 0.6759144939316668
+    },
+    "xenium_lung_cancer": {
+      "agglomerative": 0.013293688440166226,
+      "birch": 0.009019995175941807,
+      "bisecting_kmeans": 0.08099055682717736,
+      "gaussian_mixture": 0.05598507494134227,
+      "kmeans": 0.03067532397726087,
+      "minibatch_kmeans": 0.03314024447275983,
+      "spectral": 0.15340591766364742
+    },
+    "xenium_ovarian_cancer": {
+      "agglomerative": 0.24891865440346886,
+      "birch": 0.19879696613518205,
+      "bisecting_kmeans": 0.17888171003650358,
+      "gaussian_mixture": 0.24239573623928937,
+      "kmeans": 0.13643103325277037,
+      "minibatch_kmeans": 0.17376936956683897,
+      "spectral": 0.46280500324094415
+    },
+    "visium_mouse_brain": {
+      "agglomerative": 0.5072501202864982,
+      "birch": 0.5124022081796006,
+      "bisecting_kmeans": 0.507843536395927,
+      "gaussian_mixture": 0.4936394470024695,
+      "kmeans": 0.576401548307877,
+      "minibatch_kmeans": 0.5800383106608377,
+      "spectral": 0.6268160581881485
+    },
+    "allen_merfish_brain_section": {
+      "agglomerative": 0.21247192140914883,
+      "birch": 0.22240335959751714,
+      "bisecting_kmeans": 0.25333846274836974,
+      "gaussian_mixture": 0.21734513867141061,
+      "kmeans": 0.24443979334719668,
+      "minibatch_kmeans": 0.23590595269494855,
+      "spectral": 0.2821907033991168
+    },
+    "platform_merfish": {
+      "agglomerative": 0.21929184269209234,
+      "birch": 0.22183543853766208,
+      "bisecting_kmeans": NaN,
+      "gaussian_mixture": 0.2350791021819058,
+      "kmeans": 0.21783395418710133,
+      "minibatch_kmeans": NaN,
+      "spectral": 0.3165787639580026
+    },
+    "platform_slideseqv2": {
+      "agglomerative": 0.07385755662080863,
+      "birch": 0.057732594852823164,
+      "bisecting_kmeans": NaN,
+      "gaussian_mixture": 0.05816195985753365,
+      "kmeans": 0.07109809319284904,
+      "minibatch_kmeans": NaN,
+      "spectral": 0.05986977623003837
+    },
+    "platform_xenium": {
+      "agglomerative": 0.4170974416088218,
+      "birch": 0.40745559910590123,
+      "bisecting_kmeans": NaN,
+      "gaussian_mixture": 0.36529360194805066,
+      "kmeans": 0.4140295395051751,
+      "minibatch_kmeans": NaN,
+      "spectral": 0.3851707559340526
+    },
+    "xenium_human_lymph_node": {
+      "agglomerative": -0.014110200841764658,
+      "birch": -0.019444508410075667,
+      "bisecting_kmeans": -0.010663917873961239,
+      "gaussian_mixture": -0.010263426502794291,
+      "kmeans": -0.002827562191495709,
+      "minibatch_kmeans": -0.006408043428639059,
+      "spectral": 0.0028718964715196645
+    },
+    "slideseq_puck_200115_08": {
+      "agglomerative": 0.13944924930884245,
+      "birch": 0.08860239528099316,
+      "bisecting_kmeans": 0.06986402379137921,
+      "gaussian_mixture": 0.06830324186036107,
+      "kmeans": 0.08076468510398731,
+      "minibatch_kmeans": 0.08763225692157549,
+      "spectral": 0.14299226516400937
+    },
+    "squidpy_seqfish": {
+      "agglomerative": 0.32308551644026834,
+      "birch": 0.3408323612612492,
+      "bisecting_kmeans": 0.3403074662932301,
+      "gaussian_mixture": 0.3286684795681259,
+      "kmeans": 0.353990491479423,
+      "minibatch_kmeans": 0.34290693025745056,
+      "spectral": 0.34542308699606056
+    },
+    "squidpy_mibitof": {
+      "agglomerative": 0.15262156710932798,
+      "birch": 0.1460166018018421,
+      "bisecting_kmeans": 0.21661321797180463,
+      "gaussian_mixture": 0.164098076891153,
+      "kmeans": 0.17056326847066156,
+      "minibatch_kmeans": 0.20027129262745738,
+      "spectral": 0.17168313027654822
+    },
+    "squidpy_four_i": {
+      "agglomerative": 0.30664127186621265,
+      "birch": 0.30302085151673086,
+      "bisecting_kmeans": 0.3439945681412466,
+      "gaussian_mixture": 0.3135502267719092,
+      "kmeans": 0.3428835599708845,
+      "minibatch_kmeans": 0.30855876547930683,
+      "spectral": 0.32285623159519594
+    },
+    "squidpy_imc": {
+      "agglomerative": 0.44660852704711784,
+      "birch": 0.3999604122674555,
+      "bisecting_kmeans": 0.14406064787289424,
+      "gaussian_mixture": 0.10457290387333272,
+      "kmeans": 0.17977442392573292,
+      "minibatch_kmeans": 0.1582944219399325,
+      "spectral": 0.3788966709431229
+    }
+  },
+  "features": {
+    "dlpfc_donor_Br5292": [
+      4496.25,
+      25653.5,
+      5.608137267472354,
+      0.9556079950303109,
+      1.811495082349886,
+      1839.0912198082,
+      0.4496875023200178,
+      10.383920734740439,
+      0.5925907223044322,
+      0.34360501060474946,
+      0.015604664927685554,
+      0.20176327175948008,
+      6.558159571482793,
+      98.75,
+      236.0,
+      0.3485121879844215
+    ],
+    "dlpfc_donor_Br5595": [
+      3777.5,
+      17769.0,
+      4.4856920507535865,
+      0.938259750328653,
+      2.653188467014253,
+      2117.130967037292,
+      0.4627661895381622,
+      8.577202424257013,
+      0.6143285822890739,
+      0.4157457640255734,
+      0.016533213239765386,
+      0.27766880112961223,
+      6.5270372781081,
+      5.0,
+      43.25,
+      0.1541459044486569
+    ],
+    "dlpfc_donor_Br8100": [
+      3560.75,
+      17769.0,
+      5.070999434655249,
+      0.9250403701687717,
+      2.847877792788972,
+      2218.2243694509903,
+      0.47248128471479434,
+      8.776564058493713,
+      0.7113834252948158,
+      0.39118747526441944,
+      0.016677421107165365,
+      0.32258929915975315,
+      6.4986738372372015,
+      4.0,
+      31.25,
+      0.14911003238350318
+    ],
+    "visium_hd_crc": [
+      15000.0,
+      NaN,
+      NaN,
+      0.85,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      0.3,
+      0.4,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ],
+    "xenium_lung_cancer": [
+      15000.0,
+      NaN,
+      NaN,
+      0.7,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      0.35,
+      0.5,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ],
+    "xenium_ovarian_cancer": [
+      15000.0,
+      NaN,
+      NaN,
+      0.7,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      0.36,
+      0.52,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ],
+    "visium_mouse_brain": [
+      2688.0,
+      NaN,
+      NaN,
+      0.85,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      0.31,
+      0.42000000000000004,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ],
+    "allen_merfish_brain_section": [
+      15000.0,
+      NaN,
+      NaN,
+      0.7,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      0.4,
+      0.6000000000000001,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+    ],
+    "platform_merfish": [
+      6000.0,
+      159.0,
+      0.0265,
+      0.6778930817610063,
+      4.830040027335741,
+      247.3705,
+      0.2921992685401433,
+      6.365983057703656,
+      0.0611637886638721,
+      0.5198305735223547,
+      0.012635287848821309,
+      0.18882678717691082,
+      6.614861953698776,
+      33.0,
+      50.0,
+      0.6318925342040287
+    ],
+    "platform_slideseqv2": [
+      6000.0,
+      2000.0,
+      0.3333333333333333,
+      0.9881090833333334,
+      1.1011976929168623,
+      26.1885,
+      0.4847145661045283,
+      8.832715574801759,
+      0.31679737116867324,
+      0.7076991011611399,
+      0.011461745770516948,
+      0.3400584917007283,
+      6.397392511577458,
+      575.0,
+      800.0,
+      0.7921010249071465
+    ],
+    "platform_xenium": [
+      5942.0,
+      312.0,
+      0.052507573207674185,
+      0.798079080685947,
+      3.054276570622586,
+      192.41736788959946,
+      0.6759771001753103,
+      6.996844751863854,
+      0.3409864887165859,
+      0.5565481648878461,
+      0.011406494776355663,
+      0.5485912885602517,
+      6.399640100255269,
+      42.0,
+      85.0,
+      0.4946774888964057
+    ],
+    "xenium_human_lymph_node": [
+      6000.0,
+      4624.0,
+      0.7706666666666667,
+      0.9518472462514418,
+      1.216264830270594,
+      270.8115,
+      0.5634893492778772,
+      10.95150985678388,
+      0.0797955837193088,
+      0.8530027115245244,
+      0.009751376695930958,
+      0.5175359890867425,
+      6.0774969332102815,
+      333.0,
+      403.0,
+      0.8245473390943029
+    ],
+    "slideseq_puck_200115_08": [
+      6000.0,
+      2000.0,
+      0.3333333333333333,
+      0.9740625,
+      1.6405493975903613,
+      85.1035,
+      1.2058835780304038,
+      8.520803839904929,
+      0.2513896735513207,
+      0.7110662667437321,
+      0.011444849893450737,
+      0.30937032824755045,
+      6.402460099375959,
+      3.0,
+      6.0,
+      0.18520824063211674
+    ],
+    "squidpy_seqfish": [
+      6000.0,
+      351.0,
+      0.0585,
+      0.7215417853751187,
+      1.9900124992965949,
+      194.5015,
+      0.718140898115636,
+      7.995510838853393,
+      0.3628560636737167,
+      0.7600240844451494,
+      0.010107752867043018,
+      0.5066149096371512,
+      6.3277761978356235,
+      134.0,
+      201.0,
+      0.724245642913846
+    ],
+    "squidpy_mibitof": [
+      3309.0,
+      36.0,
+      0.010879419764279238,
+      0.5348964104630469,
+      0.1368686410744704,
+      2.2916914653161173,
+      0.5845175618968076,
+      5.122919955023654,
+      0.12826066807326603,
+      0.46507163786591277,
+      0.018528800457715988,
+      0.3285327861341868,
+      6.565592810737626,
+      18.0,
+      24.0,
+      0.8098119163796218
+    ],
+    "squidpy_four_i": [
+      6000.0,
+      43.0,
+      0.007166666666666667,
+      0.5017674418604652,
+      1.6855542674921882,
+      36.111314626752645,
+      0.705039099507705,
+      5.426062728749583,
+      0.3941871880009994,
+      0.8430553805816214,
+      0.009827105328440666,
+      0.4666238075556926,
+      6.120755946916273,
+      30.0,
+      35.0,
+      0.8336693685905501
+    ],
+    "squidpy_imc": [
+      4668.0,
+      34.0,
+      0.00728363324764353,
+      0.539341700690559,
+      12.88659864317759,
+      201.8348329048843,
+      0.3428244408504596,
+      2.1234279985918576,
+      0.41360813555026166,
+      0.38970424464502684,
+      0.015981610864400864,
+      0.1438938217592668,
+      6.628907661232509,
+      2.0,
+      2.0,
+      0.1985274255674164
+    ]
+  },
+  "dataset_meta": {
+    "dlpfc_donor_Br5292": {
+      "platform": "visium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "dlpfc_donor_Br5292",
+      "independence_class": "biological_donor",
+      "member_datasets": [
+        "151507",
+        "151508",
+        "151509",
+        "151510"
+      ],
+      "notes": "Maynard 2021 DLPFC; slices collapsed to donor unit"
+    },
+    "dlpfc_donor_Br5595": {
+      "platform": "visium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "dlpfc_donor_Br5595",
+      "independence_class": "biological_donor",
+      "member_datasets": [
+        "151669",
+        "151670",
+        "151671",
+        "151672"
+      ],
+      "notes": "Maynard 2021 DLPFC; slices collapsed to donor unit"
+    },
+    "dlpfc_donor_Br8100": {
+      "platform": "visium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "dlpfc_donor_Br8100",
+      "independence_class": "biological_donor",
+      "member_datasets": [
+        "151673",
+        "151674",
+        "151675",
+        "151676"
+      ],
+      "notes": "Maynard 2021 DLPFC; slices collapsed to donor unit"
+    },
+    "visium_hd_crc": {
+      "platform": "visium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "visium_hd_crc",
+      "independence_class": "external_study",
+      "member_datasets": [
+        "visium_hd_crc"
+      ],
+      "notes": "External multi-platform validation study"
+    },
+    "xenium_lung_cancer": {
+      "platform": "xenium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "xenium_lung_cancer",
+      "independence_class": "external_study",
+      "member_datasets": [
+        "xenium_lung_cancer"
+      ],
+      "notes": "External multi-platform validation study"
+    },
+    "xenium_ovarian_cancer": {
+      "platform": "xenium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "xenium_ovarian_cancer",
+      "independence_class": "external_study",
+      "member_datasets": [
+        "xenium_ovarian_cancer"
+      ],
+      "notes": "External multi-platform validation study"
+    },
+    "visium_mouse_brain": {
+      "platform": "visium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "visium_mouse_brain",
+      "independence_class": "external_study",
+      "member_datasets": [
+        "visium_mouse_brain"
+      ],
+      "notes": "External multi-platform validation study"
+    },
+    "allen_merfish_brain_section": {
+      "platform": "merfish",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "allen_merfish_brain_section",
+      "independence_class": "external_study",
+      "member_datasets": [
+        "allen_merfish_brain_section"
+      ],
+      "notes": "External multi-platform validation study"
+    },
+    "platform_merfish": {
+      "platform": "merfish",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "platform_merfish",
+      "independence_class": "cross_platform_study",
+      "member_datasets": [
+        "merfish"
+      ],
+      "notes": "Cross-platform 7x15 study unit"
+    },
+    "platform_slideseqv2": {
+      "platform": "slideseqv2",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "platform_slideseqv2",
+      "independence_class": "cross_platform_study",
+      "member_datasets": [
+        "slideseqv2"
+      ],
+      "notes": "Cross-platform 7x15 study unit"
+    },
+    "platform_xenium": {
+      "platform": "xenium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "platform_xenium",
+      "independence_class": "cross_platform_study",
+      "member_datasets": [
+        "xenium"
+      ],
+      "notes": "Cross-platform 7x15 study unit"
+    },
+    "xenium_human_lymph_node": {
+      "platform": "xenium",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "xenium_human_lymph_node",
+      "independence_class": "external_study",
+      "study": "10x_xenium_prime_lymph_node",
+      "member_datasets": [
+        "xenium_human_lymph_node"
+      ],
+      "notes": "",
+      "paper": "10x Xenium Prime Human Lymph Node pathology polygons"
+    },
+    "slideseq_puck_200115_08": {
+      "platform": "slideseqv2",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "slideseq_puck_200115_08",
+      "independence_class": "external_study",
+      "study": "Stickels2021_SlideSeqV2_Puck_200115_08",
+      "member_datasets": [
+        "slideseq_puck_200115_08"
+      ],
+      "notes": "Distinct puck from 7x15 squidpy slideseqv2 cache when both present",
+      "paper": "Stickels et al. Slide-seqV2 hippocampus puck 200115_08"
+    },
+    "squidpy_seqfish": {
+      "platform": "seqfish",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "squidpy_seqfish",
+      "independence_class": "external_study",
+      "study": "Lohoff2022_seqFISH_embryo",
+      "member_datasets": [
+        "squidpy_seqfish"
+      ],
+      "notes": "Published annotation used as domain proxy for study-level personalisation panel",
+      "paper": "squidpy.datasets.seqfish"
+    },
+    "squidpy_mibitof": {
+      "platform": "mibi",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "squidpy_mibitof",
+      "independence_class": "external_study",
+      "study": "Hartmann2020_MIBI_TOF",
+      "member_datasets": [
+        "squidpy_mibitof"
+      ],
+      "notes": "Published annotation used as domain proxy for study-level personalisation panel",
+      "paper": "squidpy.datasets.mibitof"
+    },
+    "squidpy_four_i": {
+      "platform": "four_i",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "squidpy_four_i",
+      "independence_class": "external_study",
+      "study": "Gut2018_4i",
+      "member_datasets": [
+        "squidpy_four_i"
+      ],
+      "notes": "Published annotation used as domain proxy for study-level personalisation panel",
+      "paper": "squidpy.datasets.four_i"
+    },
+    "squidpy_imc": {
+      "platform": "imc",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "study_group": "squidpy_imc",
+      "independence_class": "external_study",
+      "study": "Jackson2020_IMC",
+      "member_datasets": [
+        "squidpy_imc"
+      ],
+      "notes": "Published annotation used as domain proxy for study-level personalisation panel",
+      "paper": "squidpy.datasets.imc"
+    }
+  },
+  "methods": [
+    "agglomerative",
+    "birch",
+    "bisecting_kmeans",
+    "gaussian_mixture",
+    "kmeans",
+    "minibatch_kmeans",
+    "spectral"
+  ],
+  "feature_order": [
+    "n_obs",
+    "n_vars",
+    "aspect_ratio",
+    "sparsity",
+    "mean_nonzero",
+    "library_mean",
+    "library_cv",
+    "expression_entropy",
+    "spatial_autocorrelation",
+    "cluster_tendency",
+    "mean_nn_distance",
+    "spatial_density_cv",
+    "spatial_entropy",
+    "effective_rank_90",
+    "effective_rank_95",
+    "sv_entropy"
+  ]
+}

@@ -61,12 +61,20 @@ pipeline_trace.tsv
 *.rej
 *.bak
 
-# Local experiment result dumps (scripts remain trackable)
-/independent_personalisation_results/
-/protocol_endpoints_results/
+# Reference artefacts (JSON/MD/CSV summaries are tracked — see docs/reference-artefacts.md).
+# Ignore only bulky regenerables / logs inside those directories.
+/independent_personalisation_results/**/*.log
+/independent_personalisation_results/**/checkpoints/
+/independent_personalisation_results/**/*.h5ad
+/protocol_endpoints_results/**/*.log
+/protocol_endpoints_results/**/checkpoints/
+/protocol_endpoints_results/**/*.h5ad
 /non_oracle_k_sota/**/checkpoints/
 /non_oracle_k_sota/**/*.log
 /non_oracle_k_sota/run.log
+/non_oracle_k_sota/**/*.h5ad
+# Per-seed SOTA cell dumps (summaries dual_track_k / summary stay tracked)
+/non_oracle_k_sota/cells/
 
 # Generated benchmark and case-study artifacts (keep source scripts trackable)
 /5x15_spatial_aware/checkpoints/

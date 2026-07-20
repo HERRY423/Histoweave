@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "endpoints": {
+    "study_grouped_personalisation": {
+      "n_queries": 20,
+      "meets_target": true,
+      "beats_global_best": false,
+      "mean_selection_regret": 0.046810762602348815,
+      "mean_global_best_regret": 0.028961942166314713
+    },
+    "selective_regret_coverage": {
+      "recommended_threshold": null,
+      "recommended_coverage": 0.0,
+      "recommended_hybrid_regret": 0.028961942166314713,
+      "recommended_policy": "always_global_default"
+    },
+    "pareto_stability": {
+      "n_datasets": 5,
+      "n_boot": 200
+    },
+    "sota_unified_resource": {
+      "n_accepted_cells": 210,
+      "top_method": "spagcn"
+    },
+    "oracle_k_leakage": {
+      "mean_ari_drop_across_methods": 0.037592411118765864,
+      "primary_estimate_mode": "estimate:silhouette",
+      "methods": [
+        "spagcn",
+        "stagate"
+      ],
+      "source": "non_oracle_k_sota/benchmark_long.csv"
+    }
+  },
+  "artifacts": {
+    "study_grouped": "study_grouped_20_recommendation.json",
+    "study_report": "study_grouped_20_report.md",
+    "selective": "selective_regret_coverage.json",
+    "pareto_stability": "pareto_stability.json",
+    "sota_resource": "sota_unified_resource.json",
+    "oracle_k_leakage": "oracle_k_leakage.json"
+  }
+}

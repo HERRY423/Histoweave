@@ -1,0 +1,595 @@
+{
+  "protocol": "histoweave.sota_unified_resource.v1",
+  "resource_label": "cpu_timeout_7200s",
+  "max_seconds": 7200,
+  "n_accepted_cells": 210,
+  "n_rejected_cells": 0,
+  "rejection_reasons": {},
+  "by_method": {
+    "agglomerative": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.2010612770644351,
+      "median_ari": 0.21069571335220524,
+      "mean_seconds": 3.5859733333333335,
+      "throughput_ari_per_minute": 3.364128927487685,
+      "family": "baseline"
+    },
+    "banksy_py": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.22286069821468404,
+      "median_ari": 0.21842294818584987,
+      "mean_seconds": 38.82930666666666,
+      "throughput_ari_per_minute": 0.3443698340449648,
+      "family": "spatial_aware"
+    },
+    "birch": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.1744619662731449,
+      "median_ari": 0.17007462879487056,
+      "mean_seconds": 3.7806533333333334,
+      "throughput_ari_per_minute": 2.7687590089513696,
+      "family": "baseline"
+    },
+    "bisecting_kmeans": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.2278155240315137,
+      "median_ari": 0.21661942384330954,
+      "mean_seconds": 3.44338,
+      "throughput_ari_per_minute": 3.969626193417753,
+      "family": "baseline"
+    },
+    "dbscan": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.0,
+      "median_ari": 0.0,
+      "mean_seconds": 3.5413866666666673,
+      "throughput_ari_per_minute": 0.0,
+      "family": "baseline"
+    },
+    "gaussian_mixture": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.20892916372227083,
+      "median_ari": 0.20862126069274428,
+      "mean_seconds": 3.80022,
+      "throughput_ari_per_minute": 3.2986905556352655,
+      "family": "baseline"
+    },
+    "graphst": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.12063699622085217,
+      "median_ari": 0.11977882708653592,
+      "mean_seconds": 9.095066666666668,
+      "throughput_ari_per_minute": 0.7958402108012178,
+      "family": "sota"
+    },
+    "kmeans": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.2350764883931775,
+      "median_ari": 0.26433992648126237,
+      "mean_seconds": 3.581000000000001,
+      "throughput_ari_per_minute": 3.9387292107206497,
+      "family": "baseline"
+    },
+    "mean_shift": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.004178789665890525,
+      "median_ari": 0.010213176415602392,
+      "mean_seconds": 11.10594,
+      "throughput_ari_per_minute": 0.022575971052736774,
+      "family": "baseline"
+    },
+    "minibatch_kmeans": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.22292644321937574,
+      "median_ari": 0.21998848529131118,
+      "mean_seconds": 3.46684,
+      "throughput_ari_per_minute": 3.8581493790202446,
+      "family": "baseline"
+    },
+    "optics": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": -0.00128406464521286,
+      "median_ari": -0.000380274795399155,
+      "mean_seconds": 5.490213333333332,
+      "throughput_ari_per_minute": -0.014032948090560833,
+      "family": "baseline"
+    },
+    "spagcn": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.3171446309976544,
+      "median_ari": 0.3374587419734721,
+      "mean_seconds": 18.870426666666667,
+      "throughput_ari_per_minute": 1.0083862011171234,
+      "family": "sota"
+    },
+    "spectral": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.22660444450058162,
+      "median_ari": 0.20033591965718253,
+      "mean_seconds": 4.666213333333333,
+      "throughput_ari_per_minute": 2.9137687668305414,
+      "family": "baseline"
+    },
+    "stagate": {
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.28500538554104377,
+      "median_ari": 0.28777610588347446,
+      "mean_seconds": 12.872533333333331,
+      "throughput_ari_per_minute": 1.328434946692386,
+      "family": "sota"
+    }
+  },
+  "method_ranking": [
+    {
+      "method": "spagcn",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.3171446309976544,
+      "median_ari": 0.3374587419734721,
+      "mean_seconds": 18.870426666666667,
+      "throughput_ari_per_minute": 1.0083862011171234,
+      "family": "sota"
+    },
+    {
+      "method": "stagate",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.28500538554104377,
+      "median_ari": 0.28777610588347446,
+      "mean_seconds": 12.872533333333331,
+      "throughput_ari_per_minute": 1.328434946692386,
+      "family": "sota"
+    },
+    {
+      "method": "kmeans",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.2350764883931775,
+      "median_ari": 0.26433992648126237,
+      "mean_seconds": 3.581000000000001,
+      "throughput_ari_per_minute": 3.9387292107206497,
+      "family": "baseline"
+    },
+    {
+      "method": "bisecting_kmeans",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.2278155240315137,
+      "median_ari": 0.21661942384330954,
+      "mean_seconds": 3.44338,
+      "throughput_ari_per_minute": 3.969626193417753,
+      "family": "baseline"
+    },
+    {
+      "method": "spectral",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.22660444450058162,
+      "median_ari": 0.20033591965718253,
+      "mean_seconds": 4.666213333333333,
+      "throughput_ari_per_minute": 2.9137687668305414,
+      "family": "baseline"
+    },
+    {
+      "method": "minibatch_kmeans",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.22292644321937574,
+      "median_ari": 0.21998848529131118,
+      "mean_seconds": 3.46684,
+      "throughput_ari_per_minute": 3.8581493790202446,
+      "family": "baseline"
+    },
+    {
+      "method": "banksy_py",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.22286069821468404,
+      "median_ari": 0.21842294818584987,
+      "mean_seconds": 38.82930666666666,
+      "throughput_ari_per_minute": 0.3443698340449648,
+      "family": "spatial_aware"
+    },
+    {
+      "method": "gaussian_mixture",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.20892916372227083,
+      "median_ari": 0.20862126069274428,
+      "mean_seconds": 3.80022,
+      "throughput_ari_per_minute": 3.2986905556352655,
+      "family": "baseline"
+    },
+    {
+      "method": "agglomerative",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.2010612770644351,
+      "median_ari": 0.21069571335220524,
+      "mean_seconds": 3.5859733333333335,
+      "throughput_ari_per_minute": 3.364128927487685,
+      "family": "baseline"
+    },
+    {
+      "method": "birch",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.1744619662731449,
+      "median_ari": 0.17007462879487056,
+      "mean_seconds": 3.7806533333333334,
+      "throughput_ari_per_minute": 2.7687590089513696,
+      "family": "baseline"
+    },
+    {
+      "method": "graphst",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.12063699622085217,
+      "median_ari": 0.11977882708653592,
+      "mean_seconds": 9.095066666666668,
+      "throughput_ari_per_minute": 0.7958402108012178,
+      "family": "sota"
+    },
+    {
+      "method": "mean_shift",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.004178789665890525,
+      "median_ari": 0.010213176415602392,
+      "mean_seconds": 11.10594,
+      "throughput_ari_per_minute": 0.022575971052736774,
+      "family": "baseline"
+    },
+    {
+      "method": "dbscan",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": 0.0,
+      "median_ari": 0.0,
+      "mean_seconds": 3.5413866666666673,
+      "throughput_ari_per_minute": 0.0,
+      "family": "baseline"
+    },
+    {
+      "method": "optics",
+      "n_cells": 15,
+      "n_datasets": 5,
+      "mean_ari": -0.00128406464521286,
+      "median_ari": -0.000380274795399155,
+      "mean_seconds": 5.490213333333332,
+      "throughput_ari_per_minute": -0.014032948090560833,
+      "family": "baseline"
+    }
+  ],
+  "per_dataset": {
+    "151507": {
+      "ranking": [
+        {
+          "method": "stagate",
+          "mean_ari": 0.4323920250546108
+        },
+        {
+          "method": "spagcn",
+          "mean_ari": 0.3834553663668036
+        },
+        {
+          "method": "bisecting_kmeans",
+          "mean_ari": 0.2503931608818782
+        },
+        {
+          "method": "kmeans",
+          "mean_ari": 0.2401616476653766
+        },
+        {
+          "method": "minibatch_kmeans",
+          "mean_ari": 0.23722780389968542
+        },
+        {
+          "method": "gaussian_mixture",
+          "mean_ari": 0.22277446029210546
+        },
+        {
+          "method": "banksy_py",
+          "mean_ari": 0.21892000841215822
+        },
+        {
+          "method": "agglomerative",
+          "mean_ari": 0.21069571335220524
+        },
+        {
+          "method": "spectral",
+          "mean_ari": 0.20020453878111455
+        },
+        {
+          "method": "birch",
+          "mean_ari": 0.1320529975079289
+        },
+        {
+          "method": "graphst",
+          "mean_ari": 0.1271637835331029
+        },
+        {
+          "method": "mean_shift",
+          "mean_ari": 0.011715766869256747
+        },
+        {
+          "method": "dbscan",
+          "mean_ari": 0.0
+        },
+        {
+          "method": "optics",
+          "mean_ari": -0.000380274795399155
+        }
+      ],
+      "winner": "stagate",
+      "winner_ari": 0.4323920250546108
+    },
+    "151669": {
+      "ranking": [
+        {
+          "method": "spagcn",
+          "mean_ari": 0.19925228348214896
+        },
+        {
+          "method": "bisecting_kmeans",
+          "mean_ari": 0.1829387308860819
+        },
+        {
+          "method": "minibatch_kmeans",
+          "mean_ari": 0.17216394104595115
+        },
+        {
+          "method": "spectral",
+          "mean_ari": 0.16789329493648572
+        },
+        {
+          "method": "kmeans",
+          "mean_ari": 0.1655564765742037
+        },
+        {
+          "method": "stagate",
+          "mean_ari": 0.16389344040421294
+        },
+        {
+          "method": "banksy_py",
+          "mean_ari": 0.15634155018555188
+        },
+        {
+          "method": "agglomerative",
+          "mean_ari": 0.14540742516528352
+        },
+        {
+          "method": "gaussian_mixture",
+          "mean_ari": 0.13965703696921683
+        },
+        {
+          "method": "birch",
+          "mean_ari": 0.12966854906833353
+        },
+        {
+          "method": "graphst",
+          "mean_ari": 0.06494869837834567
+        },
+        {
+          "method": "mean_shift",
+          "mean_ari": 0.010213176415602392
+        },
+        {
+          "method": "optics",
+          "mean_ari": 0.00022831922900889943
+        },
+        {
+          "method": "dbscan",
+          "mean_ari": 0.0
+        }
+      ],
+      "winner": "spagcn",
+      "winner_ari": 0.19925228348214896
+    },
+    "151670": {
+      "ranking": [
+        {
+          "method": "spectral",
+          "mean_ari": 0.346417381108651
+        },
+        {
+          "method": "banksy_py",
+          "mean_ari": 0.2945022373356372
+        },
+        {
+          "method": "agglomerative",
+          "mean_ari": 0.280014239444171
+        },
+        {
+          "method": "stagate",
+          "mean_ari": 0.2532449445085327
+        },
+        {
+          "method": "spagcn",
+          "mean_ari": 0.22162956713600845
+        },
+        {
+          "method": "kmeans",
+          "mean_ari": 0.22146459984255526
+        },
+        {
+          "method": "minibatch_kmeans",
+          "mean_ari": 0.21123493042993477
+        },
+        {
+          "method": "bisecting_kmeans",
+          "mean_ari": 0.19320329949117288
+        },
+        {
+          "method": "birch",
+          "mean_ari": 0.1876685778839524
+        },
+        {
+          "method": "gaussian_mixture",
+          "mean_ari": 0.17780756463547612
+        },
+        {
+          "method": "graphst",
+          "mean_ari": 0.09745638604812684
+        },
+        {
+          "method": "dbscan",
+          "mean_ari": 0.0
+        },
+        {
+          "method": "optics",
+          "mean_ari": -0.005215331871593266
+        },
+        {
+          "method": "mean_shift",
+          "mean_ari": -0.020566628382760563
+        }
+      ],
+      "winner": "spectral",
+      "winner_ari": 0.346417381108651
+    },
+    "151673": {
+      "ranking": [
+        {
+          "method": "spagcn",
+          "mean_ari": 0.3852591432425522
+        },
+        {
+          "method": "stagate",
+          "mean_ari": 0.2939586536224667
+        },
+        {
+          "method": "kmeans",
+          "mean_ari": 0.2500715350135494
+        },
+        {
+          "method": "spectral",
+          "mean_ari": 0.2423138947172816
+        },
+        {
+          "method": "gaussian_mixture",
+          "mean_ari": 0.23505787396902336
+        },
+        {
+          "method": "minibatch_kmeans",
+          "mean_ari": 0.22937839342418828
+        },
+        {
+          "method": "bisecting_kmeans",
+          "mean_ari": 0.21642412676046208
+        },
+        {
+          "method": "banksy_py",
+          "mean_ari": 0.19808490819807875
+        },
+        {
+          "method": "birch",
+          "mean_ari": 0.17007462879487056
+        },
+        {
+          "method": "graphst",
+          "mean_ari": 0.16134978430100386
+        },
+        {
+          "method": "agglomerative",
+          "mean_ari": 0.14793332881049076
+        },
+        {
+          "method": "mean_shift",
+          "mean_ari": 0.013342078689554794
+        },
+        {
+          "method": "dbscan",
+          "mean_ari": 0.0
+        },
+        {
+          "method": "optics",
+          "mean_ari": -0.001184453396388922
+        }
+      ],
+      "winner": "spagcn",
+      "winner_ari": 0.3852591432425522
+    },
+    "151674": {
+      "ranking": [
+        {
+          "method": "spagcn",
+          "mean_ari": 0.39612679476075857
+        },
+        {
+          "method": "kmeans",
+          "mean_ari": 0.29812818287020243
+        },
+        {
+          "method": "bisecting_kmeans",
+          "mean_ari": 0.29611830213797335
+        },
+        {
+          "method": "stagate",
+          "mean_ari": 0.28153786411539544
+        },
+        {
+          "method": "gaussian_mixture",
+          "mean_ari": 0.2693488827455323
+        },
+        {
+          "method": "minibatch_kmeans",
+          "mean_ari": 0.26462714729711917
+        },
+        {
+          "method": "birch",
+          "mean_ari": 0.2528450781106391
+        },
+        {
+          "method": "banksy_py",
+          "mean_ari": 0.24645478694199408
+        },
+        {
+          "method": "agglomerative",
+          "mean_ari": 0.2212556785500249
+        },
+        {
+          "method": "spectral",
+          "mean_ari": 0.1761931129593751
+        },
+        {
+          "method": "graphst",
+          "mean_ari": 0.1522663288436816
+        },
+        {
+          "method": "mean_shift",
+          "mean_ari": 0.0061895547377992495
+        },
+        {
+          "method": "optics",
+          "mean_ari": 0.0001314176083081434
+        },
+        {
+          "method": "dbscan",
+          "mean_ari": 0.0
+        }
+      ],
+      "winner": "spagcn",
+      "winner_ari": 0.39612679476075857
+    }
+  },
+  "notes": [
+    "Only cells that finish within the shared time budget and succeed contribute.",
+    "Missing backends / OOMs / timeouts are rejected, not replaced by toy substitutes.",
+    "Resource profile label: cpu_timeout_7200s."
+  ]
+}

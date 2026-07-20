@@ -1,0 +1,178 @@
+{
+  "protocol": "histoweave.pareto_stability.v1",
+  "n_boot": 200,
+  "seed": 0,
+  "n_datasets": 5,
+  "datasets": {
+    "151507": {
+      "n_configs": 15,
+      "point_frontier": [
+        "agglomerative@sw0.0",
+        "birch@sw0.8",
+        "gaussian_mixture@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.3"
+      ],
+      "point_knee": "kmeans@sw0.3",
+      "inclusion_probability": {
+        "agglomerative@sw0.0": 0.55,
+        "agglomerative@sw0.3": 0.185,
+        "agglomerative@sw0.8": 0.47,
+        "birch@sw0.8": 0.525,
+        "gaussian_mixture@sw0.3": 0.02,
+        "gaussian_mixture@sw0.8": 0.75,
+        "kmeans@sw0.0": 1.0,
+        "kmeans@sw0.3": 0.81,
+        "kmeans@sw0.8": 0.045,
+        "spectral@sw0.8": 0.04
+      },
+      "stable_frontier": [
+        "agglomerative@sw0.0",
+        "birch@sw0.8",
+        "gaussian_mixture@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.3"
+      ],
+      "mean_frontier_size": 6.5925
+    },
+    "151669": {
+      "n_configs": 15,
+      "point_frontier": [
+        "agglomerative@sw0.8",
+        "birch@sw0.0",
+        "birch@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.8"
+      ],
+      "point_knee": "kmeans@sw0.8",
+      "inclusion_probability": {
+        "agglomerative@sw0.0": 0.38,
+        "agglomerative@sw0.3": 0.26,
+        "agglomerative@sw0.8": 1.0,
+        "birch@sw0.0": 0.39,
+        "birch@sw0.3": 0.005,
+        "birch@sw0.8": 0.825,
+        "gaussian_mixture@sw0.0": 0.13,
+        "gaussian_mixture@sw0.3": 0.005,
+        "kmeans@sw0.0": 0.85,
+        "kmeans@sw0.3": 0.385,
+        "kmeans@sw0.8": 0.57,
+        "spectral@sw0.8": 0.09
+      },
+      "stable_frontier": [
+        "agglomerative@sw0.8",
+        "birch@sw0.8",
+        "kmeans@sw0.0",
+        "kmeans@sw0.8"
+      ],
+      "mean_frontier_size": 6.1125
+    },
+    "151670": {
+      "n_configs": 15,
+      "point_frontier": [
+        "agglomerative@sw0.3",
+        "kmeans@sw0.0",
+        "spectral@sw0.3"
+      ],
+      "point_knee": "agglomerative@sw0.3",
+      "inclusion_probability": {
+        "agglomerative@sw0.0": 0.165,
+        "agglomerative@sw0.3": 0.735,
+        "agglomerative@sw0.8": 0.335,
+        "birch@sw0.3": 0.025,
+        "gaussian_mixture@sw0.0": 0.22,
+        "gaussian_mixture@sw0.8": 0.15,
+        "kmeans@sw0.0": 0.865,
+        "kmeans@sw0.3": 0.115,
+        "kmeans@sw0.8": 0.28,
+        "spectral@sw0.3": 1.0,
+        "spectral@sw0.8": 0.035
+      },
+      "stable_frontier": [
+        "agglomerative@sw0.3",
+        "kmeans@sw0.0",
+        "spectral@sw0.3"
+      ],
+      "mean_frontier_size": 5.3522727272727275
+    },
+    "151673": {
+      "n_configs": 15,
+      "point_frontier": [
+        "agglomerative@sw0.0",
+        "kmeans@sw0.0",
+        "kmeans@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "point_knee": "kmeans@sw0.8",
+      "inclusion_probability": {
+        "agglomerative@sw0.0": 0.65,
+        "agglomerative@sw0.8": 0.445,
+        "birch@sw0.0": 0.02,
+        "birch@sw0.3": 0.075,
+        "birch@sw0.8": 0.22,
+        "gaussian_mixture@sw0.0": 0.34,
+        "gaussian_mixture@sw0.8": 0.415,
+        "kmeans@sw0.0": 0.64,
+        "kmeans@sw0.3": 0.095,
+        "kmeans@sw0.8": 0.97,
+        "spectral@sw0.8": 0.945
+      },
+      "stable_frontier": [
+        "agglomerative@sw0.0",
+        "kmeans@sw0.0",
+        "kmeans@sw0.8",
+        "spectral@sw0.8"
+      ],
+      "mean_frontier_size": 6.565909090909091
+    },
+    "151674": {
+      "n_configs": 15,
+      "point_frontier": [
+        "agglomerative@sw0.0",
+        "agglomerative@sw0.8",
+        "birch@sw0.3",
+        "kmeans@sw0.3"
+      ],
+      "point_knee": "kmeans@sw0.3",
+      "inclusion_probability": {
+        "agglomerative@sw0.0": 0.35,
+        "agglomerative@sw0.3": 0.05,
+        "agglomerative@sw0.8": 0.805,
+        "birch@sw0.0": 0.085,
+        "birch@sw0.3": 0.305,
+        "birch@sw0.8": 0.205,
+        "gaussian_mixture@sw0.3": 0.05,
+        "gaussian_mixture@sw0.8": 0.075,
+        "kmeans@sw0.0": 0.05,
+        "kmeans@sw0.3": 0.72,
+        "kmeans@sw0.8": 0.08,
+        "spectral@sw0.8": 0.295
+      },
+      "stable_frontier": [
+        "agglomerative@sw0.8",
+        "kmeans@sw0.3"
+      ],
+      "mean_frontier_size": 3.8374999999999995
+    }
+  },
+  "global_inclusion_probability": {
+    "kmeans@sw0.0": 0.681,
+    "agglomerative@sw0.8": 0.611,
+    "kmeans@sw0.3": 0.425,
+    "agglomerative@sw0.0": 0.419,
+    "kmeans@sw0.8": 0.389,
+    "birch@sw0.8": 0.355,
+    "spectral@sw0.8": 0.281,
+    "gaussian_mixture@sw0.8": 0.278,
+    "agglomerative@sw0.3": 0.246,
+    "spectral@sw0.3": 0.2,
+    "gaussian_mixture@sw0.0": 0.138,
+    "birch@sw0.0": 0.099,
+    "birch@sw0.3": 0.082,
+    "gaussian_mixture@sw0.3": 0.015
+  },
+  "notes": [
+    "Inclusion probability is the fraction of bootstrap resamples of seed-level replicates in which a configuration remains non-dominated.",
+    "A configuration with inclusion \u2265 0.5 is reported as stable-frontier."
+  ]
+}

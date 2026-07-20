@@ -1,0 +1,192 @@
+{
+  "protocol": "histoweave.oracle_k_leakage.v1",
+  "source": "non_oracle_k_sota/benchmark_long.csv",
+  "n_rows": 40,
+  "methods": [
+    "spagcn",
+    "stagate"
+  ],
+  "modes_present": [
+    "estimate:ensemble",
+    "estimate:silhouette",
+    "estimate:spatial_silhouette",
+    "oracle"
+  ],
+  "primary_estimate_mode": "estimate:silhouette",
+  "estimate_modes": [
+    "estimate:silhouette",
+    "estimate:spatial_silhouette",
+    "estimate:ensemble"
+  ],
+  "by_method": {
+    "spagcn": {
+      "mode_stats": {
+        "estimate:ensemble": {
+          "n": 5,
+          "mean_ari": 0.23101113995380085,
+          "std_ari": 0.10743784658730632,
+          "mean_k_used": 2.0,
+          "k_match_rate": 0.0
+        },
+        "estimate:silhouette": {
+          "n": 5,
+          "mean_ari": 0.2371600172356822,
+          "std_ari": 0.10732852616337746,
+          "mean_k_used": 2.2,
+          "k_match_rate": 0.0
+        },
+        "estimate:spatial_silhouette": {
+          "n": 5,
+          "mean_ari": 0.23101113995380085,
+          "std_ari": 0.10743784658730632,
+          "mean_k_used": 2.0,
+          "k_match_rate": 0.0
+        },
+        "oracle": {
+          "n": 5,
+          "mean_ari": 0.2990969050935717,
+          "std_ari": 0.09759929888977704,
+          "mean_k_used": 6.8,
+          "k_match_rate": 1.0
+        }
+      },
+      "oracle_mean_ari": 0.2990969050935717,
+      "primary_estimate_mode": "estimate:silhouette",
+      "primary_estimate_mean_ari": 0.2371600172356822,
+      "mean_ari_drop_oracle_minus_estimate": 0.06193688785788948,
+      "recovery_vs_primary_estimate": {
+        "estimate:spatial_silhouette": {
+          "mean_ari": 0.23101113995380085,
+          "ari_recovered_vs_primary_estimate": -0.006148877281881349,
+          "fraction_of_drop_recovered": 0.0
+        },
+        "estimate:ensemble": {
+          "mean_ari": 0.23101113995380085,
+          "ari_recovered_vs_primary_estimate": -0.006148877281881349,
+          "fraction_of_drop_recovered": 0.0
+        }
+      },
+      "per_dataset": [
+        {
+          "dataset": "151507",
+          "oracle_mean_ari": 0.384601763764735,
+          "estimate_mean_ari": 0.24793044576326267,
+          "ari_drop": 0.1366713180014723
+        },
+        {
+          "dataset": "151669",
+          "oracle_mean_ari": 0.20679059555240845,
+          "estimate_mean_ari": 0.13684226138060407,
+          "ari_drop": 0.06994833417180438
+        },
+        {
+          "dataset": "151670",
+          "oracle_mean_ari": 0.2126642847549074,
+          "estimate_mean_ari": 0.41563945459155865,
+          "ari_drop": -0.20297516983665126
+        },
+        {
+          "dataset": "151673",
+          "oracle_mean_ari": 0.41801215319980684,
+          "estimate_mean_ari": 0.1860371541566483,
+          "ari_drop": 0.23197499904315855
+        },
+        {
+          "dataset": "151674",
+          "oracle_mean_ari": 0.2734157281960006,
+          "estimate_mean_ari": 0.1993507702863373,
+          "ari_drop": 0.07406495790966328
+        }
+      ],
+      "max_slice_drop": 0.23197499904315855
+    },
+    "stagate": {
+      "mode_stats": {
+        "estimate:ensemble": {
+          "n": 5,
+          "mean_ari": 0.2135865051426841,
+          "std_ari": 0.10840336723490336,
+          "mean_k_used": 2.0,
+          "k_match_rate": 0.0
+        },
+        "estimate:silhouette": {
+          "n": 5,
+          "mean_ari": 0.21894752808966098,
+          "std_ari": 0.10927689139612472,
+          "mean_k_used": 2.2,
+          "k_match_rate": 0.0
+        },
+        "estimate:spatial_silhouette": {
+          "n": 5,
+          "mean_ari": 0.2135865051426841,
+          "std_ari": 0.10840336723490336,
+          "mean_k_used": 2.0,
+          "k_match_rate": 0.0
+        },
+        "oracle": {
+          "n": 5,
+          "mean_ari": 0.23219546246930323,
+          "std_ari": 0.08870229425459415,
+          "mean_k_used": 6.8,
+          "k_match_rate": 1.0
+        }
+      },
+      "oracle_mean_ari": 0.23219546246930323,
+      "primary_estimate_mode": "estimate:silhouette",
+      "primary_estimate_mean_ari": 0.21894752808966098,
+      "mean_ari_drop_oracle_minus_estimate": 0.013247934379642251,
+      "recovery_vs_primary_estimate": {
+        "estimate:spatial_silhouette": {
+          "mean_ari": 0.2135865051426841,
+          "ari_recovered_vs_primary_estimate": -0.005361022946976879,
+          "fraction_of_drop_recovered": 0.0
+        },
+        "estimate:ensemble": {
+          "mean_ari": 0.2135865051426841,
+          "ari_recovered_vs_primary_estimate": -0.005361022946976879,
+          "fraction_of_drop_recovered": 0.0
+        }
+      },
+      "per_dataset": [
+        {
+          "dataset": "151507",
+          "oracle_mean_ari": 0.3826337508634985,
+          "estimate_mean_ari": 0.2438570876141873,
+          "ari_drop": 0.13877666324931118
+        },
+        {
+          "dataset": "151669",
+          "oracle_mean_ari": 0.14587702628917906,
+          "estimate_mean_ari": 0.11595236462586625,
+          "ari_drop": 0.029924661663312813
+        },
+        {
+          "dataset": "151670",
+          "oracle_mean_ari": 0.2072763696669319,
+          "estimate_mean_ari": 0.39098491288802784,
+          "ari_drop": -0.18370854322109595
+        },
+        {
+          "dataset": "151673",
+          "oracle_mean_ari": 0.21208223325482137,
+          "estimate_mean_ari": 0.13642634409962298,
+          "ari_drop": 0.07565588915519839
+        },
+        {
+          "dataset": "151674",
+          "oracle_mean_ari": 0.21310793227208522,
+          "estimate_mean_ari": 0.20751693122060053,
+          "ari_drop": 0.00559100105148469
+        }
+      ],
+      "max_slice_drop": 0.13877666324931118
+    }
+  },
+  "mean_ari_drop_across_methods": 0.037592411118765864,
+  "notes": [
+    "Oracle-K injects domain_truth.nunique() into n_domains; estimate modes do not.",
+    "Positive mean_ari_drop means removing Oracle-K lowers ARI (leakage inflation).",
+    "Recovery fractions may be zero or negative; that is a valid scientific outcome.",
+    "This endpoint audits leakage sensitivity; it does not validate a K estimator."
+  ]
+}

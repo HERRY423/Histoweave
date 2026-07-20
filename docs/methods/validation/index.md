@@ -67,18 +67,26 @@ These directories are **reference artefacts** for the decision protocol and
 SOTA audits. They are not method wrappers; cite them with their protocol
 string and do not silently mix tracks.
 
-| Directory | Protocol / role | Primary files |
-|-----------|-----------------|---------------|
-| [`non_oracle_k_sota/`](../../../non_oracle_k_sota/) | `histoweave.non_oracle_k_sota.v1` + endpoint `histoweave.oracle_k_leakage.v1` | `benchmark_long.csv`, `dual_track_k.json`, `summary.json`, `figures/non_oracle_k_ari_recovery.svg`, `report_non_oracle_k_sota.md` |
-| [`pareto_isus_results/`](../../../pareto_isus_results/) | Pareto multi-objective report + post-hoc ISUS calibration (not a predictor) | `pareto_report.json`, `isus_calibration.json`, `isus_calibration_table.csv`, figures |
-| [`protocol_endpoints_results/`](../../../protocol_endpoints_results/) | Falsifiable endpoints 1–5 bundle | `protocol_endpoints_summary.json`, study/selective/pareto/sota/oracle_k JSON |
-| [`independent_personalisation_results/`](../../../independent_personalisation_results/) | Study-level gated personalisation | `independent_personalisation_summary.json` |
+**Availability policy:** summary JSON/MD/CSV are **tracked in git**. Raw H5AD
+and logs are not. Canonical inventory:
+[`reference_artefacts/MANIFEST.json`](../../../reference_artefacts/MANIFEST.json)
+and [Reference artefacts](../../reference-artefacts.md).
+
+| Directory | Protocol / role | In git? | Primary files |
+|-----------|-----------------|:-------:|---------------|
+| [`non_oracle_k_sota/`](../../../non_oracle_k_sota/) | `histoweave.non_oracle_k_sota.v1` + endpoint `histoweave.oracle_k_leakage.v1` | **yes** (summaries) | `benchmark_long.csv`, `dual_track_k.json`, `summary.json`, figures, report |
+| [`pareto_isus_results/`](../../../pareto_isus_results/) | Pareto multi-objective report + post-hoc ISUS calibration (not a predictor) | **yes** | `pareto_report.json`, `isus_calibration.json`, figures |
+| [`protocol_endpoints_results/`](../../../protocol_endpoints_results/) | Falsifiable endpoints 1–5 bundle | **yes** | `protocol_endpoints_summary.json`, study/selective/pareto/sota/oracle_k JSON |
+| [`independent_personalisation_results/`](../../../independent_personalisation_results/) | Study-level gated personalisation | **yes** | `independent_personalisation_summary.json`, report, cross-lab JSON |
+| [`benchmark_external_validation/decision_validation.json`](../../../benchmark_external_validation/decision_validation.json) | Negative external holdout control | **yes** | `beats_global_best: false` |
 
 ### How to cite a number from a reference artefact
 
 1. Name the **protocol string** and **track** (`oracle` vs `estimate:…`).
 2. Prefer machine-readable JSON/CSV over prose README approximations.
 3. If regenerating, bump the protocol version when semantics change.
+4. Confirm the file is listed in `reference_artefacts/MANIFEST.json` (run
+   `python scripts/build_reference_artefact_manifest.py --check`).
 
 ## Batch narrative
 

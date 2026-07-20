@@ -169,8 +169,9 @@ Runnable implementations live in
 `histoweave.benchmark.protocol_endpoints` and the operator script
 `scripts/run_protocol_endpoints.py`. Reference multi-source results (20
 study/slice queries, selective regret–coverage, Pareto stability,
-unified-resource SOTA comparison, and **oracle-K leakage**) are archived under
-`protocol_endpoints_results/`. Dual-track SOTA cells live in
+unified-resource SOTA comparison, and **oracle-K leakage**) are **tracked in
+git** under `protocol_endpoints_results/` (summaries only; see
+[reference artefacts](reference-artefacts.md)). Dual-track SOTA cells live in
 `non_oracle_k_sota/` (`histoweave.non_oracle_k_sota.v1` → endpoint
 `histoweave.oracle_k_leakage.v1`).
 
@@ -180,9 +181,10 @@ slices to biological donors, keeps external/cross-platform studies as one unit
 each, and expands **real** public corpora until ≥15 independent study units
 (see `scripts/expand_real_independent_studies.py`). Evaluation uses a **gated**
 policy (personalise only when the local proxy clears a non-inferiority gate;
-otherwise global-default). Artefacts:
+otherwise global-default). Summary artefacts are **in-repo** under
 `independent_personalisation_results/`
-(`histoweave.benchmark.independent_personalisation`).
+(`histoweave.benchmark.independent_personalisation`); inventory:
+`reference_artefacts/MANIFEST.json`.
 
 **Relative to Squidpy / SpatialData.** Analysis grammar and data models remain
 with those libraries; HistoWeave's irreplaceable layer is the evidence-governed
@@ -191,3 +193,12 @@ statistics). See [vs Squidpy / SpatialData](vs-squidpy-spatialdata.md).
 
 Until those endpoints are met, the defensible software contribution is safe,
 auditable decision support—not automated discovery of a universally best method.
+
+## Dry-lab case study (error recommendations intercepted)
+
+A wet-lab-free vignette walks through four unjustified promotions and the
+protocol actions that stop them (`evidence_required`, `global_default`,
+`abstain`, cross-task hard-filter):
+
+- Narrative: [Case study: intercepting unjustified recommendations](case-study-intercepted-recommendation.md)
+- Runnable: `python examples/case_study_intercepted_recommendation.py`
