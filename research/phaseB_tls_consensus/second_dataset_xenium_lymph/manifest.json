@@ -1,0 +1,21 @@
+{
+  "schema_version": "histoweave.tls_second_dataset.manifest.v1",
+  "input": {
+    "path": "datasets_cache/xenium/xenium_human_lymph_node.h5ad",
+    "sha256": "ce942c858ba76d6d310aac6c2058531533a42d98bc1e0fe0b39a3f5f3d47759d"
+  },
+  "first_dataset_summary": {
+    "path": "research/phaseB_tls_consensus/tables/discovery_summary.json",
+    "sha256": "03d52968546dc8b7a4c4900bc4fb87195b680e937f96b4d2ea3122b224b0053e"
+  },
+  "artifacts": {
+    "tls_second_dataset_summary.json": {
+      "sha256": "dd0b6fa8297261e73bd148b080dcd693717a65a00ffe9848acfa38036ed2ba33",
+      "bytes": 2407
+    },
+    "REPORT_tls_second_dataset.md": {
+      "sha256": "71dd23232cda3addec2be860e6c073f9be390668c5d9fb3fbccebd5b8e7ca184",
+      "bytes": 1434
+    }
+  }
+}

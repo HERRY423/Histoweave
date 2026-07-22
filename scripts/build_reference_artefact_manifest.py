@@ -19,8 +19,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import sys
-from datetime import datetime, timezone
+import logging
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +38,7 @@ ARTEFACT_ROOTS: dict[str, str] = {
 
 # Extensions allowed inside artefact roots for the manifest
 _ALLOWED_SUFFIX = {".json", ".csv", ".md", ".svg", ".png", ".py", ".txt"}
+_TEXT_SUFFIX = {".json", ".csv", ".md", ".svg", ".py", ".txt"}
 
 # Soft size budget (bytes) for any single tracked summary file
 _MAX_FILE_BYTES = 5 * 1024 * 1024  # 5 MiB — summaries must stay small
@@ -62,12 +63,20 @@ _REQUIRED: tuple[str, ...] = (
 )
 
 
+def _canonical_bytes(path: Path) -> bytes:
+    """Return platform-stable bytes for hashing and manifest sizes."""
+    payload = path.read_bytes()
+    if path.suffix.lower() in _TEXT_SUFFIX:
+        payload = payload.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return payload
+
+
 def _sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 16), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    return hashlib.sha256(_canonical_bytes(path)).hexdigest()
+
+
+def _canonical_size(path: Path) -> int:
+    return len(_canonical_bytes(path))
 
 
 def _collect() -> list[dict[str, object]]:
@@ -85,7 +94,7 @@ def _collect() -> list[dict[str, object]]:
             if path.name.endswith(".log"):
                 continue
             rel = path.relative_to(ROOT).as_posix()
-            size = path.stat().st_size
+            size = _canonical_size(path)
             rows.append(
                 {
                     "path": rel,
@@ -102,7 +111,7 @@ def build_manifest() -> dict[str, object]:
     files = _collect()
     return {
         "schema": "histoweave.reference_artefacts.manifest.v1",
-        "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "policy": {
             "track_summaries": True,
             "ignore_raw_h5ad": True,
@@ -165,7 +174,7 @@ def check_manifest() -> list[str]:
                 f"manifest={str(row.get('sha256'))[:12]}… "
                 "(re-run scripts/build_reference_artefact_manifest.py)"
             )
-        if int(row.get("bytes") or -1) != path.stat().st_size:
+        if int(row.get("bytes") or -1) != _canonical_size(path):
             errors.append(f"size mismatch for {rel}")
     return errors
 
@@ -183,22 +192,30 @@ def main(argv: list[str] | None = None) -> int:
         errors = check_manifest()
         if errors:
             for err in errors:
-                print(f"ERROR: {err}", file=sys.stderr)
+                logging.getLogger(__name__).error("ERROR: %s", err)
             return 1
-        print(f"OK: {len(_REQUIRED)} required artefacts present; MANIFEST hashes match.")
+        logging.getLogger(__name__).info(
+            "OK: %d required artefacts present; MANIFEST hashes match.", len(_REQUIRED)
+        )
         return 0
 
     payload = build_manifest()
     path = write_manifest(payload)
-    print(f"Wrote {path} ({payload['n_files']} files, {payload['total_bytes']} bytes)")
+    logging.getLogger(__name__).info(
+        "Wrote %s (%d files, %d bytes)",
+        path,
+        payload["n_files"],
+        payload["total_bytes"],
+    )
     # Always validate required set after build
     errors = check_manifest()
     if errors:
         for err in errors:
-            print(f"ERROR: {err}", file=sys.stderr)
+            logging.getLogger(__name__).error("ERROR: %s", err)
         return 1
     return 0
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     raise SystemExit(main())

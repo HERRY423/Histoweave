@@ -325,7 +325,25 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_decide.add_argument("--dataset-name", default="user_dataset")
     p_decide.add_argument("--platform", help="Optional assay platform prior.")
+    p_decide.add_argument(
+        "--spatial-context-policy",
+        help="Optional spatial-context policy identifier used by matched benchmark evidence.",
+    )
     p_decide.add_argument("--k-neighbours", type=int, default=3)
+    p_decide.add_argument("--shortlist-size", type=int, default=3)
+    p_decide.add_argument("--min-support", type=int, default=2)
+    p_decide.add_argument("--min-rank-support-score", type=float, default=0.25)
+    p_decide.add_argument("--severe-failure-threshold", type=float, default=0.65)
+    p_decide.add_argument(
+        "--allow-no-baseline-advantage",
+        action="store_true",
+        help="Do not require a query-local advantage over the global comparator.",
+    )
+    p_decide.add_argument(
+        "--allow-no-heldout-validation",
+        action="store_true",
+        help="Do not require grouped held-out validation before personalisation.",
+    )
     p_decide.add_argument(
         "--pareto-report",
         help="Optional matched Pareto JSON; a different dataset is ignored.",
@@ -789,6 +807,10 @@ def main(argv: list[str] | None = None) -> int:
         "--no-download", action="store_true", help="With --swap-official, do not hit 10x CDN."
     )
 
+    from .federation.cli_fed import add_fed_subparser
+
+    add_fed_subparser(sub)
+
     args = parser.parse_args(argv)
 
     configure_logging(level=args.log_level, log_format=args.log_format)
@@ -842,6 +864,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_isus(args)
     if args.command == "discovery":
         return _cmd_discovery(args)
+    if args.command == "fed":
+        from .federation.cli_fed import cmd_fed
+
+        return cmd_fed(args, emit=_emit)
 
     parser.print_help()
     return 0
@@ -1515,38 +1541,37 @@ def _num(x) -> str:
 
 def _cmd_decide(args) -> int:
     """Build an auditable method set, fallback, or abstention."""
-    from .benchmark.decision import DecisionEngine, load_decision_evidence
-    from .io import read_bundle
+    from .decision import DecisionPolicy, decide_from_bundle
 
     try:
-        data = read_bundle(args.in_path)
-        pareto = (
-            load_decision_evidence(args.pareto_report) if args.pareto_report else None
+        policy = DecisionPolicy(
+            shortlist_size=args.shortlist_size,
+            min_support=args.min_support,
+            min_rank_support_score=args.min_rank_support_score,
+            severe_failure_threshold=args.severe_failure_threshold,
+            require_baseline_advantage=not args.allow_no_baseline_advantage,
+            require_heldout_validation=not args.allow_no_heldout_validation,
         )
-        failure_atlas = (
-            load_decision_evidence(args.failure_atlas) if args.failure_atlas else None
-        )
-        validation = load_decision_evidence(args.validation) if args.validation else None
-        card = DecisionEngine(
-            args.knowledge_base,
-            k_neighbours=args.k_neighbours,
-            failure_atlas=failure_atlas,
-        ).decide(
-            data,
-            dataset_name=args.dataset_name,
+        card = decide_from_bundle(
+            args.in_path,
+            knowledge_base=args.knowledge_base,
             task=args.task,
+            dataset_name=args.dataset_name,
             platform=args.platform,
-            pareto=pareto,
+            spatial_context_policy=args.spatial_context_policy,
+            k_neighbours=args.k_neighbours,
+            policy=policy,
+            pareto_report=args.pareto_report,
             isus_domain_key=args.isus_domain_key,
-            validation=validation,
+            failure_atlas_report=args.failure_atlas,
+            validation_report=args.validation,
+            out=args.out,
         )
     except (FileNotFoundError, OSError, RuntimeError, TypeError, ValueError) as exc:
         _emit(f"error: {exc}", file=sys.stderr)
         return 2
 
     payload = card.to_dict()
-    if args.out:
-        _write_json_atomic(Path(args.out), payload)
     if args.json:
         _emit(json.dumps(payload, indent=2, allow_nan=False))
     else:

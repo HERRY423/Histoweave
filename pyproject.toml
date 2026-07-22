@@ -58,9 +58,14 @@ cellpose2 = ["cellpose>=2,<3"]
 harmony = ["harmonypy>=0.0.9", "scikit-learn>=1.3"]
 compiler = ["litellm>=1.40", "pydantic>=2.5"]
 deep-learning = ["torch>=2.2"]
+# Federated evidence network: Ed25519 signing/verification backend. `sigstore`
+# is an optional keyless (OIDC) backend that is imported lazily and degrades
+# gracefully when absent, so it is intentionally NOT a hard requirement here.
+federation = ["cryptography>=42"]
 docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
 dev = [
     "build>=1.2",
+    "cryptography>=42",
     "h5py>=3.7",
     "hypothesis>=6.100",
     "mypy>=1.8",
@@ -77,7 +82,7 @@ dev = [
     "types-psutil>=5.9",
 ]
 all = [
-    "histoweave-spatial[io,spatial,scanpy,banksy,spatialde,cell2location,liana,scanvi,celltypist,cellpose2,harmony,compiler,deep-learning,docs,dev]"
+    "histoweave-spatial[io,spatial,scanpy,banksy,spatialde,cell2location,liana,scanvi,celltypist,cellpose2,harmony,compiler,deep-learning,federation,docs,dev]"
 ]
 
 [project.scripts]
@@ -87,10 +92,10 @@ histoweave = "histoweave.cli:main"
 builtin = "histoweave.plugins.builtin:register_all"
 
 [project.urls]
-Homepage = "https://github.com/histoweave-spatial/histoweave"
-Documentation = "https://histoweave-spatial.github.io/histoweave"
-Repository = "https://github.com/histoweave-spatial/histoweave"
-Issues = "https://github.com/histoweave-spatial/histoweave/issues"
+Homepage = "https://github.com/HERRY423/Histoweave"
+Documentation = "https://HERRY423.github.io/Histoweave"
+Repository = "https://github.com/HERRY423/Histoweave"
+Issues = "https://github.com/HERRY423/Histoweave/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/histoweave"]
@@ -100,6 +105,7 @@ path = "src/histoweave/__init__.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra --basetemp=.pytest_tmp"
 markers = [
     "property: property-based Hypothesis tests",
@@ -115,7 +121,11 @@ select = ["E", "F", "I", "UP", "B", "W", "G"]
 
 [tool.ruff.lint.per-file-ignores]
 # Research runners embed report tables and protocol text whose exact layout is an output contract.
-"research/**/*.py" = ["E501"]
+"research/**/*.py" = ["E501", "W291"]
+"parallel_experiment_table/**/*.py" = ["E501"]
+"src/histoweave/automl/report.py" = ["E501"]
+"src/histoweave/benchmark/digital_twin_report.py" = ["E501"]
+"src/histoweave/benchmark/protocol_endpoints.py" = ["E501"]
 # Tutorial cells deliberately interleave setup and explanatory imports.
 "examples/*.ipynb" = ["E402"]
 
@@ -150,6 +160,7 @@ module = [
     "anndata.*",
     "scipy.*",
     "sklearn.*",
+    "squidpy.*",
     "networkx.*",
     "jinja2.*",
     "litellm.*",

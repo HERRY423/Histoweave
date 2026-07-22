@@ -23,14 +23,12 @@ from __future__ import annotations
 import json
 import logging
 import math
-from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
-
 from functional_modules import DISCOVERY_MODULES, MODULE_BY_ID, MODULES
 
 ROOT = Path(__file__).resolve().parent
@@ -630,7 +628,7 @@ def render_markdown(claims: list[dict[str, Any]], figure_paths: list[Path]) -> s
     return f"""# Functional validation — new cryptic states
 
 **Protocol:** `histoweave.functional_validation.v1`  
-**Composed:** {datetime.now(timezone.utc).strftime("%Y-%m-%d")}
+**Composed:** {datetime.now(UTC).strftime("%Y-%m-%d")}
 
 > **Scope.** This document advances **computational functional mapping** of
 > cryptic niches toward (1) **disease-related mechanisms** and (2) **developmental
@@ -895,7 +893,7 @@ def main() -> None:
 
     payload = {
         "protocol": "histoweave.functional_validation.v1",
-        "composed_at": datetime.now(timezone.utc).isoformat(),
+        "composed_at": datetime.now(UTC).isoformat(),
         "claims": claims,
         "n_F2_dual_axis": sum(
             1 for c in claims if c.get("functional_claim_level") == "F2_dual_axis"

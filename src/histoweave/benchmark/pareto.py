@@ -381,7 +381,9 @@ def pareto_svg(
 ) -> str:
     """Render a dependency-free SVG of accuracy against available cost axes."""
     resolved = dict(directions or OBJECTIVE_DIRECTIONS)
-    x_axes = [name for name in ("speed", "memory", "robustness") if name in result.objectives]
+    x_axes: list[str] = [
+        name for name in ("speed", "memory", "robustness") if name in result.objectives
+    ]
     if "accuracy" not in result.objectives:
         x_axes = result.objectives[1:4]
         y_axis = result.objectives[0] if result.objectives else None

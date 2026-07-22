@@ -1,0 +1,4 @@
+dataset,method,seed,ari,seconds,status
+xenium_human_lymph_node,banksy_py,42,-0.02571371052169266,9.63165980001213,success
+xenium_human_lymph_node,banksy_py,1,-0.026296834795227795,2.1893917999987025,success
+xenium_human_lymph_node,banksy_py,2,-0.026353144407216967,2.171599799999967,success

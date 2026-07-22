@@ -38,6 +38,7 @@ STAGATE graph-attention autoencoder + fixed-q clustering.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.sota_dlpfc.v1 (official STAGATE_pyG real ARI)
 - **datasets:** DLPFC Visium 151507/669/670/673/674 × 3 seeds (max_obs=1000, epochs=150)
 - **metric:** ARI vs manual layers; mean≈0.285 across 15/15 successful cells

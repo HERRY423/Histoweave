@@ -13,7 +13,7 @@ analyzers import it; they do **not** invent wet-lab outcomes.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from typing import Any
 
 

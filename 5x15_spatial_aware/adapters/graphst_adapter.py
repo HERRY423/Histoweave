@@ -15,6 +15,13 @@ def _model_class(package):
         return candidate
     if candidate is not None and callable(getattr(candidate, "GraphST", None)):
         return candidate.GraphST
+    # Some GraphST releases do not re-export the model at the package top level;
+    # the ``GraphST.GraphST`` submodule is not auto-imported as an attribute.
+    # Import it explicitly and resolve the ``GraphST`` class from there.
+    submodule = importlib.import_module("GraphST.GraphST")
+    model_cls = getattr(submodule, "GraphST", None)
+    if callable(model_cls):
+        return model_cls
     raise ImportError("GraphST package does not expose the GraphST model class")
 
 

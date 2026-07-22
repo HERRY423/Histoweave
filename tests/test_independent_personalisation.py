@@ -20,7 +20,7 @@ from histoweave.benchmark.task_contract import AnalysisTask, GroundTruthKind
 
 
 def _slice_landscape() -> LandscapeResult:
-    methods = ["kmeans", "spectral", "agglomerative"]
+    _methods = ["kmeans", "spectral", "agglomerative"]
     # Two donors × two slices + two external studies.
     names = ["151507", "151508", "151673", "151674", "ext_a", "ext_b"]
     performance = {}

@@ -1,0 +1,44 @@
+{
+  "schema_version": "histoweave.strict_external_panel.banksy_lymph.v1",
+  "dataset": "xenium_human_lymph_node",
+  "method": "banksy_py",
+  "n_obs": 6000,
+  "n_domains": 3,
+  "seeds": [
+    42,
+    1,
+    2
+  ],
+  "subsample_seed": 0,
+  "sampling": "stratified by domain_truth to 6000 cells",
+  "mean_ari": -0.026121229908045804,
+  "std_ari": 0.0003540434024110994,
+  "n_success": 3,
+  "source_data_sha256": "ce942c858ba76d6d310aac6c2058531533a42d98bc1e0fe0b39a3f5f3d47759d",
+  "rows": [
+    {
+      "dataset": "xenium_human_lymph_node",
+      "method": "banksy_py",
+      "seed": 42,
+      "ari": -0.02571371052169266,
+      "seconds": 9.63165980001213,
+      "status": "success"
+    },
+    {
+      "dataset": "xenium_human_lymph_node",
+      "method": "banksy_py",
+      "seed": 1,
+      "ari": -0.026296834795227795,
+      "seconds": 2.1893917999987025,
+      "status": "success"
+    },
+    {
+      "dataset": "xenium_human_lymph_node",
+      "method": "banksy_py",
+      "seed": 2,
+      "ari": -0.026353144407216967,
+      "seconds": 2.171599799999967,
+      "status": "success"
+    }
+  ]
+}

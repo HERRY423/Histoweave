@@ -54,9 +54,7 @@ from histoweave.datasets import make_synthetic
 
 _LOGGER = logging.getLogger("intercept_case")
 REPO_ROOT = Path(__file__).resolve().parents[1]
-BUNDLED_NEGATIVE_HOLDOUT = (
-    REPO_ROOT / "benchmark_external_validation" / "decision_validation.json"
-)
+BUNDLED_NEGATIVE_HOLDOUT = REPO_ROOT / "benchmark_external_validation" / "decision_validation.json"
 
 
 @dataclass(frozen=True)
@@ -132,9 +130,7 @@ def _ranked_pair(
         global_best_method=global_name,
         global_best_score=global_score,
         beats_global_best_baseline=beats,
-        selection_regret_vs_global_best=(
-            None if beats is None else (-0.05 if beats else 0.04)
-        ),
+        selection_regret_vs_global_best=(None if beats is None else (-0.05 if beats else 0.04)),
     )
 
 
@@ -165,7 +161,8 @@ def scenario_a_missing_holdout() -> ScenarioResult:
         title="Attractive local ranking without held-out validation",
         naive_promotion=(
             f"Deploy {rec.ranked_methods[0].method} "
-            f"(proxy ARI={rec.ranked_methods[0].score:.2f}, confidence={rec.ranked_methods[0].confidence:.2f})"
+            f"(proxy ARI={rec.ranked_methods[0].score:.2f}, "
+            f"confidence={rec.ranked_methods[0].confidence:.2f})"
         ),
         action=card.action.value,
         primary_set=list(card.primary_set),
@@ -179,9 +176,7 @@ def scenario_a_missing_holdout() -> ScenarioResult:
 def scenario_b_negative_holdout() -> ScenarioResult:
     """Local proxy looks good; bundled external holdout fails the gate → global_default."""
     if not BUNDLED_NEGATIVE_HOLDOUT.is_file():
-        raise FileNotFoundError(
-            f"Bundled negative holdout missing: {BUNDLED_NEGATIVE_HOLDOUT}"
-        )
+        raise FileNotFoundError(f"Bundled negative holdout missing: {BUNDLED_NEGATIVE_HOLDOUT}")
     validation = json.loads(BUNDLED_NEGATIVE_HOLDOUT.read_text(encoding="utf-8"))
     rec = _ranked_pair(beats=True)
     card = build_decision_card(rec, validation=validation)
@@ -296,9 +291,7 @@ def scenario_d_cross_task_landscape(tmp_dir: Path) -> ScenarioResult:
     payload = card.to_dict()
     neighbour_names = {item["name"] for item in payload["recommendation"]["neighbours"]}
     if "proxy_celltype" in neighbour_names:
-        raise AssertionError(
-            "Cross-task proxy_celltype leaked into query-local neighbours"
-        )
+        raise AssertionError("Cross-task proxy_celltype leaked into query-local neighbours")
     # Without positive holdout, personalisation is never unlocked.
     if card.action is DecisionAction.PERSONALISED_SET:
         raise AssertionError("Personalisation must not unlock on filtered landscape alone")
@@ -306,9 +299,7 @@ def scenario_d_cross_task_landscape(tmp_dir: Path) -> ScenarioResult:
     return ScenarioResult(
         scenario_id="D",
         title="Cross-task landscape evidence is hard-filtered",
-        naive_promotion=(
-            "Recommend spectral@… because a cell-type proxy dataset reports ARI=0.99"
-        ),
+        naive_promotion=("Recommend spectral@… because a cell-type proxy dataset reports ARI=0.99"),
         action=card.action.value,
         primary_set=list(card.primary_set),
         comparison_set=list(card.comparison_set),
@@ -316,11 +307,7 @@ def scenario_d_cross_task_landscape(tmp_dir: Path) -> ScenarioResult:
         rationale=list(card.rationale)
         + [
             "Filtered neighbours: "
-            + (
-                ", ".join(sorted(neighbour_names))
-                if neighbour_names
-                else "(none retained)"
-            ),
+            + (", ".join(sorted(neighbour_names)) if neighbour_names else "(none retained)"),
             "Excluded by task contract: proxy_celltype (task=cell_type, GT=cluster_proxy).",
         ],
         card=payload,
@@ -356,8 +343,7 @@ def _markdown_report(results: list[ScenarioResult]) -> str:
     for r in results:
         primary = ", ".join(r.primary_set) if r.primary_set else "(empty)"
         lines.append(
-            f"| **{r.scenario_id}** | {r.title} | {r.naive_promotion} | "
-            f"`{r.action}` | {primary} |"
+            f"| **{r.scenario_id}** | {r.title} | {r.naive_promotion} | `{r.action}` | {primary} |"
         )
     lines.extend(
         [

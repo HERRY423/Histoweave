@@ -15,11 +15,11 @@ Side-by-side alignment of three HistoWeave spatial-domain benchmarks on the
 
 | File | Description |
 |------|-------------|
-| [`parallel_experiment_table/report_parallel_experiment.md`](../parallel_experiment_table/report_parallel_experiment.md) | Full narrative report (primary) |
-| [`parallel_experiment_table/parallel_experiment_summary.csv`](../parallel_experiment_table/parallel_experiment_summary.csv) | Ranked mean ARI (33 configs) |
-| [`parallel_experiment_table/parallel_experiment_table.csv`](../parallel_experiment_table/parallel_experiment_table.csv) | Long tidy table |
-| [`parallel_experiment_table/parallel_experiment_matrix.csv`](../parallel_experiment_table/parallel_experiment_matrix.csv) | Wide matrix |
-| [`parallel_experiment_table/figures/parallel_heatmap.svg`](../parallel_experiment_table/figures/parallel_heatmap.svg) | Heatmap |
+| [`parallel_experiment_table/report_parallel_experiment.md`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/report_parallel_experiment.md) | Full narrative report (primary) |
+| [`parallel_experiment_table/parallel_experiment_summary.csv`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/parallel_experiment_summary.csv) | Ranked mean ARI (33 configs) |
+| [`parallel_experiment_table/parallel_experiment_table.csv`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/parallel_experiment_table.csv) | Long tidy table |
+| [`parallel_experiment_table/parallel_experiment_matrix.csv`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/parallel_experiment_matrix.csv) | Wide matrix |
+| [`parallel_experiment_table/figures/parallel_heatmap.svg`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/figures/parallel_heatmap.svg) | Heatmap |
 
 ## Headline (mean ARI over 5 slices)
 

@@ -1,0 +1,120 @@
+{
+  "figures": [
+    {
+      "caption_short": "Mean ARI across five external spatial-domain datasets and the shared method panel.",
+      "figure": "Figure 1",
+      "formats": {
+        "png": {
+          "bytes": 500365,
+          "path": "benchmark_external_validation/figures/fig1_performance_heatmap.png",
+          "sha256": "1f604b5205798768f712d9fbb9e71df6b59c44394d4eb47fd60e2dfc2e6fe7a5"
+        },
+        "svg": {
+          "bytes": 59993,
+          "path": "benchmark_external_validation/figures/fig1_performance_heatmap.svg",
+          "sha256": "fb986466b9459e6fe8eda4be0e450e7ab1f0d80acaf457e3b99ed60e32f71041"
+        }
+      },
+      "generator": "benchmark_external_validation/make_figures.py",
+      "slug": "fig1_performance_heatmap",
+      "source_data": [
+        "benchmark_external_validation/performance_matrix_mean.csv",
+        "benchmark_external_validation/performance_matrix_std.csv"
+      ],
+      "title": "External spatial-domain performance heatmap"
+    },
+    {
+      "caption_short": "Per-method ARI variation across datasets and random seeds.",
+      "figure": "Figure 2",
+      "formats": {
+        "png": {
+          "bytes": 349117,
+          "path": "benchmark_external_validation/figures/fig2_method_boxplot.png",
+          "sha256": "092c221df598e4a4f4367d5c8049df49ba57d06d50d19cc31f664515669e9800"
+        },
+        "svg": {
+          "bytes": 26833,
+          "path": "benchmark_external_validation/figures/fig2_method_boxplot.svg",
+          "sha256": "8fd0da61e0ee4ca9370f106304de43eaf2ded4f99bd9a16ec6b5853dc562dc15"
+        }
+      },
+      "generator": "benchmark_external_validation/make_figures.py",
+      "slug": "fig2_method_boxplot",
+      "source_data": [
+        "benchmark_external_validation/benchmark_long.csv"
+      ],
+      "title": "External ARI distribution by method"
+    },
+    {
+      "caption_short": "Target-free dataset features reveal heterogeneous external benchmark regimes.",
+      "figure": "Figure 3",
+      "formats": {
+        "png": {
+          "bytes": 76738,
+          "path": "benchmark_external_validation/figures/fig3_landscape_embedding.png",
+          "sha256": "93f2c538f416a8b4edaf3542ca32109dc2febfde7f280bc668053dcc2a1ed761"
+        },
+        "svg": {
+          "bytes": 14083,
+          "path": "benchmark_external_validation/figures/fig3_landscape_embedding.svg",
+          "sha256": "b6371ca9973e27ad8859c4930a1c91ef1a43297873d6971d890d44b6d8d9789a"
+        }
+      },
+      "generator": "benchmark_external_validation/make_figures.py",
+      "slug": "fig3_landscape_embedding",
+      "source_data": [
+        "benchmark_external_validation/dataset_manifest.json",
+        "benchmark_external_validation/performance_matrix_mean.csv"
+      ],
+      "title": "Dataset-feature landscape embedding"
+    },
+    {
+      "caption_short": "LOOCV selection regret matches the training-fold global-best baseline and improves over random choice.",
+      "figure": "Figure 4",
+      "formats": {
+        "png": {
+          "bytes": 117438,
+          "path": "benchmark_external_validation/figures/fig4_recommender_regret.png",
+          "sha256": "421bdafcac7a7115a77e7597b21d54a1f0065fba20c9d15489909008acbb2e90"
+        },
+        "svg": {
+          "bytes": 14087,
+          "path": "benchmark_external_validation/figures/fig4_recommender_regret.svg",
+          "sha256": "59a691ad8fc30a89252f7857909a4a055bfd5387d3e74a5f753654f682074d40"
+        }
+      },
+      "generator": "benchmark_external_validation/make_figures.py",
+      "slug": "fig4_recommender_regret",
+      "source_data": [
+        "benchmark_external_validation/recommendation_loocv.json"
+      ],
+      "title": "Recommender regret against baselines"
+    },
+    {
+      "caption_short": "Abstention prevents higher-regret personalisation; the global default has lower regret than always personalising.",
+      "figure": "Figure 5",
+      "formats": {
+        "png": {
+          "bytes": 324978,
+          "path": "benchmark_external_validation/figures/selective_regret_coverage.png",
+          "sha256": "e27e66570240c283a1dd5ce4bd716a8ae546b70975afe3f836c491c643728429"
+        },
+        "svg": {
+          "bytes": 21387,
+          "path": "benchmark_external_validation/figures/selective_regret_coverage.svg",
+          "sha256": "ae57fa772e0a293c3d9deb357c69301defaba046415cb04786699a1f8b94fcf1"
+        }
+      },
+      "generator": "benchmark_external_validation/make_figures.py",
+      "slug": "selective_regret_coverage",
+      "source_data": [
+        "protocol_endpoints_results/selective_regret_coverage.json"
+      ],
+      "title": "Selective regret-coverage"
+    }
+  ],
+  "freeze_version": "v1",
+  "n_main_figures": 5,
+  "schema_version": "histoweave.submission_freeze.figures.v1",
+  "target_journal": "Bioinformatics"
+}

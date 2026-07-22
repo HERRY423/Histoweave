@@ -1,0 +1,9 @@
+unit_id,display_name,condition,independence_class,platform,oracle_method,oracle_ari,spectral_ari,gaussian_mixture_ari,oracle_flips_from_global_spectral,n_finite_target_free_features,n_target_free_features
+dlpfc_donor_Br5292,DLPFC Br5292,human_cerebral_cortex,biological_donor,visium,gaussian_mixture,0.3923480653357618,0.37287606920884886,0.3923480653357618,True,16,16
+dlpfc_donor_Br5595,DLPFC Br5595,human_cerebral_cortex,biological_donor,visium,spectral,0.4524797778016233,0.4524797778016233,0.3478743814254798,False,16,16
+dlpfc_donor_Br8100,DLPFC Br8100,human_cerebral_cortex,biological_donor,visium,gaussian_mixture,0.3654384272063379,0.2977728449215914,0.3654384272063379,True,16,16
+visium_hd_crc,CRC Visium HD,human_tumor,external_study,visium,spectral,0.6759144939316668,0.6759144939316668,0.3424991661944387,False,4,16
+xenium_lung_cancer,Lung Xenium,human_tumor,external_study,xenium,spectral,0.15340591766364742,0.15340591766364742,0.05598507494134227,False,4,16
+xenium_ovarian_cancer,Ovary Xenium,human_tumor,external_study,xenium,spectral,0.46280500324094415,0.46280500324094415,0.24239573623928937,False,4,16
+visium_mouse_brain,Mouse brain Visium,mouse_brain,external_study,visium,spectral,0.6268160581881485,0.6268160581881485,0.4936394470024695,False,4,16
+allen_merfish_brain_section,Mouse brain MERFISH,mouse_brain,external_study,merfish,spectral,0.2821907033991168,0.2821907033991168,0.21734513867141061,False,4,16

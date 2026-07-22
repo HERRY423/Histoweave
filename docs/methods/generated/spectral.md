@@ -37,10 +37,12 @@ Spectral clustering on spatial k-NN graph.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.landscape.dlpfc_real.v1 + dlpfc_spatial_aware.v1
 - **datasets:** DLPFC Visium 5-slice difficulty gradient
 - **metric:** ARI vs manual layers across seeds and spatial_weight policies
 - **notes:** sklearn SpectralClustering with spatial-neighbourhood embedding.
+- **report:** docs/methods/validation/spectral.md
 
 ---
 

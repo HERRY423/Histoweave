@@ -1,0 +1,71 @@
+{
+  "schema_version": "histoweave.tls_second_dataset.v1",
+  "protocol": "histoweave.tls_transport.visium_to_xenium.v1",
+  "dataset": "10x Xenium Prime Human Lymph Node Reactive FFPE",
+  "role": "independent positive-context control; not a second tumour cohort",
+  "expression_source": "official_10x_cell_feature_matrix",
+  "n_cells": 15000,
+  "n_genes": 4624,
+  "pathology_gc_cells": 50,
+  "markers_present": {
+    "B": [
+      "MS4A1",
+      "CD79A",
+      "CD79B",
+      "CD19",
+      "CR2"
+    ],
+    "T": [
+      "CD3E",
+      "CD8A"
+    ],
+    "chemokine": [
+      "CXCL13",
+      "CCL19",
+      "SELL"
+    ],
+    "TLS": [
+      "MS4A1",
+      "CD79A",
+      "CD79B",
+      "CD19",
+      "CR2",
+      "CD3E",
+      "CD8A",
+      "CXCL13",
+      "CCL19",
+      "SELL"
+    ]
+  },
+  "locked_parameters": {
+    "direct_focus_definition": "B_score>90pct AND T_score>90pct",
+    "score_method": "scanpy.score_genes(ctrl_size=50, random_state=0)",
+    "moran_k": 6,
+    "neighbourhood_k": 20,
+    "neighbourhood_score": "sqrt(fraction_B_high * fraction_T_high)"
+  },
+  "direct_transport": {
+    "n_foci": 29,
+    "foci_fraction": 0.0019333333333333333,
+    "tls_morans_i": 0.19025394968754009,
+    "foci_contiguity": 0.0,
+    "overlap_with_pathology_gc": {
+      "intersection": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "jaccard": 0.0
+    }
+  },
+  "cell_resolution_sensitivity": {
+    "neighbourhood_colocalisation_auc_for_pathology_gc": 0.36421070234113706,
+    "mean_score_in_pathology_gc": 0.0344049433510045,
+    "mean_score_outside_pathology_gc": 0.06652662667111861,
+    "tls_score_mean_in_pathology_gc": 0.07789622735004036,
+    "tls_score_mean_outside_pathology_gc": 0.3701182673871334,
+    "tls_score_mannwhitney_greater_p": 0.9997944304263872
+  },
+  "decision": "not_replicated",
+  "claim_boundary": "The Visium per-spot co-high TLS endpoint did not transport to this cell-resolved Xenium positive-context control. This is a negative external result and does not validate tumour TLS generalisation.",
+  "interpretation": "B- and T-lineage signal is separated across individual Xenium cells, and the fixed local co-localisation sensitivity also performs below chance against the sparse pathology GC polygons. Assay resolution and reference-label sparsity therefore remain competing explanations."
+}

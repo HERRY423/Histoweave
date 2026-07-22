@@ -1,0 +1,1429 @@
+{
+  "schema_version": "histoweave.evidence.v1",
+  "bundle_id": "d75bfe43-d006-4378-9a6d-f9d564666597",
+  "node_id": "histoweave-reference",
+  "created_at": "2026-07-19T09:00:41+00:00",
+  "histoweave_version": null,
+  "task": "spatial_domain",
+  "metric": "ARI",
+  "higher_is_better": true,
+  "method": {
+    "name": "histoweave-builtin-clustering",
+    "version": "0.1.0b1",
+    "wraps": "scikit-learn clustering baselines",
+    "commit": null,
+    "container_digest": null,
+    "url": "https://github.com/HERRY423/Histoweave"
+  },
+  "environment": {
+    "os": "linux",
+    "python": "3.11",
+    "note": "HistoWeave reference DLPFC benchmark (5x10_dlpfc_benchmark)"
+  },
+  "records": [
+    {
+      "dataset": "151673",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.14793332881049076,
+      "seconds": 3.8996,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.14793332881049076,
+      "seconds": 3.7487,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.14793332881049076,
+      "seconds": 3.5846,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.17007462879487056,
+      "seconds": 4.0982,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.17007462879487056,
+      "seconds": 3.835,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.17007462879487056,
+      "seconds": 3.8366,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.21530608861736697,
+      "seconds": 3.8891,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.21734686782070972,
+      "seconds": 3.5521,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.21661942384330954,
+      "seconds": 3.4685,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.0,
+      "seconds": 3.514,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.0,
+      "seconds": 3.5179,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.0,
+      "seconds": 3.5108,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.1933045262412574,
+      "seconds": 4.2586,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.2584992805851701,
+      "seconds": 3.8626,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.25336981508064266,
+      "seconds": 3.8143,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.22153475207812348,
+      "seconds": 4.0936,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.26433992648126237,
+      "seconds": 3.6291,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.26433992648126237,
+      "seconds": 3.5594,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.013342078689554794,
+      "seconds": 11.2118,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.013342078689554794,
+      "seconds": 10.8117,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.013342078689554794,
+      "seconds": 11.1674,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.22334039581816187,
+      "seconds": 3.7333,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.21998848529131118,
+      "seconds": 3.4014,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.24480629916309182,
+      "seconds": 3.4963,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "optics",
+      "seed": 42,
+      "ari": -0.001184453396388922,
+      "seconds": 5.4154,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "optics",
+      "seed": 1,
+      "ari": -0.001184453396388922,
+      "seconds": 5.6937,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "optics",
+      "seed": 2,
+      "ari": -0.001184453396388922,
+      "seconds": 5.5085,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.24208635799871364,
+      "seconds": 4.5629,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.24242766307656555,
+      "seconds": 4.8397,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151673",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.24242766307656555,
+      "seconds": 4.4378,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.22125567855002487,
+      "seconds": 3.8333,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.22125567855002487,
+      "seconds": 3.6032,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.22125567855002487,
+      "seconds": 3.6918,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.2528450781106391,
+      "seconds": 3.9214,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.2528450781106391,
+      "seconds": 3.7517,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.2528450781106391,
+      "seconds": 3.8637,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.29873655180872594,
+      "seconds": 3.6577,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.2952034085586169,
+      "seconds": 3.5017,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.2944149460465772,
+      "seconds": 3.5043,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.0,
+      "seconds": 4.1974,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.0,
+      "seconds": 3.4988,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.0,
+      "seconds": 3.4997,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.30717634084922985,
+      "seconds": 3.994,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.23184170700557769,
+      "seconds": 3.7973,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.26902860038178944,
+      "seconds": 3.9793,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.293174585397493,
+      "seconds": 3.9851,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.30060498160655713,
+      "seconds": 3.6421,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.30060498160655713,
+      "seconds": 3.5346,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.00618955473779925,
+      "seconds": 11.182,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.00618955473779925,
+      "seconds": 11.0532,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.00618955473779925,
+      "seconds": 11.0888,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.2759931205374351,
+      "seconds": 4.0548,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.2966941095456832,
+      "seconds": 3.55,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.22119421180823917,
+      "seconds": 3.5252,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.0001314176083081434,
+      "seconds": 5.9786,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.0001314176083081434,
+      "seconds": 5.4365,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.0001314176083081434,
+      "seconds": 5.3686,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.17605372548877324,
+      "seconds": 4.2635,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.1762882616224639,
+      "seconds": 4.0971,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151674",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.17623735176688818,
+      "seconds": 4.173,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.21069571335220524,
+      "seconds": 3.4056,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.21069571335220524,
+      "seconds": 3.3325,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.21069571335220524,
+      "seconds": 3.2631,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.1320529975079289,
+      "seconds": 3.4148,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.1320529975079289,
+      "seconds": 3.3955,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.1320529975079289,
+      "seconds": 3.3643,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.24639575969584707,
+      "seconds": 3.1555,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.25378088236610435,
+      "seconds": 3.17,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.25100284058368305,
+      "seconds": 3.1923,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.0,
+      "seconds": 3.3067,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.0,
+      "seconds": 3.1528,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.0,
+      "seconds": 3.161,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.20366776368219577,
+      "seconds": 3.4866,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.21604224883968845,
+      "seconds": 3.5187,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.24861336835443215,
+      "seconds": 3.4181,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.18854267591544563,
+      "seconds": 3.2223,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.2646976469978433,
+      "seconds": 3.2761,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.26724462008284083,
+      "seconds": 3.2345,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.011715766869256747,
+      "seconds": 12.8223,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.011715766869256747,
+      "seconds": 12.7938,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.011715766869256747,
+      "seconds": 12.8849,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.2085275503076025,
+      "seconds": 3.0947,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.2913973214136216,
+      "seconds": 3.0943,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.21175853997783212,
+      "seconds": 3.1223,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "optics",
+      "seed": 42,
+      "ari": -0.000380274795399155,
+      "seconds": 5.5204,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "optics",
+      "seed": 1,
+      "ari": -0.000380274795399155,
+      "seconds": 5.4833,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "optics",
+      "seed": 2,
+      "ari": -0.000380274795399155,
+      "seconds": 5.5179,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.20033591965718253,
+      "seconds": 4.7715,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.19994177702897856,
+      "seconds": 4.7276,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151507",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.20033591965718253,
+      "seconds": 4.6873,
+      "status": "success",
+      "n_domains": 7
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.14540742516528352,
+      "seconds": 3.6779,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.14540742516528352,
+      "seconds": 3.6133,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.14540742516528352,
+      "seconds": 3.9417,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.12966854906833353,
+      "seconds": 4.1276,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.12966854906833353,
+      "seconds": 4.279,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.12966854906833353,
+      "seconds": 4.1599,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.18406763136841717,
+      "seconds": 3.5124,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.18102537770570026,
+      "seconds": 3.6942,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.18372318358412817,
+      "seconds": 3.5455,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.0,
+      "seconds": 3.6984,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.0,
+      "seconds": 4.0628,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.0,
+      "seconds": 4.0891,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.12738650089136433,
+      "seconds": 4.1952,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.15520468598170237,
+      "seconds": 3.955,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.1363799240345838,
+      "seconds": 4.3752,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.1545338457760148,
+      "seconds": 4.1257,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.17106779197329816,
+      "seconds": 3.6132,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.17106779197329816,
+      "seconds": 3.6306,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": 0.010213176415602392,
+      "seconds": 10.3666,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": 0.010213176415602392,
+      "seconds": 10.5998,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": 0.010213176415602392,
+      "seconds": 10.8069,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.16433777252816834,
+      "seconds": 3.9651,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.17392732781553194,
+      "seconds": 3.633,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.17822672279415322,
+      "seconds": 3.5171,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "optics",
+      "seed": 42,
+      "ari": 0.00022831922900889943,
+      "seconds": 5.4404,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "optics",
+      "seed": 1,
+      "ari": 0.00022831922900889943,
+      "seconds": 5.6124,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "optics",
+      "seed": 2,
+      "ari": 0.00022831922900889943,
+      "seconds": 5.489,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.16819219837232247,
+      "seconds": 4.9624,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.16776344438149812,
+      "seconds": 5.3474,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151669",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.16772424205563655,
+      "seconds": 5.1812,
+      "status": "success",
+      "n_domains": 8
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative",
+      "seed": 42,
+      "ari": 0.280014239444171,
+      "seconds": 3.4921,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative",
+      "seed": 1,
+      "ari": 0.280014239444171,
+      "seconds": 3.3368,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "agglomerative",
+      "seed": 2,
+      "ari": 0.280014239444171,
+      "seconds": 3.3654,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "birch",
+      "seed": 42,
+      "ari": 0.1876685778839524,
+      "seconds": 3.464,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "birch",
+      "seed": 1,
+      "ari": 0.1876685778839524,
+      "seconds": 3.4224,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "birch",
+      "seed": 2,
+      "ari": 0.1876685778839524,
+      "seconds": 3.7757,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "bisecting_kmeans",
+      "seed": 42,
+      "ari": 0.1535851298983005,
+      "seconds": 3.3242,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "bisecting_kmeans",
+      "seed": 1,
+      "ari": 0.21281982173050557,
+      "seconds": 3.243,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "bisecting_kmeans",
+      "seed": 2,
+      "ari": 0.2132049468447126,
+      "seconds": 3.2402,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "dbscan",
+      "seed": 42,
+      "ari": 0.0,
+      "seconds": 3.2726,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "dbscan",
+      "seed": 1,
+      "ari": 0.0,
+      "seconds": 3.2653,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "dbscan",
+      "seed": 2,
+      "ari": 0.0,
+      "seconds": 3.3735,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture",
+      "seed": 42,
+      "ari": 0.149152717375441,
+      "seconds": 3.3922,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture",
+      "seed": 1,
+      "ari": 0.20862126069274428,
+      "seconds": 3.4635,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "gaussian_mixture",
+      "seed": 2,
+      "ari": 0.17564871583824304,
+      "seconds": 3.4927,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans",
+      "seed": 42,
+      "ari": 0.18579638789571923,
+      "seconds": 3.395,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans",
+      "seed": 1,
+      "ari": 0.27977048258045684,
+      "seconds": 3.3449,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "kmeans",
+      "seed": 2,
+      "ari": 0.1988269290514897,
+      "seconds": 3.4288,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "mean_shift",
+      "seed": 42,
+      "ari": -0.020566628382760563,
+      "seconds": 9.8645,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "mean_shift",
+      "seed": 1,
+      "ari": -0.020566628382760563,
+      "seconds": 9.9784,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "mean_shift",
+      "seed": 2,
+      "ari": -0.020566628382760563,
+      "seconds": 9.957,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "minibatch_kmeans",
+      "seed": 42,
+      "ari": 0.16777397476307682,
+      "seconds": 3.2369,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "minibatch_kmeans",
+      "seed": 1,
+      "ari": 0.2968743574996155,
+      "seconds": 3.2586,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "minibatch_kmeans",
+      "seed": 2,
+      "ari": 0.16905645902711194,
+      "seconds": 3.3196,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "optics",
+      "seed": 42,
+      "ari": -0.005215331871593266,
+      "seconds": 5.3075,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "optics",
+      "seed": 1,
+      "ari": -0.005215331871593266,
+      "seconds": 5.46,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "optics",
+      "seed": 2,
+      "ari": -0.005215331871593266,
+      "seconds": 5.121,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral",
+      "seed": 42,
+      "ari": 0.3466703776908864,
+      "seconds": 4.5826,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral",
+      "seed": 1,
+      "ari": 0.34591138794418025,
+      "seconds": 4.7032,
+      "status": "success",
+      "n_domains": 5
+    },
+    {
+      "dataset": "151670",
+      "method": "spectral",
+      "seed": 2,
+      "ari": 0.3466703776908864,
+      "seconds": 4.656,
+      "status": "success",
+      "n_domains": 5
+    }
+  ],
+  "dataset_meta": {
+    "151507": {
+      "platform": "Visium",
+      "tissue": "DLPFC",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "label_key": "domain_truth",
+      "dataset_visibility": "public",
+      "n_domains": 7
+    },
+    "151669": {
+      "platform": "Visium",
+      "tissue": "DLPFC",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "label_key": "domain_truth",
+      "dataset_visibility": "public",
+      "n_domains": 5
+    },
+    "151670": {
+      "platform": "Visium",
+      "tissue": "DLPFC",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "label_key": "domain_truth",
+      "dataset_visibility": "public",
+      "n_domains": 5
+    },
+    "151673": {
+      "platform": "Visium",
+      "tissue": "DLPFC",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "label_key": "domain_truth",
+      "dataset_visibility": "public",
+      "n_domains": 7
+    },
+    "151674": {
+      "platform": "Visium",
+      "tissue": "DLPFC",
+      "task": "spatial_domain",
+      "ground_truth_kind": "spatial_domain",
+      "label_key": "domain_truth",
+      "dataset_visibility": "public",
+      "n_domains": 7
+    }
+  },
+  "content_hash": "sha256:45dcaee0edfa2be95c60454e2dd7e452b704a143db99eef88b488986871bd5a8",
+  "signature": {
+    "scheme": "ed25519",
+    "value": "WUNyREdDgcL1ufVNkAJzaV1ErYkXgLjrco+FU8CRUVv2jqYu+mUQJw7ms+Jv91eG+ltKQTIdvgNmX/gVu8wgCg==",
+    "public_key_id": "ed25519:Ilba4WgEIlieS+naup+79d/YP7G8T1Js3HVqc8aws/k=",
+    "certificate": null
+  }
+}

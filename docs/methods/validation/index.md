@@ -12,7 +12,7 @@ HistoWeave separates two multi-dataset evidence kinds (do **not** conflate them)
 
 Canonical sets: `SCIENTIFIC_VALIDATED_METHODS`, `CONTRACT_VALIDATED_METHODS`,
 `MULTI_DATASET_EVIDENCE_METHODS` in
-[`release_manifest.py`](https://github.com/histoweave-spatial/histoweave/blob/main/src/histoweave/plugins/builtin/release_manifest.py).
+[`release_manifest.py`](https://github.com/HERRY423/Histoweave/blob/main/src/histoweave/plugins/builtin/release_manifest.py).
 
 ## Scientific validated (10)
 
@@ -53,7 +53,7 @@ Published wrapper maturity reports historically used **oracle-K**
 | SpaGCN | oracle-K | ≈0.317 | [spagcn.md](spagcn.md) / `5x15_spatial_aware/sota_benchmark_long.csv` |
 | STAGATE | oracle-K (max_obs=1000) | ≈0.285 | [stagate.md](stagate.md) |
 | GraphST | oracle-K | ≈0.12 | [graphst.md](graphst.md) |
-| SpaGCN | estimate·silhouette | ≈0.237 | [non_oracle_k_sota](../../../non_oracle_k_sota/) |
+| SpaGCN | estimate·silhouette | ≈0.237 | [non_oracle_k_sota](https://github.com/HERRY423/Histoweave/tree/main/non_oracle_k_sota/) |
 | STAGATE | estimate·silhouette | ≈0.219 | same |
 | SpaGCN | oracle−estimate drop (mean) | ≈0.062 | protocol endpoint `oracle_k_leakage` |
 | SpaGCN | oracle−estimate drop (151673) | ≈0.232 | same |
@@ -69,17 +69,17 @@ string and do not silently mix tracks.
 
 **Availability policy:** summary JSON/MD/CSV are **tracked in git**. Raw H5AD
 and logs are not. Canonical inventory:
-[`reference_artefacts/MANIFEST.json`](../../../reference_artefacts/MANIFEST.json)
+[`reference_artefacts/MANIFEST.json`](https://github.com/HERRY423/Histoweave/blob/main/reference_artefacts/MANIFEST.json)
 and [Reference artefacts](../../reference-artefacts.md).
 
 | Directory | Protocol / role | In git? | Primary files |
 |-----------|-----------------|:-------:|---------------|
-| [`non_oracle_k_sota/`](../../../non_oracle_k_sota/) | `histoweave.non_oracle_k_sota.v1` + endpoint `histoweave.oracle_k_leakage.v1` | **yes** (summaries) | `benchmark_long.csv`, `dual_track_k.json`, `summary.json`, figures, report |
-| [`pareto_isus_results/`](../../../pareto_isus_results/) | Pareto multi-objective report + post-hoc ISUS calibration (not a predictor) | **yes** | `pareto_report.json`, `isus_calibration.json`, figures |
-| [`protocol_endpoints_results/`](../../../protocol_endpoints_results/) | Falsifiable endpoints 1–5 bundle | **yes** | `protocol_endpoints_summary.json`, study/selective/pareto/sota/oracle_k JSON |
-| [`independent_personalisation_results/`](../../../independent_personalisation_results/) | Study-level gated personalisation | **yes** | `independent_personalisation_summary.json`, report, cross-lab JSON |
-| [`benchmark_external_validation/decision_validation.json`](../../../benchmark_external_validation/decision_validation.json) | Negative external holdout control | **yes** | `beats_global_best: false` |
-| [`parallel_experiment_table/`](../../../parallel_experiment_table/) | Same-task same-data side-by-side (sklearn / spatial-aware / SOTA) | **yes** | `parallel_experiment_summary.csv`, report, heatmap |
+| [`non_oracle_k_sota/`](https://github.com/HERRY423/Histoweave/tree/main/non_oracle_k_sota/) | `histoweave.non_oracle_k_sota.v1` + endpoint `histoweave.oracle_k_leakage.v1` | **yes** (summaries) | `benchmark_long.csv`, `dual_track_k.json`, `summary.json`, figures, report |
+| [`pareto_isus_results/`](https://github.com/HERRY423/Histoweave/tree/main/pareto_isus_results/) | Pareto multi-objective report + post-hoc ISUS calibration (not a predictor) | **yes** | `pareto_report.json`, `isus_calibration.json`, figures |
+| [`protocol_endpoints_results/`](https://github.com/HERRY423/Histoweave/tree/main/protocol_endpoints_results/) | Falsifiable endpoints 1–5 bundle | **yes** | `protocol_endpoints_summary.json`, study/selective/pareto/sota/oracle_k JSON |
+| [`independent_personalisation_results/`](https://github.com/HERRY423/Histoweave/tree/main/independent_personalisation_results/) | Study-level gated personalisation | **yes** | `independent_personalisation_summary.json`, report, cross-lab JSON |
+| [`benchmark_external_validation/decision_validation.json`](https://github.com/HERRY423/Histoweave/blob/main/benchmark_external_validation/decision_validation.json) | Negative external holdout control | **yes** | `beats_global_best: false` |
+| [`parallel_experiment_table/`](https://github.com/HERRY423/Histoweave/tree/main/parallel_experiment_table/) | Same-task same-data side-by-side (sklearn / spatial-aware / SOTA) | **yes** | `parallel_experiment_summary.csv`, report, heatmap |
 
 ### How to cite a number from a reference artefact
 
@@ -92,12 +92,12 @@ and [Reference artefacts](../../reference-artefacts.md).
 ## Batch narrative
 
 See `research/method_validation/results/VALIDATION_BATCH_REPORT.md` and the
-[validation protocol](https://github.com/histoweave-spatial/histoweave/blob/main/research/method_validation/PROTOCOL.md).
+[validation protocol](https://github.com/HERRY423/Histoweave/blob/main/research/method_validation/PROTOCOL.md).
 
 ## Related
 
 - [Method guide index](../index.md)
 - [Method lifecycle](../../method-lifecycle.md)
 - [Decision protocol](../../decision-protocol.md)
-- [Roadmap](../../../ROADMAP.md)
-- [Release manifest](https://github.com/histoweave-spatial/histoweave/blob/main/src/histoweave/plugins/builtin/release_manifest.py)
+- [Roadmap](https://github.com/HERRY423/Histoweave/blob/main/ROADMAP.md)
+- [Release manifest](https://github.com/HERRY423/Histoweave/blob/main/src/histoweave/plugins/builtin/release_manifest.py)

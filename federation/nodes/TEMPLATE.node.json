@@ -1,0 +1,21 @@
+{
+  "_comment": "Node registry template. Copy to federation/nodes/<node_id>.json, fill in, and open a PR. Do NOT commit your private *.key.json. Files named TEMPLATE.* and index.json are skipped by the loader. Generate a real entry with: histoweave fed init-node --node-id <id> --display-name <name> --evidence-feed <url>",
+  "schema_version": "histoweave.node_registry.v1",
+  "node_id": "lab-example",
+  "display_name": "Example Spatial Lab",
+  "contact": "team@example.org",
+  "evidence_feed": [
+    "https://example.org/histoweave/bundle.json"
+  ],
+  "public_keys": [
+    {
+      "scheme": "ed25519",
+      "id": "ed25519:REPLACE_WITH_BASE64_PUBLIC_KEY",
+      "value": "REPLACE_WITH_BASE64_PUBLIC_KEY",
+      "status": "active"
+    }
+  ],
+  "sigstore_identity": null,
+  "added_at": "2024-01-01T00:00:00+00:00",
+  "status": "active"
+}

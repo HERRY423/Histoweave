@@ -10,6 +10,10 @@ on:
       - "5x10_dlpfc_benchmark/benchmark_long.csv"
       - "benchmark_crossplatform/benchmark_long.csv"
       - "benchmark_crossplatform/dataset_manifest.json"
+      # Federated evidence: refresh the site when nodes or their signed bundles change.
+      - "federation/nodes/**"
+      - "federation/bundles/**"
+      - "federation/consensus.json"
       - ".github/workflows/pages.yml"
   # Manual trigger from the Actions tab.
   workflow_dispatch:
@@ -38,6 +42,26 @@ jobs:
       # generate.py has no external dependencies beyond the stdlib + optional
       # h5py; we don't install h5py here because CI has no h5ad files anyway
       # and the script gracefully degrades.
+
+      # Rebuild the derived consensus view from the committed, signed evidence
+      # bundles so the site shows current federation status. consensus.json is
+      # not committed (derived, regenerable); if there are no nodes/bundles this
+      # is a no-op and generate.py emits the plain v2 feed.
+      - name: Rebuild federation consensus (if any evidence is registered)
+        run: |
+          if compgen -G "federation/bundles/*.json" > /dev/null && \
+             compgen -G "federation/nodes/*.json" > /dev/null; then
+            python -m pip install --upgrade pip
+            python -m pip install -e ".[federation]"
+            histoweave fed pull \
+              --nodes-dir federation/nodes \
+              --store "$RUNNER_TEMP/evidence_store.jsonl"
+            histoweave fed consensus \
+              --store "$RUNNER_TEMP/evidence_store.jsonl" \
+              --out federation/consensus.json
+          else
+            echo "no registered evidence; skipping consensus rebuild"
+          fi
 
       - name: Regenerate data.json
         run: python leaderboard/generate.py

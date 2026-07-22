@@ -5,7 +5,7 @@ validation ledger, and manuscript drafts must be **reproducibly obtainable**.
 Large raw matrices must **not** bloat git. This page is the single policy for
 what is in-repo, what is ignored, and how to regenerate either class.
 
-**Inventory:** [`reference_artefacts/MANIFEST.json`](../reference_artefacts/MANIFEST.json)  
+**Inventory:** [`reference_artefacts/MANIFEST.json`](https://github.com/HERRY423/Histoweave/blob/main/reference_artefacts/MANIFEST.json)
 **Builder / CI gate:** `python scripts/build_reference_artefact_manifest.py [--check]`
 
 ---
@@ -36,36 +36,36 @@ If it is needed only to **recompute** that number from counts, it may stay local
 
 | File | Role |
 |------|------|
-| [`independent_personalisation_summary.json`](../independent_personalisation_results/independent_personalisation_summary.json) | Primary endpoints (n units, gated regret, NI flags) |
-| [`independent_personalisation_report.md`](../independent_personalisation_results/independent_personalisation_report.md) | Human table |
-| [`cross_lab_reproducibility.json`](../independent_personalisation_results/cross_lab_reproducibility.json) | Δ regret CI, Kendall *W* |
+| [`independent_personalisation_summary.json`](https://github.com/HERRY423/Histoweave/blob/main/independent_personalisation_results/independent_personalisation_summary.json) | Primary endpoints (n units, gated regret, NI flags) |
+| [`independent_personalisation_report.md`](https://github.com/HERRY423/Histoweave/blob/main/independent_personalisation_results/independent_personalisation_report.md) | Human table |
+| [`cross_lab_reproducibility.json`](https://github.com/HERRY423/Histoweave/blob/main/independent_personalisation_results/cross_lab_reproducibility.json) | Δ regret CI, Kendall *W* |
 
 Protocol: `histoweave.independent_personalisation.v1`  
-README: [`independent_personalisation_results/README.md`](../independent_personalisation_results/README.md)
+README: [`independent_personalisation_results/README.md`](https://github.com/HERRY423/Histoweave/blob/main/independent_personalisation_results/README.md)
 
 ### 2. Protocol endpoints 1–5
 
 | File | Role |
 |------|------|
-| [`protocol_endpoints_summary.json`](../protocol_endpoints_results/protocol_endpoints_summary.json) | Bundle index |
-| [`oracle_k_leakage.json`](../protocol_endpoints_results/oracle_k_leakage.json) | Oracle − estimate ARI |
-| [`selective_regret_coverage.json`](../protocol_endpoints_results/selective_regret_coverage.json) | Policy = often `always_global_default` |
-| [`study_grouped_20_recommendation.json`](../protocol_endpoints_results/study_grouped_20_recommendation.json) | n=20 holdout |
+| [`protocol_endpoints_summary.json`](https://github.com/HERRY423/Histoweave/blob/main/protocol_endpoints_results/protocol_endpoints_summary.json) | Bundle index |
+| [`oracle_k_leakage.json`](https://github.com/HERRY423/Histoweave/blob/main/protocol_endpoints_results/oracle_k_leakage.json) | Oracle − estimate ARI |
+| [`selective_regret_coverage.json`](https://github.com/HERRY423/Histoweave/blob/main/protocol_endpoints_results/selective_regret_coverage.json) | Policy = often `always_global_default` |
+| [`study_grouped_20_recommendation.json`](https://github.com/HERRY423/Histoweave/blob/main/protocol_endpoints_results/study_grouped_20_recommendation.json) | n=20 holdout |
 
-README: [`protocol_endpoints_results/README.md`](../protocol_endpoints_results/README.md)
+README: [`protocol_endpoints_results/README.md`](https://github.com/HERRY423/Histoweave/blob/main/protocol_endpoints_results/README.md)
 
 ### 3. Non-oracle K / SOTA dual track
 
-See [`non_oracle_k_sota/README.md`](../non_oracle_k_sota/README.md) and
+See [`non_oracle_k_sota/README.md`](https://github.com/HERRY423/Histoweave/blob/main/non_oracle_k_sota/README.md) and
 [`docs/methods/validation/index.md`](methods/validation/index.md).
 
 ### 4. Pareto / ISUS
 
-See [`pareto_isus_results/README.md`](../pareto_isus_results/README.md).
+See [`pareto_isus_results/README.md`](https://github.com/HERRY423/Histoweave/blob/main/pareto_isus_results/README.md).
 
 ### 5. External validation negative control
 
-[`benchmark_external_validation/decision_validation.json`](../benchmark_external_validation/decision_validation.json)
+[`benchmark_external_validation/decision_validation.json`](https://github.com/HERRY423/Histoweave/blob/main/benchmark_external_validation/decision_validation.json)
 is intentionally **negative** (`beats_global_best: false`) and is used by the
 [intercept case study](case-study-intercepted-recommendation.md).
 
@@ -73,11 +73,11 @@ is intentionally **negative** (`beats_global_best: false`) and is used by the
 
 | File | Role |
 |------|------|
-| [`parallel_experiment_summary.csv`](../parallel_experiment_table/parallel_experiment_summary.csv) | Ranked mean ARI over 5 DLPFC slices (33 configs) |
-| [`parallel_experiment_table.csv`](../parallel_experiment_table/parallel_experiment_table.csv) | Long table: slice × method_config |
-| [`parallel_experiment_matrix.csv`](../parallel_experiment_table/parallel_experiment_matrix.csv) | Wide matrix for heatmaps |
-| [`report_parallel_experiment.md`](../parallel_experiment_table/report_parallel_experiment.md) | Narrative + caveats (seed / K-policy) |
-| [`figures/parallel_heatmap.svg`](../parallel_experiment_table/figures/parallel_heatmap.svg) | Family-grouped heatmap |
+| [`parallel_experiment_summary.csv`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/parallel_experiment_summary.csv) | Ranked mean ARI over 5 DLPFC slices (33 configs) |
+| [`parallel_experiment_table.csv`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/parallel_experiment_table.csv) | Long table: slice × method_config |
+| [`parallel_experiment_matrix.csv`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/parallel_experiment_matrix.csv) | Wide matrix for heatmaps |
+| [`report_parallel_experiment.md`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/report_parallel_experiment.md) | Narrative + caveats (seed / K-policy) |
+| [`figures/parallel_heatmap.svg`](https://github.com/HERRY423/Histoweave/blob/main/parallel_experiment_table/figures/parallel_heatmap.svg) | Family-grouped heatmap |
 
 Protocol: `histoweave.parallel_experiment_table.v1`  
 Aligns `5x10_dlpfc_benchmark`, `5x15_spatial_aware`, and `non_oracle_k_sota` on
@@ -153,4 +153,4 @@ version string** in the summary JSON and document the change in `CHANGELOG.md`.
 - [Decision protocol](decision-protocol.md)
 - [Validation index](methods/validation/index.md)
 - [Intercept case study](case-study-intercepted-recommendation.md)
-- [Roadmap](../ROADMAP.md)
+- [Roadmap](https://github.com/HERRY423/Histoweave/blob/main/ROADMAP.md)

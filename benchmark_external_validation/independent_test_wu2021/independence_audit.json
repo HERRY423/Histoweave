@@ -1,0 +1,26 @@
+{
+  "schema_version": "histoweave.independent_test.audit.v1",
+  "test_study": "Wu et al. 2021 / Zenodo 4739739",
+  "training_sources_checked": {
+    "strict_training_landscape": {
+      "path": "independent_personalisation_results/independent_unit_landscape.json",
+      "sha256": "cd5cd352c20c2263dc9d1fd3f96d2cba6d1d9abe6ddab123cd22007d04ea365f"
+    },
+    "external_development_manifest": {
+      "path": "benchmark_external_validation/dataset_manifest.json",
+      "sha256": "a70ebd91c30b48769784c3fe099cf0fdd7ed1dc91a703d994943ca36d8398da5"
+    },
+    "tls_discovery_summary": {
+      "path": "research/phaseB_tls_consensus/tables/discovery_summary.json",
+      "sha256": "03d52968546dc8b7a4c4900bc4fb87195b680e937f96b4d2ea3122b224b0053e"
+    }
+  },
+  "test_identifiers_found_in_training_sources": {
+    "strict_training_landscape": [],
+    "external_development_manifest": [],
+    "tls_discovery_summary": []
+  },
+  "all_identifier_matches_empty": true,
+  "study_level_independence": true,
+  "note": "The test study is absent from model-selection sources. The prior 10x FFPE breast TLS sample is a different public dataset and study."
+}

@@ -36,9 +36,11 @@ and [vs Squidpy / SpatialData](docs/vs-squidpy-spatialdata.md).
 
 | Method | Track | Mean ARI | Protocol / source |
 |--------|-------|---------:|-------------------|
-| SpaGCN | **oracle-K** (historical SOTA grid) | ≈0.32 | `5x15_spatial_aware/sota_benchmark_long.csv`, `k_policy` implicit oracle |
-| STAGATE | **oracle-K** (subsample max_obs=1000) | ≈0.29 | validation report `stagate.md` |
-| GraphST | **oracle-K** | ≈0.12 | same SOTA protocol family |
+| STAGATE | **oracle-K** | 0.353 | 5 slices x 3 seeds; unified real-data report below |
+| BayesSpace | **oracle-K** | 0.325 | 5 slices x 3 seeds; unified real-data report below |
+| SpaGCN | **oracle-K** | 0.317 | 5 slices x 3 seeds; preserved historical runs |
+| BANKSY | **oracle-K** | 0.223 | 5 slices x 3 seeds; preserved historical runs |
+| GraphST | **oracle-K** | 0.218 | 5 slices x 3 seeds; unified real-data report below |
 | SpaGCN | **estimate · silhouette** | ≈0.24 | `non_oracle_k_sota/` dual-track (seed 42) |
 | STAGATE | **estimate · silhouette** | ≈0.22 | same |
 | SpaGCN | max slice drop oracle→estimate | **0.23** on 151673 | protocol endpoint `oracle_k_leakage` |
@@ -50,6 +52,9 @@ see `report_parallel_experiment.md` (protocol
 `histoweave.parallel_experiment_table.v1`).
 
 Scientific default for new work is `k_policy=estimate`. Oracle-K is opt-in ablation only.
+The unified benchmark matrix contains these five spatial methods plus 15 sklearn
+spatial-weight configurations on the same five real DLPFC slices; see
+[`5x15_spatial_aware/report_sota_5x20.md`](5x15_spatial_aware/report_sota_5x20.md).
 
 ```bash
 pip install "histoweave-spatial[scanpy]"
@@ -86,6 +91,20 @@ evidence-governed `decide()` protocol; SOTA wrappers, candidate generation,
 Vitessce reporting, Nextflow, and containers support that protocol.
 See [docs/roadmap.md](docs/roadmap.md).
 
+Submission-facing freeze artifacts live in
+[`submission_freeze_v1/`](submission_freeze_v1/): five locked main figures, one
+supplement benchmark table, one reproduction script, and the data/code
+availability checklist for the Bioinformatics paper track. The additive strict
+panel v2 under `benchmark_external_validation/strict_external_panel_v2/` aligns
+n=9 domain LOOCV, a two-dataset TLS transport test, and explicit SOTA coverage
+on one task-aware registry; the TLS transport result is negative and the global
+default remains locked. A separate, preregistered one-shot test on all six
+Wu 2021 breast-cancer Visium patients is genuinely study-independent: the
+frozen spectral policy failed its 0.02-ARI regret margin (mean 0.1313,
+95% bootstrap CI 0.0340-0.2363; top-1 in 2/6 sections). This negative
+result is retained, and the test cohort is prohibited from entering training
+or threshold selection.
+
 ## Community
 
 - [Contributing guide](CONTRIBUTING.md) — plugins, maturity classification, docs regen
@@ -114,6 +133,9 @@ pip install "histoweave-spatial[io,spatial]"
 
 # Method-specific extras
 pip install "histoweave-spatial[scanpy,cell2location,scanvi,cellpose2,spatialde,liana,celltypist,deep-learning]"
+
+# Federated evidence network (Ed25519 signing/verification)
+pip install "histoweave-spatial[federation]"
 
 # All extras + development tools
 pip install "histoweave-spatial[all]"
@@ -416,6 +438,34 @@ Maturity tiers: `experimental` → `beta` → `production` → `contract_validat
 **validated** = multi-dataset *scientific* concordance (10 methods).  
 **contract_validated** = multi-dataset *interface/mock* gates (3 methods).  
 Together: **13** multi-dataset evidence packages (do not conflate the two kinds).
+
+## Federated evidence network
+
+Multiple labs can contribute signed benchmark results to a shared evidence
+landscape without sharing raw data. Only scalar scores and public dataset
+descriptors cross the boundary; a privacy gate rejects raw-data-shaped payloads.
+
+~~~bash
+pip install "histoweave-spatial[federation]"
+
+# Create a lab identity, sign local results, and verify a received bundle.
+histoweave fed init-node --node-id lab-cambridge --display-name "Cambridge Lab" \
+    --evidence-feed https://cam.example/histoweave/bundle.json
+histoweave fed sign --in benchmark_long.csv --sidecar sidecar.json \
+    --key federation/lab-cambridge.key.json --out bundle.json
+histoweave fed verify bundle.json --nodes-dir federation/nodes
+
+# Aggregate registered feeds and rebuild robust cross-lab consensus.
+histoweave fed pull --nodes-dir federation/nodes \
+    --store federation/evidence_store.jsonl
+histoweave fed consensus --store federation/evidence_store.jsonl \
+    --out federation/consensus.json
+~~~
+
+Self-reported scores enter as `unverified`; an independent reproduction within
+the configured tolerance upgrades them to `verified`, while irreconcilable
+results become `disputed`. See [`federation/PROTOCOL.md`](federation/PROTOCOL.md)
+and the [contributor guide](federation/CONTRIBUTING_EVIDENCE.md).
 
 ## Architecture
 

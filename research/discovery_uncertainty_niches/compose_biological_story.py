@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -172,7 +172,7 @@ def compile_metrics() -> dict[str, Any]:
 
     # Discovery 3 (Xenium experimental platform): Ca2+ signaling niche with same-domain DE
     xenium_summary = _load_json(XENIUM / "slice_summary.json")
-    xenium_comp = _safe_csv(XENIUM / "components_panel.csv")
+    _xenium_comp = _safe_csv(XENIUM / "components_panel.csv")
     xenium_rank3_markers = _safe_csv(
         XENIUM / "gc_deep_dive" / "component_rank3_n31" / "markers_vs_same_domain_Lymph_node.csv"
     )
@@ -269,7 +269,7 @@ def compile_metrics() -> dict[str, Any]:
 
     payload = {
         "protocol": "histoweave.biological_story.v1",
-        "composed_at": datetime.now(timezone.utc).isoformat(),
+        "composed_at": datetime.now(UTC).isoformat(),
         "global_decision": {
             "n_discoveries_highlighted": 2,
             "primary": discovery_1["id"],

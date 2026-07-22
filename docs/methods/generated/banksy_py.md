@@ -36,11 +36,12 @@ Native-Python BANKSY (own + neighbourhood + azimuthal-gradient features).
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.landscape.dlpfc_real.v1 + variance_decomposition
 - **datasets:** DLPFC Visium 151507/669/670/673/674 (Maynard 2021)
 - **metric:** ARI vs manual cortical layers; factorial variance decomposition
 - **notes:** Native BANKSY scaffold; official R BANKSY remains the canonical wrap.
-- **report:** docs/methods/validation/banksy.md
+- **report:** docs/methods/validation/banksy_py.md
 
 ---
 

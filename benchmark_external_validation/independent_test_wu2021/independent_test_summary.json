@@ -1,0 +1,95 @@
+{
+  "schema_version": "histoweave.independent_test.result.v1",
+  "protocol": "histoweave.independent_test.wu2021_breast.v1",
+  "test_set": "Wu et al. 2021 six-patient breast-cancer Visium cohort",
+  "independent_unit": "external_study with patient/section-level resampling",
+  "n_evaluable_sections": 6,
+  "frozen_policy": "spectral",
+  "confirmatory_endpoint": "study-level mean regret of frozen spectral policy",
+  "success_margin_ari": 0.02,
+  "mean_frozen_policy_regret": 0.13126117338422785,
+  "bootstrap_ci": {
+    "level": 0.95,
+    "low": 0.0339587885113106,
+    "high": 0.23626341616887417,
+    "n_boot": 10000,
+    "resampling_unit": "patient/section",
+    "seed": 20260722
+  },
+  "success": false,
+  "decision": "independent_test_fail",
+  "top1_frequency": 0.3333333333333333,
+  "sample_results": [
+    {
+      "sample": "1142243F",
+      "frozen_method": "spectral",
+      "frozen_mean_ari": 0.03167528445187521,
+      "oracle_method": "spectral",
+      "oracle_mean_ari": 0.03167528445187521,
+      "frozen_regret": 0.0,
+      "frozen_top1": true,
+      "n_domains": 6
+    },
+    {
+      "sample": "1160920F",
+      "frozen_method": "spectral",
+      "frozen_mean_ari": 0.301403414367976,
+      "oracle_method": "birch",
+      "oracle_mean_ari": 0.6284398421913282,
+      "frozen_regret": 0.3270364278233522,
+      "frozen_top1": false,
+      "n_domains": 8
+    },
+    {
+      "sample": "CID4290",
+      "frozen_method": "spectral",
+      "frozen_mean_ari": 0.32565519499861184,
+      "oracle_method": "spectral",
+      "oracle_mean_ari": 0.32565519499861184,
+      "frozen_regret": 0.0,
+      "frozen_top1": true,
+      "n_domains": 4
+    },
+    {
+      "sample": "CID4465",
+      "frozen_method": "spectral",
+      "frozen_mean_ari": 0.057776115393370985,
+      "oracle_method": "birch",
+      "oracle_mean_ari": 0.09261892647710479,
+      "frozen_regret": 0.034842811083733806,
+      "frozen_top1": false,
+      "n_domains": 4
+    },
+    {
+      "sample": "CID44971",
+      "frozen_method": "spectral",
+      "frozen_mean_ari": 0.4104473149942705,
+      "oracle_method": "gaussian_mixture",
+      "oracle_mean_ari": 0.5793572349784003,
+      "frozen_regret": 0.1689099199841298,
+      "frozen_top1": false,
+      "n_domains": 7
+    },
+    {
+      "sample": "CID4535",
+      "frozen_method": "spectral",
+      "frozen_mean_ari": 0.155329051874829,
+      "oracle_method": "bisecting_kmeans",
+      "oracle_mean_ari": 0.41210693328898024,
+      "frozen_regret": 0.25677788141415125,
+      "frozen_top1": false,
+      "n_domains": 8
+    }
+  ],
+  "method_mean_ari_across_sections": {
+    "agglomerative": 0.21297782070441987,
+    "birch": 0.26011889846509034,
+    "bisecting_kmeans": 0.2154890423886815,
+    "gaussian_mixture": 0.21350675094738306,
+    "kmeans": 0.21804508938295353,
+    "minibatch_kmeans": 0.1645799149579963,
+    "spectral": 0.21371439601348893,
+    "banksy_py": 0.21471398311218845
+  },
+  "claim_boundary": "A pass supports transport of the already-frozen global spectral policy to this independent study. It does not establish personalised-method superiority. A fail is retained as a negative external result."
+}

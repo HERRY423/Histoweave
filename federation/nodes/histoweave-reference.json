@@ -1,0 +1,20 @@
+{
+  "schema_version": "histoweave.node_registry.v1",
+  "node_id": "histoweave-reference",
+  "display_name": "HistoWeave Reference Node",
+  "contact": "maintainers@histoweave.example",
+  "evidence_feed": [
+    "federation/bundles/histoweave-reference.json"
+  ],
+  "public_keys": [
+    {
+      "scheme": "ed25519",
+      "id": "ed25519:Ilba4WgEIlieS+naup+79d/YP7G8T1Js3HVqc8aws/k=",
+      "value": "Ilba4WgEIlieS+naup+79d/YP7G8T1Js3HVqc8aws/k=",
+      "status": "active"
+    }
+  ],
+  "sigstore_identity": null,
+  "added_at": "2026-07-19",
+  "status": "active"
+}

@@ -38,6 +38,7 @@ GraphST contrastive graph representation + fixed-q clustering.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.sota_dlpfc.v1 (official GraphST real ARI)
 - **datasets:** DLPFC Visium 151507/669/670/673/674 × 3 seeds (max_obs=1000, epochs=120)
 - **metric:** ARI vs manual layers; mean≈0.121 across 15/15 successful cells

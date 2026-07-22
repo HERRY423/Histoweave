@@ -19,8 +19,8 @@ from __future__ import annotations
 
 import json
 import math
-from collections import Counter, defaultdict
-from dataclasses import asdict, dataclass, field
+from collections import Counter
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Literal
 from uuid import uuid4
@@ -343,7 +343,9 @@ def synthetic_lab_units(
         embedding={f"synth_lab_{k}": xy for k, xy in landscape.embedding.items()},
         best_method={f"synth_lab_{k}": m for k, m in landscape.best_method.items()},
         niches={
-            method: [f"synth_lab_{n}" if not str(n).startswith("synth_lab_") else n for n in members]
+            method: [
+                f"synth_lab_{n}" if not str(n).startswith("synth_lab_") else n for n in members
+            ]
             for method, members in landscape.niches.items()
         },
         timings={f"synth_lab_{k}": v for k, v in landscape.timings.items()},
@@ -638,9 +640,7 @@ def summarise_policies(
             "mean_gated_regret": float(
                 np.mean([r.gated_regret for r in sub if r.gated_regret is not None])
             ),
-            "personalised_rate": float(
-                np.mean([r.gated_action == "personalised" for r in sub])
-            ),
+            "personalised_rate": float(np.mean([r.gated_action == "personalised" for r in sub])),
         }
 
     # Primary success: point NI + statistical NI for gated policy.
@@ -664,9 +664,7 @@ def summarise_policies(
         "gated_superior": gated_superior,
         "gated_minus_global_point": delta_gate,
         "knn_minus_global_point": delta_knn,
-        "gated_personalised_rate": float(
-            np.mean([r.gated_action == "personalised" for r in rows])
-        ),
+        "gated_personalised_rate": float(np.mean([r.gated_action == "personalised" for r in rows])),
         "primary_policy": "gated_personalisation",
         "primary_noninferior": primary_ni,
         "primary_superior": gated_superior,
@@ -772,9 +770,7 @@ def rank_concordance_across_units(
     units = landscape.dataset_order()
     ranks = []
     for unit in units:
-        scores = {
-            m: landscape.performance[unit].get(m, float("nan")) for m in method_names
-        }
+        scores = {m: landscape.performance[unit].get(m, float("nan")) for m in method_names}
         finite = {m: s for m, s in scores.items() if s is not None and np.isfinite(s)}
         if len(finite) < 2:
             continue
@@ -795,9 +791,7 @@ def rank_concordance_across_units(
         "n_units": int(n_units),
         "n_methods": int(n_methods),
         "methods": method_names,
-        "mean_rank": {
-            m: float(rank_sums[i] / n_units) for i, m in enumerate(method_names)
-        },
+        "mean_rank": {m: float(rank_sums[i] / n_units) for i, m in enumerate(method_names)},
         "kendall_w": w,
         "notes": [
             "Kendall's W near 1 ⇒ method ranks are stable across independent units.",
@@ -842,9 +836,7 @@ def cross_lab_reproducibility_report(
                 policy_rows, policy="gated", n_boot=n_boot, seed=seed + 2
             ),
         },
-        "gated_minus_global": paired_delta_bootstrap(
-            policy_rows, n_boot=n_boot, seed=seed + 3
-        ),
+        "gated_minus_global": paired_delta_bootstrap(policy_rows, n_boot=n_boot, seed=seed + 3),
         "rank_concordance": rank_concordance_across_units(landscape, methods=method_names),
         "stats_review": stats.to_dict(),
         "notes": [
@@ -975,9 +967,7 @@ def write_independent_personalisation_bundle(
     paths["cross_lab"] = xl_path
 
     md_path = output / "independent_personalisation_report.md"
-    md_path.write_text(
-        format_independent_report(summary, policy_rows, cross_lab), encoding="utf-8"
-    )
+    md_path.write_text(format_independent_report(summary, policy_rows, cross_lab), encoding="utf-8")
     paths["report"] = md_path
 
     master = {

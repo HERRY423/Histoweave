@@ -1,0 +1,62 @@
+{
+  "sample": "10x Visium FFPE Human Breast Cancer (public, CC-BY-4.0)",
+  "n_spots": 2518,
+  "n_genes": 17943,
+  "framing": "exploratory niche-recovery; not a validated clinical finding",
+  "TLS_signature_genes_present": [
+    "MS4A1",
+    "CD79A",
+    "CD79B",
+    "CD19",
+    "CR2",
+    "LTB",
+    "CD3D",
+    "CD3E",
+    "CD8A",
+    "CXCL13",
+    "CCL19",
+    "CCL21",
+    "SELL"
+  ],
+  "morans_I_TLS_signature_k6": 0.6654,
+  "foci_definition": "B_score>90pct AND T_score>90pct",
+  "n_foci_spots": 99,
+  "foci_spatial_contiguity_k6": 0.7273,
+  "n_niche5_spots": 126,
+  "methods_in_panel": [
+    "agglomerative",
+    "gmm",
+    "kmeans",
+    "spectral",
+    "tenx_graphclust"
+  ],
+  "k_consensus": 8,
+  "consensus_recovered_domain": 5,
+  "consensus_foci_F1": 0.1301,
+  "consensus_foci_Jaccard": 0.0696,
+  "best_single_method_foci_F1": 0.4164,
+  "best_single_method": "tenx_graphclust",
+  "marker_enrichment_in_consensus_domain": {
+    "B": {
+      "inside_mean": 0.22513999044895172,
+      "outside_mean": 0.0719069316983223,
+      "fold": 3.1309914588928223
+    },
+    "T": {
+      "inside_mean": 0.3976078927516937,
+      "outside_mean": 0.15285624563694,
+      "fold": 2.6011884212493896
+    },
+    "chemokine": {
+      "inside_mean": 0.4886077344417572,
+      "outside_mean": 0.21005988121032715,
+      "fold": 2.326040267944336
+    },
+    "immune_sig": {
+      "inside_mean": 0.9619760513305664,
+      "outside_mean": 0.5699617862701416,
+      "fold": 1.6877903938293457
+    }
+  },
+  "TLS_score_inside_vs_outside_MWU_p": 8.164716561225624e-139
+}

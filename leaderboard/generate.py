@@ -294,6 +294,49 @@ def _sparsity_for(dataset: str) -> float | None:
     return None
 
 
+# --------------------------------------------------------------------------- #
+# Federated evidence enrichment (additive; a no-op when no federation files)
+# --------------------------------------------------------------------------- #
+FEDERATION_CONSENSUS = REPO_ROOT / "federation" / "consensus.json"
+
+
+def _load_federation_consensus() -> dict | None:
+    """Return the parsed ``federation/consensus.json`` if present, else ``None``.
+
+    When this returns ``None`` the leaderboard feed is byte-for-byte identical
+    to the pre-federation output (protocol stays ``histoweave.leaderboard.v2``),
+    so nothing that works today changes until a federation exists.
+    """
+    if not FEDERATION_CONSENSUS.exists():
+        return None
+    try:
+        data = json.loads(FEDERATION_CONSENSUS.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:  # pragma: no cover - defensive
+        _log(f"[federation] could not read consensus.json: {exc}")
+        return None
+    if not isinstance(data, dict) or "cells" not in data:
+        return None
+    return data
+
+
+def _federation_index(consensus: dict) -> dict[tuple[str, str], dict]:
+    """Map ``(dataset, method)`` -> per-cell federation fields for record joins."""
+    index: dict[tuple[str, str], dict] = {}
+    for cell in consensus.get("cells", []):
+        key = (str(cell.get("dataset")), str(cell.get("method")))
+        index[key] = {
+            "verification_status": cell.get("verification_status", "unverified"),
+            "n_labs": cell.get("n_labs", 0),
+            "n_records": cell.get("n_records", 0),
+            "consensus_score": cell.get("consensus_score"),
+            "cross_lab_ci": cell.get("cross_lab_ci"),
+            "reproducibility": cell.get("reproducibility"),
+            "node_ids": cell.get("node_ids", []),
+            "outlier_node_ids": cell.get("outlier_node_ids", []),
+        }
+    return index
+
+
 def build() -> dict:
     records: list[dict] = []
 
@@ -367,7 +410,7 @@ def build() -> dict:
         )
 
     # -- final feed -----------------------------------------------------------
-    return {
+    feed = {
         "protocol": "histoweave.leaderboard.v2",
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "task_default": "spatial_domain",
@@ -376,6 +419,45 @@ def build() -> dict:
         "methods": methods,
         "records": records,
     }
+
+    # -- optional federated evidence enrichment (additive) --------------------
+    # When federation/consensus.json exists, upgrade the feed to v3 by adding
+    # federation fields. Absent that file this branch is skipped entirely and
+    # `feed` is exactly the legacy v2 document, so existing renders/tests are
+    # unaffected.
+    consensus = _load_federation_consensus()
+    if consensus is not None:
+        fed_index = _federation_index(consensus)
+        for rec in feed["records"]:
+            key = (str(rec.get("dataset")), str(rec.get("method")))
+            cell = fed_index.get(key)
+            if cell is not None:
+                # Additive per-record fields; legacy fields are untouched.
+                rec["verification_status"] = cell["verification_status"]
+                rec["n_labs"] = cell["n_labs"]
+                rec["cross_lab_ci"] = cell["cross_lab_ci"]
+                rec["reproducibility"] = cell["reproducibility"]
+                rec["contributor_node_ids"] = cell["node_ids"]
+        summary = consensus.get("summary", {})
+        feed["protocol"] = "histoweave.leaderboard.v3"
+        feed["federation"] = {
+            "enabled": True,
+            "evidence_schema": "histoweave.evidence.v1",
+            "consensus_schema": consensus.get("schema_version", "histoweave.consensus.v1"),
+            "tolerance": consensus.get("tolerance"),
+            "generated_at": consensus.get("generated_at"),
+            "summary": summary,
+            "cells": consensus.get("cells", []),
+            "track_records": consensus.get("track_records", []),
+        }
+        _log(
+            f"[federation] enriched feed -> v3: "
+            f"{summary.get('n_cells', 0)} cells, "
+            f"{summary.get('n_verified', 0)} verified, "
+            f"{summary.get('n_nodes', 0)} nodes"
+        )
+
+    return feed
 
 
 def main() -> None:

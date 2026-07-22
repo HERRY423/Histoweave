@@ -168,7 +168,11 @@ def ensure_histology(
     if IMAGE_KEY in data.images:
         return data
     # Promote existing hires/lowres aliases.
-    for alias in (IMAGE_LOWRES_KEY if prefer == "lowres" else IMAGE_HIRES_KEY, IMAGE_HIRES_KEY, IMAGE_LOWRES_KEY):
+    for alias in (
+        IMAGE_LOWRES_KEY if prefer == "lowres" else IMAGE_HIRES_KEY,
+        IMAGE_HIRES_KEY,
+        IMAGE_LOWRES_KEY,
+    ):
         if alias in data.images:
             result = data.copy()
             result.images = {**result.images, IMAGE_KEY: np.asarray(result.images[alias])}
@@ -252,7 +256,9 @@ def spatial_table_from_visium_hne(
     obs = pd.DataFrame(adata.obs).copy()
     var = pd.DataFrame(adata.var).copy()
     X = adata.X
-    X_dense_probe = np.asarray(X[: min(50, X.shape[0])].todense() if hasattr(X, "todense") else X[: min(50, X.shape[0])])
+    X_dense_probe = np.asarray(
+        X[: min(50, X.shape[0])].todense() if hasattr(X, "todense") else X[: min(50, X.shape[0])]
+    )
     int_frac = float(np.mean(np.isclose(X_dense_probe, np.round(X_dense_probe))))
     if int_frac < 0.9:
         # Likely log-normalised — store expm1 pseudo-counts in layers later.
@@ -286,11 +292,10 @@ def spatial_table_from_visium_hne(
     images = extract_images_from_anndata_uns(dict(adata.uns), prefer=prefer)
     if not images:
         raise ValueError(
-            "Visium H&E AnnData has no uns['spatial'][…]['images']; "
-            "cannot build a virtual_st table"
+            "Visium H&E AnnData has no uns['spatial'][…]['images']; cannot build a virtual_st table"
         )
 
-    uns = {
+    uns: dict[str, Any] = {
         "assay": "visium",
         "platform": "visium",
         "technology": "visium",
@@ -307,9 +312,7 @@ def spatial_table_from_visium_hne(
         for lib, payload in spatial_meta.items():
             if not isinstance(payload, dict):
                 continue
-            slim[lib] = {
-                k: v for k, v in payload.items() if k != "images"
-            }
+            slim[lib] = {k: v for k, v in payload.items() if k != "images"}
             # Keep a tiny marker so extract_images_from_anndata_uns can still work
             # if images are re-attached later.
             if "images" in payload:

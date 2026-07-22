@@ -42,6 +42,7 @@ BANKSY neighbourhood-augmented spatial-domain detection.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.method_validation.multidataset.v1 + sota_domains.v1
 - **datasets:** DLPFC Visium 5 slices via banksy_py multi-seed ARI; R wrap contract tests
 - **metric:** ARI vs manual layers (native banksy_py proxy) + R container contract

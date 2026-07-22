@@ -26,7 +26,6 @@ matplotlib.rcParams["svg.fonttype"] = "none"
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
-from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
 
 _HERE = Path(__file__).resolve().parent
@@ -43,7 +42,11 @@ SKLEARN = {
     "spectral",
 }
 
-CMAP = LinearSegmentedColormap.from_list("phylo_heat", ["#FAF9F3", "#E9ED4C", "#FF9400"])
+# Data cells use a perceptually-uniform, colorblind-safe sequential map so
+# low/near-zero and negative ARI values stay distinguishable (the Phylo
+# paper->lime->orange gradient washed out at the low end). Phylo accent
+# colours are retained for the method-family band + legend below.
+CMAP = plt.get_cmap("cividis")
 
 
 def _log(message: object) -> None:
@@ -64,21 +67,27 @@ def build(csv: Path, out_svg: Path, out_png: Path, benchmark_json: Path | None =
 
     vmax = float(np.nanmax(mat.values)) if mat.values.size else 1.0
     vmax = max(0.1, vmax)
-    im = ax.imshow(mat.values, cmap=CMAP, aspect="auto", vmin=0, vmax=vmax)
+    vmin = float(np.nanmin(mat.values)) if mat.values.size else 0.0
+    vmin = min(0.0, vmin)  # include any negative ARI in the scale
+    im = ax.imshow(mat.values, cmap=CMAP, aspect="auto", vmin=vmin, vmax=vmax)
 
     ax.set_xticks(np.arange(n_cols))
     ax.set_yticks(np.arange(n_rows))
     ax.set_xticklabels(mat.columns, rotation=40, ha="right", fontsize=10)
     ax.set_yticklabels(mat.index, fontsize=10)
 
-    # Numeric labels
+    # Numeric labels — adaptive text colour for legibility on cividis
+    # (dark cells get white text, bright cells get black text).
+    span = (vmax - vmin) or 1.0
     for i in range(n_rows):
         for j in range(n_cols):
             v = mat.iloc[i, j]
             if pd.isna(v):
-                ax.text(j, i, "n/a", ha="center", va="center", fontsize=8, color="#999")
+                ax.text(j, i, "n/a", ha="center", va="center", fontsize=8, color="#bbb")
             else:
-                ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=8.5, color="#000")
+                frac = (float(v) - vmin) / span
+                txt_col = "#000000" if frac > 0.55 else "#ffffff"
+                ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=8.5, color=txt_col)
 
     # Family stripe below the column headers (green = spatial-aware).
     fam_h = 0.20
@@ -104,15 +113,16 @@ def build(csv: Path, out_svg: Path, out_png: Path, benchmark_json: Path | None =
         color="#666",
     )
 
-    # Legend chips at bottom
+    # Family legend — placed as a FIGURE-level legend at the very bottom so it
+    # never collides with the rotated x-axis tick labels.
     handles = [
         Rectangle((0, 0), 1, 1, facecolor="#75A025", edgecolor="#000", label="spatial-aware"),
         Rectangle((0, 0), 1, 1, facecolor="#ECE9E2", edgecolor="#000", label="sklearn"),
     ]
-    ax.legend(
+    fig.legend(
         handles=handles,
-        loc="upper center",
-        bbox_to_anchor=(0.5, -0.25 / fig_h - 0.05),
+        loc="lower center",
+        bbox_to_anchor=(0.5, -0.02),
         ncol=2,
         frameon=False,
         fontsize=9,
@@ -135,8 +145,8 @@ def build(csv: Path, out_svg: Path, out_png: Path, benchmark_json: Path | None =
     ax.tick_params(length=0)
 
     fig.tight_layout()
-    fig.savefig(out_svg, format="svg")
-    fig.savefig(out_png, format="png", dpi=150)
+    fig.savefig(out_svg, format="svg", bbox_inches="tight")
+    fig.savefig(out_png, format="png", dpi=150, bbox_inches="tight")
     plt.close(fig)
     _log(f"[write] {out_svg}")
     _log(f"[write] {out_png}")

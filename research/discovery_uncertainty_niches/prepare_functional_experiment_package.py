@@ -17,11 +17,10 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
-
 from functional_experiments import EXPERIMENTS, registry_summary
 
 BASE = Path(__file__).resolve().parent
@@ -170,8 +169,8 @@ def write_lab_handoff() -> None:
     lines = [
         "# Functional experiment lab hand-off (F3 / F4)",
         "",
-        f"**Protocol:** histoweave.functional_experiments.v1  ",
-        f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d')}",
+        "**Protocol:** histoweave.functional_experiments.v1  ",
+        f"**Generated:** {datetime.now(UTC).strftime('%Y-%m-%d')}",
         "",
         "This package specifies **perturbation (CRISPR/drug)**, **lineage tracing**,",
         "and **orthogonal platform** experiments to validate cryptic states D1–D3.",
@@ -207,7 +206,7 @@ def write_lab_handoff() -> None:
             lines.append(f"- **Targets:** {', '.join(e.targets)}")
             lines.append(f"- **Contrast:** {e.primary_contrast}")
             lines.append(f"- **Min replicates:** {e.n_replicates_min}")
-            lines.append(f"- **Pass criteria:**")
+            lines.append("- **Pass criteria:**")
             for c in e.pass_criteria:
                 lines.append(f"  - {c}")
             lines.append(f"- **ROI link:** `{e.related_roi}`")
@@ -386,7 +385,7 @@ def main() -> None:
 
     reg = {
         "protocol": "histoweave.functional_experiments.v1",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "summary": registry_summary(),
         "experiments": [e.to_dict() for e in EXPERIMENTS],
         "return_columns": RETURN_COLUMNS,

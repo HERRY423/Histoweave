@@ -1,0 +1,9 @@
+held_out,independence_class,oracle_score,global_best_method,global_best_regret,knn_method,knn_regret,knn_confidence,knn_beats_global_proxy,gated_method,gated_regret,gated_action,random_regret
+allen_merfish_brain_section,external_study,0.2821907033991168,spectral,0.0,spectral,0.0,0.9616,False,spectral,0.0,global_default,0.04389137027515849
+dlpfc_donor_Br5292,biological_donor,0.3923480653357618,spectral,0.019471996126912916,spectral,0.019471996126912916,1.0,True,spectral,0.019471996126912916,personalised,0.05200661461753897
+dlpfc_donor_Br5595,biological_donor,0.4524797778016233,spectral,0.0,spectral,0.0,0.965,True,spectral,0.0,personalised,0.079079811551649
+dlpfc_donor_Br8100,biological_donor,0.3654384272063379,spectral,0.0676655822847465,spectral,0.0676655822847465,0.9546,True,spectral,0.0676655822847465,personalised,0.04790962455003145
+visium_hd_crc,external_study,0.6759144939316668,spectral,0.0,spectral,0.0,1.0,True,spectral,0.0,personalised,0.2679888804350719
+visium_mouse_brain,external_study,0.6268160581881485,spectral,0.0,spectral,0.0,1.0,True,spectral,0.0,personalised,0.08333159689938296
+xenium_lung_cancer,external_study,0.15340591766364742,spectral,0.0,spectral,0.0,1.0,True,spectral,0.0,personalised,0.09961866030674801
+xenium_ovarian_cancer,external_study,0.46280500324094415,spectral,0.0,spectral,0.0,1.0,False,spectral,0.0,global_default,0.22823379283023026

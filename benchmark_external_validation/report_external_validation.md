@@ -100,6 +100,24 @@ use but not a claim of superior cross-study method selection.
 
 ---
 
+### 5.1 Selective regret-coverage (study-grouped n=20 endpoint)
+
+A separate frozen study-grouped endpoint evaluates 20 independent queries
+across the full confidence-threshold grid. Always choosing the global method
+has lower mean selection regret than always personalising
+(**0.029 versus 0.047 ARI regret**, absolute difference 0.018) at every
+operating point. The abstain-as-global curve reaches its minimum only at zero
+personalisation coverage, where it equals the global default.
+
+This is a successful negative decision result: the selective protocol detects
+that the available confidence heuristic does not justify personalisation and
+chooses full abstention, preventing the higher-regret action. The shaded
+regions separate the observed full-abstention and positive-coverage operating
+point classes; they are not an inferred biological threshold.
+
+![Selective regret-coverage](figures/selective_regret_coverage.png)
+
+---
 ## 6. Figures
 
 All figures are in `benchmark_external_validation/figures/` (SVG + PNG):
@@ -108,6 +126,7 @@ All figures are in `benchmark_external_validation/figures/` (SVG + PNG):
 - **fig2_method_boxplot** — ARI distribution per method across datasets × seeds.
 - **fig3_landscape_embedding** — 2D dataset-feature landscape, coloured by best method.
 - **fig4_recommender_regret** — selection regret vs global-best / random baselines.
+- **selective_regret_coverage (Figure 5)** - n=20 selective regret versus personalisation coverage.
 
 ---
 
@@ -138,6 +157,6 @@ In `benchmark_external_validation/`:
 `benchmark_long.csv`, `performance_matrix_mean.csv` / `_std.csv`,
 `bootstrap_ci.csv`, `benchmark_5x_external.json`, `dataset_manifest.json`,
 `recommendation_loocv.csv` / `.json`, `manifest.json`, and `figures/`
-(4 figures × SVG + PNG). Prepared data + scripts: the five `prepare_*.py`
+(5 figures × SVG + PNG). Prepared data + scripts: the five `prepare_*.py`
 scripts, `experiment_5x_external.py`, `recommender_loocv_external.py`,
 `make_figures.py`.

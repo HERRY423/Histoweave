@@ -1,0 +1,28 @@
+{
+  "schema_version": "histoweave.strict_external_panel.tls.v2",
+  "n_independent_datasets": 2,
+  "datasets": [
+    {
+      "unit_id": "visium_breast_cancer_tls",
+      "platform": "Visium FFPE",
+      "role": "exploratory tumour discovery",
+      "tls_morans_i": 0.6654,
+      "n_foci": 99,
+      "foci_contiguity": 0.7273,
+      "decision": "discovery_supported_within_sample"
+    },
+    {
+      "unit_id": "xenium_human_lymph_node",
+      "platform": "Xenium Prime",
+      "role": "independent positive-context transport control",
+      "tls_morans_i": 0.19025394968754009,
+      "n_foci": 29,
+      "foci_contiguity": 0.0,
+      "pathology_gc_f1": 0.0,
+      "neighbourhood_auc": 0.36421070234113706,
+      "decision": "not_replicated"
+    }
+  ],
+  "cross_dataset_decision": "not_replicated",
+  "claim_boundary": "The breast-cancer TLS observation remains a single-sample discovery. The second, cell-resolved dataset is a negative transport result and motivates assay-aware endpoints rather than a general TLS claim."
+}

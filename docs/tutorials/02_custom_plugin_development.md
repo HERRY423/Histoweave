@@ -131,7 +131,7 @@ class ScanpyHVG(Method):
 
 ## Shipping it as an installable package
 
-Methods do not have to live in HistoWeave. Copy the [`plugin-template/`](https://github.com/histoweave-spatial/histoweave/tree/main/plugin-template)
+Methods do not have to live in HistoWeave. Copy the [`plugin-template/`](https://github.com/HERRY423/Histoweave/tree/main/plugin-template)
 directory, which is a minimal `pyproject.toml` package that advertises an entry point:
 
 ```toml
@@ -160,7 +160,7 @@ task and metric — the whole point of the platform.
 
 ## Runnable script
 
-[`examples/tutorial_custom_plugin.py`](https://github.com/histoweave-spatial/histoweave/blob/main/examples/tutorial_custom_plugin.py)
+[`examples/tutorial_custom_plugin.py`](https://github.com/HERRY423/Histoweave/blob/main/examples/tutorial_custom_plugin.py)
 defines and exercises the `spatial_smooth` plugin end-to-end:
 
 ```bash

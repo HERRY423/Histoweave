@@ -98,6 +98,49 @@ function groupRecords(records, methods, datasets) {
 }
 
 // ---------------------------------------------------------------------------
+// Federated evidence (additive; every function here is a no-op when the feed
+// carries no `federation` block, i.e. protocol < v3).
+// ---------------------------------------------------------------------------
+function federationEnabled() {
+  return !!(state.data && state.data.federation && state.data.federation.enabled);
+}
+
+// Map "dataset\u0000method" -> consensus cell, for quick per-record lookup.
+function federationCellIndex() {
+  const idx = {};
+  if (!federationEnabled()) return idx;
+  for (const c of (state.data.federation.cells || [])) {
+    idx[`${c.dataset}\u0000${c.method}`] = c;
+  }
+  return idx;
+}
+
+// Roll a method's cells up to a single badge: verified > unverified > disputed
+// precedence for display, plus the max number of contributing labs.
+const _STATUS_RANK = { verified: 3, unverified: 2, disputed: 1 };
+function methodFederationSummary(method, datasets, cellIndex) {
+  let best = null, maxLabs = 0, anyDisputed = false;
+  for (const d of datasets) {
+    const c = cellIndex[`${d}\u0000${method}`];
+    if (!c) continue;
+    maxLabs = Math.max(maxLabs, c.n_labs || 0);
+    if (c.verification_status === 'disputed') anyDisputed = true;
+    if (best == null || (_STATUS_RANK[c.verification_status] || 0) > (_STATUS_RANK[best] || 0)) {
+      best = c.verification_status;
+    }
+  }
+  return { status: best, maxLabs, anyDisputed };
+}
+
+function fedBadge(summary) {
+  if (!summary || summary.status == null) return '<span class="chip nan">local</span>';
+  const label = summary.status === 'verified'
+    ? `verified · ${summary.maxLabs} labs`
+    : (summary.status === 'disputed' ? 'disputed' : `${summary.maxLabs} lab${summary.maxLabs === 1 ? '' : 's'}`);
+  return `<span class="chip fed-${summary.status}" title="cross-lab verification status">${label}</span>`;
+}
+
+// ---------------------------------------------------------------------------
 // Rendering
 // ---------------------------------------------------------------------------
 
@@ -113,6 +156,30 @@ function renderStats() {
   document.getElementById('build-protocol').textContent = proto;
   document.getElementById('build-date').textContent =
     d.generated_at ? new Date(d.generated_at).toLocaleString() : '—';
+  renderFederationBanner();
+}
+
+// Additive: a one-line summary of the federated evidence network, shown only
+// when the feed is v3 (has a `federation` block). The container is hidden by
+// default in index.html, so pre-federation feeds show nothing new.
+function renderFederationBanner() {
+  const el = document.getElementById('federation-banner');
+  if (!el) return;
+  if (!federationEnabled()) {
+    el.hidden = true;
+    return;
+  }
+  const s = state.data.federation.summary || {};
+  const tol = state.data.federation.tolerance;
+  const tolStr = tol != null ? ` · tolerance |Δ| ≤ ${tol}` : '';
+  el.hidden = false;
+  el.innerHTML = `
+    <span class="fed-title">Federated evidence network</span>
+    <span class="chip fed-verified">${s.n_verified || 0} verified</span>
+    <span class="chip fed-unverified">${s.n_unverified || 0} unverified</span>
+    <span class="chip fed-disputed">${s.n_disputed || 0} disputed</span>
+    <span class="fed-meta">${s.n_nodes || 0} contributing labs · ${s.n_cells || 0} cells${tolStr}</span>
+  `;
 }
 
 function addOptions(id, values) {
@@ -235,11 +302,23 @@ function renderTable() {
     return bestI;
   });
 
-  // Head
+  // Federation rollup per method (additive; empty object when disabled).
+  const fedEnabled = federationEnabled();
+  const cellIndex = federationCellIndex();
+  const fedByMethod = {};
+  if (fedEnabled) {
+    for (const s of stats) {
+      fedByMethod[s.method] = methodFederationSummary(s.method, datasets, cellIndex);
+    }
+  }
+
+  // Head — the Evidence column is only present when federation is enabled, so
+  // the table is byte-identical to the pre-federation layout otherwise.
   const thead = document.getElementById('lb-head');
   thead.innerHTML = `
     <th>Method</th>
     <th>Family</th>
+    ${fedEnabled ? '<th title="Cross-lab verification status">Evidence</th>' : ''}
     <th>Mean ARI</th>
     <th>Best ARI</th>
     <th>Wins</th>
@@ -254,10 +333,12 @@ function renderTable() {
   const fmtSec = (v) => (v == null || !Number.isFinite(v)) ? '—' : v.toFixed(1);
   for (const s of stats) {
     const fam = state.data.methods.find(m => m.name === s.method).family;
+    const fedCell = fedEnabled ? `<td>${fedBadge(fedByMethod[s.method])}</td>` : '';
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${s.method}</td>
       <td><span class="chip ${fam}">${fam}</span></td>
+      ${fedCell}
       <td>${fmt(s.mean)}</td>
       <td>${fmt(s.max)}</td>
       <td>${s.wins}</td>

@@ -56,9 +56,7 @@ def _toy_landscape(n: int = 6) -> LandscapeResult:
         performance=performance,
         features=features,
         embedding={name: (float(i), 0.0) for i, name in enumerate(performance)},
-        best_method={
-            name: max(row, key=lambda m: row[m]) for name, row in performance.items()
-        },
+        best_method={name: max(row, key=lambda m: row[m]) for name, row in performance.items()},
         niches={},
         timings={},
         feature_order=list(RECOMMENDATION_FEATURE_ORDER),
@@ -256,7 +254,10 @@ def test_write_protocol_bundle(tmp_path) -> None:
     queries, summary = leave_one_study_out(landscape, k_neighbours=2, min_training=2)
     # Force meets_query_target check path via summarise
     summary = summarise_study_grouped(
-        queries, n_training_pool=5, methods=["kmeans", "spectral", "agglomerative"], min_queries_target=20
+        queries,
+        n_training_pool=5,
+        methods=["kmeans", "spectral", "agglomerative"],
+        min_queries_target=20,
     )
     selective = selective_regret_coverage(queries)
     leak = {

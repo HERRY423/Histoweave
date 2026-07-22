@@ -31,7 +31,6 @@ import logging
 import os
 import sys
 import time
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -42,7 +41,6 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from histoweave.benchmark.k_selection import (  # noqa: E402
     DualTrackKReport,
-    compare_k_policies,
     estimate_n_domains,
     oracle_n_domains,
 )
@@ -174,9 +172,7 @@ def run_cell(
     table.uns.pop("n_domains", None)
     table.uns["slice_id"] = sid
 
-    k_used, k_meta = _resolve_k(
-        table, k_policy=k_policy, estimator=estimator, seed=seed
-    )
+    k_used, k_meta = _resolve_k(table, k_policy=k_policy, estimator=estimator, seed=seed)
     mode = _mode_key(k_policy, estimator)
     ckpt = _ckpt_path(method, sid, seed, mode, k_used)
 
@@ -336,9 +332,7 @@ def summarize(cells: list[dict[str, Any]], dual: list[dict[str, Any]]) -> dict[s
             "ari_recovered_by_spatial_silhouette": (
                 None if spat_ari is None else float(spat_ari - sil_ari)
             ),
-            "ari_recovered_by_ensemble": (
-                None if ens_ari is None else float(ens_ari - sil_ari)
-            ),
+            "ari_recovered_by_ensemble": (None if ens_ari is None else float(ens_ari - sil_ari)),
             "fraction_of_drop_recovered_ensemble": (
                 None
                 if ens_ari is None or drop <= 1e-12
@@ -409,7 +403,9 @@ def write_dual_csv(dual: list[dict[str, Any]], path: Path) -> None:
             writer.writerow({k: row.get(k) for k in fields})
 
 
-def make_figure(cells: list[dict[str, Any]], summary: dict[str, Any], dual: list[dict[str, Any]]) -> None:
+def make_figure(
+    cells: list[dict[str, Any]], summary: dict[str, Any], dual: list[dict[str, Any]]
+) -> None:
     sys.path.insert(0, str(ROOT / "scripts"))
     from scientific_figure_pro import (  # type: ignore
         PALETTE,
@@ -536,16 +532,12 @@ def make_figure(cells: list[dict[str, Any]], summary: dict[str, Any], dual: list
 
     # --- Panel C: Dual-track K match rate ---
     est_order = ["silhouette", "spatial_silhouette", "ensemble"]
-    match_rates = [
-        summary["dual_track_k_match_rate"].get(e, np.nan) for e in est_order
-    ]
+    match_rates = [summary["dual_track_k_match_rate"].get(e, np.nan) for e in est_order]
     # Also mean |k_hat - k_oracle|
     abs_err = []
     for est in est_order:
         errs = [
-            abs(int(r["estimated_k"]) - int(r["oracle_k"]))
-            for r in dual
-            if r["estimator"] == est
+            abs(int(r["estimated_k"]) - int(r["oracle_k"])) for r in dual if r["estimator"] == est
         ]
         abs_err.append(float(np.mean(errs)) if errs else np.nan)
     x3 = np.arange(len(est_order), dtype=float)
@@ -599,8 +591,14 @@ def write_report(summary: dict[str, Any], dual: list[dict[str, Any]], path: Path
     ]
     for est, rate in summary.get("dual_track_k_match_rate", {}).items():
         lines.append(f"| `{est}` | {rate:.2f} |")
-    lines += ["", "## Mean ARI by method × K mode", "", "| Method | Mode | Mean ARI | Std | K match |", "|---|---|---:|---:|---:|"]
-    for key, rec in sorted(summary.get("by_mode", {}).items()):
+    lines += [
+        "",
+        "## Mean ARI by method × K mode",
+        "",
+        "| Method | Mode | Mean ARI | Std | K match |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for _key, rec in sorted(summary.get("by_mode", {}).items()):
         lines.append(
             f"| {rec['method']} | `{rec['mode']}` | {rec['mean_ari']:.4f} | "
             f"{rec['std_ari']:.4f} | {rec['k_match_rate']:.2f} |"
@@ -617,7 +615,7 @@ def write_report(summary: dict[str, Any], dual: list[dict[str, Any]], path: Path
             f"(recovered **{rec.get('ari_recovered_by_spatial_silhouette')}**)",
             f"- Ensemble mean ARI: **{rec.get('ensemble_mean_ari')}** "
             f"(recovered **{rec.get('ari_recovered_by_ensemble')}**, "
-            f"{(rec.get('fraction_of_drop_recovered_ensemble') or 0)*100:.0f}% of drop)",
+            f"{(rec.get('fraction_of_drop_recovered_ensemble') or 0) * 100:.0f}% of drop)",
             "",
         ]
     lines += [
@@ -682,9 +680,7 @@ def main(argv: list[str] | None = None) -> int:
             for method in methods:
                 for seed in seeds:
                     for k_policy, estimator in K_MODES:
-                        cells.append(
-                            run_cell(method, sid, seed, k_policy, estimator)
-                        )
+                        cells.append(run_cell(method, sid, seed, k_policy, estimator))
         write_long_csv(cells, OUT / "benchmark_long.csv")
         (OUT / "benchmark_long.json").write_text(
             json.dumps(cells, indent=2, allow_nan=False, default=str),

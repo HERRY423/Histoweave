@@ -21,7 +21,14 @@ __version_info__ = (0, 1, 0, "final", 0)
 
 from . import datasets
 from .data import Provenance, SpatialTable
-from .decision import DecisionAction, DecisionCard, DecisionEngine, DecisionPolicy, decide
+from .decision import (
+    DecisionAction,
+    DecisionCard,
+    DecisionEngine,
+    DecisionPolicy,
+    decide,
+    decide_from_bundle,
+)
 from .plugins import MethodCategory, MethodMaturity, get_method, list_methods, register
 from .report import build_report
 from .workflow import (
@@ -43,6 +50,7 @@ __all__ = [
     "DecisionEngine",
     "DecisionPolicy",
     "decide",
+    "decide_from_bundle",
     "MethodCategory",
     "MethodMaturity",
     "register",

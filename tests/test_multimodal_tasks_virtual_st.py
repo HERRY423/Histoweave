@@ -6,9 +6,9 @@ import numpy as np
 import pytest
 
 from histoweave.benchmark import (
+    DOMAIN_PARTITION_TASKS,
     AnalysisTask,
     CrossModalRelation,
-    DOMAIN_PARTITION_TASKS,
     GroundTruthKind,
     MethodRecommender,
     TaskContract,
@@ -20,9 +20,13 @@ from histoweave.benchmark import (
     tasks_admissible,
     virtual_st_task,
 )
+from histoweave.benchmark.features import (
+    RECOMMENDATION_FEATURE_ORDER,
+    extract_features,
+    feature_vector,
+)
 from histoweave.benchmark.harness import run_benchmark
 from histoweave.benchmark.landscape import LandscapeResult
-from histoweave.benchmark.features import RECOMMENDATION_FEATURE_ORDER, extract_features, feature_vector
 from histoweave.plugins import MethodCategory, create_method, list_methods
 from histoweave.plugins.builtin import register_all
 

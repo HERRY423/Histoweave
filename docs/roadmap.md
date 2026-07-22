@@ -2,7 +2,7 @@
 
 The canonical roadmap lives at the repository root:
 
-**[ROADMAP.md](../ROADMAP.md)**
+**[ROADMAP.md](https://github.com/HERRY423/Histoweave/blob/main/ROADMAP.md)**
 
 Near-term priorities (v0.1.x → v0.2.0):
 
