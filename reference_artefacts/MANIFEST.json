@@ -1,6 +1,6 @@
 {
   "schema": "histoweave.reference_artefacts.manifest.v1",
-  "generated_utc": "2026-07-20T15:58:05Z",
+  "generated_utc": "2026-07-22T13:46:41Z",
   "policy": {
     "track_summaries": true,
     "ignore_raw_h5ad": true,
@@ -24,41 +24,41 @@
     "parallel_experiment_table/parallel_experiment_table.csv",
     "parallel_experiment_table/report_parallel_experiment.md"
   ],
-  "n_files": 115,
-  "total_bytes": 2408982,
+  "n_files": 158,
+  "total_bytes": 5071544,
   "files": [
     {
       "path": "independent_personalisation_results/cross_lab_reproducibility.json",
-      "bytes": 11290,
-      "sha256": "7644fd1ef257ce9358e9a128ea1ac60d552d1f70871472d530ac8235871364e6",
+      "bytes": 10898,
+      "sha256": "a626464aa173cec9359a2ce39c0b48c1d5fc11b3dcf8aba20cf5af4d83665d35",
       "protocol_family": "histoweave.independent_personalisation.v1",
       "required": true
     },
     {
       "path": "independent_personalisation_results/independent_personalisation_report.md",
-      "bytes": 3017,
-      "sha256": "28725844bfb58ecae645cc84d7b93ab6e777b652c1f653ae8f827a4ad027e7d6",
+      "bytes": 2973,
+      "sha256": "dc1d9aefc4e704b79414d35d40a79aafcf677da2863fc805644c876eb5e9ab56",
       "protocol_family": "histoweave.independent_personalisation.v1",
       "required": true
     },
     {
       "path": "independent_personalisation_results/independent_personalisation_summary.json",
-      "bytes": 1743,
-      "sha256": "793ef82c7016948dfa40d107357d97e874f18caf6e9fc8df387db665c43c1858",
+      "bytes": 1689,
+      "sha256": "b618f04433090d4a38fcf00d012b37bba59d546648f7db64d142e570fa60a653",
       "protocol_family": "histoweave.independent_personalisation.v1",
       "required": true
     },
     {
       "path": "independent_personalisation_results/independent_unit_landscape.json",
-      "bytes": 29895,
-      "sha256": "cd5cd352c20c2263dc9d1fd3f96d2cba6d1d9abe6ddab123cd22007d04ea365f",
+      "bytes": 28861,
+      "sha256": "fe1af9bc368665a4eb453a711d95e12204e7c2741e94dc04c01b7af126c5b5d5",
       "protocol_family": "histoweave.independent_personalisation.v1",
       "required": false
     },
     {
       "path": "independent_personalisation_results/personalisation_policies.json",
-      "bytes": 12155,
-      "sha256": "77cf6ec932fa144c42fcba6ec41f0aeeabf586c996534f0af0f533865e64e5f9",
+      "bytes": 11810,
+      "sha256": "85a7235584f91e96696939c12c983960e758b8fd8b9d172b7a3bd2b017bac642",
       "protocol_family": "histoweave.independent_personalisation.v1",
       "required": false
     },
@@ -71,43 +71,43 @@
     },
     {
       "path": "independent_personalisation_results/real_independent_unit_landscape.json",
-      "bytes": 19897,
-      "sha256": "917923741140018294d77de6bbfb545484dbd07e67ec57064a98b7e949b9fa75",
+      "bytes": 19176,
+      "sha256": "77e1ebfd3b28e293bd4e621e7248f6dc69eadbc0cd22b4d74421432048e43960",
       "protocol_family": "histoweave.independent_personalisation.v1",
       "required": false
     },
     {
       "path": "protocol_endpoints_results/multisource_landscape.json",
-      "bytes": 25147,
-      "sha256": "9d8170810dc9ee142de554fd6aa73115b790b33abd515b751a3b5dc9dd2373dd",
+      "bytes": 24208,
+      "sha256": "f804724107c59d1e50db00f3dcced25c5d992dc5a45b87b71deda1abed5b923f",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": false
     },
     {
       "path": "protocol_endpoints_results/oracle_k_leakage.json",
-      "bytes": 6285,
-      "sha256": "1b18eb4c74be2c757a489065f3fd466b738496d09c7f040d060bc533de11812b",
+      "bytes": 6094,
+      "sha256": "0100380809f349ddcb1b30d570bf9fdf894da049315054a69c7e1784cb29213f",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": true
     },
     {
       "path": "protocol_endpoints_results/pareto_stability.json",
-      "bytes": 5116,
-      "sha256": "14668d27b72282697d43144735b42e8a342d608a48725185419434278d1ecfb5",
+      "bytes": 4939,
+      "sha256": "f1ba5767139088baa77fab3bccc46b134b8d4148f1cf36b8d2c0e0b574db3edc",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": false
     },
     {
       "path": "protocol_endpoints_results/protocol_endpoints_report.md",
-      "bytes": 917,
-      "sha256": "c1534b0cb607850f88616ee5cb38ed252128609a5320ca2b274fd1af8728caec",
+      "bytes": 886,
+      "sha256": "e471fd2e073529124dcdba5ccd56213b37560d00dbb6d3dbe1cfc8ef03606580",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": true
     },
     {
       "path": "protocol_endpoints_results/protocol_endpoints_summary.json",
-      "bytes": 1321,
-      "sha256": "f79b167659920714bcc5e34f05edb70ddd4d35b78e829dd413fb15d7b398674b",
+      "bytes": 1279,
+      "sha256": "a9156ceac2404009acc02050e2992da4b19835decd0395b9e64c22b0e955b20c",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": true
     },
@@ -120,43 +120,43 @@
     },
     {
       "path": "protocol_endpoints_results/selective_regret_coverage.json",
-      "bytes": 5087,
-      "sha256": "cc4da3043f24f30c9249ba17fb5c63aa7ec67dc8b0b72cf5b627dec5508d82dd",
+      "bytes": 4942,
+      "sha256": "74c45459c4eee43d11b322b29d0c72eaf4ecb864ae3bd0180f80a6f553c6f2b9",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": true
     },
     {
       "path": "protocol_endpoints_results/sota_unified_resource.json",
-      "bytes": 16044,
-      "sha256": "dc9a425b8e8e4516616baecdc89ebaf717e3882de0911e62411a0b7962cae87b",
+      "bytes": 15450,
+      "sha256": "7537cd61466ee840fe89ffe329155184f602c62dbd711bfec268050b42d80f26",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": false
     },
     {
       "path": "protocol_endpoints_results/study_grouped_20_recommendation.json",
-      "bytes": 50865,
-      "sha256": "2d5c394b2eefbe5b09d0053ee4b8b8ea7c78fb799ff1a2e41676a5026c4ff186",
+      "bytes": 49077,
+      "sha256": "94220457b38c510b432bda7ae5ad91f0dc05848a2afd96fb5a75f76a2f11d46b",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": false
     },
     {
       "path": "protocol_endpoints_results/study_grouped_20_report.md",
-      "bytes": 2381,
-      "sha256": "1e923be9abe4347346b06966f5e3f4fc1abdf53d490e79e133591d7f432cb340",
+      "bytes": 2343,
+      "sha256": "d5afea602d9acfd40a23776e34421433dd5ed93d4de180dd6ce49834783f1480",
       "protocol_family": "histoweave.protocol_endpoints.bundle",
       "required": false
     },
     {
       "path": "non_oracle_k_sota/benchmark_long.csv",
-      "bytes": 4412,
-      "sha256": "d3601dd05e13d6da28b48c2e239fb9833b27e9eed71d64ad50a59e5c1647ac46",
+      "bytes": 4371,
+      "sha256": "77922c86ac2435dcc4f6c6d549350d180c34cd478579526681fb9034cd2ae1ce",
       "protocol_family": "histoweave.non_oracle_k_sota.v1",
       "required": true
     },
     {
       "path": "non_oracle_k_sota/benchmark_long.json",
-      "bytes": 54653,
-      "sha256": "6ba38c91b9f0b83c746890e0ce6c129c5a1c530c1d1367400ac2f7f92d40fc46",
+      "bytes": 52732,
+      "sha256": "b610e90334e531db383e96ef8625755dd4b9bae4a59f2bd196558caada97076a",
       "protocol_family": "histoweave.non_oracle_k_sota.v1",
       "required": false
     },
@@ -442,15 +442,15 @@
     },
     {
       "path": "non_oracle_k_sota/dual_track_k.csv",
-      "bytes": 578,
-      "sha256": "29bf490f72d9827a4b99f483de812a8811a355a54c199e2029952e74ceb883c8",
+      "bytes": 562,
+      "sha256": "c867763e5ad9f015dd94e7013415dc9ac6e75f701c791c5d0587dcc9a187578b",
       "protocol_family": "histoweave.non_oracle_k_sota.v1",
       "required": false
     },
     {
       "path": "non_oracle_k_sota/dual_track_k.json",
-      "bytes": 18385,
-      "sha256": "8b63610a74bf30c7e8b8e7f6449145082e2985b93a9e3f6d3d69be404a315643",
+      "bytes": 17759,
+      "sha256": "375fe46adc3c2e85915f1208053a7e965daeb113035263ed5ce54a7915a7d5fd",
       "protocol_family": "histoweave.non_oracle_k_sota.v1",
       "required": false
     },
@@ -484,15 +484,15 @@
     },
     {
       "path": "non_oracle_k_sota/run_non_oracle_k_sota.py",
-      "bytes": 24580,
-      "sha256": "2471ab825e1193eee06e61b005b47f19548876fbb5b1cf82e5d75c0ea14ac6f7",
+      "bytes": 24445,
+      "sha256": "e2dec7f0713f76079ab792b57a4531edfb73ed74a1335382050a87c6ccea2651",
       "protocol_family": "histoweave.non_oracle_k_sota.v1",
       "required": false
     },
     {
       "path": "non_oracle_k_sota/summary.json",
-      "bytes": 3496,
-      "sha256": "c045067cc0dd873a74f0c65b59c7b1954c8ebede5c2c6fc2d802b16297f35461",
+      "bytes": 3378,
+      "sha256": "3cfade97c34571c01272266758bfff3d16e345a9e5b301a84b7900b313881fa6",
       "protocol_family": "histoweave.non_oracle_k_sota.v1",
       "required": true
     },
@@ -567,37 +567,44 @@
       "required": false
     },
     {
+      "path": "benchmark_external_validation/__init__.py",
+      "bytes": 67,
+      "sha256": "fe3b42b35a2fe3ac5a658993012b122fe7346d43d0d6a2b60dfb2d022bcb30f0",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
       "path": "benchmark_external_validation/_xenium_pathology_common.py",
-      "bytes": 10613,
-      "sha256": "c43bc3c4a32c16dcfb7f958411608e788e68b849a52a2a0b19b5059a86f4fcda",
+      "bytes": 10370,
+      "sha256": "2ae356c4fab9649c229cb8aa8035d20f67c657cd3f05e4d1a8700721853e01a3",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/benchmark_5x_external.json",
-      "bytes": 2358,
-      "sha256": "f0ef4b5dcd62c0705b15bf4f48f40217b31c07badb2e5cb49428181e568dd53a",
+      "bytes": 2269,
+      "sha256": "5da8b2a1882d5627e960fa088f9afd24f7ac8377c489c23f315328866f13a2e9",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/benchmark_long.csv",
-      "bytes": 34895,
-      "sha256": "f3b8cf3196a997faea259f314aca2aec4160f4e16a6f6946fa00d7b0c8c04a0c",
+      "bytes": 34669,
+      "sha256": "8efd60fa52994e7d8717d85c7bbebd65e2d411fa17cb9ac4a02cbb1a70ef7ba6",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/bootstrap_ci.csv",
-      "bytes": 8446,
-      "sha256": "d872b69ff44a49ca39ad07eb1b024bd034301377ef5c88aabca345b077e1152c",
+      "bytes": 8370,
+      "sha256": "ebc6b311b40586cac0db538e130750ff3d15f02c7c2546243d893e9dd7f0d5f3",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/dataset_manifest.json",
-      "bytes": 1102,
-      "sha256": "a70ebd91c30b48769784c3fe099cf0fdd7ed1dc91a703d994943ca36d8398da5",
+      "bytes": 1056,
+      "sha256": "3562a9d17bfc89a25f4dbbc205e8657cbbdf2131c0233e72f3ea530f8718706f",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
@@ -609,37 +616,44 @@
       "required": true
     },
     {
+      "path": "benchmark_external_validation/evaluate_banksy_lymph.py",
+      "bytes": 4889,
+      "sha256": "e4e220fb4bbd853c10b856e66d5900d9154b18f70ad9f4bd828b2fd45d895056",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
       "path": "benchmark_external_validation/experiment_5x_external.py",
-      "bytes": 17017,
-      "sha256": "2f343432927ce395fda9baeea0d3ac8f0843603c1a051a28e21c54a86191c59d",
+      "bytes": 16588,
+      "sha256": "27eaa7130b5a9edd5012f8794171ec0ab112babdc3ead36c56a288596cf38d79",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/figures/fig1_performance_heatmap.png",
-      "bytes": 194712,
-      "sha256": "f2d27169806c4f8d48c350dba466f21f6b8c7c2c774a515a322a8ba12d3a004b",
+      "bytes": 500365,
+      "sha256": "1f604b5205798768f712d9fbb9e71df6b59c44394d4eb47fd60e2dfc2e6fe7a5",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/figures/fig1_performance_heatmap.svg",
-      "bytes": 40893,
-      "sha256": "907acb2e59b58fa022836be6eece73915728952d6ae054c9ea85cb0600556a6e",
+      "bytes": 59400,
+      "sha256": "6fe7994e58898815ed45905c06687f04a52172172ab2d9ab39a986e2d601ed72",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/figures/fig2_method_boxplot.png",
-      "bytes": 127104,
-      "sha256": "e0d25b37e75587cc20b7d495825fd28931e8fcd10818ac792efed2e1f25e0162",
+      "bytes": 349117,
+      "sha256": "092c221df598e4a4f4367d5c8049df49ba57d06d50d19cc31f664515669e9800",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/figures/fig2_method_boxplot.svg",
-      "bytes": 26981,
-      "sha256": "f833bba8096686ec3a8f549b0262ce8e7e66a94b02a6ccc8b000887204fb99bb",
+      "bytes": 26091,
+      "sha256": "b1d67993eecfa37344837bbc2384c12b1dc5d1a1fb4b68af5eebf432c8fdf9a8",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
@@ -672,100 +686,387 @@
       "required": false
     },
     {
+      "path": "benchmark_external_validation/figures/selective_regret_coverage.png",
+      "bytes": 324978,
+      "sha256": "e27e66570240c283a1dd5ce4bd716a8ae546b70975afe3f836c491c643728429",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/figures/selective_regret_coverage.svg",
+      "bytes": 20929,
+      "sha256": "15a0b582b77699e778982cce5396ea0f1a0bd072716df6ed5284db24e6dc83b5",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/benchmark_long.csv",
+      "bytes": 12105,
+      "sha256": "9f9c90422be19e18d70f3528799cb271c07ff6b3f341a5a6d0c50c45efd84891",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/dataset_manifest.json",
+      "bytes": 2240,
+      "sha256": "c2a762bf5942c7bbd6efa0640859b2aee682f36cd7ea98efbc9cc35eeed88fd7",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/fig_independent_test_wu2021.png",
+      "bytes": 552200,
+      "sha256": "44fc623e07289a8ba1f023a9f409fe5ed83eeefc78dcaf16fcb6cf37d7b17716",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/fig_independent_test_wu2021.svg",
+      "bytes": 98485,
+      "sha256": "1f092638c93da07c33b552cc79a67e4805df206981bc6c5cf76fc7e25f418083",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/independence_audit.json",
+      "bytes": 1143,
+      "sha256": "29c3a1c0278aed1121dd2a98b095da23e2c1f89a6d86d5aaa3ae13d640121198",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/independent_test_summary.json",
+      "bytes": 3145,
+      "sha256": "294590af2a6c309849746a6be0b5fe7162320a7dad0c4f00f05bae0f3ee69a87",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/manifest.json",
+      "bytes": 2037,
+      "sha256": "0389c41a6d5291853a743da956c90e7adb7d0f013ab1784b08cdcf6341b180a3",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/preregistered_protocol.json",
+      "bytes": 3262,
+      "sha256": "eca7ed6fe72a0c3318c28b2d56aba24c19aa56eae7ad3e0ed1b28f0db92174f2",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/README.md",
+      "bytes": 1260,
+      "sha256": "0474f8865fd313a455205b41760666329d7781bbbb57e8be48992b3888e76093",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/REPORT_independent_test_wu2021.md",
+      "bytes": 1738,
+      "sha256": "6360014d939d16555a5c36c8b1368ca980bac798269e66ddb1648b6e6b4ad97c",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/run_independent_test.py",
+      "bytes": 24607,
+      "sha256": "249c313ec9fbb72c37de46c76bca3b5c767ad584280653d7893600a2ea1ef1e3",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/independent_test_wu2021/sample_regret.csv",
+      "bytes": 639,
+      "sha256": "04101ff02472d07a11afd0c0735bed6971194fc91d1324ee4b4273591913e162",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
       "path": "benchmark_external_validation/make_figures.py",
-      "bytes": 7687,
-      "sha256": "be9719ce1e4d068fbf17ae02d744eae7ddf10b2ae26796c5d51c8323169db6b8",
+      "bytes": 11258,
+      "sha256": "085c583248ae8c4440b0ab6e14f57f189cff4f1133a7b38e9cdf28ff97f754a4",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/build_n8_strict_loocv.py",
+      "bytes": 22644,
+      "sha256": "223339913004e3f7facc41deacf0d7b4636567ac1727ab0bb3fe5cc24ba793ab",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/decision_validation.json",
+      "bytes": 1429,
+      "sha256": "82437418f592143bcea749710747800bd73011385760508c41b2c884a38d3214",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/fig_tissue_condition_flip.png",
+      "bytes": 358946,
+      "sha256": "758b4749ae35dd00dba881a3cd485fabd1e441845bb727a2bfc526610894a60a",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/fig_tissue_condition_flip.svg",
+      "bytes": 36184,
+      "sha256": "5479c27c3c8530d073702c12801f4ecbc5494d390e34a4044ba3454a5bf22490",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/loocv_rows.csv",
+      "bytes": 1386,
+      "sha256": "b475edf524d3c46c1b17a812e4d713e4d4d4de6f2cca42f5b30a214bf3afdca7",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/loocv_rows.json",
+      "bytes": 3725,
+      "sha256": "8b4821315bf6dc6204e194929bd507a5888c88722099957eedb51de0c96e1853",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/loocv_summary.json",
+      "bytes": 3196,
+      "sha256": "49f59ac829181bdaacb8f1bcb710d8184cff03cf33d8dd3381ebcbf754f1f013",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/manifest.json",
+      "bytes": 1846,
+      "sha256": "d1a4416c6fc9aee986c0163d23b7b8934902c4baa666da1129d0c91e00e26513",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/report_n8_strict_loocv.md",
+      "bytes": 1998,
+      "sha256": "9962bd8a66ecd66c130fc0a1d0d547b6beadf01f1ab2019512387a0bd5af6302",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/tissue_condition_flip.csv",
+      "bytes": 1431,
+      "sha256": "d61307f2579b8416adec84e249e9e6bcf1207af2ff2427a1f0f7484ba257fbe6",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/tissue_condition_flip.json",
+      "bytes": 1775,
+      "sha256": "fddeca075a56ec8e63ac4babd8e18aca43cc04fc6e35e71cb0528149b1df1113",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/n8_strict_region/within_condition_loocv.csv",
+      "bytes": 968,
+      "sha256": "09b0ff8ffbdc0a634b3026db667ede341f2ced0abd5d7518aa86897466fb6c95",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/performance_matrix_mean.csv",
-      "bytes": 1589,
-      "sha256": "0ecfb98448542a00e8f51f0b65010423e29f5b756be5e8813a57c2eec05c9e67",
+      "bytes": 1583,
+      "sha256": "7fbf257ad4543bd58581750eae35eaeab46bf09a44c368bd2c04a015aed2081e",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/performance_matrix_std.csv",
-      "bytes": 1177,
-      "sha256": "abdef16cfc72d20a38213b17f73374353098a2d90d65b98db6692bd89f79e188",
+      "bytes": 1171,
+      "sha256": "c80804eef6ebd37e600f1466ba3f33a0317defb34a7b7ddad228e51cc8acca5d",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/prepare_allen_merfish_brain_section.py",
-      "bytes": 14076,
-      "sha256": "ff2c4da4e0bcb3f2f6d62222bdc6bae5273619cd21bb0bf0f5a02287e2125255",
+      "bytes": 13752,
+      "sha256": "495e44dcf2951546126ae4d9dce077c61169434b11ace6a0bf2e82150353c517",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/prepare_visium_hd_crc.py",
-      "bytes": 13871,
-      "sha256": "d905e7da910120dbad3f354d42aaeb8761216fa47a4a904e3470c3d778157ee4",
+      "bytes": 13544,
+      "sha256": "0498c69068140f7acbde75661efcb4a32ac42b837f2075c797b7901064788487",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/prepare_visium_mouse_brain.py",
-      "bytes": 7252,
-      "sha256": "f2aafd0c9fdfec756ff2bb104a33114050bbeb22a029a1746b0ef2a2f1c17243",
+      "bytes": 7062,
+      "sha256": "eb03694b6bf8e35d5c4b34f9a6156bee9cde9e28faae34cf8fa90e3815c38d68",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/prepare_xenium_lung_cancer.py",
-      "bytes": 2812,
-      "sha256": "d28228225e71fc0982ceac091ab465d74df52dbc6ca230d2bef16a2afbbac0ea",
+      "bytes": 2743,
+      "sha256": "9ac86f474fd2b6e89c30fb44bfdd063384f786e67a350622dc3899662e3cdf67",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/prepare_xenium_ovarian_cancer.py",
-      "bytes": 2475,
-      "sha256": "66983789f24c475cdc8aeb7cb49b19b84786558cff602c0a6f8f8fd2a752c5a6",
+      "bytes": 2415,
+      "sha256": "0f5d5c27d9d1b3f4796b462a1183f6871fa22dd6b3d6b5c8685ba573e4a53687",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/README.md",
-      "bytes": 6288,
-      "sha256": "f6e14c9cf6a9c3f60b23ace5b8d088313bf998294531a55379be68c17e359e2d",
+      "bytes": 9105,
+      "sha256": "467c5d5e8b6c3eb02e0930f06b7bc4852abb4f4621dc943dba6001e4b239bb48",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/recommendation_loocv.csv",
-      "bytes": 1673,
-      "sha256": "ba484ab9872572f1b109fba0099077e26a6cc01072fba59d62fd5a6276794c69",
+      "bytes": 1667,
+      "sha256": "d720ea4d6bc83d9f7c4d808cf85cd61f6f07fca8d13087849eaffca217757f22",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/recommendation_loocv.json",
-      "bytes": 4740,
-      "sha256": "541f591c9d776ab518ab4bf52936e30e8bc743d05d312d0d0a8aae8d7e40713a",
+      "bytes": 4585,
+      "sha256": "23a1e585c9e94c4c4327337631c572f4a41927bf392abf06ce52cd85158c90d3",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/recommender_loocv_external.py",
-      "bytes": 10186,
-      "sha256": "f02e3918131d83210c9a679659d853cdbda827bcec64e0f477e9c29ef92bdc2e",
+      "bytes": 9938,
+      "sha256": "8f839954dffec07162d6c5e26ac65ec1a4d89c25ac01e41f516532d141728c22",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "benchmark_external_validation/report_external_validation.md",
-      "bytes": 7019,
-      "sha256": "655fc64c7ac977cd02e954f364705abbf4119eb61ade2f23f76f36ded52eee0d",
+      "bytes": 7905,
+      "sha256": "65e28ee793839ecc95bf9f32c97cafd8b1a53c29bc557886f14abbe42a2404c3",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/banksy_lymph_long.csv",
+      "bytes": 291,
+      "sha256": "ba0fb2c849030da424767f998164b57762261533bd6b93e6096288a718b665a7",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/banksy_lymph_manifest.json",
+      "bytes": 476,
+      "sha256": "1b2e0b219460312e8f4d1cf14caa3057d03f148de30ed12d62b7c0f7fb6c710e",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/banksy_lymph_summary.json",
+      "bytes": 1097,
+      "sha256": "d417172d008d0853d0c11157e589964f5ba33e1774fc5634223eea469ebbe313",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/build_strict_external_panel_v2.py",
+      "bytes": 21482,
+      "sha256": "a67c816233cb32e72ca0882f8f7168fd4059687f6c5722a3759a58d4c46bee63",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/fig_strict_external_panel_v2.png",
+      "bytes": 504207,
+      "sha256": "ac969f1f33ee6e204d22f0a5e3a7ff8b7122f99ad99f1d848de5141148c506fb",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/fig_strict_external_panel_v2.svg",
+      "bytes": 83421,
+      "sha256": "090f27ac2f5eaf29990712705f813cd597ba2d3ca1f85a2f8917e13052d61ef5",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/loocv_rows.csv",
+      "bytes": 1523,
+      "sha256": "b2b61343c4ed46a13ff1ae98c1202aeb90d58196b05f9e976709f3a3486de0a7",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/loocv_rows.json",
+      "bytes": 4178,
+      "sha256": "c2f9529231f4ee9cd18c5f752b472d3f57f1f1c6df34dae5d89c9110ef80ed45",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/loocv_summary.json",
+      "bytes": 2930,
+      "sha256": "16eedc6f6137226929a5f4c9e6a421c6f55f24bab0bc417d058c083cb32fda35",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/manifest.json",
+      "bytes": 2742,
+      "sha256": "c3fdb752480a23506467f0dd92cacad9ade77f63a6e4a10ce42c798f0119e5c7",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/REPORT_strict_external_panel_v2.md",
+      "bytes": 1961,
+      "sha256": "5c5f1df9080fd81353fb7d35758fb2ffcf89961d4818589cad11db815d5381c9",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/sota_coverage.csv",
+      "bytes": 4000,
+      "sha256": "31afeca3937f2f44814e1d95015c4db7aad7fc6b050c62175cc59b23de0660d9",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/sota_coverage_summary.json",
+      "bytes": 1387,
+      "sha256": "a7d30031f63550c696b389354bf7d2e5d3f3e89bbd9252dac535d707ef75d849",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/strict_external_units.csv",
+      "bytes": 1218,
+      "sha256": "c8bad4868ae198d28bab8d9e9323904237123dead408011bc8ff378ee111871e",
+      "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
+      "required": false
+    },
+    {
+      "path": "benchmark_external_validation/strict_external_panel_v2/tls_two_dataset_summary.json",
+      "bytes": 1024,
+      "sha256": "53187ec672005a92d96883106007ce879d11ca133a7b85768d5a0833c14c1e1a",
       "protocol_family": "histoweave.external_validation.recommender_loocv.v1",
       "required": false
     },
     {
       "path": "parallel_experiment_table/build_parallel_table.py",
-      "bytes": 23611,
-      "sha256": "4b942ce9a96f19b90dad1a3b16eab1d28b61638dc717175a384c6bfad111a277",
+      "bytes": 24630,
+      "sha256": "928f80cfb213d2ed3f74a91ea00da7208e935fa0fd78d723489a030512586926",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": false
     },
@@ -785,36 +1086,36 @@
     },
     {
       "path": "parallel_experiment_table/make_heatmap.py",
-      "bytes": 4563,
-      "sha256": "b730874be6b8ed9fa5b293e2319d9c084a44435dd846bbfb6d4ff9c795830e9b",
+      "bytes": 4814,
+      "sha256": "6d712176e5aae4b4ca34fbb9d58d2ca8e39b0b65cff32954b82dc4c68bddeccb",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": false
     },
     {
       "path": "parallel_experiment_table/method_meta.json",
-      "bytes": 5232,
-      "sha256": "969e1036cb5743a1bc859c25131774078e641724755aefa2f31725980c59981d",
+      "bytes": 5029,
+      "sha256": "7f3453f2ad1cb64c7fd826da39fe00b5d1ed4b7926fb33d0e154070ff4e19cf9",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": false
     },
     {
       "path": "parallel_experiment_table/parallel_experiment_matrix.csv",
-      "bytes": 1727,
-      "sha256": "50bfd7c23f59b536b6df48889ca9811ad52c22bea56201056256742e6e4f6ed3",
+      "bytes": 1721,
+      "sha256": "391880edd0c1f50b2d76d75d51b33fbbf75707721336db76c5e06b3c45680296",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": false
     },
     {
       "path": "parallel_experiment_table/parallel_experiment_summary.csv",
-      "bytes": 3221,
-      "sha256": "049534e711428cb89e5cd8d9d0844bf744e24f9cd563a8c65f977877444cc9d4",
+      "bytes": 3187,
+      "sha256": "89ed09e9a146edb2b097194e75c46f956f887c5cd6ab8e4b4f32847cd3683696",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": true
     },
     {
       "path": "parallel_experiment_table/parallel_experiment_table.csv",
-      "bytes": 14150,
-      "sha256": "7435e220c1ce44358fd87f9bfdf4dbed379f99abf8eddb5b50a2e3b7ea9bc3aa",
+      "bytes": 13984,
+      "sha256": "7467b922b9c73f2f70ce6dfcaa7883f4a1f51a331f3a43ff4cde7ef4d37c9a0c",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": true
     },
@@ -827,8 +1128,8 @@
     },
     {
       "path": "parallel_experiment_table/report_parallel_experiment.md",
-      "bytes": 14036,
-      "sha256": "dbf4d760d8a01b5fe1fa26607cbbf78b0d775bd6d3a4f3fa6ecafbbfd7fb03ea",
+      "bytes": 13883,
+      "sha256": "257ad26147656539631442cacac87819ccfd900a4b7a9d22dcdba341e358f4cd",
       "protocol_family": "histoweave.parallel_experiment_table.v1",
       "required": true
     }

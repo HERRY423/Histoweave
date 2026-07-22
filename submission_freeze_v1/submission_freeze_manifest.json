@@ -24,9 +24,9 @@
         "sha256": "3e8cf1c311e19c02ffb7e9d46bd6af318b1f2a0f8e420ed0cdfcac24dd3be720"
       },
       {
-        "bytes": 102279,
+        "bytes": 101232,
         "path": "benchmark_external_validation/independent_test_wu2021/fig_independent_test_wu2021.svg",
-        "sha256": "090d3c0ce19bdcf8376f5187f33a2a6441c3eb3cbf9074c28f56058f53c8d6a0"
+        "sha256": "29ccf08360de1c1feb943e226149948593d6aaa1d85338cd7a418631ff1b689f"
       },
       {
         "bytes": 552200,
@@ -64,7 +64,7 @@
     {
       "bytes": 4912,
       "path": "submission_freeze_v1/main_figures.lock.json",
-      "sha256": "67acff7c49b8fa9e6c88d113c8ea828af1bed4903074141ef45c58193a947983"
+      "sha256": "b8e90397c995ca1e63d5b0309dd91cb4b0137fb1f5dfb9f7d2ba217bb323b23c"
     },
     {
       "bytes": 1912,

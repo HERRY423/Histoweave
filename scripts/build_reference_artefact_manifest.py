@@ -38,6 +38,7 @@ ARTEFACT_ROOTS: dict[str, str] = {
 
 # Extensions allowed inside artefact roots for the manifest
 _ALLOWED_SUFFIX = {".json", ".csv", ".md", ".svg", ".png", ".py", ".txt"}
+_TEXT_SUFFIX = {".json", ".csv", ".md", ".svg", ".py", ".txt"}
 
 # Soft size budget (bytes) for any single tracked summary file
 _MAX_FILE_BYTES = 5 * 1024 * 1024  # 5 MiB — summaries must stay small
@@ -62,12 +63,20 @@ _REQUIRED: tuple[str, ...] = (
 )
 
 
+def _canonical_bytes(path: Path) -> bytes:
+    """Return platform-stable bytes for hashing and manifest sizes."""
+    payload = path.read_bytes()
+    if path.suffix.lower() in _TEXT_SUFFIX:
+        payload = payload.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return payload
+
+
 def _sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 16), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    return hashlib.sha256(_canonical_bytes(path)).hexdigest()
+
+
+def _canonical_size(path: Path) -> int:
+    return len(_canonical_bytes(path))
 
 
 def _collect() -> list[dict[str, object]]:
@@ -85,7 +94,7 @@ def _collect() -> list[dict[str, object]]:
             if path.name.endswith(".log"):
                 continue
             rel = path.relative_to(ROOT).as_posix()
-            size = path.stat().st_size
+            size = _canonical_size(path)
             rows.append(
                 {
                     "path": rel,
@@ -165,7 +174,7 @@ def check_manifest() -> list[str]:
                 f"manifest={str(row.get('sha256'))[:12]}… "
                 "(re-run scripts/build_reference_artefact_manifest.py)"
             )
-        if int(row.get("bytes") or -1) != path.stat().st_size:
+        if int(row.get("bytes") or -1) != _canonical_size(path):
             errors.append(f"size mismatch for {rel}")
     return errors
 

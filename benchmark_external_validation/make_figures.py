@@ -1,10 +1,10 @@
 """Figures for the 5-dataset external-validation landscape (SVG + PNG, Phylo palette).
 
 Produces five figures from the experiment + recommender outputs:
-  * fig1_performance_heatmap  鈥?5 datasets 脳 15 methods, mean ARI
-  * fig2_method_boxplot        鈥?ARI distribution per method across datasets 脳 seeds
-  * fig3_landscape_embedding   鈥?2D dataset-feature landscape, coloured by best method
-  * fig4_recommender_regret    鈥?selection regret vs global-best / random baselines
+  * fig1_performance_heatmap  -> 5 datasets x 15 methods, mean ARI
+  * fig2_method_boxplot       -> ARI distribution per method across datasets x seeds
+  * fig3_landscape_embedding  -> 2D dataset-feature landscape, coloured by best method
+  * fig4_recommender_regret   -> selection regret vs global-best / random baselines
   * selective_regret_coverage  - selective regret versus personalisation coverage
 """
 
@@ -295,7 +295,7 @@ def selective_regret_coverage():
     ax.set_xlabel("Personalisation coverage (fraction of queries)")
     ax.set_ylabel("Mean selection regret (ARI; lower is better)")
     ax.set_title(
-        "Selective regret鈥揷overage: abstention prevents harmful personalisation"
+        "Selective regret-coverage: abstention prevents harmful personalisation"
     )
     ax.legend(frameon=False, loc="lower center", ncol=3)
     ax.grid(axis="y", color="#FFFFFF", linewidth=0.8)

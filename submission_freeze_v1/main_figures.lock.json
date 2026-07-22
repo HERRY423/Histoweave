@@ -95,14 +95,14 @@
       "figure": "Figure 5",
       "formats": {
         "png": {
-          "bytes": 326314,
+          "bytes": 324978,
           "path": "benchmark_external_validation/figures/selective_regret_coverage.png",
-          "sha256": "b49d8207cb86c502111c3d8caf45713eb7b9e0b477c5847f30bd12b0ce6207fc"
+          "sha256": "e27e66570240c283a1dd5ce4bd716a8ae546b70975afe3f836c491c643728429"
         },
         "svg": {
-          "bytes": 21514,
+          "bytes": 21387,
           "path": "benchmark_external_validation/figures/selective_regret_coverage.svg",
-          "sha256": "fac4ea06ed12615472e0a20c9d0faf39f43d1bbebac31a493c03386a6d7c040d"
+          "sha256": "ae57fa772e0a293c3d9deb357c69301defaba046415cb04786699a1f8b94fcf1"
         }
       },
       "generator": "benchmark_external_validation/make_figures.py",
