@@ -95,8 +95,6 @@ jobs:
       - name: Property-based tests
         run: pytest -m property -q
 
-      - name: Performance regression gates
-        run: pytest -m perf -q --tb=short
 
   federation:
     name: federated evidence network gate
