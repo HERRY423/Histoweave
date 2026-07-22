@@ -19,8 +19,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import sys
-from datetime import datetime, timezone
+import logging
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -102,7 +102,7 @@ def build_manifest() -> dict[str, object]:
     files = _collect()
     return {
         "schema": "histoweave.reference_artefacts.manifest.v1",
-        "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "policy": {
             "track_summaries": True,
             "ignore_raw_h5ad": True,
@@ -183,22 +183,30 @@ def main(argv: list[str] | None = None) -> int:
         errors = check_manifest()
         if errors:
             for err in errors:
-                print(f"ERROR: {err}", file=sys.stderr)
+                logging.getLogger(__name__).error("ERROR: %s", err)
             return 1
-        print(f"OK: {len(_REQUIRED)} required artefacts present; MANIFEST hashes match.")
+        logging.getLogger(__name__).info(
+            "OK: %d required artefacts present; MANIFEST hashes match.", len(_REQUIRED)
+        )
         return 0
 
     payload = build_manifest()
     path = write_manifest(payload)
-    print(f"Wrote {path} ({payload['n_files']} files, {payload['total_bytes']} bytes)")
+    logging.getLogger(__name__).info(
+        "Wrote %s (%d files, %d bytes)",
+        path,
+        payload["n_files"],
+        payload["total_bytes"],
+    )
     # Always validate required set after build
     errors = check_manifest()
     if errors:
         for err in errors:
-            print(f"ERROR: {err}", file=sys.stderr)
+            logging.getLogger(__name__).error("ERROR: %s", err)
         return 1
     return 0
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     raise SystemExit(main())

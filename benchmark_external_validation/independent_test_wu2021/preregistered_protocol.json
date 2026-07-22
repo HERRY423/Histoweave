@@ -1,0 +1,73 @@
+{
+  "schema_version": "histoweave.independent_test.preregistered.v1",
+  "protocol": "histoweave.independent_test.wu2021_breast.v1",
+  "locked_on": "2026-07-22",
+  "status_at_lock": "outcomes_not_downloaded_or_inspected",
+  "study": {
+    "name": "A single-cell and spatially resolved atlas of human breast cancers",
+    "citation": "Wu et al., Nature Genetics, 2021",
+    "doi": "10.5281/zenodo.4739739",
+    "unit": "external_study",
+    "samples": "all six primary breast-cancer Visium sections in the deposited filtered matrices",
+    "independence_claim": "study, patients, and deposited samples were absent from all HistoWeave training and model-selection landscapes at protocol lock"
+  },
+  "frozen_policy": {
+    "selected_method": "spectral",
+    "selection_source": "strict_external_panel_v2 global default",
+    "personalisation_enabled": false,
+    "reason": "n=9 gated personalisation was not superior to the global default",
+    "fallback": "spectral"
+  },
+  "task_contract": {
+    "task": "spatial_domain",
+    "metric": "adjusted_rand_score",
+    "ground_truth": "deposited spot-level pathological annotation",
+    "ground_truth_kind": "spatial_domain",
+    "oracle_k": true,
+    "unannotated_spots_excluded": true
+  },
+  "locked_common_method_panel": [
+    "agglomerative",
+    "birch",
+    "bisecting_kmeans",
+    "gaussian_mixture",
+    "kmeans",
+    "minibatch_kmeans",
+    "spectral"
+  ],
+  "execution": {
+    "seeds": [42, 1, 2],
+    "normalisation": "log1p counts per 10000 via histoweave log1p_cp10k",
+    "n_domains": "number of observed pathology labels in each section",
+    "max_spots": 15000,
+    "subsampling": "none expected; otherwise deterministic pathology-stratified sampling",
+    "method_parameters": "project defaults plus n_domains and random_state where supported",
+    "no_hyperparameter_search": true
+  },
+  "confirmatory_endpoint": {
+    "name": "study-level mean regret of frozen spectral policy",
+    "definition": "per section: max mean ARI among locked methods minus mean ARI of spectral; then average equally across sections",
+    "success_margin_ari": 0.02,
+    "success_rule": "mean frozen-policy regret <= 0.02",
+    "resampling_unit": "patient/section",
+    "confidence_interval": "percentile bootstrap over sections, seed 20260722, 10000 replicates",
+    "minimum_sections": 4
+  },
+  "secondary_endpoints": [
+    "spectral top-1 frequency across sections",
+    "mean ARI of each locked method",
+    "BANKSY-Python diagnostic run under the same seeds, excluded from the locked confirmatory comparator",
+    "TLS signature transport reported separately from domain-selection validation"
+  ],
+  "decision_rules": {
+    "pass": "confirmatory success rule met on at least four evaluable sections",
+    "fail": "mean regret exceeds 0.02 or fewer than four sections are evaluable",
+    "policy_after_test": "a failed test retains the global fallback and blocks any external-validity claim; a passed test supports the frozen global policy but not personalised superiority"
+  },
+  "anti_leakage": {
+    "test_outcomes_may_change_method_or_threshold": false,
+    "test_data_may_enter_training_after_this_evaluation": false,
+    "all_negative_results_reported": true,
+    "missing_method_results_not_imputed": true
+  }
+}

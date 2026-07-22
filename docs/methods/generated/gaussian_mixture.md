@@ -37,10 +37,12 @@ GMM soft clustering on spatial-PCA embedding.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.landscape.dlpfc_real.v1 + dlpfc_spatial_aware.v1
 - **datasets:** DLPFC Visium 5-slice difficulty gradient
 - **metric:** ARI vs manual layers; frequently top spatial_weight configuration
 - **notes:** sklearn GaussianMixture with spatial-context policy.
+- **report:** docs/methods/validation/gaussian_mixture.md
 
 ---
 

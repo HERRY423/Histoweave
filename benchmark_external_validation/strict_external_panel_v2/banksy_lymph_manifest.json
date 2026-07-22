@@ -1,0 +1,16 @@
+{
+  "input": {
+    "path": "datasets_cache/xenium/xenium_human_lymph_node.h5ad",
+    "sha256": "ce942c858ba76d6d310aac6c2058531533a42d98bc1e0fe0b39a3f5f3d47759d"
+  },
+  "artifacts": {
+    "banksy_lymph_long.csv": {
+      "sha256": "f843ae1a9eeace52f48bb9c7a23e60c4487c5b9ac7d71f99ff3bb0fb904eca93",
+      "bytes": 295
+    },
+    "banksy_lymph_summary.json": {
+      "sha256": "e02497c4972417f355961503fb65f08c409d7820b4e4b1c925c6e544b9958a8c",
+      "bytes": 1141
+    }
+  }
+}

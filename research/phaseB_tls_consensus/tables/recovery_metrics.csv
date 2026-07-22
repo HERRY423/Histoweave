@@ -1,0 +1,7 @@
+method,n_domains,foci_best_F1,foci_best_Jaccard,foci_frag_domains_for_80pct,niche5_best_F1,niche5_best_Jaccard,is_consensus
+tenx_graphclust,8,0.4164,0.263,2,0.5272,0.3579,False
+kmeans,8,0.3932,0.2447,1,0.5285,0.3591,False
+spectral,8,0.3538,0.215,2,0.3949,0.246,False
+gmm,8,0.2672,0.1542,2,0.3303,0.1978,False
+CONSENSUS,8,0.1301,0.0696,1,0.1641,0.0894,True
+agglomerative,8,0.1055,0.0557,2,0.1961,0.1087,False

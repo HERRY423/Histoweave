@@ -81,6 +81,11 @@ pipeline_trace.tsv
 /5x15_spatial_aware/figures/
 /5x15_spatial_aware/*.csv
 /5x15_spatial_aware/*.json
+# Audited SOTA evidence artifacts are part of the reproducible benchmark.
+!/5x15_spatial_aware/sota_benchmark_long.csv
+!/5x15_spatial_aware/sota_method_means.csv
+!/5x15_spatial_aware/performance_matrix_mean_full.csv
+!/5x15_spatial_aware/sota_merge_manifest.json
 /benchmark_crossplatform/checkpoints/
 /benchmark_crossplatform/figures/
 /benchmark_crossplatform/*.csv
@@ -108,3 +113,12 @@ Thumbs.db
 /research/cross_tissue_niches/Puck_200115_08_count_location.RData
 /research/cross_tissue_niches/slideseq_raw/intermediate/
 /tmp_perf.json
+
+# Federated evidence network
+# NEVER commit Ed25519 private keys.
+federation/*.key.json
+federation/**/*.key.json
+# Derived / local aggregation layer — rebuilt by `histoweave fed pull` and
+# `histoweave fed consensus` (and by pages.yml from committed bundles).
+federation/evidence_store.jsonl
+federation/consensus.json

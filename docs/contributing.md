@@ -3,7 +3,7 @@
 HistoWeave welcomes plugins, benchmarks, docs, and review. The full maintainer-facing
 guide lives at the repository root:
 
-**[CONTRIBUTING.md](https://github.com/histoweave-spatial/histoweave/blob/main/CONTRIBUTING.md)**
+**[CONTRIBUTING.md](https://github.com/HERRY423/Histoweave/blob/main/CONTRIBUTING.md)**
 
 ## Quick start
 

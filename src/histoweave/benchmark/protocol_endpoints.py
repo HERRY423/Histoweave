@@ -79,10 +79,10 @@ def subset_landscape(landscape: LandscapeResult, names: list[str]) -> LandscapeR
     keep = [name for name in names if name in landscape.performance]
     return LandscapeResult(
         performance={name: dict(landscape.performance[name]) for name in keep},
-        features={name: landscape.features[name].copy() for name in keep if name in landscape.features},
-        embedding={
-            name: landscape.embedding.get(name, (0.0, 0.0)) for name in keep
+        features={
+            name: landscape.features[name].copy() for name in keep if name in landscape.features
         },
+        embedding={name: landscape.embedding.get(name, (0.0, 0.0)) for name in keep},
         best_method={name: landscape.best_method.get(name, "?") for name in keep},
         niches={
             method: [name for name in members if name in keep]
@@ -113,9 +113,7 @@ def training_means(
         methods = landscape.method_order()
     means: dict[str, float] = {}
     for method in methods:
-        values = [
-            landscape.performance[key].get(method, float("nan")) for key in training_keys
-        ]
+        values = [landscape.performance[key].get(method, float("nan")) for key in training_keys]
         finite = [float(value) for value in values if value is not None and np.isfinite(value)]
         means[method] = float(np.mean(finite)) if finite else float("nan")
     return means
@@ -231,7 +229,9 @@ def leave_one_study_out(
             for name, scores in training.performance.items():
                 restricted[name] = {
                     method: float(scores[method])
-                    if method in scores and scores[method] is not None and np.isfinite(scores[method])
+                    if method in scores
+                    and scores[method] is not None
+                    and np.isfinite(scores[method])
                     else float("nan")
                     for method in method_names
                 }
@@ -273,9 +273,7 @@ def leave_one_study_out(
         selected = ranked[0] if ranked else None
         selected_score = held_scores.get(selected) if selected is not None else None
         means = training_means(landscape, training_keys, method_names)
-        finite_means = {
-            method: score for method, score in means.items() if np.isfinite(score)
-        }
+        finite_means = {method: score for method, score in means.items() if np.isfinite(score)}
         global_best = (
             max(finite_means, key=lambda method: (finite_means[method], method))
             if finite_means
@@ -323,7 +321,9 @@ def leave_one_study_out(
             )
         )
 
-    summary = summarise_study_grouped(queries, n_training_pool=len(landscape.dataset_order()), methods=method_names)
+    summary = summarise_study_grouped(
+        queries, n_training_pool=len(landscape.dataset_order()), methods=method_names
+    )
     return queries, summary
 
 
@@ -358,9 +358,7 @@ def summarise_study_grouped(
         float(q.global_best_regret) for q in queries if q.global_best_regret is not None
     ]
     random_regrets = [
-        float(q.random_expected_regret)
-        for q in queries
-        if q.random_expected_regret is not None
+        float(q.random_expected_regret) for q in queries if q.random_expected_regret is not None
     ]
     mean_sel = float(np.mean(regrets)) if regrets else float("nan")
     mean_glb = float(np.mean(global_regrets)) if global_regrets else float("nan")
@@ -661,7 +659,9 @@ def pareto_stability_from_long_csv(
             "stable_frontier": sorted(
                 config for config, count in inclusion.items() if count / n_boot >= 0.5
             ),
-            "mean_frontier_size": float(np.mean(list(inclusion.values())) / max(n_boot, 1) * n_configs)
+            "mean_frontier_size": float(
+                np.mean(list(inclusion.values())) / max(n_boot, 1) * n_configs
+            )
             if inclusion
             else 0.0,
         }
@@ -777,7 +777,8 @@ def sota_unified_resource_compare(
                 "seed": row.get("seed"),
                 "ari": ari,
                 "seconds": seconds,
-                "family": row.get("family") or ("sota" if method != "banksy_py" else "spatial_aware"),
+                "family": row.get("family")
+                or ("sota" if method != "banksy_py" else "spatial_aware"),
                 "status": status or "success",
             }
         )
@@ -818,11 +819,7 @@ def sota_unified_resource_compare(
         }
 
     ranked_methods = sorted(
-        (
-            (method, stats)
-            for method, stats in by_method.items()
-            if stats["mean_ari"] is not None
-        ),
+        ((method, stats) for method, stats in by_method.items() if stats["mean_ari"] is not None),
         key=lambda item: (-float(item[1]["mean_ari"]), item[0]),
     )
     return {
@@ -833,9 +830,7 @@ def sota_unified_resource_compare(
         "n_rejected_cells": len(rejected),
         "rejection_reasons": dict(Counter(row["reason"] for row in rejected)),
         "by_method": by_method,
-        "method_ranking": [
-            {"method": method, **stats} for method, stats in ranked_methods
-        ],
+        "method_ranking": [{"method": method, **stats} for method, stats in ranked_methods],
         "per_dataset": per_dataset,
         "notes": [
             "Only cells that finish within the shared time budget and succeed contribute.",
@@ -939,7 +934,9 @@ def oracle_k_leakage_impact(
                 "mean_ari": float(np.mean(aris)),
                 "std_ari": float(np.std(aris, ddof=1)) if len(aris) > 1 else 0.0,
                 "mean_k_used": float(np.mean(k_used)) if k_used else None,
-                "k_match_rate": float(np.mean([1.0 if row["k_match"] else 0.0 for row in mode_rows])),
+                "k_match_rate": float(
+                    np.mean([1.0 if row["k_match"] else 0.0 for row in mode_rows])
+                ),
             }
         oracle_mean = (mode_stats.get("oracle") or {}).get("mean_ari")
         primary_mean = (mode_stats.get(primary_estimate_mode) or {}).get("mean_ari")
@@ -961,7 +958,9 @@ def oracle_k_leakage_impact(
                     "mean_ari": alt,
                     "ari_recovered_vs_primary_estimate": recovered,
                     "fraction_of_drop_recovered": (
-                        float(max(0.0, recovered) / drop) if drop is not None and drop > 1e-12 else None
+                        float(max(0.0, recovered) / drop)
+                        if drop is not None and drop > 1e-12
+                        else None
                     ),
                 }
         # Per-slice oracle vs primary estimate (seed-averaged).
@@ -1017,9 +1016,7 @@ def oracle_k_leakage_impact(
         "primary_estimate_mode": primary_estimate_mode,
         "estimate_modes": list(estimate_modes),
         "by_method": by_method,
-        "mean_ari_drop_across_methods": (
-            float(np.mean(overall_drops)) if overall_drops else None
-        ),
+        "mean_ari_drop_across_methods": (float(np.mean(overall_drops)) if overall_drops else None),
         "notes": [
             "Oracle-K injects domain_truth.nunique() into n_domains; estimate modes do not.",
             "Positive mean_ari_drop means removing Oracle-K lowers ARI (leakage inflation).",
@@ -1159,9 +1156,7 @@ def write_protocol_bundle(
             else None,
             "sota_unified_resource": {
                 "n_accepted_cells": (sota_resource or {}).get("n_accepted_cells"),
-                "top_method": (
-                    (sota_resource or {}).get("method_ranking") or [{}]
-                )[0].get("method")
+                "top_method": ((sota_resource or {}).get("method_ranking") or [{}])[0].get("method")
                 if sota_resource
                 else None,
             }
@@ -1171,9 +1166,7 @@ def write_protocol_bundle(
                 "mean_ari_drop_across_methods": (oracle_k_leakage or {}).get(
                     "mean_ari_drop_across_methods"
                 ),
-                "primary_estimate_mode": (oracle_k_leakage or {}).get(
-                    "primary_estimate_mode"
-                ),
+                "primary_estimate_mode": (oracle_k_leakage or {}).get("primary_estimate_mode"),
                 "methods": (oracle_k_leakage or {}).get("methods"),
                 "source": (oracle_k_leakage or {}).get("source"),
             }

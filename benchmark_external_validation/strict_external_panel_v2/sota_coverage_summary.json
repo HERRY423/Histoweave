@@ -1,0 +1,43 @@
+{
+  "schema_version": "histoweave.strict_external_panel.sota_coverage.v2",
+  "methods": {
+    "banksy_py": {
+      "available_units": 9,
+      "strict_complete_units": 6,
+      "partial_donor_units": 3,
+      "total_registry_units": 10,
+      "domain_stratum_units": 9
+    },
+    "spagcn": {
+      "available_units": 3,
+      "strict_complete_units": 0,
+      "partial_donor_units": 3,
+      "total_registry_units": 10,
+      "domain_stratum_units": 9
+    },
+    "stagate": {
+      "available_units": 3,
+      "strict_complete_units": 0,
+      "partial_donor_units": 3,
+      "total_registry_units": 10,
+      "domain_stratum_units": 9
+    },
+    "graphst": {
+      "available_units": 3,
+      "strict_complete_units": 0,
+      "partial_donor_units": 3,
+      "total_registry_units": 10,
+      "domain_stratum_units": 9
+    },
+    "bayesspace": {
+      "available_units": 3,
+      "strict_complete_units": 0,
+      "partial_donor_units": 3,
+      "total_registry_units": 10,
+      "domain_stratum_units": 9
+    }
+  },
+  "confirmatory_loocv_inclusion": [],
+  "reason": "No SOTA method has complete, protocol-matched coverage across all nine domain units. BANKSY-Python is available for all nine domain units, but the three DLPFC donor scores cover only selected slices rather than all donor-member slices; the remaining SOTA methods cover DLPFC only.",
+  "missing_cells_imputed": false
+}

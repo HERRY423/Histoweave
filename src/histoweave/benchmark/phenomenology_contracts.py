@@ -18,13 +18,18 @@ from ..plugins.builtin.release_manifest import (
 )
 
 METHOD_MANIFEST_SCHEMA_VERSION = "1.0.0"
+VIRTUAL_ST_METHODS = {
+    "virtual_st_morphology",
+    "virtual_st_scellst",
+    "virtual_st_storm",
+}
 PHENOMENOLOGY_METHODS = (
     PRODUCTION_METHODS
     | BETA_METHODS
     | set(SCIENTIFIC_VALIDATED_METHODS)
     | set(CONTRACT_VALIDATED_METHODS)
     | {"marker_deconv"}
-)
+) - VIRTUAL_ST_METHODS
 
 
 class EvaluationRole(StrEnum):

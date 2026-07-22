@@ -7,10 +7,10 @@ Estimate cell-type proportions in multi-cellular spots (Visium-scale). Requires 
 
 | Method | Maturity | Implementation | Summary | Guide |
 |--------|----------|----------------|---------|-------|
+| `cell2location` | `contract_validated` | `external` | Bayesian spatial cell-type abundance estimation with cell2location. | [cell2location](../cell2location.md) |
+| `rctd` | `contract_validated` | `external` | RCTD robust cell-type decomposition (spacexr) via R bridge. | [rctd](../generated/rctd.md) |
 | `marker_deconv` | `experimental` | `native` | Marker-gene mean-ratio baseline deconvolution. | [marker_deconv](../generated/marker_deconv.md) |
 | `weave_spatial_simplex_deconv` | `experimental` | `native` | Marker evidence projected onto a spatially regularized simplex. | [weave_spatial_simplex_deconv](../generated/weave_spatial_simplex_deconv.md) |
-| `cell2location` | `validated` | `external` | Bayesian spatial cell-type abundance estimation with cell2location. | [cell2location](../cell2location.md) |
-| `rctd` | `validated` | `external` | RCTD robust cell-type decomposition (spacexr) via R bridge. | [rctd](../generated/rctd.md) |
 
 ## Decision notes
 

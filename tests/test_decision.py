@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
+from histoweave import DecisionPolicy, decide_from_bundle
 from histoweave.benchmark import (
     DecisionAction,
     DecisionEngine,
@@ -265,3 +266,60 @@ def test_decide_cli_writes_identical_json(tmp_path, capsys):
     assert payload["action"] in {"global_default", "evidence_required"}
     assert json.loads(output.read_text(encoding="utf-8")) == payload
     assert np.isfinite(payload["recommendation"]["ranked_methods"][0]["score"])
+
+
+def test_python_bundle_api_and_cli_share_policy_and_execution_path(tmp_path, capsys):
+    path, datasets = _knowledge_base(tmp_path)
+    bundle = write_bundle(datasets["spatial_a"], tmp_path / "query.ttab")
+    python_output = tmp_path / "python_decision.json"
+    cli_output = tmp_path / "cli_decision.json"
+    policy = DecisionPolicy(
+        shortlist_size=1,
+        min_support=1,
+        min_rank_support_score=0.1,
+        severe_failure_threshold=0.8,
+        require_baseline_advantage=False,
+        require_heldout_validation=False,
+    )
+
+    python_card = decide_from_bundle(
+        bundle,
+        knowledge_base=path,
+        task="spatial_domain",
+        dataset_name="query",
+        policy=policy,
+        out=python_output,
+    )
+    rc = main(
+        [
+            "decide",
+            "--in",
+            str(bundle),
+            "--knowledge-base",
+            str(path),
+            "--task",
+            "spatial_domain",
+            "--dataset-name",
+            "query",
+            "--shortlist-size",
+            "1",
+            "--min-support",
+            "1",
+            "--min-rank-support-score",
+            "0.1",
+            "--severe-failure-threshold",
+            "0.8",
+            "--allow-no-baseline-advantage",
+            "--allow-no-heldout-validation",
+            "--json",
+            "--out",
+            str(cli_output),
+        ]
+    )
+
+    assert rc == 0
+    cli_payload = json.loads(capsys.readouterr().out)
+    assert cli_payload == python_card.to_dict()
+    assert json.loads(python_output.read_text(encoding="utf-8")) == cli_payload
+    assert json.loads(cli_output.read_text(encoding="utf-8")) == cli_payload
+    assert cli_payload["policy"] == policy.to_dict()

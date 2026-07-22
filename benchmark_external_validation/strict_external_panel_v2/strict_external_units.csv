@@ -1,0 +1,11 @@
+unit_id,display,independence_class,platform,study,domain_loocv_eligible,tls_evidence_eligible,ground_truth
+dlpfc_donor_Br5292,DLPFC Br5292,biological_donor,visium,dlpfc_donor_Br5292,True,False,spatial_domain
+dlpfc_donor_Br5595,DLPFC Br5595,biological_donor,visium,dlpfc_donor_Br5595,True,False,spatial_domain
+dlpfc_donor_Br8100,DLPFC Br8100,biological_donor,visium,dlpfc_donor_Br8100,True,False,spatial_domain
+visium_hd_crc,CRC Visium HD,external_study,visium,visium_hd_crc,True,False,spatial_domain
+xenium_lung_cancer,Lung Xenium,external_study,xenium,xenium_lung_cancer,True,False,spatial_domain
+xenium_ovarian_cancer,Ovary Xenium,external_study,xenium,xenium_ovarian_cancer,True,False,spatial_domain
+visium_mouse_brain,Mouse brain Visium,external_study,visium,visium_mouse_brain,True,False,spatial_domain
+allen_merfish_brain_section,Mouse brain MERFISH,external_study,merfish,allen_merfish_brain_section,True,False,spatial_domain
+xenium_human_lymph_node,Reactive lymph node Xenium,external_study,xenium,10x_xenium_prime_lymph_node,True,True,spatial_domain
+visium_breast_cancer_tls,Breast cancer Visium TLS,external_study,visium_ffpe,10x Visium FFPE Human Breast Cancer,False,True,marker_and_spatial_statistics_only

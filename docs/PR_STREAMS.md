@@ -1,7 +1,7 @@
 # PR streams for landing dirty work onto main
 
 Work from agent branches should land as **four small PRs**, not one monolith.
-Map each PR to [ROADMAP.md](../ROADMAP.md) streams A–D.
+Map each PR to [ROADMAP.md](https://github.com/HERRY423/Histoweave/blob/main/ROADMAP.md) streams A–D.
 
 ## Suggested order
 

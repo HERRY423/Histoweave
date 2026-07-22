@@ -24,6 +24,8 @@ This page documents:
 | `virtual_st` | Predict expression from histology (H&E→ST) | **measured expression** | mean gene Pearson |
 
 ```python
+import logging
+
 from histoweave.benchmark import AnalysisTask, GroundTruthKind, TaskContract
 
 TaskContract(
@@ -51,6 +53,8 @@ Recommendation and decision engines **never soft-weight** incompatible evidence.
 | `INCOMPATIBLE` | `virtual_st` ↔ `spatial_domain` | **No** |
 
 ```python
+import logging
+
 from histoweave.benchmark import (
     cross_modal_relation,
     tasks_admissible,
@@ -117,6 +121,8 @@ external backends can replace the native path without changing the task contract
 10x Visium V1 Adult Mouse Brain with registered H&E, via squidpy:
 
 ```python
+import logging
+
 from histoweave.datasets import load_visium_hne_paired
 from histoweave.plugins import MethodCategory, create_method
 from histoweave.plugins.builtin import register_all
@@ -138,7 +144,7 @@ result = create_method(
 ).run(data)
 
 meta = result.uns["virtual_st"]["virtual_st_storm"]
-print(meta["mean_gene_pearson"], result.layers["virtual_st"].shape)
+logging.info("%s %s", meta["mean_gene_pearson"], result.layers["virtual_st"].shape)
 ```
 
 ### 2. Registry entry (after prepare)
@@ -149,12 +155,14 @@ python scripts/prepare_visium_hne_virtual_st.py \
 ```
 
 ```python
+import logging
+
 from histoweave.datasets import get_dataset, ensure_histology, prepare_virtual_st_table
 
 entry = get_dataset("visium_mouse_brain_hne")
 data = entry.load()                 # attaches images from uns['spatial'] when present
 data = prepare_virtual_st_table(data)
-print(entry.task_contract())        # virtual_st + measured_expression + mean_gene_pearson
+logging.info("%s", entry.task_contract())  # virtual_st + measured_expression + mean_gene_pearson
 ```
 
 ### 3. Your own Space Ranger Visium folder
@@ -182,6 +190,8 @@ result = create_method(
 ### 4. Benchmark harness
 
 ```python
+import logging
+
 from histoweave.benchmark import get_task, run_benchmark
 from histoweave.datasets import load_visium_hne_paired
 
@@ -199,7 +209,7 @@ board = run_benchmark(
         ]
     },
 )
-print(board.leaderboard)
+logging.info("%s", board.leaderboard)
 ```
 
 ## Claim boundary

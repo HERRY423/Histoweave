@@ -1,0 +1,95 @@
+{
+  "samples": [
+    {
+      "sample": "1142243F",
+      "n_spots": 4784,
+      "n_original": 4784,
+      "n_genes": 28402,
+      "n_domains": 6,
+      "label_counts": {
+        "Artefact": 119,
+        "Invasive cancer + stroma + lymphocytes": 3627,
+        "Lymphocytes": 15,
+        "Necrosis": 568,
+        "Stroma": 445,
+        "TLS": 10
+      }
+    },
+    {
+      "sample": "1160920F",
+      "n_spots": 4894,
+      "n_original": 4895,
+      "n_genes": 28402,
+      "n_domains": 8,
+      "label_counts": {
+        "Adipose tissue": 83,
+        "Artefact": 48,
+        "Cancer trapped in lymphocyte aggregation": 9,
+        "DCIS": 12,
+        "Invasive cancer + stroma + lymphocytes": 3146,
+        "Lymphocytes": 186,
+        "Normal glands + lymphocytes": 278,
+        "Stroma": 1132
+      }
+    },
+    {
+      "sample": "CID4290",
+      "n_spots": 2426,
+      "n_original": 2432,
+      "n_genes": 19237,
+      "n_domains": 4,
+      "label_counts": {
+        "Artefact": 7,
+        "Invasive cancer + stroma": 2082,
+        "Invasive cancer + stroma + lymphocytes": 215,
+        "Stroma": 122
+      }
+    },
+    {
+      "sample": "CID4465",
+      "n_spots": 1211,
+      "n_original": 1211,
+      "n_genes": 19237,
+      "n_domains": 4,
+      "label_counts": {
+        "Artefact": 4,
+        "Invasive cancer + stroma + lymphocytes": 1131,
+        "Normal duct": 3,
+        "Stroma": 73
+      }
+    },
+    {
+      "sample": "CID44971",
+      "n_spots": 1160,
+      "n_original": 1162,
+      "n_genes": 19237,
+      "n_domains": 7,
+      "label_counts": {
+        "Artefact": 1,
+        "DCIS": 273,
+        "Invasive cancer + lymphocytes": 317,
+        "Lymphocytes": 81,
+        "Normal + stroma + lymphocytes": 240,
+        "Stroma": 134,
+        "Stroma + adipose tissue": 114
+      }
+    },
+    {
+      "sample": "CID4535",
+      "n_spots": 1124,
+      "n_original": 1127,
+      "n_genes": 19237,
+      "n_domains": 8,
+      "label_counts": {
+        "Adipose tissue": 8,
+        "Artefact": 23,
+        "Invasive cancer": 418,
+        "Invasive cancer + adipose tissue + lymphocytes": 3,
+        "Invasive cancer + lymphocytes": 361,
+        "Lymphocytes": 69,
+        "Stroma": 169,
+        "Uncertain": 73
+      }
+    }
+  ]
+}

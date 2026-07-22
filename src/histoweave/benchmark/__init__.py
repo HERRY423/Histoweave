@@ -89,6 +89,14 @@ from .harness import (
     svg_task,
     virtual_st_task,
 )
+from .independent_personalisation import (
+    aggregate_units_to_landscape,
+    cross_lab_reproducibility_report,
+    evaluate_personalisation_policies,
+    summarise_policies,
+    synthetic_lab_units,
+    write_independent_personalisation_bundle,
+)
 from .isus import (
     ISUS_HIGH,
     ISUS_LOW,
@@ -154,23 +162,6 @@ from .pareto_io import (
     objective_tables_from_landscape,
     objective_tables_from_long_csv,
 )
-from .independent_personalisation import (
-    aggregate_units_to_landscape,
-    cross_lab_reproducibility_report,
-    evaluate_personalisation_policies,
-    summarise_policies,
-    synthetic_lab_units,
-    write_independent_personalisation_bundle,
-)
-from .protocol_endpoints import (
-    leave_one_study_out,
-    oracle_k_leakage_impact,
-    pareto_stability_from_long_csv,
-    selective_regret_coverage,
-    sota_unified_resource_compare,
-    summarise_study_grouped,
-    write_protocol_bundle,
-)
 from .phenomenology_contracts import (
     EvaluationRole,
     FrozenMethodManifest,
@@ -201,6 +192,15 @@ from .phenomenology_suite import (
     build_suite_plan,
     execute_suite,
     write_suite_plan,
+)
+from .protocol_endpoints import (
+    leave_one_study_out,
+    oracle_k_leakage_impact,
+    pareto_stability_from_long_csv,
+    selective_regret_coverage,
+    sota_unified_resource_compare,
+    summarise_study_grouped,
+    write_protocol_bundle,
 )
 from .recommend import MethodRecommender, MethodScore, Recommendation
 from .scaling import (

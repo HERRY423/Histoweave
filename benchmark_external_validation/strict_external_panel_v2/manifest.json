@@ -1,0 +1,72 @@
+{
+  "protocol": "histoweave.external_validation.strict_task_stratified.v2",
+  "builder": "build_strict_external_panel_v2.py",
+  "inputs": {
+    "independent_personalisation_results/independent_unit_landscape.json": {
+      "sha256": "cd5cd352c20c2263dc9d1fd3f96d2cba6d1d9abe6ddab123cd22007d04ea365f",
+      "bytes": 29895
+    },
+    "benchmark_external_validation/benchmark_long.csv": {
+      "sha256": "f3b8cf3196a997faea259f314aca2aec4160f4e16a6f6946fa00d7b0c8c04a0c",
+      "bytes": 34895
+    },
+    "5x15_spatial_aware/performance_matrix_mean_full.csv": {
+      "sha256": "a7d8c7cd99bb90cae80eab6e4b198c69ed69f487ddf780a36dae0a4a9bf7c749",
+      "bytes": 2306
+    },
+    "benchmark_external_validation/strict_external_panel_v2/banksy_lymph_summary.json": {
+      "sha256": "e02497c4972417f355961503fb65f08c409d7820b4e4b1c925c6e544b9958a8c",
+      "bytes": 1141
+    },
+    "research/phaseB_tls_consensus/tables/discovery_summary.json": {
+      "sha256": "03d52968546dc8b7a4c4900bc4fb87195b680e937f96b4d2ea3122b224b0053e",
+      "bytes": 1614
+    },
+    "research/phaseB_tls_consensus/second_dataset_xenium_lymph/tls_second_dataset_summary.json": {
+      "sha256": "dd0b6fa8297261e73bd148b080dcd693717a65a00ffe9848acfa38036ed2ba33",
+      "bytes": 2407
+    }
+  },
+  "artifacts": {
+    "loocv_summary.json": {
+      "sha256": "fcd45586f72be0bb7ad10998a2dfd5a09f07c4facc8a8865561c7de67856ebd2",
+      "bytes": 3017
+    },
+    "loocv_rows.json": {
+      "sha256": "fbed6c8f3ba79f31aeae4a60908a9b2f3923c28887073b25263565fe922970a7",
+      "bytes": 4315
+    },
+    "loocv_rows.csv": {
+      "sha256": "d5edea79f95219e9eef53699a8f062ead6a0ddd9aa3da0b3545ff32e121abac6",
+      "bytes": 1533
+    },
+    "strict_external_units.csv": {
+      "sha256": "6dbb0e763d04bc41b3627bf368490d1d0eeb61026ec4110d284b484b49f5b4b9",
+      "bytes": 1229
+    },
+    "sota_coverage.csv": {
+      "sha256": "51aaa45a71c7a5b2bca2dbedce9d08c7215852794ea0a18ecf56e2a90ed7d194",
+      "bytes": 4051
+    },
+    "sota_coverage_summary.json": {
+      "sha256": "e811b3e7e13f6cc2872e526e36b7ac2fb9249e78c621b458b208beacabe84bd0",
+      "bytes": 1430
+    },
+    "tls_two_dataset_summary.json": {
+      "sha256": "527c693aed1010d7510c5792ba5229fbfb21b6b815c7e7c7d291cc18be47475a",
+      "bytes": 1052
+    },
+    "fig_strict_external_panel_v2.svg": {
+      "sha256": "bcdabf333d4e14b5c7f2100254ef947df67b5a89082ed4dad8ce7484ce9a168e",
+      "bytes": 86734
+    },
+    "fig_strict_external_panel_v2.png": {
+      "sha256": "ac969f1f33ee6e204d22f0a5e3a7ff8b7122f99ad99f1d848de5141148c506fb",
+      "bytes": 504207
+    },
+    "REPORT_strict_external_panel_v2.md": {
+      "sha256": "ba42b86f94fc950731609f1c4d870fc58209ec0998e26641295888cbb5b6484b",
+      "bytes": 2011
+    }
+  }
+}

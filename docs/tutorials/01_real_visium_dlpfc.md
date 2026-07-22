@@ -17,7 +17,7 @@ ships hand-annotated cortical-layer ground truth via *spatialLIBD*. You will:
     pip install "histoweave-spatial[io,spatial,scanpy,scanvi,harmony]"
     ```
     Steps that wrap R/Bioconductor methods (**nnSVG**) additionally need the
-    `histoweave-r` container image (`ghcr.io/histoweave-spatial/histoweave-r`); the
+    `histoweave-r` container image (`ghcr.io/herry423/histoweave-r`); the
     tutorial shows how to run those steps and how to skip them if the image is not
     available. The first run downloads ~50 MB and caches it under
     `~/.cache/histoweave/datasets`.
@@ -170,7 +170,7 @@ chain.
 
 A non-interactive version that degrades gracefully when optional
 dependencies/containers are missing is provided at
-[`examples/tutorial_real_visium.py`](https://github.com/histoweave-spatial/histoweave/blob/main/examples/tutorial_real_visium.py):
+[`examples/tutorial_real_visium.py`](https://github.com/HERRY423/Histoweave/blob/main/examples/tutorial_real_visium.py):
 
 ```bash
 python examples/tutorial_real_visium.py

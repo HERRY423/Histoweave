@@ -30,9 +30,10 @@ from __future__ import annotations
 
 import csv
 import math
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -526,7 +527,9 @@ def assess_isus_predictor(
     if np.unique(isus_arr[ok]).size < 2 or np.unique(gain_arr[ok]).size < 2:
         status = "undefined"
         reasons.append("zero_variance_in_isus_or_gain")
-        gaps.append("ISUS or spatial ARI gain is constant across slices; rank correlation is undefined.")
+        gaps.append(
+            "ISUS or spatial ARI gain is constant across slices; rank correlation is undefined."
+        )
         return ISUSPredictorAssessment(
             n_slices=n_ok,
             spearman_rho=None,
@@ -666,12 +669,8 @@ class ExpectedSpatialGain:
         return {
             "isus": _finite_or_none(self.isus),
             "expected_spatial_ari_gain": _finite_or_none(self.expected_spatial_ari_gain),
-            "expected_spatial_ari_gain_low": _finite_or_none(
-                self.expected_spatial_ari_gain_low
-            ),
-            "expected_spatial_ari_gain_high": _finite_or_none(
-                self.expected_spatial_ari_gain_high
-            ),
+            "expected_spatial_ari_gain_low": _finite_or_none(self.expected_spatial_ari_gain_low),
+            "expected_spatial_ari_gain_high": _finite_or_none(self.expected_spatial_ari_gain_high),
             "reliability": self.reliability,
             "source": self.source,
             "residual_std": _finite_or_none(self.residual_std),
@@ -813,9 +812,7 @@ def fit_isus_gain_calibration(
         inter_i, slope_i, _, _ = _fit_ols(x[mask], y[mask])
         pred_i = inter_i + slope_i * x[i]
         loo_errors.append(float(y[i] - pred_i))
-    loo_rmse = (
-        float(np.sqrt(np.mean(np.square(loo_errors)))) if loo_errors else residual_std
-    )
+    loo_rmse = float(np.sqrt(np.mean(np.square(loo_errors)))) if loo_errors else residual_std
 
     reliability = {
         "supported": "moderate",
@@ -837,9 +834,7 @@ def fit_isus_gain_calibration(
         per_slice.append(entry)
 
     order = np.argsort(x)
-    empirical_points = [
-        {"isus": float(x[i]), "spatial_ari_gain": float(y[i])} for i in order
-    ]
+    empirical_points = [{"isus": float(x[i]), "spatial_ari_gain": float(y[i])} for i in order]
 
     return ISUSGainCalibration(
         n_slices=len(pairs),
@@ -1072,14 +1067,10 @@ def compute_isus(
         finite_cond = null_cond[np.isfinite(null_cond)]
         if finite_isus.size:
             null_mean_isus = float(np.mean(finite_isus))
-            null_std_isus = (
-                float(np.std(finite_isus, ddof=1)) if finite_isus.size >= 2 else 0.0
-            )
+            null_std_isus = float(np.std(finite_isus, ddof=1)) if finite_isus.size >= 2 else 0.0
         if finite_cond.size:
             null_mean_cond = float(np.mean(finite_cond))
-            null_std_cond = (
-                float(np.std(finite_cond, ddof=1)) if finite_cond.size >= 2 else 0.0
-            )
+            null_std_cond = float(np.std(finite_cond, ddof=1)) if finite_cond.size >= 2 else 0.0
         if value is not None:
             p_isus = _empirical_one_sided_pvalue(float(value), null_isus)
             z_isus = _z_score(float(value), null_isus)

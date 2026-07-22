@@ -1,0 +1,54 @@
+{
+  "protocol": "histoweave.tissue_condition_flip.exploratory.v1",
+  "status": "exploratory_not_deployment_ready",
+  "global_training_default": "spectral",
+  "condition_summary": [
+    {
+      "condition": "human_cerebral_cortex",
+      "label": "Human cerebral cortex",
+      "n_independent_units": 3,
+      "oracle_wins": {
+        "gaussian_mixture": 2,
+        "spectral": 1
+      },
+      "spectral_win_fraction": 0.3333333333333333,
+      "gaussian_mixture_win_fraction": 0.6666666666666666
+    },
+    {
+      "condition": "human_tumor",
+      "label": "Human tumour",
+      "n_independent_units": 3,
+      "oracle_wins": {
+        "spectral": 3
+      },
+      "spectral_win_fraction": 1.0,
+      "gaussian_mixture_win_fraction": 0.0
+    },
+    {
+      "condition": "mouse_brain",
+      "label": "Mouse brain",
+      "n_independent_units": 2,
+      "oracle_wins": {
+        "spectral": 2
+      },
+      "spectral_win_fraction": 1.0,
+      "gaussian_mixture_win_fraction": 0.0
+    }
+  ],
+  "flip_table": {
+    "human_cerebral_cortex": {
+      "flips": 2,
+      "non_flips": 1
+    },
+    "other_conditions": {
+      "flips": 0,
+      "non_flips": 5
+    }
+  },
+  "fisher_exact_two_sided_p": 0.10714285714285714,
+  "global_loocv_mean_regret": 0.010892197301457428,
+  "within_condition_loocv_mean_regret": 0.023967871848475368,
+  "within_condition_minus_global_regret": 0.01307567454701794,
+  "interpretation": "The oracle winner changes in two of three human cerebral-cortex donors, whereas spectral wins all tumour and mouse-brain units. This is a small-n tissue interaction signal, not a validated selection rule.",
+  "negative_control": "A naive leave-one-out within-condition selector increases mean regret, so tissue labels must not unlock personalised deployment."
+}

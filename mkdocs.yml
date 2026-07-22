@@ -1,6 +1,6 @@
 site_name: HistoWeave
 site_description: Open-source orchestration & evaluation platform for spatial transcriptomics.
-repo_url: https://github.com/histoweave-spatial/histoweave
+repo_url: https://github.com/HERRY423/Histoweave
 theme:
   name: material
   features:

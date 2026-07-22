@@ -38,6 +38,7 @@ Mini-batch k-means on spatial-PCA embedding.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.method_validation.multidataset.v1 (figure3 + dlpfc 5x10)
 - **datasets:** Figure3 synthetic ×3; DLPFC Visium 5 slices (Maynard 2021)
 - **metric:** ARI vs planted domains / manual layers across seeds

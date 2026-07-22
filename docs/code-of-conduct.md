@@ -4,7 +4,7 @@ HistoWeave adopts the **Contributor Covenant 2.1**.
 
 The canonical text is at the repository root:
 
-**[CODE_OF_CONDUCT.md](https://github.com/histoweave-spatial/histoweave/blob/main/CODE_OF_CONDUCT.md)**
+**[CODE_OF_CONDUCT.md](https://github.com/HERRY423/Histoweave/blob/main/CODE_OF_CONDUCT.md)**
 
 ## Summary
 

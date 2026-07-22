@@ -40,6 +40,7 @@ SpaGCN graph-convolutional spatial domains (official package).
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.method_validation.sota_batch.v1 + histoweave.sota_dlpfc.v1
 - **datasets:** DLPFC Visium 151507/669/670/673/674 × 3 seeds (official SpaGCN)
 - **metric:** ARI vs manual layers; mean≈0.32 across 15 successful cells

@@ -12,7 +12,8 @@ local proxy fails a non-inferiority gate). Primary claim uses the gated policy.
 Usage
 -----
 python scripts/run_independent_personalisation.py
-python scripts/run_independent_personalisation.py --multisource protocol_endpoints_results/multisource_landscape.json
+python scripts/run_independent_personalisation.py
+  --multisource protocol_endpoints_results/multisource_landscape.json
 """
 
 from __future__ import annotations
@@ -64,9 +65,7 @@ def _load_multisource(path: Path) -> LandscapeResult:
         task=str(payload.get("task") or "spatial_domain"),
         metric=str(payload.get("metric") or "ARI"),
         higher_is_better=bool(payload.get("higher_is_better", True)),
-        dataset_meta={
-            str(k): dict(v) for k, v in (payload.get("dataset_meta") or {}).items()
-        },
+        dataset_meta={str(k): dict(v) for k, v in (payload.get("dataset_meta") or {}).items()},
     )
 
 
@@ -110,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
         multi = _load_multisource(args.multisource)
         real_units = default_independent_units_from_multisource(list(multi.performance))
         # Keep only methods present
-        for name, row in multi.performance.items():
+        for _name, row in multi.performance.items():
             for m in methods:
                 row.setdefault(m, float("nan"))
         real_landscape = aggregate_units_to_landscape(multi, real_units, methods=methods)

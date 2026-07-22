@@ -147,7 +147,7 @@ domains = create_method("domain_detection", "banksy", n_domains=3).run(h)
 
 ## Runnable script
 
-[`examples/tutorial_batch_correction.py`](https://github.com/histoweave-spatial/histoweave/blob/main/examples/tutorial_batch_correction.py)
+[`examples/tutorial_batch_correction.py`](https://github.com/HERRY423/Histoweave/blob/main/examples/tutorial_batch_correction.py)
 runs the full comparison and prints the metric table:
 
 ```bash

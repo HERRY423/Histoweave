@@ -39,6 +39,7 @@ BIRCH CF-tree clustering on spatial-PCA embedding.
 
 ## Evidence
 
+- **kind:** scientific
 - **protocol:** histoweave.method_validation.multidataset.v1 (figure3 + dlpfc 5x10 + 5x15)
 - **datasets:** Figure3 synthetic ×3; DLPFC Visium 5 slices (Maynard 2021)
 - **metric:** ARI vs planted domains / manual layers; best spatial_weight per slice

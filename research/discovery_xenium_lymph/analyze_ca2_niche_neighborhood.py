@@ -21,7 +21,7 @@ import json
 import logging
 import sys
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -441,7 +441,7 @@ def render_report(
 
 **Dataset:** `{DATASET}` · **component:** rank3 n={n_comp}  
 **Protocol:** `histoweave.ca2_niche_neighborhood.v1`  
-**Composed:** {datetime.now(timezone.utc).strftime("%Y-%m-%d")}
+**Composed:** {datetime.now(UTC).strftime("%Y-%m-%d")}
 
 > Molecular **proxy** cell classes from gene panels — not protein-defined types.
 > Pathology domain abutment remains 100% “Lymph node” (see prior GC deep-dive);
@@ -657,7 +657,7 @@ def main() -> None:
 
     payload = {
         "protocol": "histoweave.ca2_niche_neighborhood.v1",
-        "composed_at": datetime.now(timezone.utc).isoformat(),
+        "composed_at": datetime.now(UTC).isoformat(),
         "n_component": n_comp,
         "k_nn": K_NN,
         "proxy_inside": proxy_inside,
@@ -696,9 +696,9 @@ def main() -> None:
     )
     pointer.mkdir(parents=True, exist_ok=True)
     (pointer / "D3_KCNN4_ORAI3_NEIGHBORHOOD.md").write_text(
-        f"# See full report\n\n"
-        f"Canonical path: `research/discovery_xenium_lymph/KCNN4_ORAI3_NEIGHBORHOOD.md`\n\n"
-        f"Artifacts: `research/discovery_xenium_lymph/results/ca2_niche_neighborhood/`\n",
+        "# See full report\n\n"
+        "Canonical path: `research/discovery_xenium_lymph/KCNN4_ORAI3_NEIGHBORHOOD.md`\n\n"
+        "Artifacts: `research/discovery_xenium_lymph/results/ca2_niche_neighborhood/`\n",
         encoding="utf-8",
     )
     logger.info("wrote KCNN4_ORAI3_NEIGHBORHOOD.md")

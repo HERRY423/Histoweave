@@ -1,0 +1,9 @@
+held_out,condition,n_training_same_condition,selected_method,oracle_method,oracle_score,selected_score,regret
+dlpfc_donor_Br5292,human_cerebral_cortex,2,spectral,gaussian_mixture,0.3923480653357618,0.37287606920884886,0.019471996126912916
+dlpfc_donor_Br5595,human_cerebral_cortex,2,gaussian_mixture,spectral,0.4524797778016233,0.3478743814254798,0.10460539637614352
+dlpfc_donor_Br8100,human_cerebral_cortex,2,spectral,gaussian_mixture,0.3654384272063379,0.2977728449215914,0.0676655822847465
+visium_hd_crc,human_tumor,2,spectral,spectral,0.6759144939316668,0.6759144939316668,0.0
+xenium_lung_cancer,human_tumor,2,spectral,spectral,0.15340591766364742,0.15340591766364742,0.0
+xenium_ovarian_cancer,human_tumor,2,spectral,spectral,0.46280500324094415,0.46280500324094415,0.0
+visium_mouse_brain,mouse_brain,1,spectral,spectral,0.6268160581881485,0.6268160581881485,0.0
+allen_merfish_brain_section,mouse_brain,1,spectral,spectral,0.2821907033991168,0.2821907033991168,0.0

@@ -213,6 +213,29 @@ body {
 .chip.win { background: var(--accent-orange); color: white; }
 .chip.nan { background: #eee; color: #999; font-weight: 400; }
 
+/* -------- federated evidence (additive) -------- */
+.chip.fed-verified { background: var(--accent-green); color: white; }
+.chip.fed-unverified { background: var(--accent-lime); color: var(--ink); }
+.chip.fed-disputed { background: var(--accent-pink); color: var(--ink); }
+
+.federation-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  background: var(--stone);
+  border-left: 4px solid var(--accent-blue);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+.federation-banner .fed-title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.federation-banner .fed-meta { color: #555; }
+
 /* Cell highlighting for winning method per dataset */
 .cell-win {
   background: rgba(255, 148, 0, 0.15);

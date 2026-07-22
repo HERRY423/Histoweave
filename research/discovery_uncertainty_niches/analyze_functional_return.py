@@ -18,14 +18,12 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
-
 from functional_experiments import EXPERIMENTS, ExperimentSpec
 
 BASE = Path(__file__).resolve().parent
@@ -396,7 +394,7 @@ def write_report(
     lines = [
         "# Functional experiment return report",
         "",
-        f"**Analyzed:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}  ",
+        f"**Analyzed:** {datetime.now(UTC).strftime('%Y-%m-%d %H:%M UTC')}  ",
         f"**Simulated:** {'**YES — NOT A CLAIM**' if simulated else 'no'}  ",
         f"**Experiments with data:** {len(scores)} · **PASS:** {n_pass}",
         "",
@@ -550,7 +548,7 @@ def main() -> None:
     (OUT / "RETURN_REPORT.md").write_text(report, encoding="utf-8")
     payload = {
         "protocol": "histoweave.functional_return.v1",
-        "analyzed_at": datetime.now(timezone.utc).isoformat(),
+        "analyzed_at": datetime.now(UTC).isoformat(),
         "simulated": simulated,
         "scores": scores,
         "n_pass_claim_grade": sum(1 for s in scores if s.get("pass") and not simulated),

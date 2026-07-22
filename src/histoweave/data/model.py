@@ -371,7 +371,7 @@ class SpatialTable:
         chain = self.uns.get("provenance", [])
         # AnnData h5ad round-trips may restore empty provenance as ndarray.
         if not isinstance(chain, list):
-            chain = list(chain) if getattr(chain, "dtype", None) == object else []
+            chain = list(chain) if getattr(chain, "dtype", None) == np.dtype("O") else []
         chain.append(prov.to_dict())
         self.uns["provenance"] = chain
 
@@ -379,7 +379,7 @@ class SpatialTable:
     def provenance(self) -> list[dict[str, Any]]:
         chain = self.uns.get("provenance", [])
         if not isinstance(chain, list):
-            return list(chain) if getattr(chain, "dtype", None) == object else []
+            return list(chain) if getattr(chain, "dtype", None) == np.dtype("O") else []
         return chain
 
     def copy(self) -> SpatialTable:

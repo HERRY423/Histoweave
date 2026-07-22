@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "protocol": "dataset_grouped_holdout",
+  "source_protocol": "histoweave.external_validation.recommender_loocv.n8_strict_region.v1",
+  "task": "spatial_domain",
+  "ground_truth_kind": "spatial_domain",
+  "n_queries": 8,
+  "independent_unit": "biological_donor_or_external_study",
+  "beats_global_best": false,
+  "noninferior_to_global_best": true,
+  "superior_to_global_best": false,
+  "metrics": {
+    "mean_gated_regret": 0.010892197301457428,
+    "mean_global_best_regret": 0.010892197301457428,
+    "mean_random_regret": 0.11275754393322637,
+    "gated_minus_global": {
+      "n": 8,
+      "n_boot": 10000,
+      "level": 0.95,
+      "mean_delta": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "prob_delta_le_0": 1.0,
+      "interpretation": "mean_delta \u2264 0 indicates gated personalisation is non-inferior (or superior) to always-global on mean regret"
+    },
+    "top1_accuracy": 0.75
+  },
+  "decision": "Retain the global spectral default. The n=8 policy is non-inferior but not superior and therefore does not unlock personalisation.",
+  "limitations": [
+    "Only eight independent units are available; tissue strata contain 2-3 units.",
+    "The three DLPFC units are donor aggregates from one study.",
+    "Five external-study feature vectors have partial target-free feature coverage.",
+    "The common panel is restricted to seven sklearn methods available on all units."
+  ]
+}

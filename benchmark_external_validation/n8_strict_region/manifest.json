@@ -1,0 +1,51 @@
+{
+  "protocol": "histoweave.external_validation.recommender_loocv.n8_strict_region.v1",
+  "builder": "build_n8_strict_loocv.py",
+  "source": {
+    "path": "independent_personalisation_results\\independent_unit_landscape.json",
+    "sha256": "cd5cd352c20c2263dc9d1fd3f96d2cba6d1d9abe6ddab123cd22007d04ea365f",
+    "source_protocol": "histoweave.independent_personalisation.v1"
+  },
+  "artifacts": {
+    "loocv_summary.json": {
+      "sha256": "fc354a63cad500d022f33a629add708ef45d1a4fa8eebdaf891c1b14a42ce097",
+      "bytes": 3290
+    },
+    "loocv_rows.json": {
+      "sha256": "fb80d124d585622d6152fe70c68522f6926a1cb11ce4ae697a6ec3ccd64e8738",
+      "bytes": 3847
+    },
+    "loocv_rows.csv": {
+      "sha256": "6e8a86a7d46ef5bf9cebaf294753993921e845c70b2b24340afdcb75610a2cdd",
+      "bytes": 1395
+    },
+    "tissue_condition_flip.json": {
+      "sha256": "dc99cd3b5a43ff3649fca5d9ff6f3eddb28458175b3fbe7bb31513c741940f20",
+      "bytes": 1829
+    },
+    "tissue_condition_flip.csv": {
+      "sha256": "2dde5853322ff226e6ef35042dc5473299157d628a25fddb319347b0e8acb688",
+      "bytes": 1440
+    },
+    "within_condition_loocv.csv": {
+      "sha256": "415be007c2559e213aab947ab9105edd10c133a4558f8257a4ee9af2ede87cb3",
+      "bytes": 977
+    },
+    "decision_validation.json": {
+      "sha256": "8e5114615d43b0d71d53bb7b7e0d1857e223d6a07c04549ccedfeb32ae82ae2f",
+      "bytes": 1464
+    },
+    "fig_tissue_condition_flip.svg": {
+      "sha256": "28d0871f2984f8e2d7fc19da4d31ece45b1d642ee05a7c00098a45f202af8e9e",
+      "bytes": 36944
+    },
+    "fig_tissue_condition_flip.png": {
+      "sha256": "758b4749ae35dd00dba881a3cd485fabd1e441845bb727a2bfc526610894a60a",
+      "bytes": 358946
+    },
+    "report_n8_strict_loocv.md": {
+      "sha256": "5c625de1de67427b8f9767306e50b5d0dd218fc47b05accbcb30732bbf8ab9f9",
+      "bytes": 2044
+    }
+  }
+}

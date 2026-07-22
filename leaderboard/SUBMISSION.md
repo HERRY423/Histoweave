@@ -4,6 +4,14 @@ HistoWeave accepts offline benchmark submissions that can be merged into the
 public leaderboard and into a recommender knowledge base.  Submissions are
 **append-only evidence**, not a claim that the method is production-ready.
 
+> **Two ways to contribute evidence.** This page covers the **one-shot central
+> submission** (a maintainer merges your CSV once). For a **living, continuously
+> growing evidence landscape** where multiple labs contribute *signed* results
+> that gain trust as other labs independently reproduce them — without sharing
+> raw data — see the **[Federated Evidence Network](../federation/PROTOCOL.md)**
+> (`histoweave fed`) and its [contributor guide](../federation/CONTRIBUTING_EVIDENCE.md).
+> The federation reuses the same task contracts and metrics as this protocol.
+
 ## Schema: `histoweave.external_submission.v1`
 
 Provide a CSV (or JSON list) with one row per dataset × method × seed:

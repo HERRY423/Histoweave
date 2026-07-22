@@ -1,0 +1,15 @@
+{
+  "schema_version": "histoweave.node_index.v1",
+  "nodes": [
+    {
+      "node_id": "histoweave-reference",
+      "display_name": "HistoWeave Reference Node",
+      "status": "active",
+      "n_public_keys": 1,
+      "sigstore_identity": null,
+      "evidence_feed": [
+        "federation/bundles/histoweave-reference.json"
+      ]
+    }
+  ]
+}

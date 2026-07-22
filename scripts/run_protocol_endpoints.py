@@ -31,12 +31,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from histoweave.benchmark.features import (  # noqa: E402
-    DEFAULT_FEATURE_ORDER,
     RECOMMENDATION_FEATURE_ORDER,
     extract_features,
     feature_vector,
 )
-from histoweave.benchmark.landscape import LandscapeResult, _compute_niches, _embed_datasets  # noqa: E402
+from histoweave.benchmark.landscape import (  # noqa: E402
+    LandscapeResult,
+    _compute_niches,
+    _embed_datasets,
+)
 from histoweave.benchmark.protocol_endpoints import (  # noqa: E402
     leave_one_study_out,
     oracle_k_leakage_impact,
@@ -208,7 +211,9 @@ def _load_dlpfc_table(sid: str, repo: Path) -> tuple[SpatialTable, int]:
     X = np.asarray(counts.todense()) if hasattr(counts, "todense") else np.asarray(counts)
     tab = SpatialTable(
         X=X.astype(np.float32),
-        obs=pd.DataFrame({"domain_truth": pd.Categorical(truth)}, index=adata.obs_names.astype(str)),
+        obs=pd.DataFrame(
+            {"domain_truth": pd.Categorical(truth)}, index=adata.obs_names.astype(str)
+        ),
         var=pd.DataFrame(index=adata.var_names.astype(str)),
         obsm={"spatial": np.asarray(adata.obsm["spatial"], dtype=np.float32)},
         uns={
@@ -433,9 +438,7 @@ def build_multisource_landscape(
             timings[name] = dict(time_map.get(name, {}))
             if name in feat_map:
                 features[name] = feat_map[name]
-            meta[name] = _dataset_meta_row(
-                name, platform=platform_of[name], study_group=name
-            )
+            meta[name] = _dataset_meta_row(name, platform=platform_of[name], study_group=name)
 
     # --- External multi-study ---
     p_ext = repo / "benchmark_external_validation" / "benchmark_long.csv"
@@ -457,9 +460,7 @@ def build_multisource_landscape(
             timings[name] = dict(time_map.get(name, {}))
             if name in proxy_feat:
                 features[name] = proxy_feat[name]
-            meta[name] = _dataset_meta_row(
-                name, platform=platforms.get(name), study_group=name
-            )
+            meta[name] = _dataset_meta_row(name, platform=platforms.get(name), study_group=name)
 
     if len(performance) < 2:
         raise RuntimeError("Insufficient landscapes found to build multi-source validation")
@@ -637,7 +638,8 @@ def main(argv: list[str] | None = None) -> int:
             "methods": COMMON_METHODS,
             "notes": [
                 "External studies use manifest-derived proxy features when raw h5ad is absent.",
-                "DLPFC slices share three donors; independence is slice-level, not fully donor-level.",
+                "DLPFC slices share three donors; independence is slice-level, "
+                "not fully donor-level.",
                 "Cross-platform and external studies supply cross-study queries.",
                 "Oracle-K leakage uses non_oracle_k_sota/benchmark_long.csv when present.",
             ],

@@ -4,7 +4,7 @@ HistoWeave documents **every registered method**. Use this page to start,
 the [complete catalog](catalog.md) for the full inventory, and category
 pages for decision notes within a task.
 
-**Inventory:** 82 registered · 33 field-facing (production/beta/validated in analysis categories) · 5 deep hand-written guides.
+**Inventory:** 85 registered · 30 field-facing (production/beta/validated in analysis categories) · 5 deep hand-written guides.
 
 ## Deep guides (start here)
 
@@ -32,6 +32,7 @@ pages for decision notes within a task.
     - [qc](categories/qc.md) (7)
     - [segmentation](categories/segmentation.md) (1)
     - [svg](categories/svg.md) (10)
+    - [virtual_st](categories/virtual_st.md) (3)
 
 !!! tip "Selection under uncertainty"
     Prefer a short multi-method ensemble + boundary-uncertainty map when two

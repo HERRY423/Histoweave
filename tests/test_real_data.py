@@ -156,7 +156,11 @@ class TestBenchmarkOverFixture:
     def test_kmeans_still_top_on_clean_data(self):
         """On clean synthetic data, kmeans should score highest (simple blobs)."""
         data = make_synthetic(n_cells=300, n_genes=36, n_domains=3, noise=0.1, seed=0)
-        result = run_benchmark(domain_detection_task(dataset=data))
+        result = run_benchmark(
+            domain_detection_task(dataset=data),
+            k_policy="oracle",
+            allow_oracle_k=True,
+        )
         best = result.best()
         assert best is not None
         assert best["score"] > 0.85  # very clean data

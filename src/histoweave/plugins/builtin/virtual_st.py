@@ -34,7 +34,6 @@ from ..interfaces import (
 )
 from ..registry import register
 
-
 # ---------------------------------------------------------------------------
 # Shared morphology / scoring helpers
 # ---------------------------------------------------------------------------
@@ -180,9 +179,13 @@ def _unsupervised_morphology_expression(
     feats = _standardize(features)
     # Add polynomial interactions of leading channels for non-linearity.
     lead = feats[:, : min(6, feats.shape[1])]
-    expanded = np.concatenate((feats, lead**2, lead[:, :1] * lead[:, 1:2] if lead.shape[1] > 1 else lead), axis=1)
+    expanded = np.concatenate(
+        (feats, lead**2, lead[:, :1] * lead[:, 1:2] if lead.shape[1] > 1 else lead), axis=1
+    )
     expanded = _standardize(expanded)
-    projection = rng.normal(0.0, 1.0 / max(1.0, np.sqrt(expanded.shape[1])), size=(expanded.shape[1], n_genes))
+    projection = rng.normal(
+        0.0, 1.0 / max(1.0, np.sqrt(expanded.shape[1])), size=(expanded.shape[1], n_genes)
+    )
     logits = expanded @ projection
     # Softplus-like non-negativity without torch.
     return np.log1p(np.exp(np.clip(logits, -20.0, 20.0)))
@@ -368,7 +371,9 @@ class _VirtualSTBase(Method):
         # Compact morphology embedding for downstream domain methods.
         from ..._math import pca
 
-        n_comp = min(int(self.params["embedding_dim"]), features.shape[1], max(1, features.shape[0] - 1))
+        n_comp = min(
+            int(self.params["embedding_dim"]), features.shape[1], max(1, features.shape[0] - 1)
+        )
         if n_comp >= 1 and features.shape[0] >= 2:
             result.obsm[emb_key] = pca(features, n_comp, random_state=int(self.params["seed"]))
         else:
@@ -380,8 +385,12 @@ class _VirtualSTBase(Method):
 def _register_architecture(architecture: _VirtualSTArchitecture) -> None:
     params = (
         ParamSpec("image_key", "str", "image", "Registered H&E / histology key in images."),
-        ParamSpec("patch_size", "int", 15, "Odd-ish patch diameter in pixels.", minimum=1, maximum=255),
-        ParamSpec("k_neighbors", "int", 6, "Spatial neighbours for hierarchical fusion.", minimum=1),
+        ParamSpec(
+            "patch_size", "int", 15, "Odd-ish patch diameter in pixels.", minimum=1, maximum=255
+        ),
+        ParamSpec(
+            "k_neighbors", "int", 6, "Spatial neighbours for hierarchical fusion.", minimum=1
+        ),
         ParamSpec(
             "mode",
             "str",

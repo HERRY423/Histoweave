@@ -99,7 +99,7 @@ Outputs (in this directory by default, override with `HISTOWEAVE_EXT_OUT`):
 `benchmark_long.csv`, `performance_matrix_mean.csv` / `_std.csv`,
 `bootstrap_ci.csv`, `benchmark_5x_external.json`, `dataset_manifest.json`,
 `recommendation_loocv.csv` / `.json`, `manifest.json`, and `figures/`
-(4 figures × SVG + PNG).
+(5 figures × SVG + PNG).
 
 ## Method list (shared with 7×15)
 
@@ -114,6 +114,68 @@ harmony_kmeans, moran_spectral`.
 cluster count. Datasets above 15 000 cells are stratified-subsampled per
 (dataset, seed) so every method sees the same slice; bootstrap CIs are
 refit-free (100 × 80% cell resamples per cell).
+
+## Strict task-stratified panel v2
+
+The submission-facing strict registry now contains 10 independent units. Nine
+have compatible spatial-domain ground truth and enter the common seven-method
+LOOCV; two carry TLS evidence, with the official reactive lymph-node Xenium
+unit shared between strata. The n=9 gated-policy regret remains tied with the
+training-fold global best (0.009682 ARI), so the global default is retained.
+
+SOTA outputs are aligned to the same registry in
+`strict_external_panel_v2/sota_coverage.csv`. Missing cells are explicit:
+BANKSY-Python is available on all nine domain units, although its three DLPFC
+donor cells use selected slices; SpaGCN, STAGATE, GraphST, and BayesSpace remain
+DLPFC-only. No incomplete SOTA method enters the confirmatory LOOCV.
+
+The second TLS dataset is a negative transport result. The breast Visium TLS
+endpoint (Moran's I 0.665, contiguity 0.727) does not replicate on cell-resolved
+reactive lymph-node Xenium (Moran's I 0.190, contiguity 0, pathology-GC F1 0;
+fixed k=20 neighbourhood AUROC 0.364). This preserves the breast observation as
+a single-sample discovery and identifies assay-aware TLS definitions as the
+next validation requirement.
+
+Reproduce with:
+
+```bash
+python research/phaseB_tls_consensus/analyze_tls_second_dataset.py
+python benchmark_external_validation/evaluate_banksy_lymph.py
+python benchmark_external_validation/strict_external_panel_v2/build_strict_external_panel_v2.py
+```
+
+See `strict_external_panel_v2/REPORT_strict_external_panel_v2.md` for the
+combined report and coverage figure.
+
+## Frozen independent study test
+
+A genuinely independent one-shot test is reported under
+`independent_test_wu2021/`. It uses all six primary breast-cancer Visium
+patients/sections deposited by Wu et al. 2021 (Zenodo DOI
+`10.5281/zenodo.4739739`). The study, patients, and sample identifiers were
+absent from the development landscape when the protocol was locked.
+
+Before any outcome files were downloaded or inspected, the protocol fixed the
+global `spectral` policy, a seven-method common comparator, three seeds,
+pathology-label ARI, equal section weighting, and a 0.02-ARI mean-regret
+success margin. Personalisation was disabled because the preceding strict
+n=9 panel did not outperform its global default.
+
+The frozen policy failed: mean regret 0.1313 ARI (patient/section bootstrap
+95% CI 0.0340-0.2363), with spectral top-ranked in 2/6 sections. The negative
+result blocks a transportability claim. It is not used to tune the policy,
+thresholds, embeddings, or method panel and will not be appended to the
+training landscape after evaluation.
+
+Reproduce from the official local raw bundle with:
+
+```bash
+python benchmark_external_validation/independent_test_wu2021/run_independent_test.py
+```
+
+See `independent_test_wu2021/preregistered_protocol.json`,
+`independent_test_wu2021/independence_audit.json`, and
+`independent_test_wu2021/REPORT_independent_test_wu2021.md`.
 
 ## See also
 

@@ -1,0 +1,68 @@
+{
+  "protocol": "histoweave.landscape.dlpfc_spatial_sota.v2",
+  "sota_methods_added": [
+    "stagate",
+    "graphst",
+    "bayesspace"
+  ],
+  "sota_method_means": {
+    "stagate": {
+      "per_slice_mean": {
+        "151673": 0.4259780881723076,
+        "151674": 0.39359305226007607,
+        "151507": 0.42634869330301733,
+        "151669": 0.24864095250096133,
+        "151670": 0.2720224123187119
+      },
+      "grand_mean": 0.35331663971101485,
+      "n_cells_success": 15,
+      "n_cells_total": 15
+    },
+    "graphst": {
+      "per_slice_mean": {
+        "151673": 0.2355931017767938,
+        "151674": 0.22058101538466057,
+        "151507": 0.29903743851352727,
+        "151669": 0.12049980414901362,
+        "151670": 0.21318130046998832
+      },
+      "grand_mean": 0.21777853205879674,
+      "n_cells_success": 15,
+      "n_cells_total": 15
+    },
+    "bayesspace": {
+      "per_slice_mean": {
+        "151673": 0.5043737834217313,
+        "151674": 0.30062538148574897,
+        "151507": 0.38922935378921036,
+        "151669": 0.20251852597025788,
+        "151670": 0.23065179383478474
+      },
+      "grand_mean": 0.3254797677003467,
+      "n_cells_success": 15,
+      "n_cells_total": 15
+    }
+  },
+  "artifacts": [
+    {
+      "path": "5x15_spatial_aware/sota_benchmark_long.csv",
+      "sha256": "46e065817cabbdf841f8ebb5af092b1d5b32de26cc3fa97cf2c492df087b0c90",
+      "bytes": 3022
+    },
+    {
+      "path": "5x15_spatial_aware/sota_method_means.csv",
+      "sha256": "d33b272a876ba2b04e1e4044bfb674bad5d4294c3ea25dad54655046602cf3c2",
+      "bytes": 243
+    },
+    {
+      "path": "figure3_results/landscape_dlpfc_merged.json",
+      "sha256": "2d0f4d0fad1863375221edfd1aa7b7584bd71a7bcc56d04b7349412bcae86dfa",
+      "bytes": 14051
+    },
+    {
+      "path": "5x15_spatial_aware/performance_matrix_mean_full.csv",
+      "sha256": "a7d8c7cd99bb90cae80eab6e4b198c69ed69f487ddf780a36dae0a4a9bf7c749",
+      "bytes": 2306
+    }
+  ]
+}

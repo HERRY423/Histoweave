@@ -397,7 +397,9 @@ def _make_virtual_st_synthetic(
         )
     )
     loadings = rng.normal(0.0, 1.0, size=(morph.shape[1], n_genes))
-    expression = np.clip(np.exp(morph @ loadings + rng.normal(0.0, 0.15, size=(n_obs, n_genes))), 0.0, None)
+    expression = np.clip(
+        np.exp(morph @ loadings + rng.normal(0.0, 0.15, size=(n_obs, n_genes))), 0.0, None
+    )
     obs = __import__("pandas").DataFrame(index=[f"spot_{i}" for i in range(n_obs)])
     var = __import__("pandas").DataFrame(index=[f"g{i}" for i in range(n_genes)])
     return SpatialTable(

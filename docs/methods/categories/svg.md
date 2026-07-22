@@ -7,6 +7,7 @@ Rank genes by spatial autocorrelation or spatial variance. Always report FDR-adj
 
 | Method | Maturity | Implementation | Summary | Guide |
 |--------|----------|----------------|---------|-------|
+| `spatialde` | `contract_validated` | `external` | SpatialDE Gaussian-process test for spatially variable genes. | [spatialde](../generated/spatialde.md) |
 | `weave_anisotropy_svg` | `experimental` | `native` | Directional spatial association contrast across four orientation sectors. | [weave_anisotropy_svg](../generated/weave_anisotropy_svg.md) |
 | `weave_bootstrap_robust_svg` | `experimental` | `native` | Spatial association ranked by deterministic bootstrap stability. | [weave_bootstrap_robust_svg](../generated/weave_bootstrap_robust_svg.md) |
 | `weave_boundary_svg` | `experimental` | `native` | Genes whose local expression jumps coincide with multigene spatial boundaries. | [weave_boundary_svg](../generated/weave_boundary_svg.md) |
@@ -16,7 +17,6 @@ Rank genes by spatial autocorrelation or spatial variance. Always report FDR-adj
 | `morans_i` | `production` | `native` | Per-gene Moran's I spatial autocorrelation on a k-NN graph. | [morans_i](../generated/morans_i.md) |
 | `nnsvg` | `production` | `native` | nnSVG nearest-neighbour Gaussian-process SVG detection (Bioconductor). | [nnsvg](../generated/nnsvg.md) |
 | `spatial_variance_ratio` | `production` | `native` | Variance retained after local spatial averaging. | [spatial_variance_ratio](../generated/spatial_variance_ratio.md) |
-| `spatialde` | `validated` | `external` | SpatialDE Gaussian-process test for spatially variable genes. | [spatialde](../generated/spatialde.md) |
 
 ## Decision notes
 

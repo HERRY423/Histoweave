@@ -132,7 +132,7 @@ Full rule set: [Evidence-governed decision protocol](decision-protocol.md).
 
 | Piece | Location |
 |-------|----------|
-| Runnable script | [`examples/case_study_intercepted_recommendation.py`](../examples/case_study_intercepted_recommendation.py) |
+| Runnable script | [`examples/case_study_intercepted_recommendation.py`](https://github.com/HERRY423/Histoweave/blob/main/examples/case_study_intercepted_recommendation.py) |
 | Unit lock | `tests/test_case_study_intercepted_recommendation.py` |
 | Negative holdout fixture | `benchmark_external_validation/decision_validation.json` |
 | Core engine | `histoweave.benchmark.decision` / `histoweave.decide` |

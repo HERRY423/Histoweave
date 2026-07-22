@@ -97,6 +97,26 @@ logger.info("comparison set: %s", card.comparison_set)
 logger.info("%s", card.summary())
 ```
 
+For a bundle-backed workflow, Python and the CLI now share the same execution
+path and policy fields:
+
+~~~python
+policy = hw.DecisionPolicy(shortlist_size=3, min_support=2)
+card = hw.decide_from_bundle(
+    "query.ttab",
+    knowledge_base="landscape.json",
+    task="spatial_domain",
+    dataset_name="query_section",
+    policy=policy,
+    pareto_report="pareto.json",
+    validation_report="grouped_holdout.json",
+    out="decision_card.json",
+)
+~~~
+
+Every CLI policy option maps directly to a DecisionPolicy field; both interfaces
+load evidence with the same loader and produce equivalent JSON payloads.
+
 ## CLI
 
 ```bash
@@ -128,6 +148,15 @@ The bundled external validation is normalised to this schema in
 `benchmark_external_validation/decision_validation.json`. It records the
 current negative result and therefore forces `global_default`; it is not a demo
 fabricated to unlock personalisation.
+
+The strict same-task extension in
+[benchmark_external_validation/n8_strict_region/](https://github.com/HERRY423/Histoweave/tree/main/benchmark_external_validation/n8_strict_region/)
+raises the independent-unit count from five to eight (three DLPFC donors plus
+five external studies). The gated policy remains exactly tied with the
+training-fold global best on mean regret (0.01089 versus 0.01089), so its
+validation record deliberately keeps beats_global_best false. The observed
+cortex-versus-tumour/brain oracle winner flip is labelled exploratory, and a
+within-condition LOOCV negative control performs worse than the global rule.
 
 ## Claim boundary
 

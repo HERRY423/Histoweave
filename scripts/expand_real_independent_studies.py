@@ -21,12 +21,14 @@ personalisation panel **without synthetic labs** (unless ``--include-synthetic``
 Usage
 -----
 python scripts/expand_real_independent_studies.py
-python scripts/expand_real_independent_studies.py --min-real 15 --out-dir independent_personalisation_results
+python scripts/expand_real_independent_studies.py
+  --min-real 15 --out-dir independent_personalisation_results
 """
 
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import logging
 import sys
@@ -71,7 +73,9 @@ def _load_multisource(path: Path) -> LandscapeResult:
     payload = json.loads(path.read_text(encoding="utf-8"))
     return LandscapeResult(
         performance={str(k): dict(v) for k, v in payload["performance"].items()},
-        features={str(k): np.asarray(v, dtype=float) for k, v in (payload.get("features") or {}).items()},
+        features={
+            str(k): np.asarray(v, dtype=float) for k, v in (payload.get("features") or {}).items()
+        },
         embedding={str(k): (0.0, 0.0) for k in payload["performance"]},
         best_method={str(k): v for k, v in (payload.get("best_method") or {}).items()},
         niches={},
@@ -87,7 +91,6 @@ def _load_multisource(path: Path) -> LandscapeResult:
 
 
 def _subsample_adata(adata, *, max_cells: int, seed: int, label_col: str):
-    import anndata as ad
 
     if adata.n_obs <= max_cells:
         return adata
@@ -249,7 +252,9 @@ def _prepare_squidpy_unit(
     if not adata.var_names.is_unique:
         adata.var_names = pd.Index([f"{n}__{i}" for i, n in enumerate(adata.var_names)])
     if label_col not in adata.obs.columns:
-        LOG.warning("squidpy dataset %s missing label %s; cols=%s", name, label_col, list(adata.obs.columns))
+        LOG.warning(
+            "squidpy dataset %s missing label %s; cols=%s", name, label_col, list(adata.obs.columns)
+        )
         return None
     lab = adata.obs[label_col].astype(str)
     mask = ~lab.isin(set(drop_labels) | {"nan", "NA", "None", ""})
@@ -313,10 +318,7 @@ def _load_cached_squidpy_h5ad(name: str):
 
 
 def load_squidpy_units() -> list[tuple[str, SpatialTable, int, dict[str, Any]]]:
-    try:
-        import squidpy as sq
-    except ModuleNotFoundError:
-        sq = None  # type: ignore[assignment]
+    if importlib.util.find_spec("squidpy") is None:
         LOG.warning("squidpy not installed; will use cached h5ad only if present")
 
     # name -> (label_col, platform, study, drops, seed, loader_attr)
@@ -324,13 +326,22 @@ def load_squidpy_units() -> list[tuple[str, SpatialTable, int, dict[str, Any]]]:
     specs = [
         # Prefer fully-cached public corpora. Large Visium demos (≈300MB+) are
         # optional — only loaded when a complete local h5ad already exists.
-        ("seqfish", "celltype_mapped_refined", "seqfish", "Lohoff2022_seqFISH_embryo", (), 2, "seqfish"),
+        (
+            "seqfish",
+            "celltype_mapped_refined",
+            "seqfish",
+            "Lohoff2022_seqFISH_embryo",
+            (),
+            2,
+            "seqfish",
+        ),
         ("mibitof", "Cluster", "mibi", "Hartmann2020_MIBI_TOF", (), 3, "mibitof"),
         ("four_i", "cluster", "four_i", "Gut2018_4i", (), 4, "four_i"),
         ("imc", "cell type", "imc", "Jackson2020_IMC", (), 5, "imc"),
     ]
     out: list[tuple[str, SpatialTable, int, dict[str, Any]]] = []
     for cache_name, label, platform, study, drops, seed, attr in specs:
+
         def _make_loader(_cache=cache_name, _attr=attr):
             def _load():
                 cached = _load_cached_squidpy_h5ad(_cache)
@@ -384,7 +395,7 @@ def score_units(
         raise ValueError("no units to score")
     datasets = {uid: tab for uid, tab, _k, _m in units}
     n_map = {uid: k for uid, _t, k, _m in units}
-    meta_in = {uid: meta for uid, _t, _k, meta in units}
+    _meta_in = {uid: meta for uid, _t, _k, meta in units}
 
     def factory(data: SpatialTable) -> dict[str, Any]:
         sid = str(data.uns.get("slice_id") or "")
@@ -465,11 +476,14 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if not args.multisource.is_file():
-        LOG.error("Missing multisource landscape at %s — run run_protocol_endpoints.py first", args.multisource)
+        LOG.error(
+            "Missing multisource landscape at %s — run run_protocol_endpoints.py first",
+            args.multisource,
+        )
         return 1
 
     multi = _load_multisource(args.multisource)
-    for name, row in multi.performance.items():
+    for _name, row in multi.performance.items():
         for m in METHODS:
             row.setdefault(m, float("nan"))
 
@@ -502,7 +516,9 @@ def main(argv: list[str] | None = None) -> int:
     for spec in new_specs:
         study = str(spec[3].get("study") or spec[0])
         # Always keep lymph node and annotated puck even if related platforms exist
-        if study in existing_studies and not spec[0].startswith(("xenium_human_lymph", "slideseq_puck")):
+        if study in existing_studies and not spec[0].startswith(
+            ("xenium_human_lymph", "slideseq_puck")
+        ):
             LOG.info("skip %s — study %s already in panel", spec[0], study)
             continue
         filtered.append(spec)
@@ -522,9 +538,7 @@ def main(argv: list[str] | None = None) -> int:
             panel.performance[name].setdefault(m, float("nan"))
         panel.dataset_meta.setdefault(name, {})
         panel.dataset_meta[name].setdefault("independence_class", "external_study")
-        panel.dataset_meta[name].setdefault(
-            "task", AnalysisTask.SPATIAL_DOMAIN.value
-        )
+        panel.dataset_meta[name].setdefault("task", AnalysisTask.SPATIAL_DOMAIN.value)
         panel.dataset_meta[name].setdefault(
             "ground_truth_kind", GroundTruthKind.SPATIAL_DOMAIN.value
         )
@@ -579,7 +593,11 @@ def main(argv: list[str] | None = None) -> int:
             proxy_advantage=0.02,
         )
         summary = summarise_policies(
-            policy_rows, noninferior_margin=args.margin, min_queries=args.min_real, n_boot=args.n_boot, seed=args.seed
+            policy_rows,
+            noninferior_margin=args.margin,
+            min_queries=args.min_real,
+            n_boot=args.n_boot,
+            seed=args.seed,
         )
         cross = cross_lab_reproducibility_report(
             panel, policy_rows, methods=METHODS, n_boot=args.n_boot, seed=args.seed
