@@ -105,6 +105,7 @@ path = "src/histoweave/__init__.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra --basetemp=.pytest_tmp"
 markers = [
     "property: property-based Hypothesis tests",
